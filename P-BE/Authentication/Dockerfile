@@ -10,16 +10,16 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
-COPY ["AuthenticationService/AuthenticationService.csproj", "AuthenticationService/"]
-RUN dotnet restore "AuthenticationService/AuthenticationService.csproj"
+COPY ["Authentication/Authentication.csproj", "Authentication/"]
+RUN dotnet restore "Authentication/Authentication.csproj"
 COPY . .
-WORKDIR "/src/AuthenticationService"
-RUN dotnet build "AuthenticationService.csproj" -c Release -o /app/build
+WORKDIR "/src/Authentication"
+RUN dotnet build "Authentication.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "AuthenticationService.csproj" -c Release -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "Authentication.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "AuthenticationService.dll"]
+ENTRYPOINT ["dotnet", "Authentication.dll"]
