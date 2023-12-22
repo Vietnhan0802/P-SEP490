@@ -7,10 +7,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Entities\" />
     <Folder Include="Enums\" />
     <Folder Include="Mappers\" />
     <Folder Include="ViewModels\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.14" />
   </ItemGroup>
 
 </Project>
