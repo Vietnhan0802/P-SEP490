@@ -2,7 +2,8 @@
 
 
 ## Note
-- SQL => user: sa; pass: 12345 
+- [Format Code: Ctrl + K + D]
+- [SQL => user: sa; pass: 12345]
 
 
 ## Support 1
@@ -36,7 +37,7 @@ Tại nhánh của mình
 
 Lên git tạo pull requests.
 
-##
+## Code "Vui Vẻ Hòa Đồng"
 
 ![aaa](https://github.com/Vietnhan0802/P-SEP490/assets/93634229/ebb98f5c-1970-424e-8dfb-57b989c22642)
 
