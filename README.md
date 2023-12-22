@@ -2,8 +2,8 @@
 
 
 ## Note
-- [Format Code: Ctrl + K + D]
-- [SQL => user: sa; pass: 12345]
+- Format Code: Ctrl + K + D
+- SQL => user: sa; pass: 12345
 
 
 ## Support 1
