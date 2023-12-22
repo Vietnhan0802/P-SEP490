@@ -1,24 +1,28 @@
 ﻿# Thông báo từ Leader
 
+
 ## Note
 - SQL => user: sa; pass: 12345 
+
 
 ## Support 1
 Migration
 ```bash
   add migration TênMigration
 ```
+
 UpdateDB
 ```bash
   update database 
 ```
+
+
 ## Support 2
 Tại nhánh của mình
 
 ```bash
   git pull origin main
 ```
-
 
 ```bash
   git add .
@@ -31,6 +35,11 @@ Tại nhánh của mình
 ```
 
 Lên git tạo pull requests.
+
+##
+
+![aaa](https://github.com/Vietnhan0802/P-SEP490/assets/93634229/ebb98f5c-1970-424e-8dfb-57b989c22642)
+
 
 1. Each member should have their own branch to work on. Avoid working directly on the main branch (master/main).
 2. Before starting work, update your branch to be up-to-date with the main branch by pulling from main.
