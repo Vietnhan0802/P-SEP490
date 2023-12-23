@@ -1,0 +1,57 @@
+
+p{
+    margin: 0px;
+}
+.mw-60 {
+  max-width: 700px;
+}
+.hV-100 {
+  height: 100vh;
+}
+.signIn-bg {
+  background-color: #1c2b3a;
+}
+.wc-bg {
+  background: url(../images/signIn/WC-Bg.png) center center no-repeat;
+  background-size: 100%;
+}
+.roundedL-28 {
+  border-top-left-radius: 28px; /* Độ cong cho góc trên bên trái */
+  border-bottom-left-radius: 28px;
+}
+.roundedR-28 {
+  border-top-right-radius: 28px; /* Độ cong cho góc trên bên trái */
+  border-bottom-right-radius: 28px;
+}
+.form-shadow {
+  box-shadow: 12px 12px 12px 0px rgba(0, 0, 0, 0.25);
+}
+.form-area{
+    max-width: 505px;
+    width: 90%;
+    margin: 0 auto;
+}
+.input-field {
+  padding-left: 30px;
+}
+.rounded-50 {
+  border-radius: 50px;
+  height: 50px;
+  border: 1px solid #5572e8;
+}
+.submit-btn {
+  background: #2F45AD;
+}
+.indent-30{
+    text-indent: 30px;
+}
+.line1{
+    border-top: solid black 1px;
+    margin: 0px 15px;
+}
+.gray-border{
+    border: 1px solid #BEBEBE;
+    width: 90%;
+    gap: 12px;
+    margin: 0 10px;
+}
