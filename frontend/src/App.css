@@ -1,7 +1,12 @@
-.App {
-  text-align: center;
+* {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
 }
-
+.un-decor {
+  text-decoration: none !important;
+}
 .App-logo {
   height: 40vmin;
   pointer-events: none;
