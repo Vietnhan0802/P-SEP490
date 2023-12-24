@@ -10,7 +10,7 @@ namespace BusinessObjects.Entities.User
         public bool isMale { get; set; }
         public string address { get; set; }
         public int tax { get; set; }
-        public string avatar { get; set; }
+        public string? avatar { get; set; }
         public bool isBlock { get; set; } = false;
         public DateTime createdDate { get; set; } = DateTime.Now;
     }

@@ -12,8 +12,8 @@ using User.Data;
 namespace User.Data.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20231223100512_AppUser")]
-    partial class AppUser
+    [Migration("20231224185826_Once")]
+    partial class Once
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -82,7 +82,6 @@ namespace User.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("avatar")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("birthday")
@@ -146,22 +145,22 @@ namespace User.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "d74cccd3-bdd3-4eeb-951d-23c4464eac98",
+                            Id = "08c90a9d-d3db-441d-a8f3-d8020e873051",
                             ConcurrencyStamp = "1",
                             Name = "Admin",
                             NormalizedName = "Admin"
                         },
                         new
                         {
-                            Id = "fd50144e-8171-4dd0-8085-6b7d4e0e844d",
+                            Id = "a8b96de9-6f22-4ea6-9a30-77f7affb40a4",
                             ConcurrencyStamp = "2",
                             Name = "Person",
                             NormalizedName = "Person"
                         },
                         new
                         {
-                            Id = "21399986-f578-4f6d-ba58-9a3052024381",
-                            ConcurrencyStamp = "2",
+                            Id = "2e197dd6-079f-4f18-8810-7a95be13bbe0",
+                            ConcurrencyStamp = "3",
                             Name = "Business",
                             NormalizedName = "Business"
                         });
