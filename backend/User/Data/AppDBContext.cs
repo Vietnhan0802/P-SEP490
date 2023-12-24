@@ -20,7 +20,7 @@ namespace User.Data
             builder.Entity<IdentityRole>().HasData(
                 new IdentityRole { Name = "Admin", ConcurrencyStamp = "1", NormalizedName = "Admin" },
                 new IdentityRole { Name = "Person", ConcurrencyStamp = "2", NormalizedName = "Person" },
-                new IdentityRole { Name = "Business", ConcurrencyStamp = "2", NormalizedName = "Business" });
+                new IdentityRole { Name = "Business", ConcurrencyStamp = "3", NormalizedName = "Business" });
         }
     }
 }

@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace User.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class AppUser : Migration
+    public partial class Once : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -37,7 +37,7 @@ namespace User.Data.Migrations
                     isMale = table.Column<bool>(type: "bit", nullable: false),
                     address = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     tax = table.Column<int>(type: "int", nullable: false),
-                    avatar = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    avatar = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     isBlock = table.Column<bool>(type: "bit", nullable: false),
                     createdDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -171,9 +171,9 @@ namespace User.Data.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "21399986-f578-4f6d-ba58-9a3052024381", "2", "Business", "Business" },
-                    { "d74cccd3-bdd3-4eeb-951d-23c4464eac98", "1", "Admin", "Admin" },
-                    { "fd50144e-8171-4dd0-8085-6b7d4e0e844d", "2", "Person", "Person" }
+                    { "08c90a9d-d3db-441d-a8f3-d8020e873051", "1", "Admin", "Admin" },
+                    { "2e197dd6-079f-4f18-8810-7a95be13bbe0", "3", "Business", "Business" },
+                    { "a8b96de9-6f22-4ea6-9a30-77f7affb40a4", "2", "Person", "Person" }
                 });
 
             migrationBuilder.CreateIndex(
