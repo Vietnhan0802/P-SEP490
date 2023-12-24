@@ -1,6 +1,5 @@
-
-p{
-    margin: 0px;
+p {
+  margin: 0px;
 }
 .mw-60 {
   max-width: 700px;
@@ -13,7 +12,7 @@ p{
 }
 .wc-bg {
   background: url(../images/signIn/WC-Bg.png) center center no-repeat;
-  background-size: 100%;
+  background-size: 100% 100%;
 }
 .roundedL-28 {
   border-top-left-radius: 28px; /* Độ cong cho góc trên bên trái */
@@ -26,10 +25,10 @@ p{
 .form-shadow {
   box-shadow: 12px 12px 12px 0px rgba(0, 0, 0, 0.25);
 }
-.form-area{
-    max-width: 505px;
-    width: 90%;
-    margin: 0 auto;
+.form-area {
+  max-width: 505px;
+  width: 90%;
+  margin: 0 auto;
 }
 .input-field {
   padding-left: 30px;
@@ -40,18 +39,18 @@ p{
   border: 1px solid #5572e8;
 }
 .submit-btn {
-  background: #2F45AD;
+  background: #2f45ad;
 }
-.indent-30{
-    text-indent: 30px;
+.indent-30 {
+  text-indent: 30px;
 }
-.line1{
-    border-top: solid black 1px;
-    margin: 0px 15px;
+.line1 {
+  border-top: solid black 1px;
+  margin: 0px 15px;
 }
-.gray-border{
-    border: 1px solid #BEBEBE;
-    width: 90%;
-    gap: 12px;
-    margin: 0 10px;
+.gray-border {
+  border: 1px solid #bebebe;
+  width: 90%;
+  gap: 12px;
+  margin: 0 10px;
 }
