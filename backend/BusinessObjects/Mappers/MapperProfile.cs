@@ -11,6 +11,7 @@ namespace BusinessObjects.Mappers
             CreateMap<AppUser, SignUpForPerson>().ReverseMap();
             CreateMap<AppUser, SignUpForBusiness>().ReverseMap();
             CreateMap<AppUser, SignIn>().ReverseMap();
+            CreateMap<AppUser, Account>().ReverseMap();
         }
     }
 }

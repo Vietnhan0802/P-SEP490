@@ -42,13 +42,51 @@ namespace User.Controllers
             return _mapper.Map<List<Account>>(users);
         }
 
+        [HttpGet("GetUserById/{userId}")]
+        public async Task<ActionResult<Account>> GetUserById(string userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                return NotFound("User doesn't exists!");
+            }
+            return _mapper.Map<Account>(user);
+        }
+
+        [HttpGet("BlockAccount/{userId}")]
+        public async Task<IActionResult> BlockAccount (string userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                return NotFound("User doesn't exists!");
+            }
+            if (user.isBlock == false)
+            {
+                user.isBlock = true;
+            }
+            else
+            {
+                user.isBlock = false;
+            }
+            var result = await _userManager.UpdateAsync(user);
+            if (result.Succeeded)
+            {
+                return Ok("User had been blocked!");
+            }
+            else
+            {
+                return BadRequest("Unable to blocked!");
+            }
+        }
+
         [HttpPost("SignUpForPerson")]
         public async Task<IActionResult> SignUpForPerson(SignUpForPerson signUpForPerson)
         {
             var userExits = await _userManager.FindByEmailAsync(signUpForPerson.email);
             if (userExits != null)
             {
-                return Conflict("Account already exists!");
+                return Conflict("User already exists!");
             }
 
             AppUser user = new AppUser()
@@ -66,14 +104,14 @@ namespace User.Controllers
             var result = await _userManager.CreateAsync(user, signUpForPerson.password);
             if (!result.Succeeded)
             {
-                return BadRequest("Account created fail! Please check and try again!");
+                return BadRequest("User created fail! Please check and try again!");
             }
             if (await _roleManager.RoleExistsAsync(TypeUser.Person.ToString()))
             {
                 await _userManager.AddToRoleAsync(user, TypeUser.Person.ToString());
-                return Ok("Account created & email sent to successfully!");
+                return Ok("User created & email sent to successfully!");
             }
-            return BadRequest("Account failed to create!");
+            return BadRequest("User failed to create!");
         }
 
         [HttpPost("SignUpForBusiness")]
@@ -82,7 +120,7 @@ namespace User.Controllers
             var userExits = await _userManager.FindByEmailAsync(signUpForBusiness.email);
             if (userExits != null)
             {
-                return Conflict("Account already exists!");
+                return Conflict("User already exists!");
             }
 
             AppUser user = new AppUser()
@@ -90,8 +128,7 @@ namespace User.Controllers
                 UserName = signUpForBusiness.fullName,
                 Email = signUpForBusiness.email,
                 fullName = signUpForBusiness.fullName,
-                birthday = signUpForBusiness.birthday,
-                isMale = signUpForBusiness.isMale,
+                birthday = signUpForBusiness.establishment,
                 PhoneNumber = signUpForBusiness.phone,
                 tax = signUpForBusiness.tax,
                 address = signUpForBusiness.address,
@@ -100,20 +137,24 @@ namespace User.Controllers
             var result = await _userManager.CreateAsync(user, signUpForBusiness.password);
             if (!result.Succeeded)
             {
-                return BadRequest("Account created fail! Please check and try again!");
+                return BadRequest("User created fail! Please check and try again!");
             }
             if (await _roleManager.RoleExistsAsync(TypeUser.Business.ToString()))
             {
                 await _userManager.AddToRoleAsync(user, TypeUser.Business.ToString());
-                return Ok("Account created & email sent to successfully!");
+                return Ok("User created & email sent to successfully!");
             }
-            return BadRequest("Account failed to create!");
+            return BadRequest("User failed to create!");
         }
 
         [HttpPost("SignIn")]
         public async Task<IActionResult> SignIn(SignIn signIn)
         {
             var user = await _userManager.FindByEmailAsync(signIn.email);
+            if (user.isBlock == true)
+            {
+                return Unauthorized("User had been blocked!");
+            }
             if (user != null && await _userManager.CheckPasswordAsync(user, signIn.password))
             {
                 var userRoles = await _userManager.GetRolesAsync(user);
@@ -122,7 +163,6 @@ namespace User.Controllers
                     new Claim(JwtRegisteredClaimNames.Sub, _configuration["Jwt:Subject"]),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                     new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()),
-                    new Claim(ClaimTypes.Role, userRoles.ToString()),
                     new Claim("Id" , user.Id.ToString()),
                     new Claim("Username", user.UserName),
                     new Claim("Email", user.Email),
@@ -133,10 +173,10 @@ namespace User.Controllers
                     new Claim("Tax", user.tax.ToString()),
                     new Claim("Address", user.address)
                 };
-                /*foreach (var userRole in userRoles)
+                foreach (var userRole in userRoles)
                 {
                     authClaims.Add(new Claim(ClaimTypes.Role, userRole));
-                }*/
+                }
 
                 var jwtToken = GetToken(authClaims);
 
