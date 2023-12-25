@@ -1,9 +1,9 @@
 import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import logoImg from "../images/common/logo.png";
-import GGIcon from "../images/common/gg-icon.png";
-import FBIcon from "../images/common/fb-icon.png";
-import "../css/signIn.css";
+import logoImg from "../../images/common/logo.png";
+import GGIcon from "../../images/common/gg-icon.png";
+import FBIcon from "../../images/common/fb-icon.png";
+import "../SignIn/signIn.css";
 
 import { useState } from "react";
 import ReactDOM from "react-dom/client";
