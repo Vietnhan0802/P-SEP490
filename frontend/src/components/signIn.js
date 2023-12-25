@@ -35,25 +35,28 @@ export default function SignIn() {
       className="signIn-bg hV-100 d-flex align-items-center"
     >
       <div className="container">
-        <div className="row form-shadow roundedL-28 roundedR-28">
-          <div className="col-lg-7 roundedL-28 white-bg">
-            <img src={logoImg} alt="logo" />
-            <p className="SFU-bold size-40 blue2f text-center">SIGN IN</p>
+        <div className="d-flex form-shadow roundedL-28 roundedR-28 flex-column-reverse flex-lg-row">
+          <div className="col-lg-7 col roundedL-28 white-bg pt-5 pb-5">
+            <p className="SFU-bold size-40 blue2f text-center py-lg-3 py-lg-5">
+              SIGN IN
+            </p>
             <div className="form-area">
               <form onSubmit={handleSubmit}>
-                <div>
-                  <p className="size-20 blue2f SFU-heavy indent-30">Email *</p>
+                <div className="pb-2">
+                  <p className="size-20 blue2f SFU-heavy indent-30 pb-1">
+                    Email *
+                  </p>
                   <input
                     className="input-field rounded-50 w-100"
                     placeholder="Enter your email address"
                     type="email"
-                    name="username"
-                    value={inputs.username || ""}
+                    name="email"
+                    value={inputs.email || ""}
                     onChange={handleChange}
                   />
                 </div>
-                <div>
-                  <p className="size-20 blue2f SFU-heavy indent-30">
+                <div className="pb-2">
+                  <p className="size-20 blue2f SFU-heavy indent-30 pb-1">
                     Password *
                   </p>
                   <input
@@ -66,7 +69,7 @@ export default function SignIn() {
                   />
                 </div>
                 <div className="d-flex justify-content-end">
-                  <a className="un-decor SFU-book blue55 size-20" href="#">
+                  <a className="un-decor SFU-book blue55 size-20 pb-2" href="#">
                     Fogot password?
                   </a>
                 </div>
@@ -77,28 +80,37 @@ export default function SignIn() {
                 />
               </form>
               <div className="d-flex justify-content-center">
-                <a className="un-decor SFU-book green14 size-20" href="#">
+                <a
+                  className="un-decor SFU-book green14 size-20 pt-1 pb-1"
+                  href="#"
+                >
                   Don’t have an account?
                 </a>
               </div>
               <div className="row justify-content-center align-items-center ">
                 <div className="col line1"></div>
-                <div className="col col-lg-4 text-center size-20">
+                <div className="col-5 col-lg-4 col-md-4 col-sm-4 text-center size-20">
                   Sign in with
                 </div>
                 <div className="col line1"></div>
               </div>
-              <div className="d-flex flex-row">
+              <div className="d-flex flex-row pt-3 pb-3">
                 <div className="d-flex col-6 google-btn justify-content-end">
-                  <button className="gray-border white-bg d-flex flex-row rounded-50 align-items-center justify-content-center" 
-                    type="button" onClick={handleClickGG}>
+                  <button
+                    className="gray-border white-bg d-flex flex-row rounded-50 align-items-center justify-content-center"
+                    type="button"
+                    onClick={handleClickGG}
+                  >
                     <img src={GGIcon} alt="GGIcon" />
                     <p>Google</p>
                   </button>
                 </div>
                 <div className="d-flex col-6 facebook-btn">
-                  <button className="gray-border white-bg d-flex flex-row rounded-50 align-items-center justify-content-center" 
-                    type="button" onClick={handleClickFB}>
+                  <button
+                    className="gray-border white-bg d-flex flex-row rounded-50 align-items-center justify-content-center"
+                    type="button"
+                    onClick={handleClickFB}
+                  >
                     <img src={FBIcon} alt="FBIcon" />
                     <p>Facebook</p>
                   </button>
@@ -106,7 +118,21 @@ export default function SignIn() {
               </div>
             </div>
           </div>
-          <div className="col roundedR-28 wc-bg SFU-reg white">Welcom</div>
+          <div className="col roundedR-28 wc-bg SFU-reg white">
+            <div className="d-flex justify-content-center justify-content-lg-start">
+              <img className="pt-4 px-lg-3 pb-lg-5" src={logoImg} alt="logo" />
+            </div>
+            <div className="SFU-bold px-4 pb-3 pt-lg-5 mt-lg-5 text-center text-lg-start ">
+              <p className="size-40 d-lg-none">
+                Welcome Back!
+              </p>
+              <p className="d-none d-lg-block size-70">
+                Welcome&nbsp;
+                <br/>
+                Back!
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </section>
