@@ -31,7 +31,7 @@ p {
   margin: 0 auto;
 }
 .input-field {
-  padding-left: 30px;
+  padding: 0 30px;
 }
 .rounded-50 {
   border-radius: 50px;

@@ -4,6 +4,7 @@ import logoImg from "../images/common/logo.png";
 import GGIcon from "../images/common/gg-icon.png";
 import FBIcon from "../images/common/fb-icon.png";
 import "../css/signIn.css";
+import "../css/signUp.css";
 
 import { useState } from "react";
 import ReactDOM from "react-dom/client";
@@ -38,27 +39,28 @@ export default function SignIn() {
         <div className="d-flex form-shadow roundedL-28 roundedR-28 flex-column-reverse flex-lg-row">
           <div className="col-lg-7 col roundedL-28 white-bg pt-5 pb-5">
             <p className="SFU-bold size-40 blue2f text-center py-lg-3 py-lg-5">
-              SIGN IN
+              SIGN up Person
             </p>
             <div className="form-area">
               <form onSubmit={handleSubmit}>
-                <div className="pb-2">
-                  <p className="size-20 blue2f SFU-heavy indent-30 pb-1">
-                    Email *
+                <div className="pb-2 d-flex flex-row align-items-center">
+                  <p className="col-sm-3 col-5 size-20 blue2f SFU-heavy pb-1 input-field">
+                    Email
                   </p>
                   <input
                     className="input-field rounded-50 w-100"
-                    placeholder="Enter your email address"
+                    placeholder="Enter your email"
                     type="email"
                     name="email"
                     value={inputs.email || ""}
                     onChange={handleChange}
                   />
                 </div>
-                <div className="pb-2">
-                  <p className="size-20 blue2f SFU-heavy indent-30 pb-1">
-                    Password *
+                <div className="pb-2 d-flex flex-row align-items-center">
+                  <p className="col-sm-3 col-5 size-20 blue2f SFU-heavy pb-1 input-field">
+                    Password
                   </p>
+
                   <input
                     className="input-field rounded-50 w-100"
                     placeholder="Enter your password"
@@ -68,11 +70,63 @@ export default function SignIn() {
                     onChange={handleChange}
                   />
                 </div>
-                <div className="d-flex justify-content-end">
-                  <a className="un-decor SFU-book blue55 size-20 pb-2" href="#">
-                    Fogot password?
-                  </a>
+                <div className="pb-2 d-flex flex-row align-items-center">
+                  <p className="col-sm-3 col-5 size-20 blue2f SFU-heavy pb-1 input-field">
+                    FullName
+                  </p>
+                  <input
+                    className="input-field rounded-50 w-100"
+                    placeholder="Enter your FullName"
+                    type="text"
+                    name="fullName"
+                    value={inputs.fullName || ""}
+                    onChange={handleChange}
+                  />
                 </div>
+                <div className="pb-2 d-flex flex-row align-items-center">
+                  <p className="col-sm-3 col-5 size-20 blue2f SFU-heavy pb-1 input-field">
+                    Birthday
+                  </p>
+                  <input
+                    className="input-field rounded-50 w-100"
+                    placeholder="dd-mm-yyyy"
+                    min="1900-01-01"
+                    max="2023-12-31"
+                    type="date"
+                    name="birthday"
+                    value={inputs.birthday || ""}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div className="d-flex flex-row">
+                  <div className="pb-2 d-flex flex-row align-items-center">
+                    <p className="col-sm-3 col-5 size-20 blue2f SFU-heavy pb-1 input-field">
+                      Male
+                    </p>
+                    <input
+                      className="radius-size"
+                      type="radio"
+                      name="isMale"
+                      value="1"
+                      // checked={inputs.isMale === "male"}
+                      onChange={handleChange}
+                    />
+                  </div>
+                  <div className="pb-2 d-flex flex-row align-items-center">
+                    <p className="col-sm-3 col-5 size-20 blue2f SFU-heavy pb-1 input-field">
+                      IsMale
+                    </p>
+                    <input
+                      className="radius-size"
+                      type="radio"
+                      name="isMale"
+                      value="0"
+                      // checked={inputs.isMale === "female"}
+                      onChange={handleChange}
+                    />
+                  </div>
+                </div>
+
                 <input
                   className="submit-btn rounded-50 size-20 white SFU-bold w-100"
                   type="submit"
@@ -123,12 +177,10 @@ export default function SignIn() {
               <img className="pt-4 px-lg-3 pb-lg-5" src={logoImg} alt="logo" />
             </div>
             <div className="SFU-bold px-4 pb-3 pt-lg-5 mt-lg-5 text-center text-lg-start ">
-              <p className="size-40 d-lg-none">
-                Welcome Back!
-              </p>
+              <p className="size-40 d-lg-none">Welcome Back!</p>
               <p className="d-none d-lg-block size-70">
                 Welcome&nbsp;
-                <br/>
+                <br />
                 Back!
               </p>
             </div>
