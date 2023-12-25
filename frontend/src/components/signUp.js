@@ -37,10 +37,11 @@ export default function SignIn() {
     >
       <div className="container">
         <div className="d-flex form-shadow roundedL-28 roundedR-28 flex-column-reverse flex-lg-row">
-          <div className="col-lg-7 col roundedL-28 white-bg pt-5 pb-5">
+          <div className="col-lg-7 col roundedL-28 white-bg pt-2 pb-4">
             <p className="SFU-bold size-40 blue2f text-center py-lg-3 py-lg-5">
-              SIGN up Person
+              SIGN UP
             </p>
+
             <div className="form-area">
               <form onSubmit={handleSubmit}>
                 <div className="pb-2 d-flex flex-row align-items-center">
@@ -98,9 +99,9 @@ export default function SignIn() {
                     onChange={handleChange}
                   />
                 </div>
-                <div className="d-flex flex-row">
+                <div className="d-flex flex-row justify-content-evenly">
                   <div className="pb-2 d-flex flex-row align-items-center">
-                    <p className="col-sm-3 col-5 size-20 blue2f SFU-heavy pb-1 input-field">
+                    <p className="size-20 blue2f SFU-heavy pb-1 input-field">
                       Male
                     </p>
                     <input
@@ -108,43 +109,71 @@ export default function SignIn() {
                       type="radio"
                       name="isMale"
                       value="1"
-                      // checked={inputs.isMale === "male"}
                       onChange={handleChange}
                     />
                   </div>
                   <div className="pb-2 d-flex flex-row align-items-center">
-                    <p className="col-sm-3 col-5 size-20 blue2f SFU-heavy pb-1 input-field">
-                      IsMale
+                    <p className="size-20 blue2f SFU-heavy pb-1 input-field">
+                      Female
                     </p>
                     <input
                       className="radius-size"
                       type="radio"
                       name="isMale"
                       value="0"
-                      // checked={inputs.isMale === "female"}
                       onChange={handleChange}
                     />
                   </div>
                 </div>
-
+                <div className="pb-2 d-flex flex-row align-items-center">
+                  <p className="col-sm-3 col-5 size-20 blue2f SFU-heavy pb-1 input-field">
+                    Phone
+                  </p>
+                  <input
+                    className="input-field rounded-50 w-100"
+                    placeholder="Enter your Phone"
+                    type="text"
+                    name="phone"
+                    value={inputs.phone || ""}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div className="pb-2 d-flex flex-row align-items-center">
+                  <p className="col-sm-3 col-5 size-20 blue2f SFU-heavy pb-1 input-field">
+                    Tax
+                  </p>
+                  <input
+                    className="input-field rounded-50 w-100"
+                    placeholder="Enter your Tax"
+                    type="text"
+                    name="tax"
+                    value={inputs.tax || ""}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div className="pb-2 d-flex flex-row align-items-center">
+                  <p className="col-sm-3 col-5 size-20 blue2f SFU-heavy pb-1 input-field">
+                    Address
+                  </p>
+                  <input
+                    className="input-field rounded-50 w-100"
+                    placeholder="Enter your Address"
+                    type="text"
+                    name="address"
+                    value={inputs.address || ""}
+                    onChange={handleChange}
+                  />
+                </div>
                 <input
                   className="submit-btn rounded-50 size-20 white SFU-bold w-100"
                   type="submit"
-                  value="Sign in"
+                  value="Sign up"
                 />
               </form>
-              <div className="d-flex justify-content-center">
-                <a
-                  className="un-decor SFU-book green14 size-20 pt-1 pb-1"
-                  href="#"
-                >
-                  Don’t have an account?
-                </a>
-              </div>
-              <div className="row justify-content-center align-items-center ">
+              <div className="row justify-content-center align-items-center pt-2">
                 <div className="col line1"></div>
                 <div className="col-5 col-lg-4 col-md-4 col-sm-4 text-center size-20">
-                  Sign in with
+                  Sign up with
                 </div>
                 <div className="col line1"></div>
               </div>
