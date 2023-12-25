@@ -1,5 +1,3 @@
-import logo from './logo.svg';
-import './App.css';
 import './css/font.css'
 import './css/size.css'
 import './css/color.css'
