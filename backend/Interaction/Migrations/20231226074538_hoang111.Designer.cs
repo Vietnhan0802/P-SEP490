@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Interaction.Migrations
 {
     [DbContext(typeof(VerificationDbContext))]
-    [Migration("20231226062835_hoang3")]
-    partial class hoang3
+    [Migration("20231226074538_hoang111")]
+    partial class hoang111
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -37,7 +37,7 @@ namespace Interaction.Migrations
                     b.Property<Guid>("IdAccount")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<bool>("IsAccept")
+                    b.Property<bool?>("IsAccept")
                         .HasColumnType("bit");
 
                     b.HasKey("Id");

@@ -72,7 +72,9 @@ namespace Interaction.Controllers
             {
                 return BadRequest();
             }
+
             newVerification.Id = Guid.NewGuid();
+            newVerification.IsAccept = null;  // Mặc định là null khi tạo mới
 
             _context.Verifications.Add(newVerification);
             await _context.SaveChangesAsync();
@@ -80,5 +82,34 @@ namespace Interaction.Controllers
             return CreatedAtAction(nameof(GetVerification), new { id = newVerification.Id }, newVerification);
         }
 
+        [HttpGet("null")]
+        public async Task<ActionResult<IEnumerable<Verification>>> GetNullVerifications()
+        {
+            var nullVerifications = await _context.Verifications
+                .Where(v => v.IsAccept == null)
+                .ToListAsync();
+
+            return nullVerifications;
+        }
+
+        [HttpGet("false")]
+        public async Task<ActionResult<IEnumerable<Verification>>> GetFalseVerifications()
+        {
+            var falseVerifications = await _context.Verifications
+                .Where(v => v.IsAccept == false)
+                .ToListAsync();
+
+            return falseVerifications;
+        }
+
+        [HttpGet("true")]
+        public async Task<ActionResult<IEnumerable<Verification>>> GetTrueVerifications()
+        {
+            var trueVerifications = await _context.Verifications
+                .Where(v => v.IsAccept == true)
+                .ToListAsync();
+
+            return trueVerifications;
+        }
     }
 }
