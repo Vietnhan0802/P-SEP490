@@ -82,7 +82,7 @@ export default function SignIn() {
               <div className="d-flex justify-content-center">
                 <a
                   className="un-decor SFU-book green14 size-20 pt-1 pb-1"
-                  href="#"
+                  href="/signup"
                 >
                   Don’t have an account?
                 </a>
