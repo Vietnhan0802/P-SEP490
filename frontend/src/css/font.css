@@ -1,0 +1,54 @@
+@font-face {
+    font-family: 'SFU-reg';
+    src: url(../font/SFUFuturaRegular.TTF) format('truetype');
+    font-weight: normal;
+	font-style: normal;	
+}
+.SFU-reg{
+    font-family: 'SFU-reg';
+}
+@font-face {
+    font-family: 'SFU-light';
+    src: url(../font/SFUFuturaLight.TTF) format('truetype');
+    font-weight: normal;
+	font-style: normal;	
+}
+.SFU-light{
+    font-family: 'SFU-light';
+}
+@font-face {
+    font-family: 'SFU-heavy';
+    src: url(../font/SFUFuturaHeavy.TTF) format('truetype');
+    font-weight: normal;
+	font-style: normal;	
+}
+.SFU-heavy{
+    font-family: 'SFU-heavy';
+}
+@font-face {
+    font-family: 'SFU-extraBold';
+    src: url(../font/SFUFuturaExtraBold.TTF) format('truetype');
+    font-weight: normal;
+	font-style: normal;	
+}
+.SFU-extraBold{
+    font-family: 'SFU-extraBold';
+}
+@font-face {
+    font-family: 'SFU-book';
+    src: url(../font/SFUFuturaBook.TTF) format('truetype');
+    font-weight: normal;
+	font-style: normal;	
+}
+.SFU-book{
+    font-family: 'SFU-book';
+}
+@font-face {
+    font-family: 'SFU-bold';
+    src: url(../font/SFUFuturaBold.TTF) format('truetype');
+    font-weight: normal;
+	font-style: normal;	
+}
+.SFU-bold{
+    font-family: 'SFU-bold';
+}

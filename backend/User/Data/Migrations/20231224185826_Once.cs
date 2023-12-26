@@ -3,10 +3,12 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace User.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class AppUser : Migration
+    public partial class Once : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -31,9 +33,11 @@ namespace User.Data.Migrations
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     fullName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    birthday = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    isMale = table.Column<bool>(type: "bit", nullable: false),
                     address = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     tax = table.Column<int>(type: "int", nullable: false),
-                    avatar = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    avatar = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     isBlock = table.Column<bool>(type: "bit", nullable: false),
                     createdDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -160,6 +164,16 @@ namespace User.Data.Migrations
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.InsertData(
+                table: "AspNetRoles",
+                columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
+                values: new object[,]
+                {
+                    { "08c90a9d-d3db-441d-a8f3-d8020e873051", "1", "Admin", "Admin" },
+                    { "2e197dd6-079f-4f18-8810-7a95be13bbe0", "3", "Business", "Business" },
+                    { "a8b96de9-6f22-4ea6-9a30-77f7affb40a4", "2", "Person", "Person" }
                 });
 
             migrationBuilder.CreateIndex(

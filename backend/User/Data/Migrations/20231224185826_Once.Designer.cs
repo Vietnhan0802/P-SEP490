@@ -12,8 +12,8 @@ using User.Data;
 namespace User.Data.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20231223030739_AppUser")]
-    partial class AppUser
+    [Migration("20231224185826_Once")]
+    partial class Once
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -82,8 +82,10 @@ namespace User.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("avatar")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("birthday")
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime>("createdDate")
                         .HasColumnType("datetime2");
@@ -93,6 +95,9 @@ namespace User.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("isBlock")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("isMale")
                         .HasColumnType("bit");
 
                     b.Property<int>("tax")
@@ -136,6 +141,29 @@ namespace User.Data.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "08c90a9d-d3db-441d-a8f3-d8020e873051",
+                            ConcurrencyStamp = "1",
+                            Name = "Admin",
+                            NormalizedName = "Admin"
+                        },
+                        new
+                        {
+                            Id = "a8b96de9-6f22-4ea6-9a30-77f7affb40a4",
+                            ConcurrencyStamp = "2",
+                            Name = "Person",
+                            NormalizedName = "Person"
+                        },
+                        new
+                        {
+                            Id = "2e197dd6-079f-4f18-8810-7a95be13bbe0",
+                            ConcurrencyStamp = "3",
+                            Name = "Business",
+                            NormalizedName = "Business"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
