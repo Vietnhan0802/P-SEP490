@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Interaction.Migrations
 {
     /// <inheritdoc />
-    public partial class hoang3 : Migration
+    public partial class hoang111 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -17,7 +17,7 @@ namespace Interaction.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     IdAccount = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    IsAccept = table.Column<bool>(type: "bit", nullable: false),
+                    IsAccept = table.Column<bool>(type: "bit", nullable: true),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>

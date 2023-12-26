@@ -34,7 +34,7 @@ namespace Interaction.Migrations
                     b.Property<Guid>("IdAccount")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<bool>("IsAccept")
+                    b.Property<bool?>("IsAccept")
                         .HasColumnType("bit");
 
                     b.HasKey("Id");
