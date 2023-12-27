@@ -17,11 +17,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Content", "Content\Content.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Credential", "Credential\Credential.csproj", "{4C8062EC-D287-46CC-AFCE-33CA194821C9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Interaction", "Interaction\Interaction.csproj", "{1D70B25A-00D4-47FB-8CF2-21FB92A1664C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Interaction", "Interaction\Interaction.csproj", "{1D70B25A-00D4-47FB-8CF2-21FB92A1664C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Project", "Project\Project.csproj", "{F8077231-D02B-493C-84CC-2EC8C0F7B142}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Project", "Project\Project.csproj", "{F8077231-D02B-493C-84CC-2EC8C0F7B142}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Communication", "Communication\Communication.csproj", "{47F2AB64-D548-4C75-B562-F4751D90FED2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Communication", "Communication\Communication.csproj", "{47F2AB64-D548-4C75-B562-F4751D90FED2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
