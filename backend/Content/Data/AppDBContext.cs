@@ -1,4 +1,5 @@
 ﻿using BusinessObjects.Entities.Content;
+using BusinessObjects.Entities.Projects;
 using Microsoft.EntityFrameworkCore;
 
 namespace Content.Data
@@ -6,9 +7,12 @@ namespace Content.Data
     public class AppDBContext : DbContext
     {
         public DbSet<Post> Posts { get; set; }
-        public DbSet<Reply> Replies { get; set; }
-        public DbSet<Comment> Comments { get; set; }
         public DbSet<Blog> Blogs { get; set; }
+        public DbSet<BlogReply> BlogReplies { get; set; }
+        public DbSet<BlogComment> BlogComments { get; set; }
+        public DbSet<PostComment> PostComments { get; set; }   
+        public DbSet<PostReply> PostReplies { get; set; }   
+        public DbSet<Project> Projects { get; set; }   
         public AppDBContext(DbContextOptions options) : base(options)
         {
         }

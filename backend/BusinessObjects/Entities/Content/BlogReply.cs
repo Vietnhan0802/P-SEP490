@@ -7,17 +7,14 @@ using System.Threading.Tasks;
 
 namespace BusinessObjects.Entities.Content
 {
-    public class Blog
+    public class BlogReply
     {
         [Key]
-        public Guid idBlog { get; set; }
-        public string Title { get; set; }
+        public Guid idBlogReply { get; set; } 
         public string Content { get; set; }
-        public string Image { get; set; }
-        public int View { get; set; }
         public DateTime CreatedDate { get; set; } = DateTime.Now;
-        public bool IsDeleted { get; set; } = false;
+        public Guid idBlogComment { get; set; } 
+        public BlogComment? BlogComment { get; set; }
         public Guid IdUser { get; set; }
-        public ICollection<BlogComment>? BlogComments { get; set; } = new List<BlogComment>();
     }
 }

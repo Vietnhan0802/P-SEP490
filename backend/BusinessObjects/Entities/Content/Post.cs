@@ -1,6 +1,7 @@
 ﻿using BusinessObjects.Entities.Projects;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,6 +10,7 @@ namespace BusinessObjects.Entities.Content
 {
     public class Post
     {
+        [Key]
         public Guid idPost { get; set; } 
         public string Title { get; set; }
         public string Content { get; set; }
@@ -19,8 +21,9 @@ namespace BusinessObjects.Entities.Content
         public DateTime CreatedDate { get; set; } = DateTime.Now;
         public bool IsDeleted { get; set; } = false;
         public bool IsBlock { get; set; } = false;
-        public ICollection<Comment>? Comments { get; set; } = new List<Comment>();
         public Guid idProject { get; set; } 
-        public Project? Project { get; set; }    
+        public Project? Project { get; set; }
+        public Guid IdUser { get; set; }
+        public ICollection<PostComment>? PostComments { get; set; } = new List<PostComment>();
     }
 }
