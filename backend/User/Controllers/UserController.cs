@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -25,39 +26,41 @@ namespace User.Controllers
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IMapper _mapper;
         private readonly IConfiguration _configuration;
+        private readonly IWebHostEnvironment _hostEnvironment;
 
-        public UserController(UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager, IMapper mapper, IConfiguration configuration)
+        public UserController(UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager, IMapper mapper, IConfiguration configuration, IWebHostEnvironment hostEnvironment)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _mapper = mapper;
             _configuration = configuration;
+            _hostEnvironment = hostEnvironment;
         }
 
         [HttpGet("GetAllUsers")]
-        public async Task<ActionResult<List<Account>>> GetAllUsers()
+        public async Task<ActionResult<List<ViewUser>>> GetAllUsers()
         {
             var users = await _userManager.Users.ToListAsync();
             if (users == null || users.Count < 0)
             {
                 return NotFound("User is empty!");
             }
-            return _mapper.Map<List<Account>>(users);
+            return _mapper.Map<List<ViewUser>>(users);
         }
 
         [HttpGet("GetUserById/{userId}")]
-        public async Task<ActionResult<Account>> GetUserById(string userId)
+        public async Task<ActionResult<ViewUser>> GetUserById(string userId)
         {
             var user = await _userManager.FindByIdAsync(userId);
             if (user == null)
             {
                 return NotFound("User doesn't exists!");
             }
-            return _mapper.Map<Account>(user);
+            return _mapper.Map<ViewUser>(user);
         }
 
-        [HttpGet("BlockAccount/{userId}")]
-        public async Task<IActionResult> BlockAccount (string userId)
+        [HttpGet("BlockUser/{userId}")]
+        public async Task<IActionResult> BlockUser (string userId)
         {
             var user = await _userManager.FindByIdAsync(userId);
             if (user == null)
@@ -81,6 +84,20 @@ namespace User.Controllers
             {
                 return BadRequest("Unable to blocked!");
             }
+        }
+
+        [HttpPut("UpdateUser/{userId}")]
+        public async Task<ActionResult<UpdateUser>> UpdateUser(string userId, UpdateUser updateUser)
+        {
+            var userExits = await _userManager.FindByIdAsync(userId);
+            if (userExits == null)
+            {
+                return NotFound("User doesn't exists!");
+            }
+            updateUser.avatar = await SaveImage(updateUser.imageFile);
+            var user = _mapper.Map(updateUser, userExits);
+            await _userManager.UpdateAsync(user);
+            return _mapper.Map<UpdateUser>(userExits);
         }
 
         [HttpPost("SignUpForPerson")]
@@ -227,6 +244,19 @@ namespace User.Controllers
                 claim.Value
             });
             return Ok(claims);
+        }
+
+        [NonAction]
+        public async Task<string> SaveImage(IFormFile formFile)
+        {
+            string imageName = new String(Path.GetFileNameWithoutExtension(formFile.FileName).Take(10).ToArray()).Replace(' ', '-');
+            imageName = imageName + DateTime.Now.ToString("yymmssfff") + Path.GetExtension(formFile.FileName);
+            var imagePath = Path.Combine(_hostEnvironment.ContentRootPath, "Images", imageName);
+            using (var fileStream = new FileStream(imagePath, FileMode.Create))
+            {
+                await formFile.CopyToAsync(fileStream);
+            }
+            return imageName;
         }
     }
 }

@@ -1,5 +1,7 @@
 ﻿using BusinessObjects.Enums.User;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BusinessObjects.Entities.User
 {
@@ -13,5 +15,7 @@ namespace BusinessObjects.Entities.User
         public string? avatar { get; set; }
         public bool isBlock { get; set; } = false;
         public DateTime createdDate { get; set; } = DateTime.Now;
+        [NotMapped]
+        public IFormFile imageFile { get; set; }
     }
 }
