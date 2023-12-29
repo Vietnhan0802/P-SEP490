@@ -218,6 +218,8 @@ namespace User.Controllers
             return token;
         }
 
+        [HttpGet]
+
         [HttpGet("SignInGoogle")]
         public async Task<IActionResult> SignInGoogle()
         {
