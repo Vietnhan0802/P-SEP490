@@ -19,13 +19,13 @@ namespace Content.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Post>>> GetVerifications()
+        public async Task<ActionResult<IEnumerable<Post>>> GetPosts()
         {
             return await _dbContext.Posts.ToListAsync();
         }
 
         [HttpPost("CreatePost")]
-        public async Task<ActionResult<CreatePostViewModel>> CreateProduct(CreatePostViewModel postViewModel)
+        public async Task<ActionResult<CreatePostViewModel>> CreatePost(CreatePostViewModel postViewModel)
         {
             if (ModelState.IsValid)
             {
