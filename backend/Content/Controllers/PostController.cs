@@ -110,5 +110,27 @@ namespace Content.Controllers
             }
         }
 
+        [HttpGet("SearchPostsByUserId/{userId}")]
+        public ActionResult<IEnumerable<Post>> SearchPostsByUserId(Guid userId)
+        {
+            try
+            {
+                var userPosts = _dbContext.Posts.Where(post => post.IdUser == userId).ToList();
+
+                if (userPosts.Count == 0)
+                {
+                    return NotFound("No posts found for the specified user ID.");
+                }
+
+                return Ok(userPosts);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception or handle it appropriately
+                return StatusCode(500, "Internal server error");
+            }
+        }
+
+
     }
 }

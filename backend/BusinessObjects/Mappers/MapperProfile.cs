@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using BusinessObjects.Entities.Content;
 using BusinessObjects.Entities.User;
+using BusinessObjects.ViewModels.Post;
 using BusinessObjects.ViewModels.User;
 
 namespace BusinessObjects.Mappers
