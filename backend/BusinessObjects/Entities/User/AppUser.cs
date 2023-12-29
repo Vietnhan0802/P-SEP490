@@ -15,7 +15,5 @@ namespace BusinessObjects.Entities.User
         public string? avatar { get; set; }
         public bool isBlock { get; set; } = false;
         public DateTime createdDate { get; set; } = DateTime.Now;
-        [NotMapped]
-        public IFormFile imageFile { get; set; }
     }
 }

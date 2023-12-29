@@ -7,3 +7,4 @@
         public string email { get; set; }
         public string avatar { get; set; }
     }
+}
