@@ -1,4 +1,7 @@
-﻿namespace BusinessObjects.ViewModels.User
+﻿using Microsoft.AspNetCore.Http;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace BusinessObjects.ViewModels.User
 {
     public class ViewUser
     {
@@ -11,5 +14,9 @@
         public int tax { get; set; }
         public string address { get; set; }
         public string avatar { get; set; }
+        public bool isBlock { get; set; }
+        public DateTime createdDate { get; set; }
+        [NotMapped]
+        public IFormFile imageFile { get; set; }
     }
 }
