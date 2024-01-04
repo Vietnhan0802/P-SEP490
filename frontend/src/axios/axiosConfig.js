@@ -14,7 +14,7 @@ const instance = axios.create({
 instance.interceptors.request.use(
   (config) => {
     // Do something with the request config, such as adding headers or modifying the data
-    console.log(config.data);
+    // console.log(config.data);
     return config;
   },
   (error) => {

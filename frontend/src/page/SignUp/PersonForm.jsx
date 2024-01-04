@@ -1,9 +1,10 @@
 import React from "react";
 import { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
+import axios from "axios";
+import instance from "../../axios/axiosConfig";
 export default function PersonForm() {
   // const [inputs, setInputs] = useState({});
-  const { instance } = require("../../axios/axiosConfig");
   // const handleSubmit = async (event) => {
   //   event.preventDefault();
   //   console.log(inputs);
@@ -41,14 +42,10 @@ export default function PersonForm() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log(inputs); // You can perform further actions, such as making an API request, with the 'inputs' data.
+    console.log(inputs);
     try {
-      const response =  instance
-        .post("SignUpForPerson", inputs)
-        .then((res) => {
-          console.log(res.data);
-        });
-      console.log("Sign up successful", response.data);
+      instance.post("SignUpForPerson", inputs);
+      console.log("Sign up successful");
     } catch (error) {
       console.error(
         "Sign up failed",error.response.data
