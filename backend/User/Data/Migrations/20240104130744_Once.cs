@@ -34,10 +34,11 @@ namespace User.Data.Migrations
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     fullName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     birthday = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    isMale = table.Column<bool>(type: "bit", nullable: false),
-                    address = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    isMale = table.Column<bool>(type: "bit", nullable: true),
                     tax = table.Column<int>(type: "int", nullable: false),
+                    address = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     avatar = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    idVerification = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     isBlock = table.Column<bool>(type: "bit", nullable: false),
                     createdDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -171,9 +172,9 @@ namespace User.Data.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "08c90a9d-d3db-441d-a8f3-d8020e873051", "1", "Admin", "Admin" },
-                    { "2e197dd6-079f-4f18-8810-7a95be13bbe0", "3", "Business", "Business" },
-                    { "a8b96de9-6f22-4ea6-9a30-77f7affb40a4", "2", "Person", "Person" }
+                    { "06c8983a-4baa-4880-be86-2dea4ebcb7ae", "1", "Admin", "Admin" },
+                    { "7415f248-6ea1-4ef4-b791-7ab57048b839", "3", "Business", "Business" },
+                    { "c5aa3ca3-0f5e-4b57-88f1-d510bbbaad6b", "2", "Person", "Person" }
                 });
 
             migrationBuilder.CreateIndex(
