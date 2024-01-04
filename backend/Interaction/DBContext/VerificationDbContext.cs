@@ -11,5 +11,7 @@ namespace Interaction.DBContext
         {
         }
         public DbSet<Verification> verifications { get; set; }
+        public DbSet<ReportPost> ReportPosts { get; set; }
+        public DbSet<AccountReport> AccountReports { get; set; }
     }
 }

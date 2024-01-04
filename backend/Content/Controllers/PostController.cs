@@ -19,13 +19,13 @@ namespace Content.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Post>>> GetVerifications()
+        public async Task<ActionResult<IEnumerable<Post>>> GetPosts()
         {
             return await _dbContext.Posts.ToListAsync();
         }
 
         [HttpPost("CreatePost")]
-        public async Task<ActionResult<CreatePostViewModel>> CreateProduct(CreatePostViewModel postViewModel)
+        public async Task<ActionResult<CreatePostViewModel>> CreatePost(CreatePostViewModel postViewModel)
         {
             if (ModelState.IsValid)
             {
@@ -131,6 +131,45 @@ namespace Content.Controllers
             }
         }
 
+        [HttpGet("SearchPostsByName/{name}")]
+        public ActionResult<IEnumerable<Post>> SearchPostsByName(string name)
+        {
+            try
+            {
+                var postsByName = _dbContext.Posts.Where(post => post.Title.Contains(name)).ToList();
+
+                if (postsByName.Count == 0)
+                {
+                    return NotFound($"No posts found with the specified name: {name}.");
+                }
+
+                return Ok(postsByName);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Internal server error");
+            }
+        }
+
+        [HttpGet("GetPostDetails/{id}")]
+        public ActionResult<Post> GetPostDetails(Guid id)
+        {
+            try
+            {
+                var postDetails = _dbContext.Posts.Find(id);
+
+                if (postDetails == null)
+                {
+                    return NotFound("Post not found");
+                }
+
+                return Ok(postDetails);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Internal server error");
+            }
+        }
 
     }
 }
