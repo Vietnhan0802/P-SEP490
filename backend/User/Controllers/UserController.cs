@@ -145,7 +145,7 @@ namespace User.Controllers
 
             AppUser user = new AppUser()
             {
-                UserName = signUpForBusiness.fullName,
+                UserName = signUpForBusiness.email,
                 Email = signUpForBusiness.email,
                 fullName = signUpForBusiness.fullName,
                 birthday = signUpForBusiness.establishment,
