@@ -26,7 +26,6 @@ export default function SignIn() {
       setShowForm2(true);
     }
   };
-  const [inputs, setInputs] = useState({});
   const handleClickGG = () => {
     // implementation details
   };
