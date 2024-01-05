@@ -33,7 +33,7 @@ namespace User.Data.Migrations
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     fullName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    birthday = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    date = table.Column<DateTime>(type: "datetime2", nullable: false),
                     isMale = table.Column<bool>(type: "bit", nullable: true),
                     tax = table.Column<int>(type: "int", nullable: false),
                     address = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -172,9 +172,9 @@ namespace User.Data.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "06c8983a-4baa-4880-be86-2dea4ebcb7ae", "1", "Admin", "Admin" },
-                    { "7415f248-6ea1-4ef4-b791-7ab57048b839", "3", "Business", "Business" },
-                    { "c5aa3ca3-0f5e-4b57-88f1-d510bbbaad6b", "2", "Person", "Person" }
+                    { "e10ac1cc-2651-45f3-96ac-822672cf19ce", "3", "Business", "Business" },
+                    { "e95625e3-b676-4baf-84de-3b79c8344989", "2", "Person", "Person" },
+                    { "edfdad9c-3977-451c-a537-71dfd6c07e5d", "1", "Admin", "Admin" }
                 });
 
             migrationBuilder.CreateIndex(

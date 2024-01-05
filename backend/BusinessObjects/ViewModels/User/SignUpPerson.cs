@@ -1,6 +1,6 @@
 ﻿namespace BusinessObjects.ViewModels.User
 {
-    public class SignUpForPerson
+    public class SignUpPerson
     {
         public string email { get; set; }
         public string password { get; set; }

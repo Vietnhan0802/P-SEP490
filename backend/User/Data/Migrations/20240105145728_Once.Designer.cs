@@ -12,7 +12,7 @@ using User.Data;
 namespace User.Data.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20240104130744_Once")]
+    [Migration("20240105145728_Once")]
     partial class Once
     {
         /// <inheritdoc />
@@ -84,10 +84,10 @@ namespace User.Data.Migrations
                     b.Property<string>("avatar")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("birthday")
+                    b.Property<DateTime>("createdDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("createdDate")
+                    b.Property<DateTime>("date")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("fullName")
@@ -148,21 +148,21 @@ namespace User.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "06c8983a-4baa-4880-be86-2dea4ebcb7ae",
+                            Id = "edfdad9c-3977-451c-a537-71dfd6c07e5d",
                             ConcurrencyStamp = "1",
                             Name = "Admin",
                             NormalizedName = "Admin"
                         },
                         new
                         {
-                            Id = "c5aa3ca3-0f5e-4b57-88f1-d510bbbaad6b",
+                            Id = "e95625e3-b676-4baf-84de-3b79c8344989",
                             ConcurrencyStamp = "2",
                             Name = "Person",
                             NormalizedName = "Person"
                         },
                         new
                         {
-                            Id = "7415f248-6ea1-4ef4-b791-7ab57048b839",
+                            Id = "e10ac1cc-2651-45f3-96ac-822672cf19ce",
                             ConcurrencyStamp = "3",
                             Name = "Business",
                             NormalizedName = "Business"

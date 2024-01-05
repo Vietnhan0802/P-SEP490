@@ -5,14 +5,13 @@ namespace BusinessObjects.ViewModels.User
 {
     public class UpdateUser
     {
+        public string userName { get; set; }
         public string fullName { get; set; }
-        public DateTime birthday { get; set; }
+        public DateTime date { get; set; }
         public bool isMale { get; set; }
         public string phoneNumber { get; set; }
         public int tax { get; set; }
         public string address { get; set; }
         public string avatar { get; set; }
-        [NotMapped]
-        public IFormFile imageFile { get; set; }
     }
 }
