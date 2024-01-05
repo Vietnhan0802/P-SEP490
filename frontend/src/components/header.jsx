@@ -1,11 +1,7 @@
 import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../css/header.css";
-
-import { useState } from "react";
-import ReactDOM from "react-dom/client";
-
-export default function SignIn() {
+export default function Header() {
   return (
     <section>
       <header id="header">

@@ -32,6 +32,17 @@ namespace Credential.Controllers
             return _mapper.Map<List<ViewDegree>>(degrees);
         }
 
+        [HttpGet("GetDegreeByUser")]
+        public async Task<ActionResult<ViewDegree>> GetDegreeByUser(Guid userId)
+        {
+            var degree = await _context.Degrees.FirstOrDefaultAsync(x => x.idAccount == userId);
+            if (degree == null)
+            {
+                return NotFound("Degree doesn't exists!");
+            }
+            return _mapper.Map<ViewDegree>(degree);
+        }
+
         [HttpGet("GetDegreeById/{degreeId}")]
         public async Task<ActionResult<ViewDegree>> GetDegree(Guid degreeId)
         {

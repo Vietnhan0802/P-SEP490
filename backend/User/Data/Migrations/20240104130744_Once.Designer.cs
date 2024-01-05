@@ -12,7 +12,7 @@ using User.Data;
 namespace User.Data.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20231224185826_Once")]
+    [Migration("20240104130744_Once")]
     partial class Once
     {
         /// <inheritdoc />
@@ -94,10 +94,13 @@ namespace User.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid>("idVerification")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<bool>("isBlock")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("isMale")
+                    b.Property<bool?>("isMale")
                         .HasColumnType("bit");
 
                     b.Property<int>("tax")
@@ -145,21 +148,21 @@ namespace User.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "08c90a9d-d3db-441d-a8f3-d8020e873051",
+                            Id = "06c8983a-4baa-4880-be86-2dea4ebcb7ae",
                             ConcurrencyStamp = "1",
                             Name = "Admin",
                             NormalizedName = "Admin"
                         },
                         new
                         {
-                            Id = "a8b96de9-6f22-4ea6-9a30-77f7affb40a4",
+                            Id = "c5aa3ca3-0f5e-4b57-88f1-d510bbbaad6b",
                             ConcurrencyStamp = "2",
                             Name = "Person",
                             NormalizedName = "Person"
                         },
                         new
                         {
-                            Id = "2e197dd6-079f-4f18-8810-7a95be13bbe0",
+                            Id = "7415f248-6ea1-4ef4-b791-7ab57048b839",
                             ConcurrencyStamp = "3",
                             Name = "Business",
                             NormalizedName = "Business"
