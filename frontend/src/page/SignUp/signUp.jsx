@@ -3,7 +3,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import logoImg from "../../images/common/logo.png";
 import GGIcon from "../../images/common/gg-icon.png";
 import FBIcon from "../../images/common/fb-icon.png";
-import "../SignUp/signUp.css";
+import "../SignUp/signUp.scss";
 
 import { useState } from "react";
 import PersonForm from "./PersonForm";

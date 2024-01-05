@@ -3,14 +3,14 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import logoImg from "../../images/common/logo.png";
 import GGIcon from "../../images/common/gg-icon.png";
 import FBIcon from "../../images/common/fb-icon.png";
-import "../SignIn/signIn.css";
-
+import "../SignIn/signIn.scss";
 import { useState } from "react";
-import ReactDOM from "react-dom/client";
-
+import { useNavigate } from "react-router-dom";
+import userInstance from "../../axios/axiosConfig";
+import axios from "axios";
 export default function SignIn() {
   const [inputs, setInputs] = useState({});
-
+  const navigate = useNavigate();
   const handleChange = (event) => {
     const name = event.target.name;
     const value = event.target.value;
@@ -20,6 +20,32 @@ export default function SignIn() {
   const handleSubmit = (event) => {
     event.preventDefault();
     console.log(inputs);
+    try {
+      const respone = userInstance.post("/SignIn", JSON.stringify(inputs), {
+        headers: { "Content-Type": "application/json" },
+      });
+      console.log("Sign in successful", respone?.data);
+      console.log(respone?.data?.token);  
+      navigate("/home");
+    } catch (error) {
+      // Check if it's an Axios error
+      if (error.response) {
+        // The request was made and the server responded with a status code
+        // that falls out of the range of 2xx
+        console.log(error.response.data);
+        console.log(error.response.status);
+        console.log(error.response.headers);
+      } else if (error.request) {
+        // The request was made but no response was received
+        // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+        // http.ClientRequest in node.js
+        console.log(error.request);
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        console.log("Error", error.message);
+      }
+      console.log(error.config);
+    }
   };
 
   const handleClickGG = () => {
@@ -123,12 +149,10 @@ export default function SignIn() {
               <img className="pt-4 px-lg-3 pb-lg-5" src={logoImg} alt="logo" />
             </div>
             <div className="SFU-bold px-4 pb-3 pt-lg-5 mt-lg-5 text-center text-lg-start ">
-              <p className="size-40 d-lg-none">
-                Welcome Back!
-              </p>
+              <p className="size-40 d-lg-none">Welcome Back!</p>
               <p className="d-none d-lg-block size-70">
                 Welcome&nbsp;
-                <br/>
+                <br />
                 Back!
               </p>
             </div>
