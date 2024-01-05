@@ -2,6 +2,7 @@
 using BusinessObjects.Entities.User;
 using BusinessObjects.Enums.User;
 using BusinessObjects.ViewModels.User;
+using Commons.Helpers;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
@@ -15,6 +16,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using User.Services;
 
 namespace User.Controllers
 {
@@ -24,14 +26,16 @@ namespace User.Controllers
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IEmailService _emailService;
         private readonly IMapper _mapper;
         private readonly IConfiguration _configuration;
         private readonly IWebHostEnvironment _hostEnvironment;
 
-        public UserController(UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager, IMapper mapper, IConfiguration configuration, IWebHostEnvironment hostEnvironment)
+        public UserController(UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager,IEmailService emailService, IMapper mapper, IConfiguration configuration, IWebHostEnvironment hostEnvironment)
         {
             _userManager = userManager;
             _roleManager = roleManager;
+            _emailService = emailService;
             _mapper = mapper;
             _configuration = configuration;
             _hostEnvironment = hostEnvironment;
@@ -129,6 +133,14 @@ namespace User.Controllers
             if (await _roleManager.RoleExistsAsync(TypeUser.Person.ToString()))
             {
                 await _userManager.AddToRoleAsync(user, TypeUser.Person.ToString());
+
+                var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                var confirmLink = Url.Action(nameof(ConfirmEmail), "User", new { token, email = user.Email }, Request.Scheme);
+                EmailRequest emailRequest = new EmailRequest();
+                emailRequest.ToEmail = user.Email;
+                emailRequest.Subject = "Confirmation Email";
+                emailRequest.Body = GetHtmlContent(user.fullName, confirmLink!); /*$"This is link: {confirmLink}";*/ 
+                await _emailService.SendEmailAsync(emailRequest);
                 return Ok("User created & email sent to successfully!");
             }
             return BadRequest("User failed to create!");
@@ -167,6 +179,33 @@ namespace User.Controllers
             return BadRequest("User failed to create!");
         }
 
+        private string GetHtmlContent(string fullname, string url)
+        {
+            string response = "<div style = \"width:100%; background-color:lightblue; text-align:center; margin:10px\">";
+            response += $"<h1> Welcome to {fullname}</h1>";
+            response += "<img src = \"https://baocaosu.us/tin/bo-anh-nguc-tran-cho-con-bu-tuyet-dep-cua-ba-me-nha-trang-5.jpg\">";
+            response += "<h2>Thanks for subscribing!</h2>";
+            response += $"<a href = \"{url}\">Please confirm by click the link!</a>";
+            response += "<div><h1> Contact us: vantoitran2002@gmail.com</h1></div>";
+            response += "</div>";
+            return response;
+        }
+
+        [HttpGet("ConfirmEmail")]
+        public async Task<IActionResult> ConfirmEmail(string token, string email)
+        {
+            var userExits = await _userManager.FindByEmailAsync(email);
+            if (userExits != null)
+            {
+                var result = await _userManager.ConfirmEmailAsync(userExits, token);
+                if (result.Succeeded)
+                {
+                    return Ok("Email verified successfully!");
+                }
+            }
+            return BadRequest("User doesn't exists!");
+        }
+
         [HttpPost("SignIn")]
         public async Task<IActionResult> SignIn(SignIn signIn)
         {
@@ -177,6 +216,11 @@ namespace User.Controllers
             }
             if (user != null && await _userManager.CheckPasswordAsync(user, signIn.password))
             {
+                if (!await _userManager.IsEmailConfirmedAsync(user))
+                {
+                    return Unauthorized("Please confirm your email before logging in!");
+                }
+
                 var userRoles = await _userManager.GetRolesAsync(user);
                 var authClaims = new List<Claim>
                 {
