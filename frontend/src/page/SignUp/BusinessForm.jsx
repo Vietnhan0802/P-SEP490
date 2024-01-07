@@ -1,9 +1,10 @@
 import React from "react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import userInstance from "../../axios/axiosConfig";
 export default function BusinessForm() {
   const [inputs, setInputs] = useState({});
-  const { userInstance } = require("../../axios/axiosConfig");
-
+  const navigate = useNavigate();
   const handleChange = (event) => {
     const name = event.target.name;
     const value = event.target.value;
@@ -13,12 +14,11 @@ export default function BusinessForm() {
     event.preventDefault();
     console.log(inputs);
     try {
-      console.log(userInstance.defaults.baseURL);
-      const response = await userInstance.post("http://localhost:5195/api/User/SignUpForBusiness", inputs);
+      const response = await userInstance.post("/SignUpForBusiness", inputs);
       console.log("Sign up successful", response.data);
+      navigate("/");
     } catch (error) {
       console.error("Sign up failed", error.response.data);
-      console.log(error.response.data);
     }
   };
   return (
