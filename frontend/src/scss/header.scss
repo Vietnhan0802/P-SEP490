@@ -2,3 +2,36 @@
     width: 55px;
     height: 55px;
 }
+.avatar{
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+}
+.search{
+    margin-left: 16px;
+    border-radius: 8px;
+    padding: 8px 12px;
+    svg{
+        width: 20px;
+        height: 20px;
+    }
+
+    .search-box{
+        border: none !important;
+        outline: none;
+        padding: 8px;
+        border-radius: 8px;
+        width: 150px;
+        height: 20px;
+        font-size: 10px;
+    }
+}
+.home-icon , .chat-icon,.notify-icon{
+    width: 28px;
+    height: 28px;
+    margin: 0px 48px;
+}
+.home-icon{
+    color: #2F45AD;
+    border-bottom: 3px solid #2F45AD;
+}
