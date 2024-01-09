@@ -11,7 +11,7 @@ import { IoIosNotificationsOutline } from "react-icons/io";
 export default function Header() {
   return (
   
-    <Row>
+    <Row className="header">
       <Col className="d-flex align-items-center">
         <Image src={logoImg} className="logo" />
         <div className="d-flex search align-items-center" >
