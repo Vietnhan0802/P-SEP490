@@ -193,13 +193,13 @@ namespace User.Controllers
             var user = await _userManager.FindByEmailAsync(signIn.email);
             if (user.isBlock == true)
             {
-                return Unauthorized("User has been blocked!");
+                return StatusCode(401, "User has been blocked!");
             }
             if (user != null && await _userManager.CheckPasswordAsync(user, signIn.password))
             {
                 if (!await _userManager.IsEmailConfirmedAsync(user))
                 {
-                    return Unauthorized("Please confirm your email before logging in!");
+                    return StatusCode(401, "Please confirm your email before logging in!");
                 }
 
                 var userRoles = await _userManager.GetRolesAsync(user);
@@ -225,13 +225,7 @@ namespace User.Controllers
 
                 var jwtToken = GetToken(authClaims);
 
-                var response = new
-                {
-                    token = new JwtSecurityTokenHandler().WriteToken(jwtToken),
-                    status = "Login successfully!"
-                };
-
-                return Ok(response);
+                return StatusCode(200, new JwtSecurityTokenHandler().WriteToken(jwtToken));
             }
             return BadRequest("Invalid input attempt!");
         }
