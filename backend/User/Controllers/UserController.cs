@@ -194,13 +194,13 @@ namespace User.Controllers
             var user = await _userManager.FindByEmailAsync(signIn.email);
             if (user.isBlock == true)
             {
-                return StatusCode(401, "User has been blocked!");
+                return new Response(HttpStatusCode.Unauthorized, "User has been blocked!");
             }
             if (user != null && await _userManager.CheckPasswordAsync(user, signIn.password))
             {
                 if (!await _userManager.IsEmailConfirmedAsync(user))
                 {
-                    return StatusCode(401, "Please confirm your email before logging in!");
+                    return new Response(HttpStatusCode.Unauthorized, "Please confirm your email before logging in!");
                 }
 
                 var userRoles = await _userManager.GetRolesAsync(user);
