@@ -8,8 +8,8 @@ import Post from "../Post/post";
 import Cookies from 'js-cookie';
 function Homepage() {
   // console.log(Cookies.get('user'));
-  const user = JSON.parse(Cookies.get('user'));
-  console.log(user.Email);
+  // const user = JSON.parse(Cookies.get('user'));
+  // console.log(user.Email);
   return (
     <div>
       <Container className="bg">

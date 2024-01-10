@@ -11,7 +11,7 @@ import Avatar from "../images/common/Avatar.png";
 import { IoChatbubblesOutline } from "react-icons/io5";
 import { IoIosNotificationsOutline } from "react-icons/io";
 export default function Header() {
-  const user = JSON.parse(Cookies.get("user"));
+  // const user = JSON.parse(Cookies.get("user"));
   const [activeItem, setActiveItem] = useState("home");
   const handleItemClick = (itemId) => {
     setActiveItem(itemId);
@@ -49,8 +49,8 @@ export default function Header() {
         <div className=" d-flex align-items-center">
           <img src={Avatar} alt="" className="avatar" />
           <div className="ms-2">
-            <p>{user.FullName}e</p>
-            <p>{user.Email}</p>
+            {/* <p>{user.FullName}e</p>
+            <p>{user.Email}</p> */}
           </div>
         </div>
       </Col>
