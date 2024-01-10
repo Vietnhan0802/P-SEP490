@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import logoImg from "../../images/common/logo.png";
 import GGIcon from "../../images/common/gg-icon.png";
@@ -7,26 +7,38 @@ import "../SignIn/signIn.scss";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import userInstance from "../../axios/axiosConfig";
-import axios from "axios";
+import { jwtDecode } from "jwt-decode";
+import Cookies from 'js-cookie';
 export default function SignIn() {
   const [inputs, setInputs] = useState({});
   const navigate = useNavigate();
+
   const handleChange = (event) => {
     const name = event.target.name;
     const value = event.target.value;
     setInputs((values) => ({ ...values, [name]: value }));
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     console.log(inputs);
     try {
-      const respone = userInstance.post("/SignIn", JSON.stringify(inputs), {
-        headers: { "Content-Type": "application/json" },
-      });
-      console.log("Sign in successful", respone?.data);
-      console.log(respone?.data?.token);  
-      navigate("/home");
+      const response = await userInstance.post(
+        "/SignIn",
+        JSON.stringify(inputs)
+      );
+
+      if (response?.data?.status === "OK") {
+        console.log("Sign in successful", response?.data);
+        const decode = jwtDecode(response?.data?.result);
+        console.log(decode);
+        Cookies.set('user', JSON.stringify(decode), { expires: 7 });
+        navigate("/home");
+      } else {
+        console.log(response.data);
+        console.log(response?.data?.status);
+        console.log("Sign in failed", response?.data?.status);
+      }
     } catch (error) {
       // Check if it's an Axios error
       if (error.response) {
@@ -73,6 +85,7 @@ export default function SignIn() {
                     Email *
                   </p>
                   <input
+                    required
                     className="input-field rounded-50 w-100"
                     placeholder="Enter your email address"
                     type="email"
@@ -86,6 +99,7 @@ export default function SignIn() {
                     Password *
                   </p>
                   <input
+                    required
                     className="input-field rounded-50 w-100"
                     placeholder="Enter your password"
                     type="password"

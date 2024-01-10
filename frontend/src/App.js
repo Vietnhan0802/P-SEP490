@@ -7,7 +7,7 @@ import {Routes, Route } from "react-router-dom";
 import Homepage from "./page/Homepage/homepage";
 function App() {
   return (
-    <div className="App">
+    <div className="App" style={{ backgroundColor: '#1C2B3A' }}>
     <Routes>
       <Route path="/" element={<SignIn/>}/>
       <Route path="/signup" element={<SignUp/>}/>

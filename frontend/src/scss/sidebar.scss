@@ -1,20 +1,28 @@
-.sideBar-icon{
-    padding-right: 13px;
+.sideBar-icon {
+  padding-right: 13px;
 }
-.upper-section div{
-    padding: 8px 14px;
-    border-radius: 8px;
+.upper-section div {
+  padding: 8px 14px;
+  border-radius: 8px;
 }
-.active-sidebar-item{
- background-color: #2F45AD;   
- color: #ffffff;
+.active-sidebar-item {
+  background-color: #2f45ad;
+  color: #ffffff;
+}
+.sidebar {
+  background-color: #fff;
+  border-radius: 9px;
+  padding: 13px;
+}
+.lower-section {
+  margin-top: 270px;
+}
+.logout{
+  color: #79d8e0;
+  font-weight: bold;
+  padding: 8px 14px;
  
 }
-.sidebar{
-    background-color: #fff;
-    border-radius: 9px;
-    padding: 13px;
-}
-.lower-section{
-    margin-top: 270px;
+.fs-10{
+  font-size: 10px;
 }
