@@ -225,7 +225,13 @@ namespace User.Controllers
 
                 var jwtToken = GetToken(authClaims);
 
-                return Ok(new JwtSecurityTokenHandler().WriteToken(jwtToken));
+                var response = new
+                {
+                    token = new JwtSecurityTokenHandler().WriteToken(jwtToken),
+                    status = "Login successfully!"
+                };
+
+                return Ok(response);
             }
             return BadRequest("Invalid input attempt!");
         }
@@ -285,21 +291,6 @@ namespace User.Controllers
             return BadRequest("Undefined error!");
         }
 
-        [HttpGet("TokenResetPassword")]
-        public async Task<IActionResult> TokenResetPassword(string token, string email)
-        {
-            var user = await _userManager.FindByEmailAsync(email);
-            if (user != null)
-            {
-                var model = new TokenResetPassword
-                {
-                    token = token
-                };
-                return Ok(model);
-            }
-            return BadRequest("Undefined error!");
-        }
-
         private JwtSecurityToken GetToken(List<Claim> authClaims)
         {
             var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
@@ -338,6 +329,21 @@ namespace User.Controllers
             response += "<div><h1> Contact us: vantoitran2002@gmail.com</h1></div>";
             response += "</div>";
             return response;
+        }
+
+        [HttpGet("TokenResetPassword")]
+        public async Task<IActionResult> TokenResetPassword(string token, string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user != null)
+            {
+                var model = new TokenResetPassword
+                {
+                    token = token
+                };
+                return Ok(model);
+            }
+            return BadRequest("Undefined error!");
         }
 
         [HttpGet("SignInGoogle")]
