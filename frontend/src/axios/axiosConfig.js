@@ -2,8 +2,8 @@ import axios from "axios";
 
 const createAxiosInstance = (baseURL) => {
     const instance = axios.create({
-      baseURL: baseURL
-     
+      baseURL: baseURL,
+      headers: { 'Content-Type': 'application/json' },
     });
 
   // Thêm interceptor cho request
@@ -22,7 +22,6 @@ const createAxiosInstance = (baseURL) => {
   instance.interceptors.response.use(
     (response) => {
       console.log(`Received response from ${response.config.url}`);
-      // Có thể thêm logic xử lý response ở đây
       return response;
     },
     (error) => {
@@ -34,5 +33,5 @@ const createAxiosInstance = (baseURL) => {
   return instance;
 };
 
-const userInstance = createAxiosInstance("http://localhost:5195/api/User");
+const userInstance = createAxiosInstance("https://localhost:7006/api/User");
 export default userInstance;

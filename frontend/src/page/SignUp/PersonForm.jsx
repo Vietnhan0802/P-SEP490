@@ -19,7 +19,7 @@ export default function PersonForm() {
     event.preventDefault();
     console.log(inputs);
     try {
-      userInstance.post("/SignUpForPerson", inputs);
+      userInstance.post("/SignUpPerson", inputs);
       console.log("Sign up successful");
       navigate("/");
     } catch (error) {
