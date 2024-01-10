@@ -14,6 +14,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using System.Net;
 using System.Security.Claims;
 using System.Text;
 using User.Services;
@@ -188,7 +189,7 @@ namespace User.Controllers
         }
 
         [HttpPost("SignIn")]
-        public async Task<IActionResult> SignIn(SignIn signIn)
+        public async Task<Response> SignIn(SignIn signIn)
         {
             var user = await _userManager.FindByEmailAsync(signIn.email);
             if (user.isBlock == true)
@@ -224,10 +225,10 @@ namespace User.Controllers
                 }
 
                 var jwtToken = GetToken(authClaims);
-
-                return StatusCode(StatusCodes.Status200OK, new JwtSecurityTokenHandler().WriteToken(jwtToken));
+                var result = new JwtSecurityTokenHandler().WriteToken(jwtToken);
+                return new Response(HttpStatusCode.OK, "Login successfully", result);
             }
-            return BadRequest("Invalid input attempt!");
+            return new Response(HttpStatusCode.BadRequest, "Invalid input attempt!");
         }
 
         [HttpPost("ChangePassword/{email}")]
