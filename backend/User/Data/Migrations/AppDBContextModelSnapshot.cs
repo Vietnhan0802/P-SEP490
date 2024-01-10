@@ -145,21 +145,21 @@ namespace User.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "edfdad9c-3977-451c-a537-71dfd6c07e5d",
+                            Id = "a094c898-93dc-4f1a-ac02-ef7385039b63",
                             ConcurrencyStamp = "1",
                             Name = "Admin",
                             NormalizedName = "Admin"
                         },
                         new
                         {
-                            Id = "e95625e3-b676-4baf-84de-3b79c8344989",
+                            Id = "bdfe8d6f-79d1-40c7-8b62-64fd8d5dae6d",
                             ConcurrencyStamp = "2",
                             Name = "Person",
                             NormalizedName = "Person"
                         },
                         new
                         {
-                            Id = "e10ac1cc-2651-45f3-96ac-822672cf19ce",
+                            Id = "8193d31a-fafb-47e6-8b20-81e33ad6f57c",
                             ConcurrencyStamp = "3",
                             Name = "Business",
                             NormalizedName = "Business"

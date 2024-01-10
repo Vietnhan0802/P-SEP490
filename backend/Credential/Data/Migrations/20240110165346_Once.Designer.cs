@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Credential.Data.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20240110100258_Once")]
+    [Migration("20240110165346_Once")]
     partial class Once
     {
         /// <inheritdoc />
