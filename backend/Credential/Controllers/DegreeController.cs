@@ -90,6 +90,7 @@ namespace Credential.Controllers
         {
             var degree = _mapper.Map<Degree>(degreeDTO);
             degree.idAccount = idAccount;
+            degree.createdDate = DateTime.Now;
             await _context.Degrees.AddAsync(degree);
             await _context.SaveChangesAsync();
             return new Response(HttpStatusCode.OK, "Create degree id success!", _mapper.Map<ViewDegree>(degree));

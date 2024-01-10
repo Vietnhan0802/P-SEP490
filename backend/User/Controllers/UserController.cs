@@ -124,6 +124,8 @@ namespace User.Controllers
                 PhoneNumber = signUpForPerson.phone,
                 tax = signUpForPerson.tax,
                 address = signUpForPerson.address,
+                isBlock = false,
+                createdDate = DateTime.Now,
                 SecurityStamp = Guid.NewGuid().ToString()
             };
             var result = await _userManager.CreateAsync(user, signUpForPerson.password);
@@ -165,6 +167,8 @@ namespace User.Controllers
                 PhoneNumber = signUpForBusiness.phone,
                 tax = signUpForBusiness.tax,
                 address = signUpForBusiness.address,
+                isBlock = false,
+                createdDate = DateTime.Now,
                 SecurityStamp = Guid.NewGuid().ToString()
             };
             var result = await _userManager.CreateAsync(user, signUpForBusiness.password);
