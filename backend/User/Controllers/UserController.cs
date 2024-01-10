@@ -152,7 +152,7 @@ namespace User.Controllers
             var userExits = await _userManager.FindByEmailAsync(signUpForBusiness.email);
             if (userExits != null)
             {
-                return Conflict("User already exists!");
+                return StatusCode(401, "User already exists!");
             }
 
             AppUser user = new AppUser()
