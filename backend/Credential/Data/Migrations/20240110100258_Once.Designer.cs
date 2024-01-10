@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Credential.Data.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20231229040728_Once")]
+    [Migration("20240110100258_Once")]
     partial class Once
     {
         /// <inheritdoc />
@@ -41,8 +41,8 @@ namespace Credential.Data.Migrations
                     b.Property<DateTime>("date")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid?>("idAccount")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("idAccount")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("image")
                         .IsRequired()
