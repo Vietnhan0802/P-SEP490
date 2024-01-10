@@ -6,9 +6,11 @@ using Commons.Interfaces;
 using Commons.Services;
 using Credential.Data;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.IdentityModel.Tokens.Jwt;
+using System.Net;
 using System.Net.Http.Headers;
 using System.Text.Json;
 
@@ -47,77 +49,77 @@ namespace Credential.Controllers
         }
 
         [HttpGet("GetAllDegree")]
-        public async Task<ActionResult<List<ViewDegree>>> GetAllDegree()
+        public async Task<Response> GetAllDegree()
         {
             var degrees = await _context.Degrees.ToListAsync();
             if (degrees == null)
             {
-                return NotFound("Degree doesn't exists!");
+                return new Response(HttpStatusCode.NotFound, "Degree doesn't exists!");
             }
-            return _mapper.Map<List<ViewDegree>>(degrees);
+            return new Response(HttpStatusCode.OK, "Get all degree success!", _mapper.Map<List<ViewDegree>>(degrees));
         }
 
         [HttpGet("GetDegreeByUser/{userId}")]
-        public async Task<ActionResult<ViewDegree>> GetDegreeByUser(string userId)
+        public async Task<Response> GetDegreeByUser(string userId)
         {
             var user = await GetCurrentUserByName(userId);
 
             var degree = await _context.Degrees.FirstOrDefaultAsync(x => x.idAccount == userId);
             if (degree == null)
             {
-                return NotFound("Degree doesn't exists!");
+                return new Response(HttpStatusCode.NotFound, "Degree doesn't exists!");
             }
             var result = _mapper.Map<ViewDegree>(degree);
             result.idAccount = user.fullName;
-            return result;
+            return new Response(HttpStatusCode.OK, "Get degree by user success!", result);
         }
 
         [HttpGet("GetDegreeById/{degreeId}")]
-        public async Task<ActionResult<ViewDegree>> GetDegreeById(Guid degreeId)
+        public async Task<Response> GetDegreeById(Guid degreeId)
         {
             var degree = await _context.Degrees.FirstOrDefaultAsync(x => x.idDegree == degreeId);
             if (degree == null)
             {
-                return NotFound("Degree doesn't exists!");
+                return new Response(HttpStatusCode.NotFound, "Degree doesn't exists!");
             }
-            return _mapper.Map<ViewDegree>(degree);
+            return new Response(HttpStatusCode.OK, "Get degree by id success!", _mapper.Map<ViewDegree>(degree));
         }
 
         [HttpPost("CreateDegree/{idAccount}")]
-        public async Task<ActionResult<ViewDegree>> CreateDegree(string idAccount, CreateDegree degreeDTO)
+        public async Task<Response> CreateDegree(string idAccount, CreateDegree degreeDTO)
         {
             var degree = _mapper.Map<Degree>(degreeDTO);
             degree.idAccount = idAccount;
             await _context.Degrees.AddAsync(degree);
             await _context.SaveChangesAsync();
-            return _mapper.Map<ViewDegree>(degree);
+            return new Response(HttpStatusCode.OK, "Create degree id success!", _mapper.Map<ViewDegree>(degree));
         }
 
         [HttpPut("UpdateDegree/{degreeId}")]
-        public async Task<ActionResult<ViewDegree>> UpdateDegree(Guid degreeId, UpdateDegree degreeDTO)
+        public async Task<Response> UpdateDegree(Guid degreeId, UpdateDegree degreeDTO)
         {
             var degree = await _context.Degrees.FirstOrDefaultAsync(x => x.idDegree == degreeId);
             if (degree == null)
             {
-                return NotFound("Degree doesn't exists!");
+                return new Response(HttpStatusCode.NotFound, "Degree doesn't exists!");
             }
             _mapper.Map(degreeDTO, degree);
             _context.Degrees.Update(degree);
             await _context.SaveChangesAsync();
-            return _mapper.Map<ViewDegree>(degree);
+            return new Response(HttpStatusCode.OK, "Update degree id success!", _mapper.Map<ViewDegree>(degree));
         }
 
         [HttpDelete("RemoveDegree/{degreeId}")]
-        public async Task<IActionResult> RemoveDegree(Guid degreeId)
+        public async Task<Response> RemoveDegree(Guid degreeId)
         {
             var degree = await _context.Degrees.FirstOrDefaultAsync(x => x.idDegree == degreeId);
             if (degree == null)
             {
-                return NotFound("Degree doesn't exists!");
+                return new Response(HttpStatusCode.NotFound, "Degree doesn't exists!");
             }
             _context.Degrees.Remove(degree);
             await _context.SaveChangesAsync();
-            return Ok("Remove Degree successfullt!");
+            return new Response(HttpStatusCode.NoContent, "Remove Degree successfullt!");
         }
     }
 }
