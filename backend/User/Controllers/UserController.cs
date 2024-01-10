@@ -225,7 +225,7 @@ namespace User.Controllers
 
                 var jwtToken = GetToken(authClaims);
 
-                return StatusCode(200, new JwtSecurityTokenHandler().WriteToken(jwtToken));
+                return StatusCode(StatusCodes.Status200OK, new JwtSecurityTokenHandler().WriteToken(jwtToken));
             }
             return BadRequest("Invalid input attempt!");
         }
