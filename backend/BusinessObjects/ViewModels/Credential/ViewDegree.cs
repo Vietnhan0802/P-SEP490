@@ -3,7 +3,7 @@
     public class ViewDegree
     {
         public Guid idDegree { get; set; }
-        public Guid idAccount { get; set; }
+        public string idAccount { get; set; }
         public DateTime date { get; set; }
         public string institution { get; set; }
         public string country { get; set; }

@@ -16,7 +16,7 @@ namespace Credential.Data.Migrations
                 columns: table => new
                 {
                     idDegree = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    idAccount = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    idAccount = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     date = table.Column<DateTime>(type: "datetime2", nullable: false),
                     institution = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     country = table.Column<string>(type: "nvarchar(max)", nullable: false),

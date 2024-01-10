@@ -1,13 +1,17 @@
 using BusinessObjects.Mappers;
+using Commons.Interfaces;
+using Commons.Services;
 using Credential.Data;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddScoped<IClaimService, ClaimsService>();
 builder.Services.AddAutoMapper(typeof(MapperProfile));
 builder.Services.AddDbContext<AppDBContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("AppDB")));
 
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

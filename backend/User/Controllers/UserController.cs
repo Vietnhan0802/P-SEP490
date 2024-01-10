@@ -43,34 +43,34 @@ namespace User.Controllers
         }
 
         [HttpGet("GetAllUsers")]
-        public async Task<ActionResult<List<ViewUser>>> GetAllUsers()
+        public async Task<Response> GetAllUsers()
         {
             var users = await _userManager.Users.ToListAsync();
             if (users == null || users.Count < 0)
             {
-                return NotFound("User list is empty!");
+                return new Response(HttpStatusCode.NoContent, "User list is empty!");
             }
-            return _mapper.Map<List<ViewUser>>(users);
+            return new Response(HttpStatusCode.OK, "Get all users is success!", _mapper.Map<List<ViewUser>>(users));
         }
 
         [HttpGet("GetUserById/{userId}")]
-        public async Task<ActionResult<ViewUser>> GetUserById(string userId)
+        public async Task<Response> GetUserById(string userId)
         {
             var user = await _userManager.FindByIdAsync(userId);
             if (user == null)
             {
-                return NotFound("User doesn't exist!");
+                return new Response(HttpStatusCode.NotFound, "User doesn't exist!");
             }
-            return _mapper.Map<ViewUser>(user);
+            return new Response(HttpStatusCode.OK, "Get user is success!", _mapper.Map<ViewUser>(user));
         }
 
         [HttpGet("BlockUser/{userId}")]
-        public async Task<IActionResult> BlockUser (string userId)
+        public async Task<Response> BlockUser (string userId)
         {
             var user = await _userManager.FindByIdAsync(userId);
             if (user == null)
             {
-                return NotFound("User doesn't exist!");
+                return new Response(HttpStatusCode.NotFound, "User doesn't exist!");
             }
             if (user.isBlock == false)
             {
@@ -83,35 +83,35 @@ namespace User.Controllers
             var result = await _userManager.UpdateAsync(user);
             if (result.Succeeded)
             {
-                return Ok("User has been updated!");
+                return new Response(HttpStatusCode.NoContent, "User has been updated!");
             }
             else
             {
-                return BadRequest("User hasn't been updated!");
+                return new Response(HttpStatusCode.BadRequest, "User hasn't been updated!");
             }
         }
 
         [HttpPut("UpdateUser/{userId}")]
-        public async Task<ActionResult<UpdateUser>> UpdateUser(string userId, UpdateUser updateUser)
+        public async Task<Response> UpdateUser(string userId, UpdateUser updateUser)
         {
             var userExits = await _userManager.FindByIdAsync(userId);
             if (userExits == null)
             {
-                return NotFound("User doesn't exist!");
+                return new Response(HttpStatusCode.NotFound, "User doesn't exist!");
             }
             //updateUser.avatar = await SaveImage(updateUser.imageFile);
             var user = _mapper.Map(updateUser, userExits);
-            var result = await _userManager.UpdateAsync(user);
-            return _mapper.Map<UpdateUser>(userExits);
+            await _userManager.UpdateAsync(user);
+            return new Response(HttpStatusCode.OK, "Update user is success!", _mapper.Map<UpdateUser>(userExits));
         }
 
         [HttpPost("SignUpPerson")]
-        public async Task<IActionResult> SignUpPerson(SignUpPerson signUpForPerson)
+        public async Task<Response> SignUpPerson(SignUpPerson signUpForPerson)
         {
             var userExits = await _userManager.FindByEmailAsync(signUpForPerson.email);
             if (userExits != null)
             {
-                return Conflict("User already exists!");
+                return new Response(HttpStatusCode.Conflict, "User already exists!");
             }
 
             AppUser user = new AppUser()
@@ -129,7 +129,7 @@ namespace User.Controllers
             var result = await _userManager.CreateAsync(user, signUpForPerson.password);
             if (!result.Succeeded)
             {
-                return BadRequest("User failed to create! Please check and try again!");
+                return new Response(HttpStatusCode.BadRequest, "User failed to create! Please check and try again!");
             }
             if (await _roleManager.RoleExistsAsync(TypeUser.Person.ToString()))
             {
@@ -142,18 +142,18 @@ namespace User.Controllers
                 emailRequest.Subject = "Confirmation Email";
                 emailRequest.Body = GetHtmlContent(user.fullName, confirmLink!);
                 await _emailService.SendEmailAsync(emailRequest);
-                return Ok("User creates & sends email successfully!");
+                return new Response(HttpStatusCode.NoContent, "User creates & sends email successfully!");
             }
-            return BadRequest("User failed to create!");
+            return new Response(HttpStatusCode.BadRequest, "User failed to create!");
         }
 
         [HttpPost("SignUpBusiness")]
-        public async Task<IActionResult> SignUpBusiness(SignUpBusiness signUpForBusiness)
+        public async Task<Response> SignUpBusiness(SignUpBusiness signUpForBusiness)
         {
             var userExits = await _userManager.FindByEmailAsync(signUpForBusiness.email);
             if (userExits != null)
             {
-                return StatusCode(401, "User already exists!");
+                return new Response(HttpStatusCode.Conflict, "User already exists!");
             }
 
             AppUser user = new AppUser()
@@ -170,7 +170,7 @@ namespace User.Controllers
             var result = await _userManager.CreateAsync(user, signUpForBusiness.password);
             if (!result.Succeeded)
             {
-                return BadRequest("User failed to create! Please check and try again!");
+                return new Response(HttpStatusCode.BadRequest, "User failed to create! Please check and try again!");
             }
             if (await _roleManager.RoleExistsAsync(TypeUser.Business.ToString()))
             {
@@ -183,9 +183,9 @@ namespace User.Controllers
                 emailRequest.Subject = "Confirmation Email";
                 emailRequest.Body = GetHtmlContent(user.fullName, confirmLink!);
                 await _emailService.SendEmailAsync(emailRequest);
-                return Ok("User creates & sends email successfully!");
+                return new Response(HttpStatusCode.NoContent, "User creates & sends email successfully!");
             }
-            return BadRequest("User failed to create!");
+            return new Response(HttpStatusCode.BadRequest, "User failed to create!");
         }
 
         [HttpPost("SignIn")]
@@ -232,24 +232,24 @@ namespace User.Controllers
         }
 
         [HttpPost("ChangePassword/{email}")]
-        public async Task<IActionResult> ChangePassword(string email, ChangePassword changePassword)
+        public async Task<Response> ChangePassword(string email, ChangePassword changePassword)
         {
             var user = await _userManager.FindByEmailAsync(email);
             if (user == null)
             {
-                return NotFound("User doesn't exists!");
+                return new Response(HttpStatusCode.NotFound, "User doesn't exist!");
             }
             var change = await _userManager.ChangePasswordAsync(user, changePassword.Password, changePassword.NewPassword);
             if (!change.Succeeded)
             {
-                return BadRequest("User change password fail!");
+                return new Response(HttpStatusCode.BadRequest, "User change password fail!");
             }
             /*await _signInManager.RefreshSignInAsync(user);*/
-            return Ok("User change password successfully!");
+            return new Response(HttpStatusCode.NoContent, "User change password successfully!");
         }
 
         [HttpPost("ForgotPassword")]
-        public async Task<IActionResult> ForgotPasswordUser(string email)
+        public async Task<Response> ForgotPasswordUser(string email)
         {
             var user = await _userManager.FindByEmailAsync(email);
             if (user != null)
@@ -261,13 +261,13 @@ namespace User.Controllers
                 emailRequest.Subject = "Change Password";
                 emailRequest.Body = GetHtmlContent(user.fullName, link!);
                 await _emailService.SendEmailAsync(emailRequest);
-                return Ok("User send request change password to email successfully!");
+                return new Response(HttpStatusCode.NoContent, "User send request change password to email successfully!");
             }
-            return BadRequest("Couldn't send link to email!");
+            return new Response(HttpStatusCode.BadRequest, "Couldn't send link to email!");
         }
 
         [HttpPost("ResetPassword")]
-        public async Task<IActionResult> ResetPassword(ResetPassword resetPassword)
+        public async Task<Response> ResetPassword(ResetPassword resetPassword)
         {
             var user = await _userManager.FindByEmailAsync(resetPassword.Email);
             if (user != null)
@@ -279,11 +279,11 @@ namespace User.Controllers
                     {
                         ModelState.AddModelError(error.Code, error.Description);
                     }
-                    return Ok(ModelState);
+                    return new Response(HttpStatusCode.OK, "", ModelState);
                 }
-                return Ok("Password has been changed!");
+                return new Response(HttpStatusCode.NoContent, "Password has been changed!");
             }
-            return BadRequest("Undefined error!");
+            return new Response(HttpStatusCode.BadRequest, "Undefined error!");
         }
 
         private JwtSecurityToken GetToken(List<Claim> authClaims)
@@ -300,7 +300,7 @@ namespace User.Controllers
         }
 
         [HttpGet("ConfirmEmail")]
-        public async Task<IActionResult> ConfirmEmail(string token, string email)
+        public async Task<Response> ConfirmEmail(string token, string email)
         {
             var userExits = await _userManager.FindByEmailAsync(email);
             if (userExits != null)
@@ -308,10 +308,10 @@ namespace User.Controllers
                 var result = await _userManager.ConfirmEmailAsync(userExits, token);
                 if (result.Succeeded)
                 {
-                    return Ok("Email verified successfully!");
+                    return new Response(HttpStatusCode.NoContent, "Email verified successfully!");
                 }
             }
-            return BadRequest("User doesn't exists!");
+            return new Response(HttpStatusCode.BadRequest, "User doesn't exists!");
         }
 
         private string GetHtmlContent(string fullname, string url)
@@ -327,7 +327,7 @@ namespace User.Controllers
         }
 
         [HttpGet("TokenResetPassword")]
-        public async Task<IActionResult> TokenResetPassword(string token, string email)
+        public async Task<Response> TokenResetPassword(string token, string email)
         {
             var user = await _userManager.FindByEmailAsync(email);
             if (user != null)
@@ -336,9 +336,9 @@ namespace User.Controllers
                 {
                     token = token
                 };
-                return Ok(model);
+                return new Response(HttpStatusCode.OK, "", model);
             }
-            return BadRequest("Undefined error!");
+            return new Response(HttpStatusCode.BadRequest, "Undefined error!");
         }
 
         [HttpGet("SignInGoogle")]
