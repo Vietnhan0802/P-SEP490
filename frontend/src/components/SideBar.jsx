@@ -1,4 +1,5 @@
 import React from "react";
+import { useState } from "react";
 import "../scss/sidebar.scss";
 import { GoPencil } from "react-icons/go";
 import { FiBookOpen } from "react-icons/fi";
@@ -11,34 +12,40 @@ import { FaFacebook } from "react-icons/fa";
 import { GrTwitter } from "react-icons/gr";
 import { IoLogoInstagram } from "react-icons/io5";
 import { FaLinkedin } from "react-icons/fa";
+const sidebarItems = [
+  { id: "post", icon: <GoPencil />, text: "Post" },
+  { id: "blog", icon: <FiBookOpen />, text: "Blog" },
+  { id: "own_post", icon: <TbFloatLeft />, text: "Own Post" },
+  { id: "own_project", icon: <LuBook />, text: "Own Project" },
+  {
+    id: "project_application",
+    icon: <LuFileEdit />,
+    text: "Project Application",
+  },
+  { id: "application", icon: <FaRegCircleCheck />, text: "Send Application" },
+  // Add other sidebar items similarly
+];
 function SideBar() {
+  const [activeItem, setActiveItem] = useState("post");
+
+  const handleItemClick = (itemId) => {
+    setActiveItem(itemId);
+  };
   return (
-    <div className="sidebar">
+    <div className="sidebar mb-3">
       <div className="upper-section">
-        <div className="mb-3 d-flex align-items-center active-sidebar-item">
-          <GoPencil className="me-3" />
-          Post
-        </div>
-        <div className="mb-3 d-flex align-items-center ">
-          <FiBookOpen className="me-3" />
-          Blog
-        </div>
-        <div className="mb-3 d-flex align-items-center ">
-          <TbFloatLeft className="me-3" />
-          Own Post
-        </div>
-        <div className="mb-3 d-flex align-items-center ">
-          <LuBook className="me-3" />
-          Own Project
-        </div>
-        <div className="mb-3 d-flex align-items-center ">
-          <LuFileEdit className="me-3" />
-          Project Application
-        </div>
-        <div className="mb-3 d-flex align-items-center ">
-          <FaRegCircleCheck className="me-3" />
-          Send Application
-        </div>
+        {sidebarItems.map((item) => (
+          <div
+            key={item.id}
+            className={`mb-3 d-flex align-items-center ${
+              activeItem === item.id ? "active-sidebar-item" : ""
+            }`}
+            onClick={() => handleItemClick(item.id)}
+          >
+            {item.icon}
+            <p className="ms-3">{item.text}</p>
+          </div>
+        ))}
       </div>
       <div className="lower-section">
         <div className="logout d-flex align-items-center">
@@ -51,9 +58,9 @@ function SideBar() {
         </p>
         <p className="fs-10">© Copyright © 2024 | All Rights Reversed </p>
         <div className="mt-2">
-          <FaFacebook  className="fs-4 ms-2" />
-          <GrTwitter  className="fs-4 ms-2" />
-          <IoLogoInstagram  className="fs-4 ms-2" />
+          <FaFacebook className="fs-4 ms-2" />
+          <GrTwitter className="fs-4 ms-2" />
+          <IoLogoInstagram className="fs-4 ms-2" />
           <FaLinkedin className="fs-4 ms-2" />
         </div>
       </div>

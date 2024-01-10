@@ -1,8 +1,24 @@
-.post {
-  border-radius: 8px;
-  background-color: #fff;
+#post {
   width: 100%;
-  padding: 16px;
+  .post-form {
+    background-color: #fff;
+    border-radius: 8px;
+
+  }
+  .post-item {
+    background-color: #fff;
+    border-radius: 8px;
+    .profile {
+      width: 28px;
+      height: 28px;
+    }
+    .view-btn {
+      background-color: #20becb;
+      border-radius: 8px;
+      padding: 8px 14px;
+      color: #fff;
+    }
+  }
   .input-text {
     border: 1px solid #d0d5dd;
     width: 100%;
@@ -14,8 +30,8 @@
       outline: none;
     }
   }
-  .image{
-    background-color: #20BECB;
+  .image {
+    background-color: #20becb;
     color: #fff;
   }
 }
