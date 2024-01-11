@@ -38,8 +38,8 @@ namespace Credential.Data.Migrations
                     b.Property<DateTime>("date")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid?>("idAccount")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("idAccount")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("image")
                         .IsRequired()

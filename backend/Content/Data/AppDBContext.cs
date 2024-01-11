@@ -12,7 +12,7 @@ namespace Content.Data
         public DbSet<BlogComment> BlogComments { get; set; }
         public DbSet<PostComment> PostComments { get; set; }   
         public DbSet<PostReply> PostReplies { get; set; }   
-        public DbSet<Project> Projects { get; set; }   
+        public DbSet<ProjectInfo> Projects { get; set; }   
         public AppDBContext(DbContextOptions options) : base(options)
         {
         }

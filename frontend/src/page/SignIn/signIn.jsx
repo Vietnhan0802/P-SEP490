@@ -1,15 +1,17 @@
-import React from "react";
+import React, { useContext } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import logoImg from "../../images/common/logo.png";
 import GGIcon from "../../images/common/gg-icon.png";
 import FBIcon from "../../images/common/fb-icon.png";
-import "../SignIn/signIn.css";
-
+import "../SignIn/signIn.scss";
 import { useState } from "react";
-import ReactDOM from "react-dom/client";
-
+import { useNavigate } from "react-router-dom";
+import userInstance from "../../axios/axiosConfig";
+import { jwtDecode } from "jwt-decode";
+import Cookies from 'js-cookie';
 export default function SignIn() {
   const [inputs, setInputs] = useState({});
+  const navigate = useNavigate();
 
   const handleChange = (event) => {
     const name = event.target.name;
@@ -17,9 +19,45 @@ export default function SignIn() {
     setInputs((values) => ({ ...values, [name]: value }));
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     console.log(inputs);
+    try {
+      const response = await userInstance.post(
+        "/SignIn",
+        JSON.stringify(inputs)
+      );
+
+      if (response?.data?.status === "OK") {
+        console.log("Sign in successful", response?.data);
+        const decode = jwtDecode(response?.data?.result);
+        console.log(decode);
+        Cookies.set('user', JSON.stringify(decode), { expires: 7 });
+        navigate("/home");
+      } else {
+        console.log(response.data);
+        console.log(response?.data?.status);
+        console.log("Sign in failed", response?.data?.status);
+      }
+    } catch (error) {
+      // Check if it's an Axios error
+      if (error.response) {
+        // The request was made and the server responded with a status code
+        // that falls out of the range of 2xx
+        console.log(error.response.data);
+        console.log(error.response.status);
+        console.log(error.response.headers);
+      } else if (error.request) {
+        // The request was made but no response was received
+        // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+        // http.ClientRequest in node.js
+        console.log(error.request);
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        console.log("Error", error.message);
+      }
+      console.log(error.config);
+    }
   };
 
   const handleClickGG = () => {
@@ -47,6 +85,7 @@ export default function SignIn() {
                     Email *
                   </p>
                   <input
+                    required
                     className="input-field rounded-50 w-100"
                     placeholder="Enter your email address"
                     type="email"
@@ -60,6 +99,7 @@ export default function SignIn() {
                     Password *
                   </p>
                   <input
+                    required
                     className="input-field rounded-50 w-100"
                     placeholder="Enter your password"
                     type="password"
@@ -123,12 +163,10 @@ export default function SignIn() {
               <img className="pt-4 px-lg-3 pb-lg-5" src={logoImg} alt="logo" />
             </div>
             <div className="SFU-bold px-4 pb-3 pt-lg-5 mt-lg-5 text-center text-lg-start ">
-              <p className="size-40 d-lg-none">
-                Welcome Back!
-              </p>
+              <p className="size-40 d-lg-none">Welcome Back!</p>
               <p className="d-none d-lg-block size-70">
                 Welcome&nbsp;
-                <br/>
+                <br />
                 Back!
               </p>
             </div>

@@ -1,0 +1,40 @@
+.logo{
+    width: 55px;
+    height: 55px;
+}
+.avatar{
+    width: 37px;
+    border-radius: 50%;
+}
+.header{
+    background-color: #fff;
+    border-radius: 8px 8px 0px 0px;
+}
+.search{
+    margin-left: 16px;
+    border-radius: 8px;
+    padding: 8px 12px;
+    svg{
+        width: 20px;
+        height: 20px;
+    }
+
+    .search-box{
+        border: none !important;
+        outline: none;
+        padding: 8px;
+        border-radius: 8px;
+        width: 150px;
+        height: 20px;
+        font-size: 10px;
+    }
+}
+.home-icon , .chat-icon,.notify-icon{
+    width: 28px;
+    height: 28px;
+    margin: 0px 48px;
+}
+.active-header-item{
+    color: #2F45AD;
+    border-bottom: 3px solid #2F45AD;
+}

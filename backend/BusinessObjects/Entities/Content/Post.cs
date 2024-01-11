@@ -22,7 +22,7 @@ namespace BusinessObjects.Entities.Content
         public bool IsDeleted { get; set; } = false;
         public bool IsBlock { get; set; } = false;
         public Guid idProject { get; set; } 
-        public Project? Project { get; set; }
+        public ProjectInfo? Project { get; set; }
         public Guid IdUser { get; set; }
         public ICollection<PostComment>? PostComments { get; set; } = new List<PostComment>();
     }
