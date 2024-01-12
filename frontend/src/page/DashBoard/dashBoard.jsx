@@ -7,7 +7,8 @@ import BlogManage from "./blogManage";
 import PostManage from "./postManage";
 import ReportManage from "./reportManage";
 import VerifyManage from "./verifyManage";
-import './dashBoard.scss'
+import AccessTable from "./accessTable";
+import "./dashBoard.scss";
 
 function DashBoard() {
   return (
@@ -41,10 +42,11 @@ function DashBoard() {
               <VerifyManage />
             </Col>
           </Row>
-          <Row></Row>
+          <Row className="dbContent">
+            <AccessTable/>
+          </Row>
         </Col>
       </Row>
-      aaaaaaaaaaaaaaaaa
     </Container>
   );
 }
