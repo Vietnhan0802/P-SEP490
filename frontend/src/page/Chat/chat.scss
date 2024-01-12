@@ -1,0 +1,21 @@
+.whitea {
+    color: red !important;
+}
+
+.h-80 {
+    height: 80vh;
+}
+
+.white-bg {
+    background-color: white;
+}
+
+.chatSearch {
+    display: flex;
+    width: 242px;
+    height: 36px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    flex-shrink: 0;
+}
