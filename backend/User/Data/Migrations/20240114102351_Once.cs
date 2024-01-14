@@ -172,10 +172,20 @@ namespace User.Data.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "8193d31a-fafb-47e6-8b20-81e33ad6f57c", "3", "Business", "Business" },
-                    { "a094c898-93dc-4f1a-ac02-ef7385039b63", "1", "Admin", "Admin" },
-                    { "bdfe8d6f-79d1-40c7-8b62-64fd8d5dae6d", "2", "Person", "Person" }
+                    { "84ba1f8f-a69a-4647-a983-7c8a51f37e78", "3", "Business", "Business" },
+                    { "a679c107-c778-4f5a-8de7-c8a8b19b3dc3", "2", "Person", "Person" },
+                    { "aeb27c30-d31d-43ec-9465-d04bf75d0f0d", "1", "Admin", "Admin" }
                 });
+
+            migrationBuilder.InsertData(
+                table: "AspNetUsers",
+                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName", "address", "avatar", "createdDate", "date", "fullName", "idVerification", "isBlock", "isMale", "tax" },
+                values: new object[] { "b80546cd-f4df-4a46-842e-22d3f9018ce3", 0, "5a64c4b7-388b-4e16-9669-54072e911828", "admin@gmail.com", true, true, null, "ADMIN@GMAIL.COM", "ADMIN@GMAIL.COM", "AQAAAAIAAYagAAAAEMpElvd3kur4xO9lFNmDLoP8NuWevGFZYek6hbhEf/DShdbAuVAAxeKNevibjD2exA==", "0949180802", false, "3cc5aeaf-c9ad-4d8e-b8a7-572a70babaef", false, "admin@gmail.com", "Bến Tre", null, new DateTime(2024, 1, 14, 17, 23, 50, 864, DateTimeKind.Local).AddTicks(9890), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Đầu bự vô địch", new Guid("00000000-0000-0000-0000-000000000000"), false, true, 1234567890 });
+
+            migrationBuilder.InsertData(
+                table: "AspNetUserRoles",
+                columns: new[] { "RoleId", "UserId" },
+                values: new object[] { "aeb27c30-d31d-43ec-9465-d04bf75d0f0d", "b80546cd-f4df-4a46-842e-22d3f9018ce3" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",

@@ -1,9 +1,11 @@
+using BusinessObjects.Mappers;
 using Microsoft.EntityFrameworkCore;
 using Project.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddAutoMapper(typeof(MapperProfile));
 builder.Services.AddDbContext<AppDBContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("AppDB")));
 
 builder.Services.AddControllers();

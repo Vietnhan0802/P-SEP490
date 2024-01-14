@@ -3,8 +3,6 @@ using BusinessObjects.Entities.Credential;
 using BusinessObjects.ViewModels.Credential;
 using BusinessObjects.ViewModels.User;
 using Credential.Data;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
@@ -81,7 +79,10 @@ namespace Credential.Controllers
             {
                 return new Response(HttpStatusCode.NotFound, "Degree doesn't exists!");
             }
-            return new Response(HttpStatusCode.OK, "Get degree by id success!", _mapper.Map<ViewDegree>(degree));
+            var user = degree.idAccount;
+            var userName = await GetCurrentUserByName(user);
+            degree.idAccount = userName.fullName;
+            return new Response(HttpStatusCode.OK, "Get degree by is success!", _mapper.Map<ViewDegree>(degree));
         }
 
         [HttpPost("CreateDegree/{idAccount}")]
@@ -89,10 +90,11 @@ namespace Credential.Controllers
         {
             var degree = _mapper.Map<Degree>(degreeDTO);
             degree.idAccount = idAccount;
+            degree.isDeleted = false;
             degree.createdDate = DateTime.Now;
             await _context.Degrees.AddAsync(degree);
             await _context.SaveChangesAsync();
-            return new Response(HttpStatusCode.OK, "Create degree id success!", _mapper.Map<ViewDegree>(degree));
+            return new Response(HttpStatusCode.OK, "Create degree is success!", _mapper.Map<ViewDegree>(degree));
         }
 
         [HttpPut("UpdateDegree/{degreeId}")]
@@ -106,7 +108,7 @@ namespace Credential.Controllers
             _mapper.Map(degreeDTO, degree);
             _context.Degrees.Update(degree);
             await _context.SaveChangesAsync();
-            return new Response(HttpStatusCode.OK, "Update degree id success!", _mapper.Map<ViewDegree>(degree));
+            return new Response(HttpStatusCode.OK, "Update degree is success!", _mapper.Map<ViewDegree>(degree));
         }
 
         [HttpDelete("RemoveDegree/{degreeId}")]
@@ -117,7 +119,8 @@ namespace Credential.Controllers
             {
                 return new Response(HttpStatusCode.NotFound, "Degree doesn't exists!");
             }
-            _context.Degrees.Remove(degree);
+            degree.isDeleted = true;
+            _context.Degrees.Update(degree);
             await _context.SaveChangesAsync();
             return new Response(HttpStatusCode.NoContent, "Remove Degree successfullt!");
         }
