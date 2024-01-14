@@ -2,14 +2,11 @@
 using BusinessObjects.Entities.Credential;
 using BusinessObjects.ViewModels.Credential;
 using BusinessObjects.ViewModels.User;
-using Commons.Interfaces;
-using Commons.Services;
 using Credential.Data;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Text.Json;
@@ -35,6 +32,8 @@ namespace Credential.Controllers
             UserApiUrl = "https://localhost:7006/api/User";
         }
 
+        [NonAction]
+        [HttpGet("GetCurrentUserByName")]
         private async Task<ViewUser> GetCurrentUserByName(string userId)
         {
             HttpResponseMessage response = await client.GetAsync($"{UserApiUrl}/GetUserById/{userId}");

@@ -25,11 +25,11 @@ const sidebarItems = [
   { id: "application", icon: <FaRegCircleCheck />, text: "Send Application" },
   // Add other sidebar items similarly
 ];
-function SideBar() {
-  const [activeItem, setActiveItem] = useState("post");
+function SideBar({ activeItem, onItemClick }) {
+
 
   const handleItemClick = (itemId) => {
-    setActiveItem(itemId);
+    onItemClick(itemId);
   };
   return (
     <div className="sidebar mb-3">

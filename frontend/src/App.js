@@ -1,6 +1,7 @@
 import "./scss/font.scss";
 import "./scss/size.scss";
 import "./scss/color.scss";
+import "./scss/App.scss"
 import SignIn from "./page/SignIn/signIn";
 import SignUp from "./page/SignUp/signUp";
 import {Routes, Route } from "react-router-dom";

@@ -7,6 +7,8 @@ import avatar from "../../images/common/Avatar.png";
 import { IoFlagOutline } from "react-icons/io5";
 import { BsChat } from "react-icons/bs";
 import { FiEye } from "react-icons/fi";
+import Img1 from "../../images/common/post-img-1.png"
+import Img2 from "../../images/common/post-img-2.png"
 function Post() {
   const [inputValue, setInputValue] = useState("");
 
@@ -43,6 +45,110 @@ function Post() {
             <h6 className="mb-0">John Doe</h6>
             <p className="mb-0">10 min ago</p>
           </div>
+        </div>
+                <div className="d-flex ">
+        <img src={Img1} alt="post-img" className="w-50 "/>
+        <img src={Img2} alt="post-img" className="w-50 ps-1" />
+        </div>
+        <p className="mt-2">
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
+          voluptates, voluptate, quidem, dolorum quae doloremque exercitationem
+          voluptatum quod officiis doloribus quos. Quisquam voluptates,
+          voluptate, quidem, dolorum quae doloremque exercitationem voluptatum
+          quod officiis doloribus quos.
+        </p>
+        <div className="d-flex justify-content-between mt-2">
+          <div className="d-flex align-items-center">
+            <div className="d-flex align-items-center me-3">
+              <FiEye className="me-2" /> 12
+            </div>
+            <div className="d-flex align-items-center me-3">
+              <BsChat className="me-2" /> 123
+            </div>
+            <div className="d-flex align-items-center me-3">
+              <IoFlagOutline />{" "}
+            </div>
+          </div>
+          <button className="view-btn btn">View Detail</button>
+        </div>
+      </div>
+      <div className="post-item mt-2 p-2">
+        <div className="d-flex align-items-center">
+          <img src={avatar} alt="profile" className="profile" />
+          <div className="ms-2">
+            <h6 className="mb-0">John Doe</h6>
+            <p className="mb-0">10 min ago</p>
+          </div>
+        </div>
+        <div className="d-flex ">
+        <img src={Img1} alt="post-img" className="w-50 "/>
+        <img src={Img2} alt="post-img" className="w-50 ps-1" />
+        </div>
+        <p className="mt-2">
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
+          voluptates, voluptate, quidem, dolorum quae doloremque exercitationem
+          voluptatum quod officiis doloribus quos. Quisquam voluptates,
+          voluptate, quidem, dolorum quae doloremque exercitationem voluptatum
+          quod officiis doloribus quos.
+        </p>
+        <div className="d-flex justify-content-between mt-2">
+          <div className="d-flex align-items-center">
+            <div className="d-flex align-items-center me-3">
+              <FiEye className="me-2" /> 12
+            </div>
+            <div className="d-flex align-items-center me-3">
+              <BsChat className="me-2" /> 123
+            </div>
+            <div className="d-flex align-items-center me-3">
+              <IoFlagOutline />{" "}
+            </div>
+          </div>
+          <button className="view-btn btn">View Detail</button>
+        </div>
+      </div> <div className="post-item mt-2 p-2">
+        <div className="d-flex align-items-center">
+          <img src={avatar} alt="profile" className="profile" />
+          <div className="ms-2">
+            <h6 className="mb-0">John Doe</h6>
+            <p className="mb-0">10 min ago</p>
+          </div>
+        </div>
+        <div className="d-flex ">
+        <img src={Img1} alt="post-img" className="w-50 "/>
+        <img src={Img2} alt="post-img" className="w-50 ps-1" />
+        </div>
+        <p className="mt-2">
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
+          voluptates, voluptate, quidem, dolorum quae doloremque exercitationem
+          voluptatum quod officiis doloribus quos. Quisquam voluptates,
+          voluptate, quidem, dolorum quae doloremque exercitationem voluptatum
+          quod officiis doloribus quos.
+        </p>
+        <div className="d-flex justify-content-between mt-2">
+          <div className="d-flex align-items-center">
+            <div className="d-flex align-items-center me-3">
+              <FiEye className="me-2" /> 12
+            </div>
+            <div className="d-flex align-items-center me-3">
+              <BsChat className="me-2" /> 123
+            </div>
+            <div className="d-flex align-items-center me-3">
+              <IoFlagOutline />{" "}
+            </div>
+          </div>
+          <button className="view-btn btn">View Detail</button>
+        </div>
+      </div> <div className="post-item mt-2 p-2">
+        <div className="d-flex align-items-center">
+          <img src={avatar} alt="profile" className="profile" />
+          <div className="ms-2">
+            <h6 className="mb-0">John Doe</h6>
+            <p className="mb-0">10 min ago</p>
+          </div>
+        </div>
+        <div className="d-flex ">
+        <img src={Img1} alt="post-img" className="w-50 "/>
+        <img src={Img2} alt="post-img" className="w-50 ps-1" />
         </div>
         <p className="mt-2">
           Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
