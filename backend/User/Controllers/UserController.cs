@@ -6,12 +6,9 @@ using Commons.Helpers;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net;
@@ -46,7 +43,7 @@ namespace User.Controllers
         public async Task<Response> GetAllUsers()
         {
             var users = await _userManager.Users.ToListAsync();
-            if (users == null || users.Count < 0)
+            if (users == null)
             {
                 return new Response(HttpStatusCode.NoContent, "User list is empty!");
             }
@@ -229,7 +226,11 @@ namespace User.Controllers
                 }
 
                 var jwtToken = GetToken(authClaims);
-                var result = new JwtSecurityTokenHandler().WriteToken(jwtToken);
+                var result = new
+                {
+                    token = new JwtSecurityTokenHandler().WriteToken(jwtToken),
+                    role = string.Join(",", userRoles)
+                };
                 return new Response(HttpStatusCode.OK, "Login successfully", result);
             }
             return new Response(HttpStatusCode.BadRequest, "Invalid input attempt!");
