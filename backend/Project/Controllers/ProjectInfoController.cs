@@ -31,8 +31,8 @@ namespace Project.Controllers
             UserApiUrl = "https://localhost:7006/api/User";
         }
 
-        [HttpGet("GetCurrentUserByName/{userId}")]
-        private async Task<string> GetCurrentUserByName(string userId)
+        [HttpGet("GetNameUserCurrent/{userId}")]
+        private async Task<string> GetNameUserCurrent(string userId)
         {
             HttpResponseMessage response = await client.GetAsync($"{UserApiUrl}/GetNameUser/{userId}");
             string strData = await response.Content.ReadAsStringAsync();
@@ -53,21 +53,33 @@ namespace Project.Controllers
             {
                 return new Response(HttpStatusCode.NotFound, "Project doesn't exists!");
             }
-            return new Response(HttpStatusCode.OK, "Get all project success!", _mapper.Map<List<ProjectInfoView>>(projects));
+
+            var result = _mapper.Map<List<ProjectInfoView>>(projects);
+            foreach (var project in result )
+            {
+                project.idAccount = await GetNameUserCurrent(project.idAccount);
+            }
+
+            return new Response(HttpStatusCode.OK, "Get all project success!", result);
         }
 
-        [HttpGet("GetProjectByUser/{idProject}")]
+        [HttpGet("GetProjectByUser/{userId}")]
         public async Task<Response> GetProjectByUser(string userId)
         {
-            var userName = await GetCurrentUserByName(userId);
+            var userName = await GetNameUserCurrent(userId);
 
-            var project = await _context.ProjectInfos.FirstOrDefaultAsync(x => x.idAccount == userId);
-            if (project == null)
+            var projects = await _context.ProjectInfos.Where(x => x.idAccount == userId && x.isDeleted == false).OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
+            if (projects == null)
             {
                 return new Response(HttpStatusCode.NotFound, "Project doesn't exists!");
             }
-            var result = _mapper.Map<ProjectInfoView>(project);
-            result.idAccount = userName;
+
+            var result = _mapper.Map<List<ProjectInfoView>>(projects);
+            foreach (var project in result)
+            {
+                project.idAccount = await GetNameUserCurrent(userId);
+            }
+
             return new Response(HttpStatusCode.OK, "Get project by user success!", result);
         }
 
@@ -79,21 +91,23 @@ namespace Project.Controllers
             {
                 return new Response(HttpStatusCode.NotFound, "Project doesn't exists!");
             }
-            var userId = project.idAccount;
-            var userName = await GetCurrentUserByName(userId);
+
+            var userName = await GetNameUserCurrent(project.idAccount);
             project.idAccount = userName;
+
             return new Response(HttpStatusCode.OK, "Get project by is success!", _mapper.Map<ProjectInfoView>(project));
         }
 
         [HttpPost("CreateProject/{idAccount}")]
-        public async Task<Response> CreateProject(string idAccount, ProjectInfoCreate projectInfoCreate)
+        public async Task<Response> CreateProject(string userId, ProjectInfoCreate projectInfoCreate)
         {
             var project = _mapper.Map<ProjectInfo>(projectInfoCreate);
-            project.idAccount = idAccount;
+            project.idAccount = userId;
             project.isDeleted = false;
             project.createdDate = DateTime.Now;
             await _context.ProjectInfos.AddAsync(project);
             await _context.SaveChangesAsync();
+
             return new Response(HttpStatusCode.OK, "Create project is success!", _mapper.Map<ProjectInfoView>(project));
         }
 
@@ -105,11 +119,14 @@ namespace Project.Controllers
             {
                 return new Response(HttpStatusCode.NotFound, "Project doesn't exists!");
             }
+
             _mapper.Map(projectInfoUpdate, project);
             _context.ProjectInfos.Update(project);
             await _context.SaveChangesAsync();
+
             return new Response(HttpStatusCode.OK, "Update project is success!", _mapper.Map<ProjectInfoView>(project));
         }
+
         [HttpDelete("RemoveProject/{idProject}")]
         public async Task<Response> RemoveProject(Guid idProject)
         {
@@ -118,9 +135,11 @@ namespace Project.Controllers
             {
                 return new Response(HttpStatusCode.NotFound, "Project doesn't exists!");
             }
+
             project.isDeleted = true;
             _context.ProjectInfos.Update(project);
             await _context.SaveChangesAsync();
+
             return new Response(HttpStatusCode.NoContent, "Remove Project success!");
         }
     }

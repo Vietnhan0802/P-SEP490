@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Credential.Data.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20240114033343_Once")]
+    [Migration("20240115060301_Once")]
     partial class Once
     {
         /// <inheritdoc />
@@ -56,6 +56,10 @@ namespace Credential.Data.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("major")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
