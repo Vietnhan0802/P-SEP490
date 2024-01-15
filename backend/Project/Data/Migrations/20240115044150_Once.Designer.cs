@@ -12,7 +12,7 @@ using Project.Data;
 namespace Project.Data.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20240114041426_Once")]
+    [Migration("20240115044150_Once")]
     partial class Once
     {
         /// <inheritdoc />
@@ -222,9 +222,6 @@ namespace Project.Data.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("isAcept")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("isManager")
                         .HasColumnType("bit");
 
                     b.HasKey("idProjectMember");

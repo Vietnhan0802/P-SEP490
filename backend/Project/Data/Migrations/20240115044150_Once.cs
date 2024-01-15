@@ -87,7 +87,6 @@ namespace Project.Data.Migrations
                     idProjectMember = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     idAccount = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     idProject = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    isManager = table.Column<bool>(type: "bit", nullable: false),
                     isAcept = table.Column<bool>(type: "bit", nullable: false),
                     confirmedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     createdDate = table.Column<DateTime>(type: "datetime2", nullable: false)
