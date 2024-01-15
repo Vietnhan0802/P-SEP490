@@ -6,8 +6,8 @@ namespace BusinessObjects.Entities.Follow
     {
         [Key]
         public Guid idFollower { get; set; }
-        public string idAccount { get; set; }
         public string idOwner { get; set; }
+        public string idAccount { get; set; }
         public DateTime createdDate { get; set; }
     }
 }

@@ -50,10 +50,10 @@ namespace User.Controllers
             return new Response(HttpStatusCode.OK, "Get all users is success!", _mapper.Map<List<ViewUser>>(users));
         }
 
-        [HttpGet("GetUserById/{userId}")]
-        public async Task<Response> GetUserById(string userId)
+        [HttpGet("GetUserById/{idUser}")]
+        public async Task<Response> GetUserById(string idUser)
         {
-            var user = await _userManager.FindByIdAsync(userId);
+            var user = await _userManager.FindByIdAsync(idUser);
             if (user == null)
             {
                 return new Response(HttpStatusCode.NotFound, "User doesn't exist!");
@@ -61,10 +61,10 @@ namespace User.Controllers
             return new Response(HttpStatusCode.OK, "Get user is success!", _mapper.Map<ViewUser>(user));
         }
 
-        [HttpGet("GetNameUser/{userId}")]
-        public async Task<ActionResult<ViewUser>> GetNameUser(string userId)
+        [HttpGet("GetNameUser/{idUser}")]
+        public async Task<ActionResult<ViewUser>> GetNameUser(string idUser)
         {
-            var user = await _userManager.FindByIdAsync(userId);
+            var user = await _userManager.FindByIdAsync(idUser);
             if (user == null)
             {
                 return NotFound("User doesn't exist!");
@@ -73,10 +73,10 @@ namespace User.Controllers
             return Ok(fullName);
         }
 
-        [HttpGet("BlockUser/{userId}")]
-        public async Task<Response> BlockUser (string userId)
+        [HttpGet("BlockUser/{idUser}")]
+        public async Task<Response> BlockUser (string idUser)
         {
-            var user = await _userManager.FindByIdAsync(userId);
+            var user = await _userManager.FindByIdAsync(idUser);
             if (user == null)
             {
                 return new Response(HttpStatusCode.NotFound, "User doesn't exist!");
@@ -100,10 +100,10 @@ namespace User.Controllers
             }
         }
 
-        [HttpPut("UpdateUser/{userId}")]
-        public async Task<Response> UpdateUser(string userId, UpdateUser updateUser)
+        [HttpPut("UpdateUser/{idUser}")]
+        public async Task<Response> UpdateUser(string idUser, UpdateUser updateUser)
         {
-            var userExits = await _userManager.FindByIdAsync(userId);
+            var userExits = await _userManager.FindByIdAsync(idUser);
             if (userExits == null)
             {
                 return new Response(HttpStatusCode.NotFound, "User doesn't exist!");
