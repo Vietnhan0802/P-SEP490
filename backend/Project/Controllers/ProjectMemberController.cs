@@ -33,10 +33,10 @@ namespace Project.Controllers
             UserApiUrl = "https://localhost:7006/api/User";
         }
 
-        [HttpGet("GetNameUserCurrent/{userId}")]
-        private async Task<string> GetNameUserCurrent(string userId)
+        [HttpGet("GetNameUserCurrent/{idUser}")]
+        private async Task<string> GetNameUserCurrent(string idUser)
         {
-            HttpResponseMessage response = await client.GetAsync($"{UserApiUrl}/GetNameUser/{userId}");
+            HttpResponseMessage response = await client.GetAsync($"{UserApiUrl}/GetNameUser/{idUser}");
             string strData = await response.Content.ReadAsStringAsync();
             var option = new JsonSerializerOptions
             {
@@ -68,12 +68,12 @@ namespace Project.Controllers
             return new Response(HttpStatusCode.OK, "Get all project application success!", result);
         }
 
-        [HttpPost("CreateProjectApplication/{userId}/{idProject}")]
-        public async Task<Response> CreateProjectApplication(string userId, Guid idProject)
+        [HttpPost("CreateProjectApplication/{idUser}/{idProject}")]
+        public async Task<Response> CreateProjectApplication(string idUser, Guid idProject)
         {
             ProjectMember projectApplication = new ProjectMember()
             {
-                idAccount = userId,
+                idAccount = idUser,
                 idProject = idProject,
                 createdDate = DateTime.Now
             };
