@@ -1,0 +1,163 @@
+#postTable {
+  input:focus {
+    outline: none;
+  }
+  .search-box {
+    border: 1px solid #a4aab0;
+    border-radius: 8px;
+    width: fit-content;
+    padding-left: 10px;
+  }
+  .search {
+    width: 300px;
+    margin-left: 0px;
+  }
+  .line {
+    margin-top: 5px;
+    margin-left: 10px;
+    height: 1px;
+    width: 800px;
+    border-top: 1px solid var(--blue-va-1, #2f45ad);
+  }
+  .block-box {
+    border: 1px solid #a4aab0;
+    border-radius: 8px;
+    width: fit-content;
+    padding: 4px;
+    color: #a4aab0;
+  }
+  .active-block {
+    color: #dfb016;
+    border: 1px solid #dfb016;
+  }
+  .blur {
+    color: #778089;
+  }
+}
+
+#accessTable {
+  input:focus {
+    outline: none;
+  }
+  .search-box {
+    border: 1px solid #a4aab0;
+    border-radius: 8px;
+    width: fit-content;
+    padding-left: 10px;
+  }
+  .search {
+    width: 300px;
+    margin-left: 0px;
+  }
+  .line {
+    margin-top: 5px;
+    margin-left: 10px;
+    height: 1px;
+    width: 800px;
+    border-top: 1px solid var(--blue-va-1, #2f45ad);
+  }
+  .block-box {
+    border: 1px solid #a4aab0;
+    border-radius: 8px;
+    width: fit-content;
+    padding: 4px;
+    color: #a4aab0;
+  }
+  .active-block {
+    color: #dfb016;
+    border: 1px solid #dfb016;
+  }
+  .business {
+    color: #5572e8;
+    border-radius: 8px;
+    border: 2px solid #5572e8;
+    padding: 2px;
+    text-align: center;
+    width: 100px;
+  }
+  .user {
+    color: #20becb;
+    border-radius: 8px;
+    border: 2px solid #20becb;
+    width: 100px;
+    padding: 2px;
+    text-align: center;
+  }
+}
+#reportTable {
+  input:focus {
+    outline: none;
+  }
+  .search-box {
+    border: 1px solid #a4aab0;
+    border-radius: 8px;
+    width: fit-content;
+    padding-left: 10px;
+  }
+  .search {
+    width: 300px;
+    margin-left: 0px;
+  }
+  .line {
+    margin-top: 5px;
+    margin-left: 10px;
+    height: 1px;
+    width: 800px;
+    border-top: 1px solid var(--blue-va-1, #2f45ad);
+  }
+  .block-box {
+    border: 1px solid #a4aab0;
+    border-radius: 8px;
+    width: fit-content;
+    padding: 4px;
+    color: #a4aab0;
+  }
+  .active-block {
+    color: #dfb016;
+    border: 1px solid #dfb016;
+  }
+  .business {
+    color: #5572e8;
+    border-radius: 8px;
+    border: 2px solid #5572e8;
+    padding: 2px;
+    text-align: center;
+    width: 100px;
+  }
+  .user {
+    color: #20becb;
+    border-radius: 8px;
+    border: 2px solid #20becb;
+    width: 100px;
+    padding: 2px;
+    text-align: center;
+  }
+  .report-post,
+  .report-account {
+    text-align: center;
+    width: 220px;
+    padding: 5px;
+    border-radius: 8px;
+    border: 1px solid #a4aab0;
+    margin: 0px 10px;
+  }
+  .active-report {
+    color: #2F45AD;
+    background: var(--blue-va-5, rgba(47, 69, 173, 0.2));
+  }
+  .accept{
+    border: 3px solid var(--m-5, #4DCBD5);
+    color: #4DCBD5;
+    padding: 4px 8px;
+
+    margin-left: 5px;
+    border-radius: 16px;
+  }
+  .deny{
+    border: 3px solid var(--m-5, #DFB016);
+    color: #DFB016;
+    padding: 4px 8px;
+    margin-left: 5px;
+    border-radius: 16px;
+  }
+}
