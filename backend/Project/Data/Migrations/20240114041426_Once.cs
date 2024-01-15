@@ -20,8 +20,9 @@ namespace Project.Data.Migrations
                     name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     avatar = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    status = table.Column<bool>(type: "bit", nullable: false),
+                    process = table.Column<int>(type: "int", nullable: false),
                     visibility = table.Column<int>(type: "int", nullable: false),
+                    isDeleted = table.Column<bool>(type: "bit", nullable: false),
                     createdDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
@@ -58,6 +59,28 @@ namespace Project.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ProjectInvitations",
+                columns: table => new
+                {
+                    idProjectInvitation = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    idAccount = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    idProject = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    isAccept = table.Column<bool>(type: "bit", nullable: false),
+                    confirmedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    createdDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProjectInvitations", x => x.idProjectInvitation);
+                    table.ForeignKey(
+                        name: "FK_ProjectInvitations_ProjectInfos_idProject",
+                        column: x => x.idProject,
+                        principalTable: "ProjectInfos",
+                        principalColumn: "idProject",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ProjectMembers",
                 columns: table => new
                 {
@@ -66,18 +89,17 @@ namespace Project.Data.Migrations
                     idProject = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     isManager = table.Column<bool>(type: "bit", nullable: false),
                     isAcept = table.Column<bool>(type: "bit", nullable: false),
-                    createdDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ProjectidProject = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    confirmedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    createdDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ProjectMembers", x => x.idProjectMember);
                     table.ForeignKey(
-                        name: "FK_ProjectMembers_ProjectInfos_ProjectidProject",
-                        column: x => x.ProjectidProject,
+                        name: "FK_ProjectMembers_ProjectInfos_idProject",
+                        column: x => x.idProject,
                         principalTable: "ProjectInfos",
-                        principalColumn: "idProject",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "idProject");
                 });
 
             migrationBuilder.CreateTable(
@@ -138,9 +160,14 @@ namespace Project.Data.Migrations
                 column: "PostCommentidPostComment");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProjectMembers_ProjectidProject",
+                name: "IX_ProjectInvitations_idProject",
+                table: "ProjectInvitations",
+                column: "idProject");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProjectMembers_idProject",
                 table: "ProjectMembers",
-                column: "ProjectidProject");
+                column: "idProject");
         }
 
         /// <inheritdoc />
@@ -148,6 +175,9 @@ namespace Project.Data.Migrations
         {
             migrationBuilder.DropTable(
                 name: "PostReply");
+
+            migrationBuilder.DropTable(
+                name: "ProjectInvitations");
 
             migrationBuilder.DropTable(
                 name: "ProjectMembers");

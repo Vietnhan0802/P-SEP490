@@ -154,12 +154,15 @@ namespace Project.Data.Migrations
                     b.Property<string>("idAccount")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("isDeleted")
+                        .HasColumnType("bit");
+
                     b.Property<string>("name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("status")
-                        .HasColumnType("bit");
+                    b.Property<int>("process")
+                        .HasColumnType("int");
 
                     b.Property<int>("visibility")
                         .HasColumnType("int");
@@ -169,14 +172,42 @@ namespace Project.Data.Migrations
                     b.ToTable("ProjectInfos");
                 });
 
+            modelBuilder.Entity("BusinessObjects.Entities.Projects.ProjectInvitation", b =>
+                {
+                    b.Property<Guid>("idProjectInvitation")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("confirmedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("createdDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("idAccount")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("idProject")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("isAccept")
+                        .HasColumnType("bit");
+
+                    b.HasKey("idProjectInvitation");
+
+                    b.HasIndex("idProject");
+
+                    b.ToTable("ProjectInvitations");
+                });
+
             modelBuilder.Entity("BusinessObjects.Entities.Projects.ProjectMember", b =>
                 {
                     b.Property<Guid>("idProjectMember")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("ProjectidProject")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<DateTime>("confirmedDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime>("createdDate")
                         .HasColumnType("datetime2");
@@ -195,7 +226,7 @@ namespace Project.Data.Migrations
 
                     b.HasKey("idProjectMember");
 
-                    b.HasIndex("ProjectidProject");
+                    b.HasIndex("idProject");
 
                     b.ToTable("ProjectMembers");
                 });
@@ -227,13 +258,22 @@ namespace Project.Data.Migrations
                     b.Navigation("PostComment");
                 });
 
+            modelBuilder.Entity("BusinessObjects.Entities.Projects.ProjectInvitation", b =>
+                {
+                    b.HasOne("BusinessObjects.Entities.Projects.ProjectInfo", "Project")
+                        .WithMany("ProjectInvitations")
+                        .HasForeignKey("idProject")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Project");
+                });
+
             modelBuilder.Entity("BusinessObjects.Entities.Projects.ProjectMember", b =>
                 {
                     b.HasOne("BusinessObjects.Entities.Projects.ProjectInfo", "Project")
                         .WithMany("ProjectMembers")
-                        .HasForeignKey("ProjectidProject")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("idProject");
 
                     b.Navigation("Project");
                 });
@@ -251,6 +291,8 @@ namespace Project.Data.Migrations
             modelBuilder.Entity("BusinessObjects.Entities.Projects.ProjectInfo", b =>
                 {
                     b.Navigation("Posts");
+
+                    b.Navigation("ProjectInvitations");
 
                     b.Navigation("ProjectMembers");
                 });

@@ -49,6 +49,9 @@ namespace Credential.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("isDeleted")
+                        .HasColumnType("bit");
+
                     b.Property<string>("major")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");

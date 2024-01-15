@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using BusinessObjects.Entities.Credential;
+using BusinessObjects.Entities.Projects;
 using BusinessObjects.Entities.User;
 using BusinessObjects.ViewModels.Credential;
+using BusinessObjects.ViewModels.Project;
 using BusinessObjects.ViewModels.User;
 
 namespace BusinessObjects.Mappers
@@ -19,6 +21,10 @@ namespace BusinessObjects.Mappers
             CreateMap<Degree, CreateDegree>().ReverseMap();
             CreateMap<Degree, UpdateDegree>().ReverseMap();
             CreateMap<Degree, ViewDegree>().ReverseMap();
+
+            CreateMap<ProjectInfo, ProjectInfoView>().ReverseMap();
+            CreateMap<ProjectInfo, ProjectInfoCreate>().ReverseMap();
+            CreateMap<ProjectInfo, ProjectInfoUpdate>().ReverseMap();
         }
     }
 }
