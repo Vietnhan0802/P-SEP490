@@ -21,7 +21,7 @@ export default function Header({ activeComponent, onItemClick }) {
     onItemClick("profile");
   };
   return (
-    <Row className="header m-0">
+    <Row id="header"className="m-0">
       <Col className="d-flex align-items-center" sm={4}>
         <Image src={logoImg} className="logo" />
         <div className="d-flex search align-items-center">
