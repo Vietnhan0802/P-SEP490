@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
+using BusinessObjects.Entities.Blog;
 using BusinessObjects.Entities.Credential;
 using BusinessObjects.Entities.Post;
 using BusinessObjects.Entities.Projects;
 using BusinessObjects.Entities.User;
+using BusinessObjects.ViewModels.Blog;
 using BusinessObjects.ViewModels.Credential;
 using BusinessObjects.ViewModels.Post;
 using BusinessObjects.ViewModels.Project;
@@ -34,6 +36,9 @@ namespace BusinessObjects.Mappers
 
             CreateMap<Posts, CreatePostViewModel>().ReverseMap();
             CreateMap<Posts, UpdatePostViewModel>().ReverseMap();
+
+            CreateMap<Blogs, CreateBlogViewModel>().ReverseMap();   
+            CreateMap<Blogs, UpdateBlogViewModel>().ReverseMap();
         }
     }
 }

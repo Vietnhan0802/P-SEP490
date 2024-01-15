@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Blog.Data;
-using BusinessObjects.Entities.Content;
+using BusinessObjects.Entities.Blog;
 using BusinessObjects.ViewModels.Blog;
 using BusinessObjects.ViewModels.User;
 using Microsoft.AspNetCore.Http;
@@ -63,7 +63,6 @@ namespace Blog.Controllers
                         idBlog = blogViewModel.idBlog,
                         Title = blogViewModel.Title,
                         Content = blogViewModel.Content,
-                        Image = blogViewModel.Image,
                         View = blogViewModel.View
                     };
 
@@ -82,7 +81,7 @@ namespace Blog.Controllers
         }
 
         [HttpPut("UpdateBlog/{id}")]
-        public async Task<ActionResult> UpdateBlog(int id, UpdateBlogViewModel updatedBlog)
+        public async Task<ActionResult> UpdateBlog(Guid id, UpdateBlogViewModel updatedBlog)
         {
             try
             {
@@ -95,7 +94,6 @@ namespace Blog.Controllers
 
                 existingBlog.Title = updatedBlog.Title;
                 existingBlog.Content = updatedBlog.Content;
-                existingBlog.Image = updatedBlog.Image;
                 existingBlog.View = updatedBlog.View;
 
                 _dbContext.Entry(existingBlog).State = EntityState.Modified;
@@ -110,7 +108,7 @@ namespace Blog.Controllers
         }
 
         [HttpDelete("DeleteBlog/{id}")]
-        public async Task<ActionResult> DeleteBlog(int id)
+        public async Task<ActionResult> DeleteBlog(Guid id)
         {
             try
             {
