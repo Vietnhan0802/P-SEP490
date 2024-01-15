@@ -1,11 +1,11 @@
 ﻿using BusinessObjects.Entities.Content;
 using BusinessObjects.ViewModels.Post;
-using Content.Data;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Post.Data;
 
-namespace Content.Controllers
+namespace Post.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
