@@ -21,45 +21,45 @@ namespace Follow.Controllers
             _context = context;
         }
 
-        [HttpGet("GetFollowings/{idAccount}")]
-        public async Task<Response> GetFollowing(string idAccount)
+        [HttpGet("GetFollowings/{idOwner}")]
+        public async Task<Response> GetFollowings(string idOwner)
         {
-            var following = await _context.Followers.Where(x => x.idAccount == idAccount).Select(x => x.idOwner).ToListAsync();
+            var following = await _context.Followers.Where(x => x.idOwner == idOwner).Select(x => x.idAccount).ToListAsync();
 
             return new Response(HttpStatusCode.OK, "GetFollowings is success!", following);
         }
 
-        [HttpGet("GetTotalFollowings/{idAccount}")]
-        public async Task<Response> GetTotalFollowings(string idAccount)
+        [HttpGet("GetTotalFollowings/{idOwner}")]
+        public async Task<Response> GetTotalFollowings(string idOwner)
         {
-            var totalFollowing = await _context.Followers.CountAsync(x => x.idAccount == idAccount);
+            var totalFollowing = await _context.Followers.CountAsync(x => x.idOwner == idOwner);
 
             return new Response(HttpStatusCode.OK, "GetTotalFollowings is success!", totalFollowing);
         }
 
-        [HttpGet("GetFollowers/{idAccount}")]
-        public async Task<Response> GetFollowers(string idAccount)
+        [HttpGet("GetFollowers/{idOwner}")]
+        public async Task<Response> GetFollowers(string idOwner)
         {
-            var following = await _context.Followers.Where(x => x.idOwner == idAccount).Select(x => x.idAccount).ToListAsync();
+            var following = await _context.Followers.Where(x => x.idAccount == idOwner).Select(x => x.idOwner).ToListAsync();
 
             return new Response(HttpStatusCode.OK, "GetFollowers is success!", following);
         }
 
-        [HttpGet("GetTotalFollowers/{idAccount}")]
-        public async Task<Response> GetTotalFollowers(string idAccount)
+        [HttpGet("GetTotalFollowers/{idOwner}")]
+        public async Task<Response> GetTotalFollowers(string idOwner)
         {
-            var totalFollower = await _context.Followers.CountAsync(x => x.idOwner == idAccount);
+            var totalFollower = await _context.Followers.CountAsync(x => x.idAccount == idOwner);
 
             return new Response(HttpStatusCode.OK, "GetTotalFollowings is success!", totalFollower);
         }
 
-        [HttpPost("Following/{idFollowed}/{idFollower}")]
-        public async Task<Response> Following(string idAccount, string idOwner)
+        [HttpPost("Following/{idOwner}/{idAccount}")]
+        public async Task<Response> Following(string idOwner, string idAccount)
         {
             Follower following = new Follower()
             {
-                idAccount = idAccount,
                 idOwner = idOwner,
+                idAccount = idAccount,
                 createdDate = DateTime.Now,
             };
             await _context.Followers.AddAsync(following);
@@ -81,6 +81,11 @@ namespace Follow.Controllers
             await _context.SaveChangesAsync();
 
             return new Response(HttpStatusCode.NoContent, "Remove Follow is success!");
+        }
+
+        public bool CheckFollower()
+        {
+            return _context.Followers.Any();
         }
     }
 }
