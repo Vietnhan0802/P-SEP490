@@ -1,9 +1,13 @@
-﻿using BusinessObjects.Entities.Content;
+﻿using AutoMapper;
+using BusinessObjects.Entities.Content;
 using BusinessObjects.ViewModels.Post;
+using BusinessObjects.ViewModels.User;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Post.Data;
+using System.Net.Http.Headers;
+using System.Text.Json;
 
 namespace Post.Controllers
 {
@@ -12,10 +16,33 @@ namespace Post.Controllers
     public class PostController : ControllerBase
     {
         private readonly AppDBContext _dbContext;
+        private readonly IMapper _mapper;
+        private readonly HttpClient client;
+        public string UserApiUrl { get; }
 
-        public PostController(AppDBContext dbContext)
+        public PostController(AppDBContext context, IMapper mapper)
         {
-            _dbContext = dbContext;
+            _dbContext = context;
+            _mapper = mapper;
+            client = new HttpClient();
+            var contentType = new MediaTypeWithQualityHeaderValue("application/json");
+            client.DefaultRequestHeaders.Accept.Add(contentType);
+            UserApiUrl = "https://localhost:7006/api/User";
+        }
+
+        [NonAction]
+        [HttpGet("GetCurrentUserByName")]
+        private async Task<ViewUser> GetCurrentUserByName(string userId)
+        {
+            HttpResponseMessage response = await client.GetAsync($"{UserApiUrl}/GetUserById/{userId}");
+            string strData = await response.Content.ReadAsStringAsync();
+            var option = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true,
+            };
+            var user = JsonSerializer.Deserialize<ViewUser>(strData, option);
+
+            return user;
         }
 
         [HttpGet]
