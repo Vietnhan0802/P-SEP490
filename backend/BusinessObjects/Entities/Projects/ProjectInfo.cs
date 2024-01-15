@@ -1,4 +1,4 @@
-﻿using BusinessObjects.Entities.Content;
+﻿using BusinessObjects.Entities.Post;
 using BusinessObjects.Enums.Project;
 using System.ComponentModel.DataAnnotations;
 
