@@ -95,9 +95,8 @@ namespace Content.Controllers
                     return NotFound($"Blog with id {id} not found.");
                 }
 
-                _dbContext.Blogs.Remove(blogToDelete);
+                blogToDelete.IsDeleted = true;
                 await _dbContext.SaveChangesAsync();
-
                 return Ok($"Blog with id {id} deleted successfully.");
             }
             catch (Exception ex)

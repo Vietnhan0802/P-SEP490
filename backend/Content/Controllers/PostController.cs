@@ -97,18 +97,16 @@ namespace Content.Controllers
                 {
                     return NotFound("Post not found");
                 }
-
-                _dbContext.Posts.Remove(postToDelete);
+                postToDelete.IsDeleted = true;
                 await _dbContext.SaveChangesAsync();
-
                 return Ok("Deleted post successfully.");
             }
             catch (Exception ex)
             {
-                // Log the exception or handle it appropriately
                 return StatusCode(500, "Internal server error");
             }
         }
+
 
         [HttpGet("SearchPostsByUserId/{userId}")]
         public ActionResult<IEnumerable<Post>> SearchPostsByUserId(Guid userId)
@@ -170,7 +168,6 @@ namespace Content.Controllers
                 return StatusCode(500, "Internal server error");
             }
         }
-
 
 
     }
