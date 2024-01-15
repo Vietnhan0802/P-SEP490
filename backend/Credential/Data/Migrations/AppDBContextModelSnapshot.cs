@@ -56,6 +56,10 @@ namespace Credential.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("type")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");

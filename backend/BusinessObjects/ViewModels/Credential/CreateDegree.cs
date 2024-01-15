@@ -3,6 +3,7 @@
     public class CreateDegree
     {
         public DateTime date { get; set; }
+        public string name { get; set; }
         public string institution { get; set; }
         public string country { get; set; }
         public string type { get; set; }
