@@ -18,6 +18,6 @@ namespace BusinessObjects.Entities.Projects
         public DateTime createdDate { get; set; }
         public ICollection<ProjectMember>? ProjectMembers { get; set; }
         public ICollection<ProjectInvitation>? ProjectInvitations { get; set; }
-        public ICollection<Post> Posts { get; set; } = new List<Post>();
+        public ICollection<Posts> Posts { get; set; } = new List<Posts>();
     }
 }

@@ -1,12 +1,11 @@
-﻿using BusinessObjects.Entities.Content;
+﻿using Blog.Data;
+using BusinessObjects.Entities.Content;
 using BusinessObjects.ViewModels.Blog;
-using BusinessObjects.ViewModels.Post;
-using Content.Data;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace Content.Controllers
+namespace Blog.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

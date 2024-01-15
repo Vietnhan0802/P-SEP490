@@ -14,7 +14,7 @@ namespace BusinessObjects.Entities.Content
         public string Content { get; set; }
         public DateTime CreatedDate { get; set; } = DateTime.Now;
         public Guid idPost { get; set; }
-        public Post? Post { get; set; }
+        public Posts? Post { get; set; }
         public ICollection<PostReply>? PostReplies { get; set; } = new List<PostReply>();
         public Guid IdUser { get; set; }
     }

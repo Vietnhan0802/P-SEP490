@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BusinessObjects.Entities.Content
 {
-    public class Post
+    public class Posts
     {
         [Key]
         public Guid idPost { get; set; } 
