@@ -3,7 +3,7 @@
     public enum TypeUser
     {
         Admin,
-        Person,
+        Member,
         Business
     }
 }

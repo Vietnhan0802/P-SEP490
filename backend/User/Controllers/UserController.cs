@@ -61,6 +61,18 @@ namespace User.Controllers
             return new Response(HttpStatusCode.OK, "Get user is success!", _mapper.Map<ViewUser>(user));
         }
 
+        [HttpGet("GetNameUser/{userId}")]
+        public async Task<ActionResult<ViewUser>> GetNameUser(string userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                return NotFound("User doesn't exist!");
+            }
+            string fullName = user.fullName;
+            return Ok(fullName);
+        }
+
         [HttpGet("BlockUser/{userId}")]
         public async Task<Response> BlockUser (string userId)
         {
@@ -102,8 +114,8 @@ namespace User.Controllers
             return new Response(HttpStatusCode.OK, "Update user is success!", _mapper.Map<UpdateUser>(userExits));
         }
 
-        [HttpPost("SignUpPerson")]
-        public async Task<Response> SignUpPerson(SignUpPerson signUpForPerson)
+        [HttpPost("SignUpMember")]
+        public async Task<Response> SignUpMember(SignUpPerson signUpForPerson)
         {
             var userExits = await _userManager.FindByEmailAsync(signUpForPerson.email);
             if (userExits != null)
@@ -130,9 +142,9 @@ namespace User.Controllers
             {
                 return new Response(HttpStatusCode.BadRequest, "User failed to create! Please check and try again!");
             }
-            if (await _roleManager.RoleExistsAsync(TypeUser.Person.ToString()))
+            if (await _roleManager.RoleExistsAsync(TypeUser.Member.ToString()))
             {
-                await _userManager.AddToRoleAsync(user, TypeUser.Person.ToString());
+                await _userManager.AddToRoleAsync(user, TypeUser.Member.ToString());
 
                 var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                 var confirmLink = Url.Action(nameof(ConfirmEmail), "User", new { token, email = user.Email }, Request.Scheme);

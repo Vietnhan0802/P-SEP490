@@ -30,17 +30,17 @@ namespace Credential.Controllers
             UserApiUrl = "https://localhost:7006/api/User";
         }
 
-        [NonAction]
-        [HttpGet("GetCurrentUserByName")]
-        private async Task<ViewUser> GetCurrentUserByName(string userId)
+        
+        [HttpGet("GetNameUserCurrent/{userId}")]
+        private async Task<string> GetNameUserCurrent(string userId)
         {
-            HttpResponseMessage response = await client.GetAsync($"{UserApiUrl}/GetUserById/{userId}");
+            HttpResponseMessage response = await client.GetAsync($"{UserApiUrl}/GetNameUser/{userId}");
             string strData = await response.Content.ReadAsStringAsync();
             var option = new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true,
             };
-            var user = JsonSerializer.Deserialize<ViewUser>(strData, option);
+            var user = JsonSerializer.Deserialize<string>(strData, option);
 
             return user;
         }
@@ -53,75 +53,91 @@ namespace Credential.Controllers
             {
                 return new Response(HttpStatusCode.NotFound, "Degree doesn't exists!");
             }
-            return new Response(HttpStatusCode.OK, "Get all degree success!", _mapper.Map<List<ViewDegree>>(degrees));
+
+            var result = _mapper.Map<List<ViewDegree>>(degrees);
+            foreach (var degree in result)
+            {
+                degree.idAccount = await GetNameUserCurrent(degree.idAccount);
+            }
+
+            return new Response(HttpStatusCode.OK, "Get all degree success!", result);
         }
 
         [HttpGet("GetDegreeByUser/{userId}")]
         public async Task<Response> GetDegreeByUser(string userId)
         {
-            var user = await GetCurrentUserByName(userId);
-
-            var degree = await _context.Degrees.FirstOrDefaultAsync(x => x.idAccount == userId);
-            if (degree == null)
+            var degrees = await _context.Degrees.Where(x => x.idAccount == userId && x.isDeleted == false).OrderBy(x => x.createdDate).AsNoTracking().ToListAsync();
+            if (degrees == null)
             {
                 return new Response(HttpStatusCode.NotFound, "Degree doesn't exists!");
             }
-            var result = _mapper.Map<ViewDegree>(degree);
-            result.idAccount = user.fullName;
+
+            var result = _mapper.Map<List<ViewDegree>>(degrees);
+            foreach (var degree in result)
+            {
+                degree.idAccount = await GetNameUserCurrent(userId);
+            }
+
             return new Response(HttpStatusCode.OK, "Get degree by user success!", result);
         }
 
-        [HttpGet("GetDegreeById/{degreeId}")]
-        public async Task<Response> GetDegreeById(Guid degreeId)
+        [HttpGet("GetDegreeById/{idDegree}")]
+        public async Task<Response> GetDegreeById(Guid idDegree)
         {
-            var degree = await _context.Degrees.FirstOrDefaultAsync(x => x.idDegree == degreeId);
+            var degree = await _context.Degrees.FirstOrDefaultAsync(x => x.idDegree == idDegree);
             if (degree == null)
             {
                 return new Response(HttpStatusCode.NotFound, "Degree doesn't exists!");
             }
-            var user = degree.idAccount;
-            var userName = await GetCurrentUserByName(user);
-            degree.idAccount = userName.fullName;
+
+            var userName = await GetNameUserCurrent(degree.idAccount);
+            degree.idAccount = userName;
+
             return new Response(HttpStatusCode.OK, "Get degree by is success!", _mapper.Map<ViewDegree>(degree));
         }
 
-        [HttpPost("CreateDegree/{idAccount}")]
-        public async Task<Response> CreateDegree(string idAccount, CreateDegree degreeDTO)
+        [HttpPost("CreateDegree/{userId}")]
+        public async Task<Response> CreateDegree(string userId, CreateDegree degreeDTO)
         {
             var degree = _mapper.Map<Degree>(degreeDTO);
-            degree.idAccount = idAccount;
+            degree.idAccount = userId;
             degree.isDeleted = false;
             degree.createdDate = DateTime.Now;
             await _context.Degrees.AddAsync(degree);
             await _context.SaveChangesAsync();
+
             return new Response(HttpStatusCode.OK, "Create degree is success!", _mapper.Map<ViewDegree>(degree));
         }
 
-        [HttpPut("UpdateDegree/{degreeId}")]
-        public async Task<Response> UpdateDegree(Guid degreeId, UpdateDegree degreeDTO)
+        [HttpPut("UpdateDegree/{idDegree}")]
+        public async Task<Response> UpdateDegree(Guid idDegree, UpdateDegree degreeDTO)
         {
-            var degree = await _context.Degrees.FirstOrDefaultAsync(x => x.idDegree == degreeId);
+            var degree = await _context.Degrees.FirstOrDefaultAsync(x => x.idDegree == idDegree);
             if (degree == null)
             {
                 return new Response(HttpStatusCode.NotFound, "Degree doesn't exists!");
             }
+
             _mapper.Map(degreeDTO, degree);
             _context.Degrees.Update(degree);
             await _context.SaveChangesAsync();
+
             return new Response(HttpStatusCode.OK, "Update degree is success!", _mapper.Map<ViewDegree>(degree));
         }
 
-        [HttpDelete("RemoveDegree/{degreeId}")]
-        public async Task<Response> RemoveDegree(Guid degreeId)
+        [HttpDelete("RemoveDegree/{idDegree}")]
+        public async Task<Response> RemoveDegree(Guid idDegree)
         {
-            var degree = await _context.Degrees.FirstOrDefaultAsync(x => x.idDegree == degreeId);
+            var degree = await _context.Degrees.FirstOrDefaultAsync(x => x.idDegree == idDegree);
             if (degree == null)
             {
                 return new Response(HttpStatusCode.NotFound, "Degree doesn't exists!");
             }
+
             degree.isDeleted = true;
             _context.Degrees.Update(degree);
             await _context.SaveChangesAsync();
+
             return new Response(HttpStatusCode.NoContent, "Remove Degree successfullt!");
         }
     }

@@ -10,9 +10,10 @@ import userInstance from "../../axios/axiosConfig";
 import { jwtDecode } from "jwt-decode";
 import Cookies from 'js-cookie';
 export default function SignIn() {
+  Cookies.remove('user');
+
   const [inputs, setInputs] = useState({});
   const navigate = useNavigate();
-
   const handleChange = (event) => {
     const name = event.target.name;
     const value = event.target.value;
@@ -29,10 +30,13 @@ export default function SignIn() {
       );
 
       if (response?.data?.status === "OK") {
-        console.log("Sign in successful", response?.data);
-        const decode = jwtDecode(response?.data?.result);
-        console.log(decode);
-        Cookies.set('user', JSON.stringify(decode), { expires: 7 });
+        console.log("Sign in successful", response?.data?.result.role);
+        const decode = jwtDecode(response?.data?.result.token);
+        
+        // console.log(decode);
+        // console.log(response?.data?.result?.role)
+        Cookies.set('user', JSON.stringify(decode), { expires: 1 });
+        Cookies.set('role', JSON.stringify(response?.data?.result.role), { expires: 1 });
         navigate("/home");
       } else {
         console.log(response.data);
