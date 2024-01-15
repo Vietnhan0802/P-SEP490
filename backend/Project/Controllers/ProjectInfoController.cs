@@ -31,17 +31,16 @@ namespace Project.Controllers
             UserApiUrl = "https://localhost:7006/api/User";
         }
 
-        [NonAction]
-        [HttpGet("GetCurrentUserByName")]
-        private async Task<ViewUser> GetCurrentUserByName(string userId)
+        [HttpGet("GetCurrentUserByName/{userId}")]
+        private async Task<string> GetCurrentUserByName(string userId)
         {
-            HttpResponseMessage response = await client.GetAsync($"{UserApiUrl}/GetUserById/{userId}");
+            HttpResponseMessage response = await client.GetAsync($"{UserApiUrl}/GetNameUser/{userId}");
             string strData = await response.Content.ReadAsStringAsync();
             var option = new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true,
             };
-            var user = JsonSerializer.Deserialize<ViewUser>(strData, option);
+            var user = JsonSerializer.Deserialize<string>(strData, option);
 
             return user;
         }
@@ -60,7 +59,7 @@ namespace Project.Controllers
         [HttpGet("GetProjectByUser/{idProject}")]
         public async Task<Response> GetProjectByUser(string userId)
         {
-            var user = await GetCurrentUserByName(userId);
+            var userName = await GetCurrentUserByName(userId);
 
             var project = await _context.ProjectInfos.FirstOrDefaultAsync(x => x.idAccount == userId);
             if (project == null)
@@ -68,7 +67,7 @@ namespace Project.Controllers
                 return new Response(HttpStatusCode.NotFound, "Project doesn't exists!");
             }
             var result = _mapper.Map<ProjectInfoView>(project);
-            result.idAccount = user.fullName;
+            result.idAccount = userName;
             return new Response(HttpStatusCode.OK, "Get project by user success!", result);
         }
 
@@ -80,7 +79,9 @@ namespace Project.Controllers
             {
                 return new Response(HttpStatusCode.NotFound, "Project doesn't exists!");
             }
-
+            var userId = project.idAccount;
+            var userName = await GetCurrentUserByName(userId);
+            project.idAccount = userName;
             return new Response(HttpStatusCode.OK, "Get project by is success!", _mapper.Map<ProjectInfoView>(project));
         }
 

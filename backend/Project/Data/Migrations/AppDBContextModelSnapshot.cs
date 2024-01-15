@@ -221,9 +221,6 @@ namespace Project.Data.Migrations
                     b.Property<bool>("isAcept")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("isManager")
-                        .HasColumnType("bit");
-
                     b.HasKey("idProjectMember");
 
                     b.HasIndex("idProject");

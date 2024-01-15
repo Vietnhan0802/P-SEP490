@@ -61,6 +61,18 @@ namespace User.Controllers
             return new Response(HttpStatusCode.OK, "Get user is success!", _mapper.Map<ViewUser>(user));
         }
 
+        [HttpGet("GetNameUser/{userId}")]
+        public async Task<ActionResult<ViewUser>> GetNameUser(string userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                return NotFound("User doesn't exist!");
+            }
+            string fullName = user.fullName;
+            return Ok(fullName);
+        }
+
         [HttpGet("BlockUser/{userId}")]
         public async Task<Response> BlockUser (string userId)
         {
