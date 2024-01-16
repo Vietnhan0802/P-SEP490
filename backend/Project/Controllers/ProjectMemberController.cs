@@ -1,12 +1,9 @@
 ﻿using AutoMapper;
-using BusinessObjects.Entities.Credential;
 using BusinessObjects.Entities.Projects;
-using BusinessObjects.ViewModels.Project;
 using BusinessObjects.ViewModels.User;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Project.Data;
-using System.Linq;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Text.Json;
@@ -43,7 +40,6 @@ namespace Project.Controllers
                 PropertyNameCaseInsensitive = true,
             };
             var user = JsonSerializer.Deserialize<string>(strData, option);
-
             return user;
         }
 
@@ -55,7 +51,6 @@ namespace Project.Controllers
             {
                 return new Response(HttpStatusCode.NotFound, "Project Application doesn't exists!");
             }
-
             var result = projectApplications.Select(async x => new 
             {
                 userName = await GetNameUserCurrent(x.idAccount),
@@ -79,7 +74,6 @@ namespace Project.Controllers
             };
             await _context.ProjectMembers.AddAsync(projectApplication);
             await _context.SaveChangesAsync();
-
             return new Response(HttpStatusCode.OK, "Create Project Application is success!", projectApplication);
         }
 
@@ -91,12 +85,10 @@ namespace Project.Controllers
             {
                 return new Response(HttpStatusCode.NotFound, "Project Application doesn't exists!");
             }
-
             projectApplication.isAcept = true;
             projectApplication.confirmedDate = DateTime.Now;
             _context.ProjectMembers.Update(projectApplication);
             await _context.SaveChangesAsync();
-
             return new Response(HttpStatusCode.OK, "Accept Project Application is success!", projectApplication);
         }
 
@@ -108,12 +100,10 @@ namespace Project.Controllers
             {
                 return new Response(HttpStatusCode.NotFound, "Project Application doesn't exists!");
             }
-
             projectApplication.isAcept = false;
             projectApplication.confirmedDate = DateTime.Now;
             _context.ProjectMembers.Update(projectApplication);
             await _context.SaveChangesAsync();
-
             return new Response(HttpStatusCode.OK, "Deny Project Application is success!", projectApplication);
         }
     }

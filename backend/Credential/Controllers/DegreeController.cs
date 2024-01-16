@@ -41,7 +41,6 @@ namespace Credential.Controllers
                 PropertyNameCaseInsensitive = true,
             };
             var user = JsonSerializer.Deserialize<string>(strData, option);
-
             return user;
         }
 
@@ -53,13 +52,11 @@ namespace Credential.Controllers
             {
                 return new Response(HttpStatusCode.NotFound, "Degree doesn't exists!");
             }
-
             var result = _mapper.Map<List<ViewDegree>>(degrees);
             foreach (var degree in result)
             {
                 degree.idAccount = await GetNameUserCurrent(degree.idAccount);
             }
-
             return new Response(HttpStatusCode.OK, "Get all degree success!", result);
         }
 
@@ -71,13 +68,11 @@ namespace Credential.Controllers
             {
                 return new Response(HttpStatusCode.NotFound, "Degree doesn't exists!");
             }
-
             var result = _mapper.Map<List<ViewDegree>>(degrees);
             foreach (var degree in result)
             {
                 degree.idAccount = await GetNameUserCurrent(idUser);
             }
-
             return new Response(HttpStatusCode.OK, "Get degree by user success!", result);
         }
 
@@ -89,10 +84,8 @@ namespace Credential.Controllers
             {
                 return new Response(HttpStatusCode.NotFound, "Degree doesn't exists!");
             }
-
             var userName = await GetNameUserCurrent(degree.idAccount);
             degree.idAccount = userName;
-
             return new Response(HttpStatusCode.OK, "Get degree by is success!", _mapper.Map<ViewDegree>(degree));
         }
 
@@ -105,7 +98,6 @@ namespace Credential.Controllers
             degree.createdDate = DateTime.Now;
             await _context.Degrees.AddAsync(degree);
             await _context.SaveChangesAsync();
-
             return new Response(HttpStatusCode.OK, "Create degree is success!", _mapper.Map<ViewDegree>(degree));
         }
 
@@ -117,11 +109,9 @@ namespace Credential.Controllers
             {
                 return new Response(HttpStatusCode.NotFound, "Degree doesn't exists!");
             }
-
             _mapper.Map(degreeDTO, degree);
             _context.Degrees.Update(degree);
             await _context.SaveChangesAsync();
-
             return new Response(HttpStatusCode.OK, "Update degree is success!", _mapper.Map<ViewDegree>(degree));
         }
 
@@ -133,11 +123,9 @@ namespace Credential.Controllers
             {
                 return new Response(HttpStatusCode.NotFound, "Degree doesn't exists!");
             }
-
             degree.isDeleted = true;
             _context.Degrees.Update(degree);
             await _context.SaveChangesAsync();
-
             return new Response(HttpStatusCode.NoContent, "Remove Degree successfullt!");
         }
     }

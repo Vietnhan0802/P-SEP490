@@ -39,6 +39,20 @@ namespace User.Controllers
             _hostEnvironment = hostEnvironment;
         }
 
+        [HttpGet("GetTotalUsersRegister/{startDate}/{endDate}")]
+        public async Task<Response> GetTotalUsersRegister(DateTime startDate, DateTime endDate)
+        {
+            var totalUsersRegister = await _userManager.Users.Where(x => x.createdDate >= startDate && x.createdDate <= endDate).CountAsync();
+            return new Response(HttpStatusCode.OK, "Get total users register is success!", totalUsersRegister);
+        }
+
+        [HttpGet("GetTotalBlockedUsers/{startDate}/{endDate}")]
+        public async Task<Response> GetTotalBlockedUsers(DateTime startDate, DateTime endDate)
+        {
+            var totalBlockedUsers = await _userManager.Users.Where(x => x.createdDate >= startDate && x.createdDate <= endDate).CountAsync(u => u.isBlock == true);
+            return new Response(HttpStatusCode.OK, "Get total blocked users is success!", totalBlockedUsers);
+        }
+
         [HttpGet("GetAllUsers")]
         public async Task<Response> GetAllUsers()
         {
