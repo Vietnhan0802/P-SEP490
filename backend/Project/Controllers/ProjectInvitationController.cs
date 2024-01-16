@@ -38,7 +38,6 @@ namespace Project.Controllers
                 PropertyNameCaseInsensitive = true,
             };
             var user = JsonSerializer.Deserialize<string>(strData, option);
-
             return user;
         }
 
@@ -59,7 +58,6 @@ namespace Project.Controllers
             {
                 projectInvitation.userName = await GetNameUserCurrent(projectInvitation.idAccount);
             }
-
             return new Response(HttpStatusCode.OK, "Get all project invitation success!", projectInvitations);
         }
 
@@ -74,7 +72,6 @@ namespace Project.Controllers
             };
             await _context.ProjectInvitations.AddAsync(projectInvitation);
             await _context.SaveChangesAsync();
-
             return new Response(HttpStatusCode.OK, "Create Project Invitation is success!", projectInvitation);
         }
 
@@ -82,12 +79,10 @@ namespace Project.Controllers
         public async Task<Response> AcceptProjectInvitation (Guid idProjectInvitation)
         {
             var projectInvitation = await _context.ProjectInvitations.FirstOrDefaultAsync(x => x.idProjectInvitation == idProjectInvitation);
-
             if (projectInvitation == null)
             {
                 return new Response(HttpStatusCode.NotFound, "Project Invitation doesn't exists!");
             }
-
             projectInvitation.isAccept = true;
             projectInvitation.confirmedDate = DateTime.Now;
             _context.ProjectInvitations.Update(projectInvitation);
@@ -100,17 +95,14 @@ namespace Project.Controllers
         public async Task<Response> DenyProjectInvitation(Guid idProjectInvitation)
         {
             var projectInvitation = await _context.ProjectInvitations.FirstOrDefaultAsync(x => x.idProjectInvitation == idProjectInvitation);
-
             if (projectInvitation == null)
             {
                 return new Response(HttpStatusCode.NotFound, "Project Invitation doesn't exists!");
             }
-
             projectInvitation.isAccept = false;
             projectInvitation.confirmedDate = DateTime.Now;
             _context.ProjectInvitations.Update(projectInvitation);
             await _context.SaveChangesAsync();
-
             return new Response(HttpStatusCode.OK, "Deny Project Invitation is success!", projectInvitation);
         }
     }
