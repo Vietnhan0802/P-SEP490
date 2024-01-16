@@ -53,6 +53,22 @@ namespace User.Controllers
             return new Response(HttpStatusCode.OK, "Get total blocked users is success!", totalBlockedUsers);
         }
 
+        [HttpGet("SearchUserByName/{name}")]
+        public async Task<Response> SearchUserByName(string name)
+        {
+            var users = await _userManager.Users.Where(x => x.fullName.Contains(name)).ToListAsync();
+            if (users == null)
+            {
+                return new Response(HttpStatusCode.NoContent, "No users found with the given name!");
+            }
+            var result = _mapper.Map<List<ViewUser>>(users);
+            foreach (var user in result)
+            {
+                user.ImageSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, user.avatar);
+            }
+            return new Response(HttpStatusCode.OK, $"Found {users.Count} user(s) with the given name", result);
+        }
+
         [HttpGet("GetAllUsers")]
         public async Task<Response> GetAllUsers()
         {
