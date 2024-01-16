@@ -41,7 +41,6 @@ namespace Project.Controllers
                 PropertyNameCaseInsensitive = true,
             };
             var user = JsonSerializer.Deserialize<string>(strData, option);
-
             return user;
         }
 
@@ -53,13 +52,11 @@ namespace Project.Controllers
             {
                 return new Response(HttpStatusCode.NotFound, "Project doesn't exists!");
             }
-
             var result = _mapper.Map<List<ProjectInfoView>>(projects);
-            foreach (var project in result )
+            foreach (var project in result)
             {
                 project.idAccount = await GetNameUserCurrent(project.idAccount);
             }
-
             return new Response(HttpStatusCode.OK, "Get all project success!", result);
         }
 
@@ -67,19 +64,16 @@ namespace Project.Controllers
         public async Task<Response> GetProjectByUser(string idUser)
         {
             var userName = await GetNameUserCurrent(idUser);
-
             var projects = await _context.ProjectInfos.Where(x => x.idAccount == idUser && x.isDeleted == false).OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
             if (projects == null)
             {
                 return new Response(HttpStatusCode.NotFound, "Project doesn't exists!");
             }
-
             var result = _mapper.Map<List<ProjectInfoView>>(projects);
             foreach (var project in result)
             {
                 project.idAccount = await GetNameUserCurrent(idUser);
             }
-
             return new Response(HttpStatusCode.OK, "Get project by user success!", result);
         }
 
@@ -91,10 +85,8 @@ namespace Project.Controllers
             {
                 return new Response(HttpStatusCode.NotFound, "Project doesn't exists!");
             }
-
             var userName = await GetNameUserCurrent(project.idAccount);
             project.idAccount = userName;
-
             return new Response(HttpStatusCode.OK, "Get project by is success!", _mapper.Map<ProjectInfoView>(project));
         }
 
@@ -107,7 +99,6 @@ namespace Project.Controllers
             project.createdDate = DateTime.Now;
             await _context.ProjectInfos.AddAsync(project);
             await _context.SaveChangesAsync();
-
             return new Response(HttpStatusCode.OK, "Create project is success!", _mapper.Map<ProjectInfoView>(project));
         }
 
@@ -119,11 +110,9 @@ namespace Project.Controllers
             {
                 return new Response(HttpStatusCode.NotFound, "Project doesn't exists!");
             }
-
             _mapper.Map(projectInfoUpdate, project);
             _context.ProjectInfos.Update(project);
             await _context.SaveChangesAsync();
-
             return new Response(HttpStatusCode.OK, "Update project is success!", _mapper.Map<ProjectInfoView>(project));
         }
 
@@ -135,11 +124,9 @@ namespace Project.Controllers
             {
                 return new Response(HttpStatusCode.NotFound, "Project doesn't exists!");
             }
-
             project.isDeleted = true;
             _context.ProjectInfos.Update(project);
             await _context.SaveChangesAsync();
-
             return new Response(HttpStatusCode.NoContent, "Remove Project success!");
         }
     }

@@ -25,7 +25,6 @@ namespace Follow.Controllers
         public async Task<Response> GetFollowings(string idOwner)
         {
             var following = await _context.Followers.Where(x => x.idOwner == idOwner).Select(x => x.idAccount).ToListAsync();
-
             return new Response(HttpStatusCode.OK, "GetFollowings is success!", following);
         }
 
@@ -33,7 +32,6 @@ namespace Follow.Controllers
         public async Task<Response> GetTotalFollowings(string idOwner)
         {
             var totalFollowing = await _context.Followers.CountAsync(x => x.idOwner == idOwner);
-
             return new Response(HttpStatusCode.OK, "GetTotalFollowings is success!", totalFollowing);
         }
 
@@ -41,7 +39,6 @@ namespace Follow.Controllers
         public async Task<Response> GetFollowers(string idOwner)
         {
             var following = await _context.Followers.Where(x => x.idAccount == idOwner).Select(x => x.idOwner).ToListAsync();
-
             return new Response(HttpStatusCode.OK, "GetFollowers is success!", following);
         }
 
@@ -49,7 +46,6 @@ namespace Follow.Controllers
         public async Task<Response> GetTotalFollowers(string idOwner)
         {
             var totalFollower = await _context.Followers.CountAsync(x => x.idAccount == idOwner);
-
             return new Response(HttpStatusCode.OK, "GetTotalFollowings is success!", totalFollower);
         }
 
@@ -64,7 +60,6 @@ namespace Follow.Controllers
             };
             await _context.Followers.AddAsync(following);
             await _context.SaveChangesAsync();
-
             return new Response(HttpStatusCode.OK, "Follow is success!", following);
         }
 
@@ -76,10 +71,8 @@ namespace Follow.Controllers
             {
                 return new Response(HttpStatusCode.NotFound, "Follow doesn't exists!");
             }
-
             _context.Followers.Remove(following);
             await _context.SaveChangesAsync();
-
             return new Response(HttpStatusCode.NoContent, "Remove Follow is success!");
         }
 
