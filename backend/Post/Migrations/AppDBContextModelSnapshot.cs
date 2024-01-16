@@ -22,7 +22,7 @@ namespace Post.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("BusinessObjects.Entities.Content.PostComment", b =>
+            modelBuilder.Entity("BusinessObjects.Entities.Post.PostComment", b =>
                 {
                     b.Property<Guid>("idPostComment")
                         .ValueGeneratedOnAdd()
@@ -37,6 +37,9 @@ namespace Post.Migrations
 
                     b.Property<Guid>("IdUser")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
                     b.Property<Guid?>("PostidPost")
                         .HasColumnType("uniqueidentifier");
@@ -51,7 +54,86 @@ namespace Post.Migrations
                     b.ToTable("PostComments");
                 });
 
-            modelBuilder.Entity("BusinessObjects.Entities.Content.PostReply", b =>
+            modelBuilder.Entity("BusinessObjects.Entities.Post.PostCommentLike", b =>
+                {
+                    b.Property<Guid>("idPostCommentLike")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid?>("PostCommentidPostComment")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("idPostComment")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("idPostCommentLike");
+
+                    b.HasIndex("PostCommentidPostComment");
+
+                    b.ToTable("PostCommentLikes");
+                });
+
+            modelBuilder.Entity("BusinessObjects.Entities.Post.PostImage", b =>
+                {
+                    b.Property<Guid>("idPostImage")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid?>("PostidPost")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("idPost")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("imageUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("idPostImage");
+
+                    b.HasIndex("PostidPost");
+
+                    b.ToTable("PostImages");
+                });
+
+            modelBuilder.Entity("BusinessObjects.Entities.Post.PostLikes", b =>
+                {
+                    b.Property<Guid>("idPostLikes")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid?>("PostidPost")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("idPost")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("idPostLikes");
+
+                    b.HasIndex("PostidPost");
+
+                    b.ToTable("PostLikes");
+                });
+
+            modelBuilder.Entity("BusinessObjects.Entities.Post.PostReply", b =>
                 {
                     b.Property<Guid>("idPostReply")
                         .ValueGeneratedOnAdd()
@@ -64,8 +146,8 @@ namespace Post.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("IdUser")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
                     b.Property<Guid?>("PostCommentidPostComment")
                         .HasColumnType("uniqueidentifier");
@@ -80,7 +162,32 @@ namespace Post.Migrations
                     b.ToTable("PostReplies");
                 });
 
-            modelBuilder.Entity("BusinessObjects.Entities.Content.Posts", b =>
+            modelBuilder.Entity("BusinessObjects.Entities.Post.PostReplyLike", b =>
+                {
+                    b.Property<Guid>("idPostReplyLike")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid?>("PostReplyidPostReply")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("idPostReply")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("idPostReplyLike");
+
+                    b.HasIndex("PostReplyidPostReply");
+
+                    b.ToTable("PostReplyLikes");
+                });
+
+            modelBuilder.Entity("BusinessObjects.Entities.Post.Posts", b =>
                 {
                     b.Property<Guid>("idPost")
                         .ValueGeneratedOnAdd()
@@ -99,10 +206,6 @@ namespace Post.Migrations
 
                     b.Property<Guid>("IdUser")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Image")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsBlock")
                         .HasColumnType("bit");
@@ -227,9 +330,6 @@ namespace Post.Migrations
                     b.Property<bool>("isAcept")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("isManager")
-                        .HasColumnType("bit");
-
                     b.HasKey("idProjectMember");
 
                     b.HasIndex("ProjectidProject");
@@ -237,25 +337,61 @@ namespace Post.Migrations
                     b.ToTable("ProjectMember");
                 });
 
-            modelBuilder.Entity("BusinessObjects.Entities.Content.PostComment", b =>
+            modelBuilder.Entity("BusinessObjects.Entities.Post.PostComment", b =>
                 {
-                    b.HasOne("BusinessObjects.Entities.Content.Posts", "Post")
+                    b.HasOne("BusinessObjects.Entities.Post.Posts", "Post")
                         .WithMany("PostComments")
                         .HasForeignKey("PostidPost");
 
                     b.Navigation("Post");
                 });
 
-            modelBuilder.Entity("BusinessObjects.Entities.Content.PostReply", b =>
+            modelBuilder.Entity("BusinessObjects.Entities.Post.PostCommentLike", b =>
                 {
-                    b.HasOne("BusinessObjects.Entities.Content.PostComment", "PostComment")
+                    b.HasOne("BusinessObjects.Entities.Post.PostComment", "PostComment")
+                        .WithMany("PostCommentLikes")
+                        .HasForeignKey("PostCommentidPostComment");
+
+                    b.Navigation("PostComment");
+                });
+
+            modelBuilder.Entity("BusinessObjects.Entities.Post.PostImage", b =>
+                {
+                    b.HasOne("BusinessObjects.Entities.Post.Posts", "Post")
+                        .WithMany("PostImages")
+                        .HasForeignKey("PostidPost");
+
+                    b.Navigation("Post");
+                });
+
+            modelBuilder.Entity("BusinessObjects.Entities.Post.PostLikes", b =>
+                {
+                    b.HasOne("BusinessObjects.Entities.Post.Posts", "Post")
+                        .WithMany("PostLikes")
+                        .HasForeignKey("PostidPost");
+
+                    b.Navigation("Post");
+                });
+
+            modelBuilder.Entity("BusinessObjects.Entities.Post.PostReply", b =>
+                {
+                    b.HasOne("BusinessObjects.Entities.Post.PostComment", "PostComment")
                         .WithMany("PostReplies")
                         .HasForeignKey("PostCommentidPostComment");
 
                     b.Navigation("PostComment");
                 });
 
-            modelBuilder.Entity("BusinessObjects.Entities.Content.Posts", b =>
+            modelBuilder.Entity("BusinessObjects.Entities.Post.PostReplyLike", b =>
+                {
+                    b.HasOne("BusinessObjects.Entities.Post.PostReply", "PostReply")
+                        .WithMany("PostReplyLikes")
+                        .HasForeignKey("PostReplyidPostReply");
+
+                    b.Navigation("PostReply");
+                });
+
+            modelBuilder.Entity("BusinessObjects.Entities.Post.Posts", b =>
                 {
                     b.HasOne("BusinessObjects.Entities.Projects.ProjectInfo", "Project")
                         .WithMany("Posts")
@@ -282,14 +418,25 @@ namespace Post.Migrations
                     b.Navigation("Project");
                 });
 
-            modelBuilder.Entity("BusinessObjects.Entities.Content.PostComment", b =>
+            modelBuilder.Entity("BusinessObjects.Entities.Post.PostComment", b =>
                 {
+                    b.Navigation("PostCommentLikes");
+
                     b.Navigation("PostReplies");
                 });
 
-            modelBuilder.Entity("BusinessObjects.Entities.Content.Posts", b =>
+            modelBuilder.Entity("BusinessObjects.Entities.Post.PostReply", b =>
+                {
+                    b.Navigation("PostReplyLikes");
+                });
+
+            modelBuilder.Entity("BusinessObjects.Entities.Post.Posts", b =>
                 {
                     b.Navigation("PostComments");
+
+                    b.Navigation("PostImages");
+
+                    b.Navigation("PostLikes");
                 });
 
             modelBuilder.Entity("BusinessObjects.Entities.Projects.ProjectInfo", b =>

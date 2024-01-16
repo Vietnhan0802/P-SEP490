@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using BusinessObjects.Entities.Content;
+using BusinessObjects.Entities.Post;
 using BusinessObjects.ViewModels.Post;
 using BusinessObjects.ViewModels.User;
 using Microsoft.AspNetCore.Http;
@@ -63,7 +63,6 @@ namespace Post.Controllers
                         idPost = postViewModel.idPost,
                         Title = postViewModel.Title,
                         Content = postViewModel.Content,
-                        Image = postViewModel.Image,
                         Major = postViewModel.Major,
                         Exp = postViewModel.Exp,
                         View = postViewModel.View
@@ -97,7 +96,6 @@ namespace Post.Controllers
 
                 existingPost.Title = updatedPostViewModel.Title;
                 existingPost.Content = updatedPostViewModel.Content;
-                existingPost.Image = updatedPostViewModel.Image;
                 existingPost.Major = updatedPostViewModel.Major;
                 existingPost.Exp = updatedPostViewModel.Exp;
                 existingPost.View = updatedPostViewModel.View;
