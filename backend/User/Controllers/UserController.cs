@@ -77,7 +77,9 @@ namespace User.Controllers
             {
                 return new Response(HttpStatusCode.NotFound, "User doesn't exist!");
             }
-            return new Response(HttpStatusCode.OK, "Get user is success!", _mapper.Map<ViewUser>(user));
+            var result = _mapper.Map<ViewUser>(user);
+            result.ImageSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, result.avatar);
+            return new Response(HttpStatusCode.OK, "Get user is success!", result);
         }
 
         [HttpGet("GetNameUser/{idUser}")]
