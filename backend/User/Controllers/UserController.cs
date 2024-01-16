@@ -61,7 +61,12 @@ namespace User.Controllers
             {
                 return new Response(HttpStatusCode.NoContent, "User list is empty!");
             }
-            return new Response(HttpStatusCode.OK, "Get all users is success!", _mapper.Map<List<ViewUser>>(users));
+            var result = _mapper.Map<List<ViewUser>>(users);
+            foreach (var user in result)
+            {
+                user.ImageSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, user.avatar);
+            }
+            return new Response(HttpStatusCode.OK, "Get all users is success!", result);
         }
 
         [HttpGet("GetUserById/{idUser}")]
@@ -122,9 +127,26 @@ namespace User.Controllers
             {
                 return new Response(HttpStatusCode.NotFound, "User doesn't exist!");
             }
-            //updateUser.avatar = await SaveImage(updateUser.imageFile);
-            var user = _mapper.Map(updateUser, userExits);
-            await _userManager.UpdateAsync(user);
+            _mapper.Map(updateUser, userExits);
+            await _userManager.UpdateAsync(userExits);
+            return new Response(HttpStatusCode.OK, "Update user is success!", _mapper.Map<UpdateUser>(userExits));
+        }
+
+        [HttpPut("UpdateAvatar/{idUser}")]
+        public async Task<Response> UpdateAvatar(string idUser, UpdateAvatar updateAvatar)
+        {
+            var userExits = await _userManager.FindByIdAsync(idUser);
+            if (userExits == null)
+            {
+                return new Response(HttpStatusCode.NotFound, "User doesn't exist!");
+            }
+            if (updateAvatar.avatar != null)
+            {
+                DeleteImage(updateAvatar.avatar);
+                updateAvatar.avatar = await SaveImage(updateAvatar.ImageFile);
+            }
+            _mapper.Map(updateAvatar, userExits);
+            await _userManager.UpdateAsync(userExits);
             return new Response(HttpStatusCode.OK, "Update user is success!", _mapper.Map<UpdateUser>(userExits));
         }
 
@@ -401,16 +423,24 @@ namespace User.Controllers
         }
 
         [NonAction]
-        public async Task<string> SaveImage(IFormFile formFile)
+        public async Task<string> SaveImage(IFormFile imageFile)
         {
-            string imageName = new String(Path.GetFileNameWithoutExtension(formFile.FileName).Take(10).ToArray()).Replace(' ', '-');
-            imageName = imageName + DateTime.Now.ToString("yymmssfff") + Path.GetExtension(formFile.FileName);
+            string imageName = new String(Path.GetFileNameWithoutExtension(imageFile.FileName).Take(10).ToArray()).Replace(' ', '-');
+            imageName = imageName + DateTime.Now.ToString("yymmssfff") + Path.GetExtension(imageFile.FileName);
             var imagePath = Path.Combine(_hostEnvironment.ContentRootPath, "Images", imageName);
             using (var fileStream = new FileStream(imagePath, FileMode.Create))
             {
-                await formFile.CopyToAsync(fileStream);
+                await imageFile.CopyToAsync(fileStream);
             }
             return imageName;
+        }
+
+        [NonAction]
+        public void DeleteImage(string imageName)
+        {
+            var imagePath = Path.Combine(_hostEnvironment.ContentRootPath, "Images", imageName);
+            if (System.IO.File.Exists(imagePath))
+                System.IO.File.Delete(imagePath);
         }
     }
 }

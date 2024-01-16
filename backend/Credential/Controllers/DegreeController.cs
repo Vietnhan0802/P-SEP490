@@ -30,7 +30,7 @@ namespace Credential.Controllers
             UserApiUrl = "https://localhost:7006/api/User";
         }
 
-        
+
         [HttpGet("GetNameUserCurrent/{idUser}")]
         private async Task<string> GetNameUserCurrent(string idUser)
         {

@@ -1,9 +1,6 @@
-﻿using BusinessObjects.Entities.Credential;
-using BusinessObjects.Entities.Follow;
-using BusinessObjects.Entities.Projects;
+﻿using BusinessObjects.Entities.Follow;
 using BusinessObjects.ViewModels.User;
 using Follow.Data;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
