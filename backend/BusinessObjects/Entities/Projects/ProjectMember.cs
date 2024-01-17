@@ -1,5 +1,4 @@
-﻿using BusinessObjects.Enums.Project;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace BusinessObjects.Entities.Projects
 {

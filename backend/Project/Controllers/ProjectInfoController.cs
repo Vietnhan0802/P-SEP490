@@ -47,7 +47,7 @@ namespace Project.Controllers
         [HttpGet("GetAllProjects")]
         public async Task<Response> GetAllProjects()
         {
-            var projects = await _context.ProjectInfos.ToListAsync();
+            var projects = await _context.ProjectInfos.Where(x => x.isDeleted == false && x.visibility == BusinessObjects.Enums.Project.Visibility.Public).OrderByDescending(x => x.createdDate).ToListAsync();
             if (projects == null)
             {
                 return new Response(HttpStatusCode.NotFound, "Project doesn't exists!");
