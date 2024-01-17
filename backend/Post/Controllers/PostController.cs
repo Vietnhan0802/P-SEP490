@@ -18,7 +18,8 @@ namespace Post.Controllers
         private readonly AppDBContext _dbContext;
         private readonly IMapper _mapper;
         private readonly HttpClient client;
-        public string UserApiUrl { get; }
+
+        public string UserApiUrl { get; private set; }
 
         public PostController(AppDBContext context, IMapper mapper)
         {
@@ -30,17 +31,16 @@ namespace Post.Controllers
             UserApiUrl = "https://localhost:7006/api/User";
         }
 
-        [NonAction]
-        [HttpGet("GetCurrentUserByName")]
-        private async Task<ViewUser> GetCurrentUserByName(string userId)
+        [HttpGet("GetNameUserCurrent/{idUser}")]
+        private async Task<string> GetNameUserCurrent(string idUser)
         {
-            HttpResponseMessage response = await client.GetAsync($"{UserApiUrl}/GetUserById/{userId}");
+            HttpResponseMessage response = await client.GetAsync($"{UserApiUrl}/GetNameUser/{idUser}");
             string strData = await response.Content.ReadAsStringAsync();
             var option = new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true,
             };
-            var user = JsonSerializer.Deserialize<ViewUser>(strData, option);
+            var user = JsonSerializer.Deserialize<string>(strData, option);
 
             return user;
         }
