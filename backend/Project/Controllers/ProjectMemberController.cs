@@ -158,5 +158,18 @@ namespace Project.Controllers
             await _context.SaveChangesAsync();
             return new Response(HttpStatusCode.OK, "Deny Project Application is success!", projectApplication);
         }
+
+        [HttpDelete("RemoveMember/{idProject}/{idAccount}")]
+        public async Task<Response> RemoveMember(Guid idProject, string idAccount)
+        {
+            var member = await _context.ProjectMembers.FirstOrDefaultAsync(x => x.idAccount == idAccount && x.idProject == idProject);
+            if (member == null)
+            {
+                return new Response(HttpStatusCode.NotFound, "Member doesn't exists!");
+            }
+            _context.ProjectMembers.Remove(member);
+            await _context.SaveChangesAsync();
+            return new Response(HttpStatusCode.NoContent, "Remove member is success!");
+        }
     }
 }
