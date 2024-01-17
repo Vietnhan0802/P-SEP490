@@ -4,5 +4,6 @@
     {
         public string idAccount { get; set; }
         public string fullName { get; set; }
+        public DateTime createdDate { get; set; }
     }
 }
