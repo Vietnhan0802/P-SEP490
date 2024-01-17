@@ -16,8 +16,8 @@ namespace Follow.Data.Migrations
                 columns: table => new
                 {
                     idFollower = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    idAccount = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     idOwner = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    idAccount = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     createdDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>

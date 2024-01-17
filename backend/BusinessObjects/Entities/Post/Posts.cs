@@ -1,5 +1,4 @@
-﻿using BusinessObjects.Entities.Content;
-using BusinessObjects.Entities.Projects;
+﻿using BusinessObjects.Entities.Projects;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;

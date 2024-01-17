@@ -12,7 +12,7 @@ using User.Data;
 namespace User.Data.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20240114102351_Once")]
+    [Migration("20240117143755_Once")]
     partial class Once
     {
         /// <inheritdoc />
@@ -97,7 +97,7 @@ namespace User.Data.Migrations
                     b.Property<Guid>("idVerification")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<bool>("isBlock")
+                    b.Property<bool?>("isBlock")
                         .HasColumnType("bit");
 
                     b.Property<bool?>("isMale")
@@ -123,20 +123,20 @@ namespace User.Data.Migrations
                         {
                             Id = "b80546cd-f4df-4a46-842e-22d3f9018ce3",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "5a64c4b7-388b-4e16-9669-54072e911828",
+                            ConcurrencyStamp = "34fc776d-db86-4f51-8ab0-747428fe7b67",
                             Email = "admin@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = true,
                             NormalizedEmail = "ADMIN@GMAIL.COM",
                             NormalizedUserName = "ADMIN@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEMpElvd3kur4xO9lFNmDLoP8NuWevGFZYek6hbhEf/DShdbAuVAAxeKNevibjD2exA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEKfRMBPKBXLN+iuBr6fYHaz9oBSNBGLXET0n9ELPj19XuxmTP4MP8cxvPS6n7Ag11g==",
                             PhoneNumber = "0949180802",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "3cc5aeaf-c9ad-4d8e-b8a7-572a70babaef",
+                            SecurityStamp = "bf92ac81-0dac-429b-b040-ffd0ee04335d",
                             TwoFactorEnabled = false,
                             UserName = "admin@gmail.com",
                             address = "Bến Tre",
-                            createdDate = new DateTime(2024, 1, 14, 17, 23, 50, 864, DateTimeKind.Local).AddTicks(9890),
+                            createdDate = new DateTime(2024, 1, 17, 21, 37, 55, 477, DateTimeKind.Local).AddTicks(6082),
                             date = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             fullName = "Đầu bự vô địch",
                             idVerification = new Guid("00000000-0000-0000-0000-000000000000"),
@@ -182,14 +182,14 @@ namespace User.Data.Migrations
                         },
                         new
                         {
-                            Id = "a679c107-c778-4f5a-8de7-c8a8b19b3dc3",
+                            Id = "ad6d6d51-cd1d-4bf6-ab7c-e1e1dc7a7da9",
                             ConcurrencyStamp = "2",
                             Name = "Person",
                             NormalizedName = "Person"
                         },
                         new
                         {
-                            Id = "84ba1f8f-a69a-4647-a983-7c8a51f37e78",
+                            Id = "41bccbdf-c623-473e-9d97-a580fb4f82ef",
                             ConcurrencyStamp = "3",
                             Name = "Business",
                             NormalizedName = "Business"
