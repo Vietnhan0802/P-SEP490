@@ -12,7 +12,7 @@ using Project.Data;
 namespace Project.Data.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20240117143736_Once")]
+    [Migration("20240117145551_Once")]
     partial class Once
     {
         /// <inheritdoc />
@@ -278,34 +278,6 @@ namespace Project.Data.Migrations
                     b.ToTable("ProjectInfos");
                 });
 
-            modelBuilder.Entity("BusinessObjects.Entities.Projects.ProjectInvitation", b =>
-                {
-                    b.Property<Guid>("idProjectInvitation")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("confirmedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("createdDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("idAccount")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("idProject")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool?>("isAccept")
-                        .HasColumnType("bit");
-
-                    b.HasKey("idProjectInvitation");
-
-                    b.HasIndex("idProject");
-
-                    b.ToTable("ProjectInvitations");
-                });
-
             modelBuilder.Entity("BusinessObjects.Entities.Projects.ProjectMember", b =>
                 {
                     b.Property<Guid>("idProjectMember")
@@ -326,6 +298,9 @@ namespace Project.Data.Migrations
 
                     b.Property<bool?>("isAcept")
                         .HasColumnType("bit");
+
+                    b.Property<int>("type")
+                        .HasColumnType("int");
 
                     b.HasKey("idProjectMember");
 
@@ -397,24 +372,13 @@ namespace Project.Data.Migrations
                     b.Navigation("Project");
                 });
 
-            modelBuilder.Entity("BusinessObjects.Entities.Projects.ProjectInvitation", b =>
-                {
-                    b.HasOne("BusinessObjects.Entities.Projects.ProjectInfo", "Project")
-                        .WithMany("ProjectInvitations")
-                        .HasForeignKey("idProject")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Project");
-                });
-
             modelBuilder.Entity("BusinessObjects.Entities.Projects.ProjectMember", b =>
                 {
-                    b.HasOne("BusinessObjects.Entities.Projects.ProjectInfo", "Project")
+                    b.HasOne("BusinessObjects.Entities.Projects.ProjectInfo", "ProjectInfo")
                         .WithMany("ProjectMembers")
                         .HasForeignKey("idProject");
 
-                    b.Navigation("Project");
+                    b.Navigation("ProjectInfo");
                 });
 
             modelBuilder.Entity("BusinessObjects.Entities.Post.PostComment", b =>
@@ -441,8 +405,6 @@ namespace Project.Data.Migrations
             modelBuilder.Entity("BusinessObjects.Entities.Projects.ProjectInfo", b =>
                 {
                     b.Navigation("Posts");
-
-                    b.Navigation("ProjectInvitations");
 
                     b.Navigation("ProjectMembers");
                 });

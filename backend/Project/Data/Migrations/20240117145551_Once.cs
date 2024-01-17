@@ -58,34 +58,13 @@ namespace Project.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ProjectInvitations",
-                columns: table => new
-                {
-                    idProjectInvitation = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    idAccount = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    idProject = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    isAccept = table.Column<bool>(type: "bit", nullable: true),
-                    confirmedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    createdDate = table.Column<DateTime>(type: "datetime2", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ProjectInvitations", x => x.idProjectInvitation);
-                    table.ForeignKey(
-                        name: "FK_ProjectInvitations_ProjectInfos_idProject",
-                        column: x => x.idProject,
-                        principalTable: "ProjectInfos",
-                        principalColumn: "idProject",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "ProjectMembers",
                 columns: table => new
                 {
                     idProjectMember = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     idAccount = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     idProject = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    type = table.Column<int>(type: "int", nullable: false),
                     isAcept = table.Column<bool>(type: "bit", nullable: true),
                     confirmedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     createdDate = table.Column<DateTime>(type: "datetime2", nullable: false)
@@ -260,11 +239,6 @@ namespace Project.Data.Migrations
                 column: "ProjectidProject");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProjectInvitations_idProject",
-                table: "ProjectInvitations",
-                column: "idProject");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_ProjectMembers_idProject",
                 table: "ProjectMembers",
                 column: "idProject");
@@ -284,9 +258,6 @@ namespace Project.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "PostReplyLike");
-
-            migrationBuilder.DropTable(
-                name: "ProjectInvitations");
 
             migrationBuilder.DropTable(
                 name: "ProjectMembers");

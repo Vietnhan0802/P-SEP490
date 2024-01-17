@@ -46,7 +46,7 @@ namespace Project.Controllers
         [HttpGet("GetAllProjectApplications")]
         public async Task<Response> GetAllProjectApplications(Guid idProject)
         {
-            var projectApplications = await _context.ProjectMembers.Include(x => x.Project).Where(x => x.idProject == idProject).ToListAsync();
+            var projectApplications = await _context.ProjectMembers.Include(x => x.ProjectInfo).Where(x => x.idProject == idProject).ToListAsync();
             if (projectApplications == null)
             {
                 return new Response(HttpStatusCode.NotFound, "Project Application doesn't exists!");
@@ -55,7 +55,7 @@ namespace Project.Controllers
             {
                 userName = await GetNameUserCurrent(x.idAccount),
                 x.idProject,
-                name = x.Project?.name,
+                name = x.ProjectInfo?.name,
                 x.isAcept,
                 x.createdDate
             });

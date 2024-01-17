@@ -28,7 +28,7 @@ namespace Project.Controllers
             UserApiUrl = "https://localhost:7006/api/User";
         }
 
-        [HttpGet("GetNameUserCurrent/{idUser}")]
+        /*[HttpGet("GetNameUserCurrent/{idUser}")]
         private async Task<string> GetNameUserCurrent(string idUser)
         {
             HttpResponseMessage response = await client.GetAsync($"{UserApiUrl}/GetNameUser/{idUser}");
@@ -104,6 +104,6 @@ namespace Project.Controllers
             _context.ProjectInvitations.Update(projectInvitation);
             await _context.SaveChangesAsync();
             return new Response(HttpStatusCode.OK, "Deny Project Invitation is success!", projectInvitation);
-        }
+        }*/
     }
 }
