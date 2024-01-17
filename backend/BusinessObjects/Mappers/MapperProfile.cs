@@ -6,6 +6,7 @@ using BusinessObjects.Entities.Post;
 using BusinessObjects.Entities.Projects;
 using BusinessObjects.Entities.User;
 using BusinessObjects.ViewModels.Blog;
+using BusinessObjects.ViewModels.BlogComments;
 using BusinessObjects.ViewModels.Credential;
 using BusinessObjects.ViewModels.Follow;
 using BusinessObjects.ViewModels.Post;
@@ -41,6 +42,10 @@ namespace BusinessObjects.Mappers
 
             CreateMap<Blogs, CreateBlogViewModel>().ReverseMap();   
             CreateMap<Blogs, UpdateBlogViewModel>().ReverseMap();
+
+            CreateMap<BlogComment, CreateCommentBlog>().ReverseMap();
+            CreateMap<BlogComment, UpdateCommentBlog>().ReverseMap();
+
         }
     }
 }

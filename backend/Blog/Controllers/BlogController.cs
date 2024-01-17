@@ -18,7 +18,8 @@ namespace Blog.Controllers
         private readonly AppDBContext _dbContext;
         private readonly IMapper _mapper;
         private readonly HttpClient client;
-        public string UserApiUrl { get; }
+
+        public string UserApiUrl { get; private set; }
 
         public BlogController(AppDBContext context, IMapper mapper)
         {
@@ -30,17 +31,16 @@ namespace Blog.Controllers
             UserApiUrl = "https://localhost:7006/api/User";
         }
 
-        [NonAction]
-        [HttpGet("GetCurrentUserByName")]
-        private async Task<ViewUser> GetCurrentUserByName(string userId)
+        [HttpGet("GetNameUserCurrent/{idUser}")]
+        private async Task<string> GetNameUserCurrent(string idUser)
         {
-            HttpResponseMessage response = await client.GetAsync($"{UserApiUrl}/GetUserById/{userId}");
+            HttpResponseMessage response = await client.GetAsync($"{UserApiUrl}/GetNameUser/{idUser}");
             string strData = await response.Content.ReadAsStringAsync();
             var option = new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true,
             };
-            var user = JsonSerializer.Deserialize<ViewUser>(strData, option);
+            var user = JsonSerializer.Deserialize<string>(strData, option);
 
             return user;
         }
@@ -122,6 +122,99 @@ namespace Blog.Controllers
                 blogToDelete.IsDeleted = true;
                 await _dbContext.SaveChangesAsync();
                 return Ok($"Blog with id {id} deleted successfully.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Internal server error");
+            }
+        }
+
+        [HttpGet("{id}/LikeCount")]
+        public async Task<ActionResult<int>> GetLikeCount(Guid id)
+        {
+            try
+            {
+                var blog = await _dbContext.Blogs.FindAsync(id);
+
+                if (blog == null)
+                {
+                    return NotFound($"Blog with id {id} not found.");
+                }
+
+                var likeCount = await _dbContext.BlogLikes
+                    .CountAsync(like => like.idBlog == id && !like.IsDeleted);
+
+                return Ok(likeCount);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Internal server error");
+            }
+        }
+
+
+        [HttpPost("{id}/Like")]
+        public async Task<ActionResult> LikeBlog(Guid id)
+        {
+            try
+            {
+                var blog = await _dbContext.Blogs.FindAsync(id);
+
+                if (blog == null)
+                {
+                    return NotFound($"Blog with id {id} not found.");
+                }
+
+                var existingLike = await _dbContext.BlogLikes
+                    .FirstOrDefaultAsync(like => like.idBlog == id && !like.IsDeleted);
+
+                if (existingLike != null)
+                {
+                    return BadRequest("User has already liked this blog.");
+                }
+
+                var newLike = new BlogLike
+                {
+                    idBlog = id
+                };
+
+                _dbContext.BlogLikes.Add(newLike);
+                await _dbContext.SaveChangesAsync();
+
+                return Ok($"Liked blog with id {id} successfully.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Internal server error");
+            }
+        }
+
+
+        [HttpPost("{id}/Unlike")]
+        public async Task<ActionResult> UnlikeBlog(Guid id)
+        {
+            try
+            {
+                var blog = await _dbContext.Blogs.FindAsync(id);
+
+                if (blog == null)
+                {
+                    return NotFound($"Blog with id {id} not found.");
+                }
+
+                // Kiểm tra xem người dùng đã like blog chưa
+                var existingLike = await _dbContext.BlogLikes
+                    .FirstOrDefaultAsync(like => like.idBlog == id && !like.IsDeleted);
+
+                if (existingLike == null)
+                {
+                    return BadRequest("User has not liked this blog.");
+                }
+
+                existingLike.IsDeleted = true;
+                await _dbContext.SaveChangesAsync();
+
+                return Ok($"Unliked blog with id {id} successfully.");
             }
             catch (Exception ex)
             {
