@@ -9,10 +9,10 @@ import { useState } from "react";
 import PersonForm from "./PersonForm";
 import BusinessForm from "./BusinessForm";
 
-
 export default function SignIn() {
   const [showForm1, setShowForm1] = useState(true);
   const [showForm2, setShowForm2] = useState(false);
+  const [activeItem, setActiveItem] = useState("user");
 
   const handleFormClick = (formNumber) => {
     // Reset the visibility of both forms
@@ -44,19 +44,27 @@ export default function SignIn() {
             <p className="SFU-bold size-40 blue2f text-center py-lg-3 py-lg-5">
               SIGN UP
             </p>
-            <div className="d-flex justify-content-between">
-            <button onClick={() => handleFormClick(1)} className="gray-border white-bg d-flex flex-row rounded-50 align-items-center justify-content-center">Person</button>
-            <button onClick={() => handleFormClick(2)} className="gray-border white-bg d-flex flex-row rounded-50 align-items-center justify-content-center">Business</button>
-           
+            <div className="d-flex justify-content-around mb-3">
+              <button
+                onClick={() => handleFormClick(1)}
+                className={`gray-border white-bg d-flex w-25 flex-row rounded-50 align-items-center justify-content-center ${
+                  showForm1 === true ? "active-item" : ""
+                }`}
+              >
+                User
+              </button>
+              <button
+                onClick={() => handleFormClick(2)}
+                className={`gray-border white-bg d-flex w-25 flex-row rounded-50 align-items-center justify-content-center ${
+                  showForm2 === true ? "active-item" : ""
+                }`}
+              >
+                Business
+              </button>
             </div>
-             <div className="form-area">
-              {showForm1 && (
-                <PersonForm />
-              )}
-              {showForm2 && (
-                <BusinessForm />
-
-              )}
+            <div className="form-area">
+              {showForm1 && <PersonForm />}
+              {showForm2 && <BusinessForm />}
               <div className="row justify-content-center align-items-center pt-2">
                 <div className="col line1"></div>
                 <div className="col-5 col-lg-4 col-md-4 col-sm-4 text-center size-20">
@@ -95,9 +103,9 @@ export default function SignIn() {
             <div className="SFU-bold px-4 pb-3 pt-lg-5 mt-lg-5 text-center text-lg-start ">
               <p className="size-40 d-lg-none">Welcome Back!</p>
               <p className="d-none d-lg-block size-70">
-                Welcome&nbsp;
+                Hello new&nbsp;
                 <br />
-                Back!
+                User
               </p>
             </div>
           </div>

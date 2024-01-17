@@ -15,6 +15,7 @@ export default function Header({ activeComponent, onItemClick }) {
   const [activeItem, setActiveItem] = useState("home");
   const handleItemClick = (itemId) => {
     setActiveItem(itemId);
+    onItemClick(itemId);
   };
   const handleAvatarClick = () => {
     // Set activeItem to "profile" when the avatar is clicked
