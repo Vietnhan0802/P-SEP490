@@ -1,9 +1,13 @@
-﻿using BusinessObjects.Entities.Follow;
+﻿using AutoMapper;
+using BusinessObjects.Entities.Follow;
+using BusinessObjects.ViewModels.Follow;
 using BusinessObjects.ViewModels.User;
 using Follow.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
+using System.Net.Http.Headers;
+using System.Text.Json;
 
 namespace Follow.Controllers
 {
@@ -12,38 +16,72 @@ namespace Follow.Controllers
     public class FollowController : ControllerBase
     {
         private readonly AppDBContext _context;
+        private readonly IMapper _mapper;
+        private readonly HttpClient client;
 
-        public FollowController(AppDBContext context)
+        public string UserApiUrl { get; }
+
+        public FollowController(AppDBContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
+            client = new HttpClient();
+            var contentType = new MediaTypeWithQualityHeaderValue("application/json");
+            client.DefaultRequestHeaders.Accept.Add(contentType);
+            UserApiUrl = "https://localhost:7006/api/User";
         }
 
-        [HttpGet("GetFollowings/{idOwner}")]
-        public async Task<Response> GetFollowings(string idOwner)
+        [HttpGet("GetNameUserCurrent/{idUser}")]
+        private async Task<string> GetNameUserCurrent(string idUser)
         {
-            var following = await _context.Followers.Where(x => x.idOwner == idOwner).Select(x => x.idAccount).ToListAsync();
-            return new Response(HttpStatusCode.OK, "GetFollowings is success!", following);
+            HttpResponseMessage response = await client.GetAsync($"{UserApiUrl}/GetNameUser/{idUser}");
+            string strData = await response.Content.ReadAsStringAsync();
+            var option = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true,
+            };
+            var user = JsonSerializer.Deserialize<string>(strData, option);
+            return user;
+        }
+
+        [HttpGet("GetAllFollowings/{idOwner}")]
+        public async Task<Response> GetAllFollowings(string idOwner)
+        {
+            var followings = await _context.Followers.Where(x => x.idOwner == idOwner).Select(x => x.idAccount).ToListAsync();
+            var result = _mapper.Map<List<FollowingView>>(followings);
+            for (int i = 0; i < result.Count; i++)
+            {
+                result[i].idAccount = followings[i];
+                result[i].fullName = await GetNameUserCurrent(followings[i]);        
+            }
+            return new Response(HttpStatusCode.OK, "Get all followings is success!", result);
         }
 
         [HttpGet("GetTotalFollowings/{idOwner}")]
         public async Task<Response> GetTotalFollowings(string idOwner)
         {
             var totalFollowing = await _context.Followers.CountAsync(x => x.idOwner == idOwner);
-            return new Response(HttpStatusCode.OK, "GetTotalFollowings is success!", totalFollowing);
+            return new Response(HttpStatusCode.OK, "Get total followings is success!", totalFollowing);
         }
 
-        [HttpGet("GetFollowers/{idOwner}")]
-        public async Task<Response> GetFollowers(string idOwner)
+        [HttpGet("GetAllFollowers/{idOwner}")]
+        public async Task<Response> GetAllFollowers(string idOwner)
         {
-            var following = await _context.Followers.Where(x => x.idAccount == idOwner).Select(x => x.idOwner).ToListAsync();
-            return new Response(HttpStatusCode.OK, "GetFollowers is success!", following);
+            var followers = await _context.Followers.Where(x => x.idAccount == idOwner).Select(x => x.idOwner).ToListAsync();
+            var result = _mapper.Map<List<FollowingView>>(followers);
+            for (int i = 0; i < result.Count; i++)
+            {
+                result[i].idAccount = followers[i];
+                result[i].fullName = await GetNameUserCurrent(followers[i]);
+            }
+            return new Response(HttpStatusCode.OK, "Get followers is success!", result);
         }
 
         [HttpGet("GetTotalFollowers/{idOwner}")]
         public async Task<Response> GetTotalFollowers(string idOwner)
         {
             var totalFollower = await _context.Followers.CountAsync(x => x.idAccount == idOwner);
-            return new Response(HttpStatusCode.OK, "GetTotalFollowings is success!", totalFollower);
+            return new Response(HttpStatusCode.OK, "Get total followings is success!", totalFollower);
         }
 
         [HttpPost("Following/{idOwner}/{idAccount}")]

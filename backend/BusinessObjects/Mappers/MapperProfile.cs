@@ -1,11 +1,13 @@
 ﻿using AutoMapper;
 using BusinessObjects.Entities.Blog;
 using BusinessObjects.Entities.Credential;
+using BusinessObjects.Entities.Follow;
 using BusinessObjects.Entities.Post;
 using BusinessObjects.Entities.Projects;
 using BusinessObjects.Entities.User;
 using BusinessObjects.ViewModels.Blog;
 using BusinessObjects.ViewModels.Credential;
+using BusinessObjects.ViewModels.Follow;
 using BusinessObjects.ViewModels.Post;
 using BusinessObjects.ViewModels.Project;
 using BusinessObjects.ViewModels.User;
@@ -29,10 +31,10 @@ namespace BusinessObjects.Mappers
             CreateMap<ProjectInfo, ProjectInfoView>().ReverseMap();
             CreateMap<ProjectInfo, ProjectInfoCreate>().ReverseMap();
             CreateMap<ProjectInfo, ProjectInfoUpdate>().ReverseMap();
-
             CreateMap<ProjectMember, ProjectMemberView>().ReverseMap();
-
             CreateMap<ProjectInvitation, ProjectInvitationView>().ReverseMap();
+
+            CreateMap<Follower, FollowingView>().ReverseMap();
 
             CreateMap<Posts, CreatePostViewModel>().ReverseMap();
             CreateMap<Posts, UpdatePostViewModel>().ReverseMap();
