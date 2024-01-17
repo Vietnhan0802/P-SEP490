@@ -44,6 +44,13 @@ namespace Project.Controllers
             return user;
         }
 
+        [HttpGet("GetTotalProjects")]
+        public async Task<Response> GetTotalProjects(string idUser)
+        {
+            var totalProject = await _context.ProjectInfos.CountAsync(x => x.idAccount == idUser);
+            return new Response(HttpStatusCode.OK, "Get total projects is success!", totalProject);
+        }
+
         [HttpGet("GetAllProjects")]
         public async Task<Response> GetAllProjects()
         {
