@@ -24,7 +24,7 @@ namespace Credential.Data.Migrations
                     type = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     major = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     image = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    isDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    isDeleted = table.Column<bool>(type: "bit", nullable: true),
                     createdDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>

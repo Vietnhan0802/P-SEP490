@@ -55,7 +55,7 @@ namespace Project.Controllers
             var result = _mapper.Map<List<ProjectInfoView>>(projects);
             foreach (var project in result)
             {
-                project.idAccount = await GetNameUserCurrent(project.idAccount);
+                project.fullName = await GetNameUserCurrent(project.idAccount);
             }
             return new Response(HttpStatusCode.OK, "Get all project success!", result);
         }
@@ -63,7 +63,6 @@ namespace Project.Controllers
         [HttpGet("GetProjectByUser/{idUser}")]
         public async Task<Response> GetProjectByUser(string idUser)
         {
-            var userName = await GetNameUserCurrent(idUser);
             var projects = await _context.ProjectInfos.Where(x => x.idAccount == idUser && x.isDeleted == false).OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
             if (projects == null)
             {
@@ -72,7 +71,7 @@ namespace Project.Controllers
             var result = _mapper.Map<List<ProjectInfoView>>(projects);
             foreach (var project in result)
             {
-                project.idAccount = await GetNameUserCurrent(idUser);
+                project.fullName = await GetNameUserCurrent(idUser);
             }
             return new Response(HttpStatusCode.OK, "Get project by user success!", result);
         }
@@ -85,9 +84,9 @@ namespace Project.Controllers
             {
                 return new Response(HttpStatusCode.NotFound, "Project doesn't exists!");
             }
-            var userName = await GetNameUserCurrent(project.idAccount);
-            project.idAccount = userName;
-            return new Response(HttpStatusCode.OK, "Get project by is success!", _mapper.Map<ProjectInfoView>(project));
+            var result = _mapper.Map<ProjectInfoView>(project);
+            result.fullName = await GetNameUserCurrent(result.idAccount);
+            return new Response(HttpStatusCode.OK, "Get project by is success!", result);
         }
 
         [HttpPost("CreateProject/{idUser}")]

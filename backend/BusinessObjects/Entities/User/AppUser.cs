@@ -13,7 +13,7 @@ namespace BusinessObjects.Entities.User
         public string address { get; set; }
         public string? avatar { get; set; }
         public Guid idVerification { get; set; }
-        public bool isBlock { get; set; } 
+        public bool? isBlock { get; set; } 
         public DateTime createdDate { get; set; }
     }
 }
