@@ -265,10 +265,10 @@ namespace User.Controllers
             }
             if (user != null && await _userManager.CheckPasswordAsync(user, signIn.password))
             {
-                if (!await _userManager.IsEmailConfirmedAsync(user))
+                /*if (!await _userManager.IsEmailConfirmedAsync(user))
                 {
                     return new Response(HttpStatusCode.Unauthorized, "Please confirm your email before logging in!");
-                }
+                }*/
 
                 var userRoles = await _userManager.GetRolesAsync(user);
                 var authClaims = new List<Claim>

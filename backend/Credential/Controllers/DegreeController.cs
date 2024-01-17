@@ -30,7 +30,6 @@ namespace Credential.Controllers
             UserApiUrl = "https://localhost:7006/api/User";
         }
 
-
         [HttpGet("GetNameUserCurrent/{idUser}")]
         private async Task<string> GetNameUserCurrent(string idUser)
         {
@@ -55,7 +54,7 @@ namespace Credential.Controllers
             var result = _mapper.Map<List<ViewDegree>>(degrees);
             foreach (var degree in result)
             {
-                degree.idAccount = await GetNameUserCurrent(degree.idAccount);
+                degree.fullName = await GetNameUserCurrent(degree.idAccount);
             }
             return new Response(HttpStatusCode.OK, "Get all degree success!", result);
         }
@@ -63,7 +62,7 @@ namespace Credential.Controllers
         [HttpGet("GetDegreeByUser/{idUser}")]
         public async Task<Response> GetDegreeByUser(string idUser)
         {
-            var degrees = await _context.Degrees.Where(x => x.idAccount == idUser && x.isDeleted == false).OrderBy(x => x.createdDate).AsNoTracking().ToListAsync();
+            var degrees = await _context.Degrees.Where(x => x.idAccount == idUser && x.isDeleted == false).OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
             if (degrees == null)
             {
                 return new Response(HttpStatusCode.NotFound, "Degree doesn't exists!");
@@ -71,7 +70,7 @@ namespace Credential.Controllers
             var result = _mapper.Map<List<ViewDegree>>(degrees);
             foreach (var degree in result)
             {
-                degree.idAccount = await GetNameUserCurrent(idUser);
+                degree.fullName = await GetNameUserCurrent(degree.idAccount);
             }
             return new Response(HttpStatusCode.OK, "Get degree by user success!", result);
         }
@@ -84,9 +83,9 @@ namespace Credential.Controllers
             {
                 return new Response(HttpStatusCode.NotFound, "Degree doesn't exists!");
             }
-            var userName = await GetNameUserCurrent(degree.idAccount);
-            degree.idAccount = userName;
-            return new Response(HttpStatusCode.OK, "Get degree by is success!", _mapper.Map<ViewDegree>(degree));
+            var result = _mapper.Map<ViewDegree>(degree);
+            result.fullName = await GetNameUserCurrent(result.idAccount);
+            return new Response(HttpStatusCode.OK, "Get degree by is success!", result);
         }
 
         [HttpPost("CreateDegree/{idUser}")]
