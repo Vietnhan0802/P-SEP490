@@ -19,5 +19,6 @@ namespace BusinessObjects.Entities.Blog
         public bool IsDeleted { get; set; } = false;
         public Guid IdUser { get; set; }
         public ICollection<BlogComment>? BlogComments { get; set; } = new List<BlogComment>();
+        public ICollection<BlogLike>? BlogLikes { get; set; } = new List<BlogLike>();
     }
 }

@@ -17,7 +17,7 @@ namespace BusinessObjects.Entities.Blog
         public DateTime CreatedDate { get; set; } = DateTime.Now;
         public Guid idBlog { get; set; }
         public Blogs? Blogs { get; set; }
-        //public ICollection<BlogReply>? BlogReplies { get; set; } = new List<BlogReply>();
+        public ICollection<BlogReply>? BlogReplies { get; set; } = new List<BlogReply>();
         public ICollection<BlogCommentLike>? BlogCommentLikes { get; set; } = new List<BlogCommentLike>();
         public Guid IdUser { get; set; }
     }
