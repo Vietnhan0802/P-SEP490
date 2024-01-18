@@ -13,63 +13,73 @@ import { FaFacebook } from "react-icons/fa";
 import { GrTwitter } from "react-icons/gr";
 import { IoLogoInstagram } from "react-icons/io5";
 import { FaLinkedin } from "react-icons/fa";
-import { GrCertificate } from "react-icons/gr";
 import { MdOutlineSimCardDownload } from "react-icons/md";
 import { MdOutlineSpaceDashboard } from "react-icons/md";
-const sidebarItems = [
-  { id: "post", icon: <GoPencil />, text: "Post", userRole: "all" },
-  { id: "blog", icon: <FiBookOpen />, text: "Blog", userRole: "all" },
-  {
-    id: "own_post",
-    icon: <TbFloatLeft />,
-    text: "Own Post",
-    userRole: "business",
-  },
-  { id: "own_project", icon: <LuBook />, text: "Own Project", userRole: "business" },
-  {
-    id: "project_application",
-    icon: <LuFileEdit />,
-    text: "Project Application",
-    userRole: "business",
-  },
-  {
-    id: "verification",
-    icon: <FaRegCircleCheck />,
-    text: "Send Verification",
-    userRole: "business",
-  },
-  {
-    id: "own_degree",
-    icon: <GrCertificate />,
-    text: "Own Degree",
-    userRole: "Person",
-  },
-  {
-    id: "current_project",
-    icon: <MdOutlineSimCardDownload />,
-    text: "Current Project",
-    userRole: "Person",
-  },
-  {
-    id: "dashboard",
-    icon: <MdOutlineSpaceDashboard />,
-    text: "Dashboard",
-    userRole: "admin",
-  },
-  // Add other sidebar items similarly
-];
+
 function SideBar({ activeItem, onItemClick }) {
+  const sidebarItems = [
+    { id: "post", icon: <GoPencil />, text: "Post", userRole: "all" },
+    { id: "blog", icon: <FiBookOpen />, text: "Blog", userRole: "all" },
+    {
+      id: "own_post",
+      icon: <TbFloatLeft />,
+      text: "Own Post",
+      userRole: "business",
+    },
+    {
+      id: "own_project",
+      icon: <LuBook />,
+      text: "Own Project",
+      userRole: "business",
+    },
+    {
+      id: "project_application",
+      icon: <LuFileEdit />,
+      text: "Project Application",
+      userRole: "business",
+    },
+    {
+      id: "verification",
+      icon: <FaRegCircleCheck />,
+      text: "Send Verification",
+      userRole: "business",
+    },
+    {
+      id: "current_project",
+      icon: <MdOutlineSimCardDownload />,
+      text: "Current Project",
+      userRole: "Person",
+    },
+    {
+      id: "dashboard",
+      icon: <MdOutlineSpaceDashboard />,
+      text: "Dashboard",
+      userRole: "admin",
+    },
+    // Add other sidebar items similarly
+  ];
+  const handleLogout = () => {
+    Cookies.remove("user");
+    Cookies.remove("role");
+    window.location.href = "/";
+  };
   const handleItemClick = (itemId) => {
     onItemClick(itemId);
   };
   const userRole = JSON.parse(Cookies.get("role")); // Assuming 'role' is a property in your user object
   // Filter sidebar items based on user's role
   const filteredSidebarItems = sidebarItems.filter((item) => {
-    // Customize this condition based on your role logic    
-    return item.userRole.toLowerCase() === userRole.toLowerCase() || item.userRole.toLowerCase() === "all";
+    // Customize this condition based on your role logic
+    return (
+      item.userRole.toLowerCase() === userRole.toLowerCase() ||
+      item.userRole.toLowerCase() === "all"
+    );
   });
   return (
-    <div className="mb-3 d-flex flex-column justify-content-between" id="sidebar">
+    <div
+      className="mb-3 d-flex flex-column justify-content-between"
+      id="sidebar"
+    >
       <div className="upper-section">
         {filteredSidebarItems.map((item) => (
           <div
@@ -85,7 +95,10 @@ function SideBar({ activeItem, onItemClick }) {
         ))}
       </div>
       <div className="lower-section">
-        <div className="logout d-flex align-items-center">
+        <div
+          className="logout d-flex align-items-center"
+          onClick={handleLogout}
+        >
           <CiLogout className="logout-icon" />
           <p className="text ms-2">Log Out</p>
         </div>

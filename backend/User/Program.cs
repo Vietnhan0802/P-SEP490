@@ -76,11 +76,12 @@ app.UseCors(builder =>
 {
     builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
 });
-app.UseStaticFiles(new StaticFileOptions
+app.UseStaticFiles();
+/*app.UseStaticFiles(new StaticFileOptions
 {
     FileProvider = new PhysicalFileProvider(Path.Combine(app.Environment.ContentRootPath, "Images")),
     RequestPath = "/Images"
-});
+});*/
 
 app.UseHttpsRedirection();
 

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using BusinessObjects.Entities.Projects;
+using BusinessObjects.ViewModels.Project;
 using BusinessObjects.ViewModels.User;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -43,24 +44,64 @@ namespace Project.Controllers
             return user;
         }
 
-        [HttpGet("GetAllProjectApplications")]
+        [HttpGet("GetTotalProjects")]
+        public async Task<Response> GetTotalProjects(string idUser)
+        {
+            var totalProject = await _context.ProjectInfos.CountAsync(x => x.idAccount == idUser);
+            return new Response(HttpStatusCode.OK, "Get total projects is success!", totalProject);
+        }
+
+        [HttpGet("GetAllProjectApplications/{idProject}")]
         public async Task<Response> GetAllProjectApplications(Guid idProject)
         {
-            var projectApplications = await _context.ProjectMembers.Include(x => x.Project).Where(x => x.idProject == idProject).ToListAsync();
+            var projectApplications = await _context.ProjectMembers
+                .Include(x => x.ProjectInfo)
+                .Where(x => x.idProject == idProject && x.type == BusinessObjects.Enums.Project.Type.Applied)
+                .Select(x => new ProjectMemberView
+                {
+                    idProjectMember = x.idProjectMember,
+                    idAccount = x.idAccount,
+                    name = x.ProjectInfo.name,
+                    createdDate = x.createdDate,
+                })
+                .OrderByDescending(x => x.createdDate)
+                .AsNoTracking()
+                .ToListAsync();           
             if (projectApplications == null)
             {
                 return new Response(HttpStatusCode.NotFound, "Project Application doesn't exists!");
             }
-            var result = projectApplications.Select(async x => new 
+            foreach (var projectApplication in projectApplications)
             {
-                userName = await GetNameUserCurrent(x.idAccount),
-                x.idProject,
-                name = x.Project?.name,
-                x.isAcept,
-                x.createdDate
-            });
-
-            return new Response(HttpStatusCode.OK, "Get all project application success!", result);
+                projectApplication.fullName = await GetNameUserCurrent(projectApplication.idAccount);
+            }
+            return new Response(HttpStatusCode.OK, "Get all project application success!", projectApplications);
+        }
+        [HttpGet("GetAllProjectInvites/{idProject}")]
+        public async Task<Response> GetAllProjectInvites(Guid idProject)
+        {
+            var projectInvites = await _context.ProjectMembers
+                .Include(x => x.ProjectInfo)
+                .Where(x => x.idProject == idProject && x.type == BusinessObjects.Enums.Project.Type.Invited)
+                .Select(x => new ProjectMemberView
+                {
+                    idProjectMember = x.idProjectMember,
+                    idAccount = x.idAccount,
+                    name = x.ProjectInfo.name,
+                    createdDate = x.createdDate,
+                })
+                .OrderByDescending(x => x.createdDate)
+                .AsNoTracking()
+                .ToListAsync();
+            if (projectInvites == null)
+            {
+                return new Response(HttpStatusCode.NotFound, "Project Invite doesn't exists!");
+            }
+            foreach (var projectInvite in projectInvites)
+            {
+                projectInvite.fullName = await GetNameUserCurrent(projectInvite.idAccount);
+            }
+            return new Response(HttpStatusCode.OK, "Get all project invite success!", projectInvites);
         }
 
         [HttpPost("CreateProjectApplication/{idUser}/{idProject}")]
@@ -70,11 +111,29 @@ namespace Project.Controllers
             {
                 idAccount = idUser,
                 idProject = idProject,
+                type = BusinessObjects.Enums.Project.Type.Applied,
+                isAcept = null,
                 createdDate = DateTime.Now
             };
             await _context.ProjectMembers.AddAsync(projectApplication);
             await _context.SaveChangesAsync();
             return new Response(HttpStatusCode.OK, "Create Project Application is success!", projectApplication);
+        }
+
+        [HttpPost("CreateProjectInvite/{idUser}/{idProject}")]
+        public async Task<Response> CreateProjectInvite(string idUser, Guid idProject)
+        {
+            ProjectMember projectInvite = new ProjectMember()
+            {
+                idAccount = idUser,
+                idProject = idProject,
+                type = BusinessObjects.Enums.Project.Type.Invited,
+                isAcept = null,
+                createdDate = DateTime.Now
+            };
+            await _context.ProjectMembers.AddAsync(projectInvite);
+            await _context.SaveChangesAsync();
+            return new Response(HttpStatusCode.OK, "Create Project Invite is success!", projectInvite);
         }
 
         [HttpPut("AcceptProjectApplication/{idProjectMember}")]
@@ -105,6 +164,19 @@ namespace Project.Controllers
             _context.ProjectMembers.Update(projectApplication);
             await _context.SaveChangesAsync();
             return new Response(HttpStatusCode.OK, "Deny Project Application is success!", projectApplication);
+        }
+
+        [HttpDelete("RemoveMember/{idProject}/{idAccount}")]
+        public async Task<Response> RemoveMember(Guid idProject, string idAccount)
+        {
+            var member = await _context.ProjectMembers.FirstOrDefaultAsync(x => x.idAccount == idAccount && x.idProject == idProject);
+            if (member == null)
+            {
+                return new Response(HttpStatusCode.NotFound, "Member doesn't exists!");
+            }
+            _context.ProjectMembers.Remove(member);
+            await _context.SaveChangesAsync();
+            return new Response(HttpStatusCode.NoContent, "Remove member is success!");
         }
     }
 }

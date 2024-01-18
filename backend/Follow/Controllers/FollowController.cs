@@ -47,14 +47,24 @@ namespace Follow.Controllers
         [HttpGet("GetAllFollowings/{idOwner}")]
         public async Task<Response> GetAllFollowings(string idOwner)
         {
-            var followings = await _context.Followers.Where(x => x.idOwner == idOwner).Select(x => x.idAccount).ToListAsync();
-            var result = _mapper.Map<List<FollowingView>>(followings);
-            for (int i = 0; i < result.Count; i++)
+            var followings = await _context.Followers
+                .Where(x => x.idOwner == idOwner)
+                .Select(x => new FollowingView
+                {
+                    idAccount = x.idAccount
+                })
+                .OrderByDescending(x => x.createdDate)
+                .AsNoTracking()
+                .ToListAsync();
+            if (followings == null)
             {
-                result[i].idAccount = followings[i];
-                result[i].fullName = await GetNameUserCurrent(followings[i]);        
+                return new Response(HttpStatusCode.NotFound, "Followings doesn't exists!");
             }
-            return new Response(HttpStatusCode.OK, "Get all followings is success!", result);
+            foreach (var following in followings)
+            {
+                following.fullName = await GetNameUserCurrent(following.idAccount);
+            }
+            return new Response(HttpStatusCode.OK, "Get all followings is success!", followings);            
         }
 
         [HttpGet("GetTotalFollowings/{idOwner}")]
@@ -67,14 +77,24 @@ namespace Follow.Controllers
         [HttpGet("GetAllFollowers/{idOwner}")]
         public async Task<Response> GetAllFollowers(string idOwner)
         {
-            var followers = await _context.Followers.Where(x => x.idAccount == idOwner).Select(x => x.idOwner).ToListAsync();
-            var result = _mapper.Map<List<FollowingView>>(followers);
-            for (int i = 0; i < result.Count; i++)
+            var followers = await _context.Followers
+                .Where(x => x.idAccount == idOwner)
+                .Select(x => new FollowingView
+                {
+                    idAccount = x.idOwner
+                })
+                .OrderByDescending(x => x.createdDate)
+                .AsNoTracking()
+                .ToListAsync();
+            if (followers == null)
             {
-                result[i].idAccount = followers[i];
-                result[i].fullName = await GetNameUserCurrent(followers[i]);
+                return new Response(HttpStatusCode.NotFound, "Followers doesn't exists!");
             }
-            return new Response(HttpStatusCode.OK, "Get followers is success!", result);
+            foreach (var follower in followers)
+            {
+                follower.fullName = await GetNameUserCurrent(follower.idAccount);
+            }
+            return new Response(HttpStatusCode.OK, "Get followers is success!", followers);
         }
 
         [HttpGet("GetTotalFollowers/{idOwner}")]

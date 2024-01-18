@@ -1,0 +1,73 @@
+#simplePopup {
+  .popup {
+    position: absolute;
+    width: fit-content;
+    height: 100vh;
+  }
+  .popup-inner {
+    position: relative;
+    padding: 32px;
+    width: 100%;
+    max-width: 640px;
+  }
+  .popup-inner .close-btn {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+  }
+}
+
+#report {
+  width: 100%;
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  .popup {
+    width: 100%;
+    height: 380px;
+    background-color: rgba($color: #000000, $alpha: 0.2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .popup-inner {
+    position: relative;
+    padding: 32px;
+    width: 100%;
+  }
+  .close-btn {
+    font-size: 40px;
+    background: none;
+    position: absolute;
+    top: -15px;
+    right: 5px;
+    z-index: 10;
+  }
+}
+#profile-report {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+  .popup {
+    width: 100%;
+    background-color: rgba($color: #000000, $alpha: 0.2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .popup-inner {
+    position: relative;
+    padding: 32px;
+    width: 100%;
+    max-width: 640px;
+  }
+  .close-btn {
+    background: none;
+    font-size: 40px;
+    position: absolute;
+    top: -10px;
+    right: 10px;
+    z-index: 10;
+  }
+}

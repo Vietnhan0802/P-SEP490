@@ -1,39 +1,51 @@
 #blog {
-    width: 100%;
-    .blog-form {
-      background-color: #fff;
-      border-radius: 8px;
-  
-    }
-    .blog-item {
-      background-color: #fff;
-      border-radius: 8px;
-      
-      .profile {
-        width: 28px;
-        height: 28px;
-      }
-      .view-btn {
-        background-color: #20becb;
-        border-radius: 8px;
-        padding: 8px 14px;
-        color: #fff;
-      }
-    }
-    .input-text {
-      border: 1px solid #d0d5dd;
-      width: 100%;
-      font-size: 16px;
-      font-weight: 500;
-      color: #2f45ad;
-      border-radius: 8px;
+  .blog-report {
+    border-radius: 8px;
+    padding: 16px;
+    textarea {
+      height: 150px;
+
       &:focus {
         outline: none;
+        background-color: gainsboro;
+        border-radius: 8px;
       }
     }
-    .image {
+  }
+  width: 100%;
+  .blog-form {
+    background-color: #fff;
+    border-radius: 8px;
+  }
+  .blog-item {
+    background-color: #fff;
+    border-radius: 8px;
+    &:not(:first-child) {
+      margin-top: 8px;
+    }
+    .profile {
+      font-size: 36px;
+    }
+    .view-btn {
       background-color: #20becb;
+      border-radius: 8px;
+      padding: 8px 14px;
       color: #fff;
     }
   }
-  
+  .input-text {
+    border: 1px solid #d0d5dd;
+    width: 100%;
+    font-size: 16px;
+    font-weight: 500;
+    color: #2f45ad;
+    border-radius: 8px;
+    &:focus {
+      outline: none;
+    }
+  }
+  .image {
+    background-color: #20becb;
+    color: #fff;
+  }
+}
