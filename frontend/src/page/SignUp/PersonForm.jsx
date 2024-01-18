@@ -95,9 +95,9 @@ export default function PersonForm() {
         </div>
         <div className="d-flex flex-row justify-content-evenly">
           <div className="pb-2 d-flex flex-row align-items-center">
-            <label className="size-20 blue2f SFU-heavy pb-1 input-field">
+            <label className="size-20 blue2f SFU-heavy pb-1 input-field d-flex align-items-center">
               <input
-                className="radius-size"
+                className="radius-size me-3"
                 type="radio"
                 name="isMale"
                 checked={inputs.isMale}
@@ -108,8 +108,9 @@ export default function PersonForm() {
               Male
             </label>
 
-            <label className="size-20 blue2f SFU-heavy pb-1 input-field">
-              <input
+            <label className="size-20 blue2f SFU-heavy pb-1 input-field  d-flex align-items-center" >
+              <input 
+              className=" radius-size me-3"
                 type="radio"
                 name="isMale"
                 checked={!inputs.isMale}

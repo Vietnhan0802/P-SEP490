@@ -1,4 +1,15 @@
 #profile {
+  .profile-feedback{
+    border-radius: 8px;
+    padding: 16px;
+    textarea:focus{
+      border: 1px solid #20becb;
+      padding: 10px;
+      border-radius: 8px;
+      outline: none;
+      background-color: gainsboro;
+    } 
+  }
   background-color: #fff;
   border-radius: 8px;
   padding: 16px;

@@ -14,9 +14,9 @@ export default function BusinessForm() {
     event.preventDefault();
     console.log(inputs);
     try {
-      const response = await userInstance.post("/SignUpForBusiness", inputs);
+      const response = await userInstance.post("/SignUpBusiness", inputs);
       console.log("Sign up successful", response.data);
-      navigate("/");
+      // navigate("/");
     } catch (error) {
       console.error("Sign up failed", error.response.data);
     }
@@ -115,7 +115,7 @@ export default function BusinessForm() {
         <input
           className="submit-btn rounded-50 size-20 white SFU-bold w-100"
           type="submit"
-          value="Sign up for Business"
+          value="Sign up"
         />
       </form>
     </div>
