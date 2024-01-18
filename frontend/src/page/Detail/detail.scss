@@ -1,0 +1,25 @@
+#postDetail {
+  background-color: #fff;
+  border-radius: 8px;
+
+  .profile {
+    width: 28px;
+    height: 28px;
+  }
+  .cmt{
+    color: #2F45AD;
+  }
+  .cmt-input{
+    border-radius: 8px;
+    padding: 8px 12px;
+    width: 100%;
+    border: 1px solid #d0d5dd;
+    input{
+        border: none;
+        width: 100%;
+        &:focus {
+            outline: none;
+        }
+    }
+  }
+}

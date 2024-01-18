@@ -1,0 +1,11 @@
+.notify-cover{
+    border-radius: 8px;
+    position: absolute;
+    z-index: 999;
+    border: 1px solid var(--Gray-300, #d0d5dd);
+    overflow-y: auto;
+}
+.chat-item.active{
+    border-radius: 8px;
+    background: var(--blue-va-5, rgba(47, 69, 173, 0.20));
+}

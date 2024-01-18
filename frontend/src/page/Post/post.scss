@@ -1,4 +1,17 @@
 #post {
+  .post-report {
+    border-radius: 8px;
+    padding: 16px;
+    textarea {
+      height: 150px;
+
+      &:focus {
+        outline: none;
+        background-color: gainsboro;
+        border-radius: 8px;
+      }
+    }
+  }
   width: 100%;
   .post-form {
     background-color: #fff;

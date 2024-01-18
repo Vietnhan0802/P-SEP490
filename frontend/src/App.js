@@ -43,9 +43,6 @@ function App() {
       case "profile":
         navigate("/profile");
         break;
-      case "notify":
-        navigate("/notify");
-        break;
       default:
         navigate("/");
     }
@@ -60,7 +57,7 @@ function App() {
     <div
       className="App"
       ref={appRef}
-      style={{ backgroundColor: "#1C2B3A", minHeight: "100vh" }}
+      style={{ backgroundColor: "#1C2B3A", minHeight: "100vh",paddingBottom:"50px"}}
     >
       {isHeaderVisible && <Header onItemClick={handleHeaderItemClick} />}
       <Routes>

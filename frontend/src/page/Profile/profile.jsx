@@ -1,5 +1,6 @@
 import React from "react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "../Profile/profile.scss";
 import { IoSearch } from "react-icons/io5";
 import avatar from "../../images/common/Avatar.png";
@@ -12,12 +13,17 @@ import { FaArrowDownLong } from "react-icons/fa6";
 import SideBar from "../../components/sidebar";
 import Follow from "../../components/follow";
 import { Col, Row } from "react-bootstrap";
+import ProfileReport from "../../components/Popup/ProfileReport";
 function Profile() {
   const [activeComponent, setActiveComponent] = useState("");
+  const [activePopup, setActivePopup] = useState(false);
+  const navigate = useNavigate();
 
+  const handleReportPopup = () => {
+    setActivePopup(!activePopup);
+  };
   const handleSidebarItemClick = (itemId) => {
     setActiveComponent(itemId);
-    // Navigate to the home page ("/home") when the "Profile" item is clicked
     if (
       itemId.toLowerCase() === "post" ||
       itemId.toLowerCase() === "blog" ||
@@ -28,9 +34,7 @@ function Profile() {
       itemId.toLowerCase() === "current_project" ||
       itemId.toLowerCase() === "dashboard"
     ) {
-      // Navigate to the home page
-      // You might need to adjust the path based on your route configuration
-      window.location.href = "/home";
+      navigate("/home");
     }
   };
   return (
@@ -55,7 +59,7 @@ function Profile() {
                 </div>
               </div>
             </div>
-            <div className="information d-flex">
+            <div className="information d-flex position-relative">
               <img src={avatar} alt="" />
               <div className="ms-3 w-100">
                 <div className="bread-brumb mt-4  d-flex align-items-center">
@@ -70,9 +74,34 @@ function Profile() {
                   </div>
                   <div>
                     <button className="btn edit-btn">Edit</button>
+                    <button
+                      className="btn edit-btn"
+                      onClick={() => handleReportPopup()}
+                    >
+                      Report
+                    </button>
                   </div>
                 </div>
               </div>
+              <ProfileReport trigger={activePopup} setTrigger={setActivePopup}>
+                <div className="bg-white profile-feedback">
+                  <h3 className="mt-2 mb-3 border-bottom">Submit feedback</h3>
+
+                  <p>Please enter your feedback below</p>
+                  <textarea
+                    name=""
+                    id=""
+                    cols="30"
+                    rows="10"
+                    placeholder="Is there something wrong with this user?"
+                    className="mt-2"
+                  ></textarea>
+                  <div className="d-flex justify-content-end">
+                    {" "}
+                    <button className="btn btn-secondary">Submit</button>
+                  </div>
+                </div>
+              </ProfileReport>
             </div>
             <div className="d-flex justify-content-center flex-column personal-information">
               <div className="w-75 m-auto  mb-4">
