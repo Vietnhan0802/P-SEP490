@@ -45,10 +45,35 @@ namespace Project.Controllers
         }
 
         [HttpGet("GetTotalProjects")]
-        public async Task<Response> GetTotalProjects(string idUser)
+        public async Task<Response> GetTotalProjects()
         {
-            var totalProject = await _context.ProjectInfos.CountAsync(x => x.idAccount == idUser);
-            return new Response(HttpStatusCode.OK, "Get total projects is success!", totalProject);
+            var totalProjects = await _context.ProjectInfos.CountAsync(x => x.isDeleted == false);
+            return new Response(HttpStatusCode.OK, "Get total projects is success!", totalProjects);
+        }
+
+        [HttpGet("GetAllNewProjects/{interval}")]
+        public async Task<Response> GetAllNewProjects(string interval)
+        {
+            DateTime startDate = DateTime.Now.Date;
+            DateTime endDate;
+
+            switch (interval.ToLower())
+            {
+                case "day":
+                    endDate = startDate;
+                    break;
+                case "week":
+                    endDate = startDate.AddDays(-(int)startDate.DayOfWeek);
+                    break;
+                case "month":
+                    endDate = new DateTime(startDate.Year, startDate.Month, 1);
+                    break;
+                default:
+                    return new Response(HttpStatusCode.BadRequest, "Invalid interval parameter!");
+            }
+
+            var newProjects = await _context.ProjectInfos.CountAsync(x => x.isDeleted == false && x.createdDate == endDate);
+            return new Response(HttpStatusCode.OK, $"Get new projects count for {interval} success!", newProjects);
         }
 
         [HttpGet("GetAllProjects")]
