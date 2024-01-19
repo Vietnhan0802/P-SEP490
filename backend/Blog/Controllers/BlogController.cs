@@ -60,7 +60,7 @@ namespace Blog.Controllers
                 {
                     var blogEntity = new Blogs
                     {
-                        idBlog = blogViewModel.idBlog,
+                        
                         Title = blogViewModel.Title,
                         Content = blogViewModel.Content,
                         View = blogViewModel.View
@@ -215,6 +215,43 @@ namespace Blog.Controllers
                 await _dbContext.SaveChangesAsync();
 
                 return Ok($"Unliked blog with id {id} successfully.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Internal server error");
+            }
+        }
+
+        [HttpGet("SearchBlogByName")]
+        public async Task<ActionResult<IEnumerable<Blogs>>> SearchBlogByName(string searchTerm)
+        {
+            try
+            {
+                var blogs = await _dbContext.Blogs
+                    .Where(blog => blog.Title.Contains(searchTerm) && !blog.IsDeleted)
+                    .ToListAsync();
+
+                return Ok(blogs);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Internal server error");
+            }
+        }
+
+        [HttpGet("GetBlogDetails/{id}")]
+        public ActionResult<Blogs> GetPostDetails(Guid id)
+        {
+            try
+            {
+                var postDetails = _dbContext.Blogs.Find(id);
+
+                if (postDetails == null)
+                {
+                    return NotFound("Post not found");
+                }
+
+                return Ok(postDetails);
             }
             catch (Exception ex)
             {

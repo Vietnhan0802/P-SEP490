@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.Net.Http.Headers;
+using System.Security.Claims;
 using System.Text.Json;
 
 namespace Blog.Controllers
@@ -166,5 +167,43 @@ namespace Blog.Controllers
                 return StatusCode(500, "Internal server error");
             }
         }
+
+        //[HttpPost("LikeComment/{idBlogComment}")]
+        //public async Task<ActionResult> LikeComment(Guid idBlogComment)
+        //{
+        //    try
+        //    {
+        //        var commentToLike = await _dbContext.BlogComments.FindAsync(idBlogComment);
+
+        //        if (commentToLike == null)
+        //        {
+        //            return NotFound($"Comment with id {idBlogComment} not found.");
+        //        }
+
+        //        if (commentToLike.BlogCommentLikes.Any(like => like.IdUser == userId))
+        //        {
+        //            return BadRequest("User has already liked this comment.");
+        //        }
+
+        //        var like = new BlogCommentLike
+        //        {
+        //            IdUser = userId,  
+        //            CreatedDate = DateTime.Now
+        //        };
+
+        //        commentToLike.BlogCommentLikes.Add(like);
+
+        //        await _dbContext.SaveChangesAsync();
+
+        //        return Ok($"Comment with id {idBlogComment} liked successfully.");
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, "Internal server error");
+        //    }
+        //}
+
+
+
     }
 }
