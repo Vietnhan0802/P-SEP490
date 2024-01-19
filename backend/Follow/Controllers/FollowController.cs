@@ -131,9 +131,9 @@ namespace Follow.Controllers
             return new Response(HttpStatusCode.NoContent, "Remove Follow is success!");
         }
 
-        public bool CheckFollower()
+        /*public bool CheckFollower()
         {
             return _context.Followers.Any();
-        }
+        }*/
     }
 }
