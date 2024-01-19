@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using BusinessObjects.Entities.Projects;
+using BusinessObjects.Enums.Project;
 using BusinessObjects.ViewModels.Project;
 using BusinessObjects.ViewModels.User;
 using Microsoft.AspNetCore.Mvc;
@@ -74,6 +75,13 @@ namespace Project.Controllers
 
             var newProjects = await _context.ProjectInfos.CountAsync(x => x.isDeleted == false && x.createdDate == endDate);
             return new Response(HttpStatusCode.OK, $"Get new projects count for {interval} success!", newProjects);
+        }
+
+        [HttpGet("GetProjectsByProcess/{process}")]
+        public async Task<Response> GetProjectsByProcess(Process process)
+        {
+            var projects = await _context.ProjectInfos.Where(x => x.process == process && x.isDeleted == false).CountAsync();
+            return new Response(HttpStatusCode.OK, "Get project count by process is success!", projects);
         }
 
         [HttpGet("GetAllProjects")]
