@@ -1,9 +1,13 @@
-﻿using BusinessObjects.Entities.Content;
+﻿using AutoMapper;
+using BusinessObjects.Entities.Post;
 using BusinessObjects.ViewModels.Post;
+using BusinessObjects.ViewModels.User;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Post.Data;
+using System.Net.Http.Headers;
+using System.Text.Json;
 
 namespace Post.Controllers
 {
@@ -12,10 +16,33 @@ namespace Post.Controllers
     public class PostController : ControllerBase
     {
         private readonly AppDBContext _dbContext;
+        private readonly IMapper _mapper;
+        private readonly HttpClient client;
 
-        public PostController(AppDBContext dbContext)
+        public string UserApiUrl { get; private set; }
+
+        public PostController(AppDBContext context, IMapper mapper)
         {
-            _dbContext = dbContext;
+            _dbContext = context;
+            _mapper = mapper;
+            client = new HttpClient();
+            var contentType = new MediaTypeWithQualityHeaderValue("application/json");
+            client.DefaultRequestHeaders.Accept.Add(contentType);
+            UserApiUrl = "https://localhost:7006/api/User";
+        }
+
+        [HttpGet("GetNameUserCurrent/{idUser}")]
+        private async Task<string> GetNameUserCurrent(string idUser)
+        {
+            HttpResponseMessage response = await client.GetAsync($"{UserApiUrl}/GetNameUser/{idUser}");
+            string strData = await response.Content.ReadAsStringAsync();
+            var option = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true,
+            };
+            var user = JsonSerializer.Deserialize<string>(strData, option);
+
+            return user;
         }
 
         [HttpGet]
@@ -36,7 +63,6 @@ namespace Post.Controllers
                         idPost = postViewModel.idPost,
                         Title = postViewModel.Title,
                         Content = postViewModel.Content,
-                        Image = postViewModel.Image,
                         Major = postViewModel.Major,
                         Exp = postViewModel.Exp,
                         View = postViewModel.View
@@ -70,7 +96,6 @@ namespace Post.Controllers
 
                 existingPost.Title = updatedPostViewModel.Title;
                 existingPost.Content = updatedPostViewModel.Content;
-                existingPost.Image = updatedPostViewModel.Image;
                 existingPost.Major = updatedPostViewModel.Major;
                 existingPost.Exp = updatedPostViewModel.Exp;
                 existingPost.View = updatedPostViewModel.View;

@@ -39,6 +39,36 @@ namespace User.Controllers
             _hostEnvironment = hostEnvironment;
         }
 
+        [HttpGet("GetTotalUsersRegister/{startDate}/{endDate}")]
+        public async Task<Response> GetTotalUsersRegister(DateTime startDate, DateTime endDate)
+        {
+            var totalUsersRegister = await _userManager.Users.Where(x => x.createdDate >= startDate && x.createdDate <= endDate).CountAsync();
+            return new Response(HttpStatusCode.OK, "Get total users register is success!", totalUsersRegister);
+        }
+
+        [HttpGet("GetTotalBlockedUsers/{startDate}/{endDate}")]
+        public async Task<Response> GetTotalBlockedUsers(DateTime startDate, DateTime endDate)
+        {
+            var totalBlockedUsers = await _userManager.Users.Where(x => x.createdDate >= startDate && x.createdDate <= endDate).CountAsync(u => u.isBlock == true);
+            return new Response(HttpStatusCode.OK, "Get total blocked users is success!", totalBlockedUsers);
+        }
+
+        [HttpGet("SearchUserByName/{name}")]
+        public async Task<Response> SearchUserByName(string name)
+        {
+            var users = await _userManager.Users.Where(x => x.fullName.Contains(name)).ToListAsync();
+            if (users == null)
+            {
+                return new Response(HttpStatusCode.NoContent, "No users found with the given name!");
+            }
+            var result = _mapper.Map<List<ViewUser>>(users);
+            foreach (var user in result)
+            {
+                user.ImageSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, user.avatar);
+            }
+            return new Response(HttpStatusCode.OK, $"Found {users.Count} user(s) with the given name", result);
+        }
+
         [HttpGet("GetAllUsers")]
         public async Task<Response> GetAllUsers()
         {
@@ -47,24 +77,31 @@ namespace User.Controllers
             {
                 return new Response(HttpStatusCode.NoContent, "User list is empty!");
             }
-            return new Response(HttpStatusCode.OK, "Get all users is success!", _mapper.Map<List<ViewUser>>(users));
+            var result = _mapper.Map<List<ViewUser>>(users);
+            foreach (var user in result)
+            {
+                user.ImageSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, user.avatar);
+            }
+            return new Response(HttpStatusCode.OK, "Get all users is success!", result);
         }
 
-        [HttpGet("GetUserById/{userId}")]
-        public async Task<Response> GetUserById(string userId)
+        [HttpGet("GetUserById/{idUser}")]
+        public async Task<Response> GetUserById(string idUser)
         {
-            var user = await _userManager.FindByIdAsync(userId);
+            var user = await _userManager.FindByIdAsync(idUser);
             if (user == null)
             {
                 return new Response(HttpStatusCode.NotFound, "User doesn't exist!");
             }
-            return new Response(HttpStatusCode.OK, "Get user is success!", _mapper.Map<ViewUser>(user));
+            var result = _mapper.Map<ViewUser>(user);
+            result.ImageSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, result.avatar);
+            return new Response(HttpStatusCode.OK, "Get user is success!", result);
         }
 
-        [HttpGet("GetNameUser/{userId}")]
-        public async Task<ActionResult<ViewUser>> GetNameUser(string userId)
+        [HttpGet("GetNameUser/{idUser}")]
+        public async Task<ActionResult<ViewUser>> GetNameUser(string idUser)
         {
-            var user = await _userManager.FindByIdAsync(userId);
+            var user = await _userManager.FindByIdAsync(idUser);
             if (user == null)
             {
                 return NotFound("User doesn't exist!");
@@ -73,10 +110,10 @@ namespace User.Controllers
             return Ok(fullName);
         }
 
-        [HttpGet("BlockUser/{userId}")]
-        public async Task<Response> BlockUser (string userId)
+        [HttpGet("BlockUser/{idUser}")]
+        public async Task<Response> BlockUser (string idUser)
         {
-            var user = await _userManager.FindByIdAsync(userId);
+            var user = await _userManager.FindByIdAsync(idUser);
             if (user == null)
             {
                 return new Response(HttpStatusCode.NotFound, "User doesn't exist!");
@@ -100,17 +137,34 @@ namespace User.Controllers
             }
         }
 
-        [HttpPut("UpdateUser/{userId}")]
-        public async Task<Response> UpdateUser(string userId, UpdateUser updateUser)
+        [HttpPut("UpdateUser/{idUser}")]
+        public async Task<Response> UpdateUser(string idUser, UpdateUser updateUser)
         {
-            var userExits = await _userManager.FindByIdAsync(userId);
+            var userExits = await _userManager.FindByIdAsync(idUser);
             if (userExits == null)
             {
                 return new Response(HttpStatusCode.NotFound, "User doesn't exist!");
             }
-            //updateUser.avatar = await SaveImage(updateUser.imageFile);
-            var user = _mapper.Map(updateUser, userExits);
-            await _userManager.UpdateAsync(user);
+            _mapper.Map(updateUser, userExits);
+            await _userManager.UpdateAsync(userExits);
+            return new Response(HttpStatusCode.OK, "Update user is success!", _mapper.Map<UpdateUser>(userExits));
+        }
+
+        [HttpPut("UpdateAvatar/{idUser}")]
+        public async Task<Response> UpdateAvatar(string idUser, UpdateAvatar updateAvatar)
+        {
+            var userExits = await _userManager.FindByIdAsync(idUser);
+            if (userExits == null)
+            {
+                return new Response(HttpStatusCode.NotFound, "User doesn't exist!");
+            }
+            if (updateAvatar.avatar != null)
+            {
+                DeleteImage(updateAvatar.avatar);
+                updateAvatar.avatar = await SaveImage(updateAvatar.ImageFile);
+            }
+            _mapper.Map(updateAvatar, userExits);
+            await _userManager.UpdateAsync(userExits);
             return new Response(HttpStatusCode.OK, "Update user is success!", _mapper.Map<UpdateUser>(userExits));
         }
 
@@ -211,10 +265,10 @@ namespace User.Controllers
             }
             if (user != null && await _userManager.CheckPasswordAsync(user, signIn.password))
             {
-                if (!await _userManager.IsEmailConfirmedAsync(user))
+                /*if (!await _userManager.IsEmailConfirmedAsync(user))
                 {
                     return new Response(HttpStatusCode.Unauthorized, "Please confirm your email before logging in!");
-                }
+                }*/
 
                 var userRoles = await _userManager.GetRolesAsync(user);
                 var authClaims = new List<Claim>
@@ -387,16 +441,24 @@ namespace User.Controllers
         }
 
         [NonAction]
-        public async Task<string> SaveImage(IFormFile formFile)
+        public async Task<string> SaveImage(IFormFile imageFile)
         {
-            string imageName = new String(Path.GetFileNameWithoutExtension(formFile.FileName).Take(10).ToArray()).Replace(' ', '-');
-            imageName = imageName + DateTime.Now.ToString("yymmssfff") + Path.GetExtension(formFile.FileName);
+            string imageName = new String(Path.GetFileNameWithoutExtension(imageFile.FileName).Take(10).ToArray()).Replace(' ', '-');
+            imageName = imageName + DateTime.Now.ToString("yymmssfff") + Path.GetExtension(imageFile.FileName);
             var imagePath = Path.Combine(_hostEnvironment.ContentRootPath, "Images", imageName);
             using (var fileStream = new FileStream(imagePath, FileMode.Create))
             {
-                await formFile.CopyToAsync(fileStream);
+                await imageFile.CopyToAsync(fileStream);
             }
             return imageName;
+        }
+
+        [NonAction]
+        public void DeleteImage(string imageName)
+        {
+            var imagePath = Path.Combine(_hostEnvironment.ContentRootPath, "Images", imageName);
+            if (System.IO.File.Exists(imagePath))
+                System.IO.File.Delete(imagePath);
         }
     }
 }

@@ -8,7 +8,6 @@ namespace BusinessObjects.ViewModels.Blog
 {
     public class CreateBlogViewModel
     {
-        public Guid idBlog { get; set; }
         public string Title { get; set; }
         public string Content { get; set; }
         public string Image { get; set; }

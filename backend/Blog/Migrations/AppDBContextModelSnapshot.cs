@@ -22,13 +22,13 @@ namespace Blog.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("BusinessObjects.Entities.Content.BlogComment", b =>
+            modelBuilder.Entity("BusinessObjects.Entities.Blog.BlogComment", b =>
                 {
                     b.Property<Guid>("idBlogComment")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("BlogidBlog")
+                    b.Property<Guid?>("BlogsidBlog")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Content")
@@ -41,17 +41,99 @@ namespace Blog.Migrations
                     b.Property<Guid>("IdUser")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
                     b.Property<Guid>("idBlog")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("idBlogComment");
 
-                    b.HasIndex("BlogidBlog");
+                    b.HasIndex("BlogsidBlog");
 
                     b.ToTable("BlogComments");
                 });
 
-            modelBuilder.Entity("BusinessObjects.Entities.Content.BlogReply", b =>
+            modelBuilder.Entity("BusinessObjects.Entities.Blog.BlogCommentLike", b =>
+                {
+                    b.Property<Guid>("idBlogCommentLike")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("BlogCommentidBlogComment")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid>("idBlogComment")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("idBlogCommentLike");
+
+                    b.HasIndex("BlogCommentidBlogComment");
+
+                    b.ToTable("BlogCommentLikes");
+                });
+
+            modelBuilder.Entity("BusinessObjects.Entities.Blog.BlogImage", b =>
+                {
+                    b.Property<Guid>("idBlogImage")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("BlogsidBlog")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid>("idBlog")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("imageUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("idBlogImage");
+
+                    b.HasIndex("BlogsidBlog");
+
+                    b.ToTable("BlogImages");
+                });
+
+            modelBuilder.Entity("BusinessObjects.Entities.Blog.BlogLike", b =>
+                {
+                    b.Property<Guid>("idBlogLike")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("BlogidBlog")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid>("idBlog")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("idBlogLike");
+
+                    b.HasIndex("BlogidBlog");
+
+                    b.ToTable("BlogLikes");
+                });
+
+            modelBuilder.Entity("BusinessObjects.Entities.Blog.BlogReply", b =>
                 {
                     b.Property<Guid>("idBlogReply")
                         .ValueGeneratedOnAdd()
@@ -67,8 +149,8 @@ namespace Blog.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("IdUser")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
                     b.Property<Guid>("idBlogComment")
                         .HasColumnType("uniqueidentifier");
@@ -80,7 +162,32 @@ namespace Blog.Migrations
                     b.ToTable("BlogReplies");
                 });
 
-            modelBuilder.Entity("BusinessObjects.Entities.Content.Blogs", b =>
+            modelBuilder.Entity("BusinessObjects.Entities.Blog.BlogReplyLike", b =>
+                {
+                    b.Property<Guid>("idBlogReplyLike")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("BlogReplyidBlogReply")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid>("idBlogReply")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("idBlogReplyLike");
+
+                    b.HasIndex("BlogReplyidBlogReply");
+
+                    b.ToTable("BlogReplyLikes");
+                });
+
+            modelBuilder.Entity("BusinessObjects.Entities.Blog.Blogs", b =>
                 {
                     b.Property<Guid>("idBlog")
                         .ValueGeneratedOnAdd()
@@ -95,10 +202,6 @@ namespace Blog.Migrations
 
                     b.Property<Guid>("IdUser")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Image")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
@@ -115,311 +218,68 @@ namespace Blog.Migrations
                     b.ToTable("Blogs");
                 });
 
-            modelBuilder.Entity("BusinessObjects.Entities.Content.PostComment", b =>
+            modelBuilder.Entity("BusinessObjects.Entities.Blog.BlogComment", b =>
                 {
-                    b.Property<Guid>("idPostComment")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("IdUser")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("PostidPost")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("idPost")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("idPostComment");
-
-                    b.HasIndex("PostidPost");
-
-                    b.ToTable("PostComment");
-                });
-
-            modelBuilder.Entity("BusinessObjects.Entities.Content.PostReply", b =>
-                {
-                    b.Property<Guid>("idPostReply")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("IdUser")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("PostCommentidPostComment")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("idPostComment")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("idPostReply");
-
-                    b.HasIndex("PostCommentidPostComment");
-
-                    b.ToTable("PostReply");
-                });
-
-            modelBuilder.Entity("BusinessObjects.Entities.Content.Posts", b =>
-                {
-                    b.Property<Guid>("idPost")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Exp")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("IdUser")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Image")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsBlock")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Major")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid?>("ProjectidProject")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("View")
-                        .HasColumnType("int");
-
-                    b.Property<Guid>("idProject")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("idPost");
-
-                    b.HasIndex("ProjectidProject");
-
-                    b.ToTable("Posts");
-                });
-
-            modelBuilder.Entity("BusinessObjects.Entities.Projects.ProjectInfo", b =>
-                {
-                    b.Property<Guid>("idProject")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("avatar")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("createdDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("idAccount")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("isDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("process")
-                        .HasColumnType("int");
-
-                    b.Property<int>("visibility")
-                        .HasColumnType("int");
-
-                    b.HasKey("idProject");
-
-                    b.ToTable("Projects");
-                });
-
-            modelBuilder.Entity("BusinessObjects.Entities.Projects.ProjectInvitation", b =>
-                {
-                    b.Property<Guid>("idProjectInvitation")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("ProjectidProject")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("confirmedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("createdDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("idAccount")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("idProject")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool>("isAccept")
-                        .HasColumnType("bit");
-
-                    b.HasKey("idProjectInvitation");
-
-                    b.HasIndex("ProjectidProject");
-
-                    b.ToTable("ProjectInvitation");
-                });
-
-            modelBuilder.Entity("BusinessObjects.Entities.Projects.ProjectMember", b =>
-                {
-                    b.Property<Guid>("idProjectMember")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("ProjectidProject")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("confirmedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("createdDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("idAccount")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid?>("idProject")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool>("isAcept")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("isManager")
-                        .HasColumnType("bit");
-
-                    b.HasKey("idProjectMember");
-
-                    b.HasIndex("ProjectidProject");
-
-                    b.ToTable("ProjectMember");
-                });
-
-            modelBuilder.Entity("BusinessObjects.Entities.Content.BlogComment", b =>
-                {
-                    b.HasOne("BusinessObjects.Entities.Content.Blogs", "Blog")
+                    b.HasOne("BusinessObjects.Entities.Blog.Blogs", "Blogs")
                         .WithMany("BlogComments")
-                        .HasForeignKey("BlogidBlog");
+                        .HasForeignKey("BlogsidBlog");
 
-                    b.Navigation("Blog");
+                    b.Navigation("Blogs");
                 });
 
-            modelBuilder.Entity("BusinessObjects.Entities.Content.BlogReply", b =>
+            modelBuilder.Entity("BusinessObjects.Entities.Blog.BlogCommentLike", b =>
                 {
-                    b.HasOne("BusinessObjects.Entities.Content.BlogComment", "BlogComment")
-                        .WithMany("Replies")
+                    b.HasOne("BusinessObjects.Entities.Blog.BlogComment", "BlogComment")
+                        .WithMany("BlogCommentLikes")
                         .HasForeignKey("BlogCommentidBlogComment");
 
                     b.Navigation("BlogComment");
                 });
 
-            modelBuilder.Entity("BusinessObjects.Entities.Content.PostComment", b =>
+            modelBuilder.Entity("BusinessObjects.Entities.Blog.BlogImage", b =>
                 {
-                    b.HasOne("BusinessObjects.Entities.Content.Posts", "Post")
-                        .WithMany("PostComments")
-                        .HasForeignKey("PostidPost");
+                    b.HasOne("BusinessObjects.Entities.Blog.Blogs", "Blogs")
+                        .WithMany()
+                        .HasForeignKey("BlogsidBlog");
 
-                    b.Navigation("Post");
+                    b.Navigation("Blogs");
                 });
 
-            modelBuilder.Entity("BusinessObjects.Entities.Content.PostReply", b =>
+            modelBuilder.Entity("BusinessObjects.Entities.Blog.BlogLike", b =>
                 {
-                    b.HasOne("BusinessObjects.Entities.Content.PostComment", "PostComment")
-                        .WithMany("PostReplies")
-                        .HasForeignKey("PostCommentidPostComment");
+                    b.HasOne("BusinessObjects.Entities.Blog.Blogs", "Blog")
+                        .WithMany()
+                        .HasForeignKey("BlogidBlog");
 
-                    b.Navigation("PostComment");
+                    b.Navigation("Blog");
                 });
 
-            modelBuilder.Entity("BusinessObjects.Entities.Content.Posts", b =>
+            modelBuilder.Entity("BusinessObjects.Entities.Blog.BlogReply", b =>
                 {
-                    b.HasOne("BusinessObjects.Entities.Projects.ProjectInfo", "Project")
-                        .WithMany("Posts")
-                        .HasForeignKey("ProjectidProject");
+                    b.HasOne("BusinessObjects.Entities.Blog.BlogComment", "BlogComment")
+                        .WithMany()
+                        .HasForeignKey("BlogCommentidBlogComment");
 
-                    b.Navigation("Project");
+                    b.Navigation("BlogComment");
                 });
 
-            modelBuilder.Entity("BusinessObjects.Entities.Projects.ProjectInvitation", b =>
+            modelBuilder.Entity("BusinessObjects.Entities.Blog.BlogReplyLike", b =>
                 {
-                    b.HasOne("BusinessObjects.Entities.Projects.ProjectInfo", "Project")
-                        .WithMany("ProjectInvitations")
-                        .HasForeignKey("ProjectidProject");
+                    b.HasOne("BusinessObjects.Entities.Blog.BlogReply", "BlogReply")
+                        .WithMany()
+                        .HasForeignKey("BlogReplyidBlogReply");
 
-                    b.Navigation("Project");
+                    b.Navigation("BlogReply");
                 });
 
-            modelBuilder.Entity("BusinessObjects.Entities.Projects.ProjectMember", b =>
+            modelBuilder.Entity("BusinessObjects.Entities.Blog.BlogComment", b =>
                 {
-                    b.HasOne("BusinessObjects.Entities.Projects.ProjectInfo", "Project")
-                        .WithMany("ProjectMembers")
-                        .HasForeignKey("ProjectidProject");
-
-                    b.Navigation("Project");
+                    b.Navigation("BlogCommentLikes");
                 });
 
-            modelBuilder.Entity("BusinessObjects.Entities.Content.BlogComment", b =>
-                {
-                    b.Navigation("Replies");
-                });
-
-            modelBuilder.Entity("BusinessObjects.Entities.Content.Blogs", b =>
+            modelBuilder.Entity("BusinessObjects.Entities.Blog.Blogs", b =>
                 {
                     b.Navigation("BlogComments");
-                });
-
-            modelBuilder.Entity("BusinessObjects.Entities.Content.PostComment", b =>
-                {
-                    b.Navigation("PostReplies");
-                });
-
-            modelBuilder.Entity("BusinessObjects.Entities.Content.Posts", b =>
-                {
-                    b.Navigation("PostComments");
-                });
-
-            modelBuilder.Entity("BusinessObjects.Entities.Projects.ProjectInfo", b =>
-                {
-                    b.Navigation("Posts");
-
-                    b.Navigation("ProjectInvitations");
-
-                    b.Navigation("ProjectMembers");
                 });
 #pragma warning restore 612, 618
         }

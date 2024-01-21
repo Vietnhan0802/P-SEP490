@@ -30,18 +30,16 @@ namespace Credential.Controllers
             UserApiUrl = "https://localhost:7006/api/User";
         }
 
-        
-        [HttpGet("GetNameUserCurrent/{userId}")]
-        private async Task<string> GetNameUserCurrent(string userId)
+        [HttpGet("GetNameUserCurrent/{idUser}")]
+        private async Task<string> GetNameUserCurrent(string idUser)
         {
-            HttpResponseMessage response = await client.GetAsync($"{UserApiUrl}/GetNameUser/{userId}");
+            HttpResponseMessage response = await client.GetAsync($"{UserApiUrl}/GetNameUser/{idUser}");
             string strData = await response.Content.ReadAsStringAsync();
             var option = new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true,
             };
             var user = JsonSerializer.Deserialize<string>(strData, option);
-
             return user;
         }
 
@@ -53,31 +51,27 @@ namespace Credential.Controllers
             {
                 return new Response(HttpStatusCode.NotFound, "Degree doesn't exists!");
             }
-
             var result = _mapper.Map<List<ViewDegree>>(degrees);
             foreach (var degree in result)
             {
-                degree.idAccount = await GetNameUserCurrent(degree.idAccount);
+                degree.fullName = await GetNameUserCurrent(degree.idAccount);
             }
-
             return new Response(HttpStatusCode.OK, "Get all degree success!", result);
         }
 
-        [HttpGet("GetDegreeByUser/{userId}")]
-        public async Task<Response> GetDegreeByUser(string userId)
+        [HttpGet("GetDegreeByUser/{idUser}")]
+        public async Task<Response> GetDegreeByUser(string idUser)
         {
-            var degrees = await _context.Degrees.Where(x => x.idAccount == userId && x.isDeleted == false).OrderBy(x => x.createdDate).AsNoTracking().ToListAsync();
+            var degrees = await _context.Degrees.Where(x => x.idAccount == idUser && x.isDeleted == false).OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
             if (degrees == null)
             {
                 return new Response(HttpStatusCode.NotFound, "Degree doesn't exists!");
             }
-
             var result = _mapper.Map<List<ViewDegree>>(degrees);
             foreach (var degree in result)
             {
-                degree.idAccount = await GetNameUserCurrent(userId);
+                degree.fullName = await GetNameUserCurrent(degree.idAccount);
             }
-
             return new Response(HttpStatusCode.OK, "Get degree by user success!", result);
         }
 
@@ -89,23 +83,20 @@ namespace Credential.Controllers
             {
                 return new Response(HttpStatusCode.NotFound, "Degree doesn't exists!");
             }
-
-            var userName = await GetNameUserCurrent(degree.idAccount);
-            degree.idAccount = userName;
-
-            return new Response(HttpStatusCode.OK, "Get degree by is success!", _mapper.Map<ViewDegree>(degree));
+            var result = _mapper.Map<ViewDegree>(degree);
+            result.fullName = await GetNameUserCurrent(result.idAccount);
+            return new Response(HttpStatusCode.OK, "Get degree by is success!", result);
         }
 
-        [HttpPost("CreateDegree/{userId}")]
-        public async Task<Response> CreateDegree(string userId, CreateDegree degreeDTO)
+        [HttpPost("CreateDegree/{idUser}")]
+        public async Task<Response> CreateDegree(string idUser, CreateDegree degreeDTO)
         {
             var degree = _mapper.Map<Degree>(degreeDTO);
-            degree.idAccount = userId;
+            degree.idAccount = idUser;
             degree.isDeleted = false;
             degree.createdDate = DateTime.Now;
             await _context.Degrees.AddAsync(degree);
             await _context.SaveChangesAsync();
-
             return new Response(HttpStatusCode.OK, "Create degree is success!", _mapper.Map<ViewDegree>(degree));
         }
 
@@ -117,11 +108,9 @@ namespace Credential.Controllers
             {
                 return new Response(HttpStatusCode.NotFound, "Degree doesn't exists!");
             }
-
             _mapper.Map(degreeDTO, degree);
             _context.Degrees.Update(degree);
             await _context.SaveChangesAsync();
-
             return new Response(HttpStatusCode.OK, "Update degree is success!", _mapper.Map<ViewDegree>(degree));
         }
 
@@ -133,11 +122,9 @@ namespace Credential.Controllers
             {
                 return new Response(HttpStatusCode.NotFound, "Degree doesn't exists!");
             }
-
             degree.isDeleted = true;
             _context.Degrees.Update(degree);
             await _context.SaveChangesAsync();
-
             return new Response(HttpStatusCode.NoContent, "Remove Degree successfullt!");
         }
     }
