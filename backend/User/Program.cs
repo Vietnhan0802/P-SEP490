@@ -1,6 +1,7 @@
 using BusinessObjects.Entities.User;
 using BusinessObjects.Mappers;
 using Commons.Helpers;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -10,6 +11,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using User.Data;
 using User.Services;
+using static Org.BouncyCastle.Crypto.Engines.SM2Engine;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,13 +38,9 @@ builder.Services.AddAuthentication(options =>
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
 })
-    .AddGoogle(options =>
-    {
-        options.ClientId = builder.Configuration["Authentication:Google:ClientId"];
-        options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
-    })
-
     .AddJwtBearer(options =>
     {
         options.SaveToken = true;
@@ -56,7 +54,13 @@ builder.Services.AddAuthentication(options =>
             ClockSkew = TimeSpan.Zero,
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
         };
+    })
+    .AddGoogle(googleOptions =>
+    {
+        googleOptions.ClientId = builder.Configuration["Authentication:Google:ClientId"];
+        googleOptions.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
     });
+builder.Services.AddCors();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -65,6 +69,10 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+app.UseCors(options =>
+{
+    options.WithOrigins("https://localhost:3000").AllowAnyMethod().AllowAnyHeader();
+});
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -72,18 +80,17 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
     
 }
-app.UseCors(builder =>
+
+//app.UseStaticFiles();
+app.UseStaticFiles(new StaticFileOptions
 {
-    builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
-});
-app.UseStaticFiles();
-/*app.UseStaticFiles(new StaticFileOptions
-{
-    FileProvider = new PhysicalFileProvider(Path.Combine(app.Environment.ContentRootPath, "Images")),
+    FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "Images")),
     RequestPath = "/Images"
-});*/
+});
 
 app.UseHttpsRedirection();
+
+app.UseRouting();
 
 app.UseAuthentication();
 
