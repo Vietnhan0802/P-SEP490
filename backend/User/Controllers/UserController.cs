@@ -261,12 +261,12 @@ namespace User.Controllers
         public async Task<Response> SignIn(SignIn signIn)
         {
             var user = await _userManager.FindByEmailAsync(signIn.email);
-            if (user.isBlock == true)
-            {
-                return new Response(HttpStatusCode.Unauthorized, "User has been blocked!");
-            }
             if (user != null && await _userManager.CheckPasswordAsync(user, signIn.password))
             {
+                if (user.isBlock == true)
+                {
+                    return new Response(HttpStatusCode.Unauthorized, "User has been blocked!");
+                }
                 /*if (!await _userManager.IsEmailConfirmedAsync(user))
                 {
                     return new Response(HttpStatusCode.Unauthorized, "Please confirm your email before logging in!");
@@ -275,9 +275,6 @@ namespace User.Controllers
                 var userRoles = await _userManager.GetRolesAsync(user);
                 var authClaims = new List<Claim>
                 {
-                    new Claim(JwtRegisteredClaimNames.Sub, _configuration["Jwt:Subject"]),
-                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                    new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()),
                     new Claim("Id" , user.Id.ToString()),
                     new Claim("Username", user.UserName),
                     new Claim("Email", user.Email),
@@ -428,13 +425,13 @@ namespace User.Controllers
             return Challenge(properties, "Google");
         }
 
-        /*[HttpGet("GoogleResponse")]
-        public async Task<IActionResult> GoogleResponse()
+        [HttpGet("GoogleResponse")]
+        public async Task<Response> GoogleResponse()
         {
             var userInfo = await HttpContext.AuthenticateAsync("Google");
             if (!userInfo.Succeeded)
             {
-                return Unauthorized("Failed to authenticate with Google.");
+                return new Response(HttpStatusCode.Unauthorized, "Failed to authenticate with Google!");
             }
             var googleEmail = userInfo.Principal.FindFirst(ClaimTypes.Email)?.ToString();
             var user = await _userManager.FindByEmailAsync(googleEmail);
@@ -443,20 +440,55 @@ namespace User.Controllers
                 AppUser newUser = new AppUser()
                 {
                     UserName = userInfo.Principal.FindFirst(ClaimTypes.Email)?.ToString(),
-                    Email = user.Email,
-                    fullName = user.fullName,
-                    date = user.date,
-                    isMale = user.isMale,
-                    PhoneNumber = user.PhoneNumber,
-                    tax = user.tax,
-                    address = user.address,
+                    Email = userInfo.Principal.FindFirst(ClaimTypes.Email)?.ToString(),
+                    fullName = userInfo.Principal.FindFirst(ClaimTypes.Name)?.ToString(),
+                    date = DateTime.Parse(userInfo.Principal.FindFirst(ClaimTypes.DateOfBirth)?.ToString()),
+                    isMale = userInfo.Principal.FindFirst(ClaimTypes.Gender)?.ToString() == "male",
+                    PhoneNumber = userInfo.Principal.FindFirst(ClaimTypes.MobilePhone)?.ToString(),
+                    address = userInfo.Principal.FindFirst(ClaimTypes.StreetAddress)?.ToString(),
                     isBlock = false,
                     createdDate = DateTime.Now,
                     SecurityStamp = Guid.NewGuid().ToString()
                 };
-                var result = await _userManager.CreateAsync(user, user.PasswordHash);
+                var createUser = await _userManager.CreateAsync(newUser);
+                if (!createUser.Succeeded)
+                {
+                    return new Response(HttpStatusCode.BadRequest, "User failed to create! Please check and try again!");
+                }
+                if (await _roleManager.RoleExistsAsync(TypeUser.Member.ToString()))
+                {
+                    await _userManager.AddToRoleAsync(newUser, TypeUser.Member.ToString());
+                    return new Response(HttpStatusCode.NoContent, "User creates successfully!");
+                }
+                return new Response(HttpStatusCode.BadRequest, "User failed to create!");
             }
-        }*/
+            var userRoles = await _userManager.GetRolesAsync(user);
+            var authClaims = new List<Claim>
+            {
+                new Claim(JwtRegisteredClaimNames.Sub, _configuration["Jwt:Subject"]),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()),
+                new Claim("Id" , user.Id.ToString()),
+                new Claim("Username", user.UserName),
+                new Claim("Email", user.Email),
+                new Claim("FullName", user.fullName),
+                new Claim("Date", user.date.ToString()),
+                new Claim("IsMale", user.isMale.ToString()),
+                new Claim("Phone", user.PhoneNumber),
+                new Claim("Address", user.address)
+            };
+            foreach (var userRole in userRoles)
+            {
+                authClaims.Add(new Claim(ClaimTypes.Role, userRole));
+            }
+            var jwtToken = GetToken(authClaims);
+            var result = new
+            {
+                token = new JwtSecurityTokenHandler().WriteToken(jwtToken),
+                role = string.Join(",", userRoles)
+            };
+            return new Response(HttpStatusCode.OK, "Login successfully", result);
+        }
 
         [NonAction]
         public async Task<string> SaveImage(IFormFile imageFile)
