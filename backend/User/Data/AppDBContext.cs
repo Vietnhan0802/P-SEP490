@@ -21,7 +21,7 @@ namespace User.Data
         {
             builder.Entity<IdentityRole>().HasData(
                 new IdentityRole { Id = "aeb27c30-d31d-43ec-9465-d04bf75d0f0d", Name = "Admin", ConcurrencyStamp = "1", NormalizedName = "Admin" },
-                new IdentityRole { Name = "Person", ConcurrencyStamp = "2", NormalizedName = "Person" },
+                new IdentityRole { Name = "Member", ConcurrencyStamp = "2", NormalizedName = "Member" },
                 new IdentityRole { Name = "Business", ConcurrencyStamp = "3", NormalizedName = "Business" });
 
             var hasher = new PasswordHasher<AppUser>();

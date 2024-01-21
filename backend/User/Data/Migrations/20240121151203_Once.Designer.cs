@@ -12,7 +12,7 @@ using User.Data;
 namespace User.Data.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20240121142734_Once")]
+    [Migration("20240121151203_Once")]
     partial class Once
     {
         /// <inheritdoc />
@@ -124,20 +124,20 @@ namespace User.Data.Migrations
                         {
                             Id = "b80546cd-f4df-4a46-842e-22d3f9018ce3",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "085a22e6-fb18-428c-9bb0-84cb50ffc664",
+                            ConcurrencyStamp = "8425f54d-0d93-4f91-bcab-ec391a2b958e",
                             Email = "admin@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = true,
                             NormalizedEmail = "ADMIN@GMAIL.COM",
                             NormalizedUserName = "ADMIN@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEFaFeUIt0wemDNb9oMogZRvMgME8nh+x88ES8AGts17V8zV9LoIltZX40rM/R3LcRw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAECIoUZd1gkaeFndYloGi9+uUN3Djl873TcJVYr+W5G3naX0l17bicGJ8ssMA+rwQEA==",
                             PhoneNumber = "0949180802",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "5c1528cc-f6e0-42f1-96ef-f558b932bfb4",
+                            SecurityStamp = "f6428e63-9ec0-4e48-b533-1d9d73580d95",
                             TwoFactorEnabled = false,
                             UserName = "admin@gmail.com",
                             address = "Bến Tre",
-                            createdDate = new DateTime(2024, 1, 21, 21, 27, 34, 350, DateTimeKind.Local).AddTicks(5135),
+                            createdDate = new DateTime(2024, 1, 21, 22, 12, 3, 329, DateTimeKind.Local).AddTicks(1100),
                             date = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             fullName = "Đầu bự vô địch",
                             idVerification = new Guid("00000000-0000-0000-0000-000000000000"),
@@ -183,14 +183,14 @@ namespace User.Data.Migrations
                         },
                         new
                         {
-                            Id = "fb219ad8-73c7-4290-86c6-337d51eb5fcb",
+                            Id = "7c0b9725-649f-4242-b014-8f10959c93b9",
                             ConcurrencyStamp = "2",
-                            Name = "Person",
-                            NormalizedName = "Person"
+                            Name = "Member",
+                            NormalizedName = "Member"
                         },
                         new
                         {
-                            Id = "7bb39ac0-799a-46b4-a85b-4ced057db57b",
+                            Id = "6c27f261-46d9-4264-ae1c-fe2991be6ad7",
                             ConcurrencyStamp = "3",
                             Name = "Business",
                             NormalizedName = "Business"
