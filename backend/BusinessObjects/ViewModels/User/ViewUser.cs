@@ -15,6 +15,7 @@ namespace BusinessObjects.ViewModels.User
         public int tax { get; set; }
         public string address { get; set; }
         public string avatar { get; set; }
+        public string description { get; set; }
         public Guid idVerification { get; set; }
         public bool isBlock { get; set; }
         public DateTime createdDate { get; set; }

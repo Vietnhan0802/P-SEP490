@@ -12,6 +12,6 @@ namespace BusinessObjects.ViewModels.User
         public string phoneNumber { get; set; }
         public int tax { get; set; }
         public string address { get; set; }
-        public string avatar { get; set; }
+        public string description { get; set; }
     }
 }

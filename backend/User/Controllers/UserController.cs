@@ -414,12 +414,49 @@ namespace User.Controllers
             return new Response(HttpStatusCode.BadRequest, "Undefined error!");
         }
 
-        [HttpPost("SignInGoogle")]
-        public async Task<IActionResult> SignInGoogle(string returnUrl = null)
+        [HttpGet("GoogleSignIn")]
+        public IActionResult GoogleSignIn()
         {
-            var properties = _signInManager.ConfigureExternalAuthenticationProperties("Google", Url.Action("ExternalLoginCallback"));
+            var properties = new AuthenticationProperties
+            {
+                RedirectUri = Url.Action("GoogleResponse"),
+                Items =
+                {
+                    { "scheme", "Google" },
+                },
+            };
             return Challenge(properties, "Google");
         }
+
+        /*[HttpGet("GoogleResponse")]
+        public async Task<IActionResult> GoogleResponse()
+        {
+            var userInfo = await HttpContext.AuthenticateAsync("Google");
+            if (!userInfo.Succeeded)
+            {
+                return Unauthorized("Failed to authenticate with Google.");
+            }
+            var googleEmail = userInfo.Principal.FindFirst(ClaimTypes.Email)?.ToString();
+            var user = await _userManager.FindByEmailAsync(googleEmail);
+            if (user == null)
+            {
+                AppUser newUser = new AppUser()
+                {
+                    UserName = userInfo.Principal.FindFirst(ClaimTypes.Email)?.ToString(),
+                    Email = user.Email,
+                    fullName = user.fullName,
+                    date = user.date,
+                    isMale = user.isMale,
+                    PhoneNumber = user.PhoneNumber,
+                    tax = user.tax,
+                    address = user.address,
+                    isBlock = false,
+                    createdDate = DateTime.Now,
+                    SecurityStamp = Guid.NewGuid().ToString()
+                };
+                var result = await _userManager.CreateAsync(user, user.PasswordHash);
+            }
+        }*/
 
         [NonAction]
         public async Task<string> SaveImage(IFormFile imageFile)
