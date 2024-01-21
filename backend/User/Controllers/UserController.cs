@@ -24,15 +24,17 @@ namespace User.Controllers
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly SignInManager<AppUser> _signInManager;
         private readonly IEmailService _emailService;
         private readonly IMapper _mapper;
         private readonly IConfiguration _configuration;
         private readonly IWebHostEnvironment _hostEnvironment;
 
-        public UserController(UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager,IEmailService emailService, IMapper mapper, IConfiguration configuration, IWebHostEnvironment hostEnvironment)
+        public UserController(UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager, SignInManager<AppUser> signInManager, IEmailService emailService, IMapper mapper, IConfiguration configuration, IWebHostEnvironment hostEnvironment)
         {
             _userManager = userManager;
             _roleManager = roleManager;
+            _signInManager = signInManager;
             _emailService = emailService;
             _mapper = mapper;
             _configuration = configuration;
@@ -412,32 +414,83 @@ namespace User.Controllers
             return new Response(HttpStatusCode.BadRequest, "Undefined error!");
         }
 
-        [HttpGet("SignInGoogle")]
-        public async Task<IActionResult> SignInGoogle()
+        [HttpPost("SignInGoogle")]
+        public async Task<IActionResult> SignInGoogle(string returnUrl = null)
         {
-            var properties = new AuthenticationProperties 
-            {
-                RedirectUri = Url.Action("HandleGoogleResponse"),
-                /*Items =
-                {
-                    { "schema", "Google" },
-                },*/
-            };
-            return Challenge(properties, GoogleDefaults.AuthenticationScheme);
+            var properties = _signInManager.ConfigureExternalAuthenticationProperties("Google", Url.Action("ExternalLoginCallback"));
+            return Challenge(properties, "Google");
         }
 
-        [HttpGet("GoogleResponse")]
-        public async Task<IActionResult> GoogleResponse()
+        [HttpGet("ExternalLoginCallback")]
+        public async Task<Response> ExternalLoginCallback(string returnUrl = null, string remoteError = null)
         {
-            var result = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            var claims = result.Principal.Identities.FirstOrDefault().Claims.Select(claim => new
+            if (remoteError != null)
             {
-                claim.Issuer,
-                claim.OriginalIssuer,
-                claim.Type,
-                claim.Value
-            });
-            return Ok(claims);
+                return new Response(HttpStatusCode.BadRequest, "Error from external login!", remoteError);
+            }
+            var info = await _signInManager.GetExternalLoginInfoAsync();
+            if (info == null)
+            {
+                return new Response(HttpStatusCode.BadRequest, "External login failure!", remoteError);
+            }
+            var user = await _userManager.FindByLoginAsync(info.LoginProvider, info.ProviderKey);
+            if (user == null)
+            {
+                AppUser newUser = new AppUser()
+                {
+                    UserName = info.Principal.FindFirstValue(ClaimTypes.Name),
+                    Email = info.Principal.FindFirstValue(ClaimTypes.Email),
+                    fullName = info.Principal.FindFirstValue(ClaimTypes.GivenName) + " " + info.Principal.FindFirstValue(ClaimTypes.Surname),
+                    date = DateTime.Parse(info.Principal.FindFirstValue(ClaimTypes.DateOfBirth)),
+                    isMale = info.Principal.FindFirstValue(ClaimTypes.Gender) == "male",
+                    PhoneNumber = info.Principal.FindFirstValue(ClaimTypes.MobilePhone),
+                    address = info.Principal.FindFirstValue(ClaimTypes.StreetAddress),
+                    isBlock = false,
+                    createdDate = DateTime.Now,
+                    SecurityStamp = Guid.NewGuid().ToString(),
+                    EmailConfirmed = true
+                };
+                var result = await _userManager.CreateAsync(newUser);
+                if (!result.Succeeded)
+                {
+                    return new Response(HttpStatusCode.BadRequest, "User failed to create! Please check and try again!");
+                }
+                if (await _roleManager.RoleExistsAsync(TypeUser.Member.ToString()))
+                {
+                    await _userManager.AddToRoleAsync(newUser, TypeUser.Member.ToString());
+                    await _userManager.AddLoginAsync(newUser, info);
+                    return new Response(HttpStatusCode.NoContent, "User creates successfully!");
+                }
+                user = newUser;
+                var userRoles = await _userManager.GetRolesAsync(user);
+                var authClaims = new List<Claim>
+                {
+                    new Claim(JwtRegisteredClaimNames.Sub, _configuration["Jwt:Subject"]),
+                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                    new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()),
+                    new Claim("Id" , user.Id.ToString()),
+                    new Claim("Username", user.UserName),
+                    new Claim("Email", user.Email),
+                    new Claim("FullName", user.fullName),
+                    new Claim("Date", user.date.ToString()),
+                    new Claim("IsMale", user.isMale.ToString()),
+                    new Claim("Phone", user.PhoneNumber),
+                    new Claim("Address", user.address)
+                };
+                foreach (var userRole in userRoles)
+                {
+                    authClaims.Add(new Claim(ClaimTypes.Role, userRole));
+                }
+
+                var jwtToken = GetToken(authClaims);
+                var results = new
+                {
+                    token = new JwtSecurityTokenHandler().WriteToken(jwtToken),
+                    role = string.Join(",", userRoles)
+                };
+                return new Response(HttpStatusCode.OK, "Login successfully", results);
+            }
+            return new Response(HttpStatusCode.BadRequest, "Invalid input attempt!");
         }
 
         [NonAction]
