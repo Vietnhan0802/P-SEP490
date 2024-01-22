@@ -209,8 +209,6 @@ namespace Interaction.Controllers
         public VerificationsController(VerificationDbContext context)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
-
-            // Khởi tạo HttpClient và đường dẫn API người dùng
             _client = new HttpClient();
             _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             UserApiUrl = "https://localhost:7006/api/User";
@@ -222,7 +220,6 @@ namespace Interaction.Controllers
 
             if (!response.IsSuccessStatusCode)
             {
-                // Xử lý lỗi hoặc trả về giá trị mặc định
                 return "Unknown User";
             }
 
@@ -275,7 +272,7 @@ namespace Interaction.Controllers
             }
 
             newVerification.Id = Guid.NewGuid();
-            newVerification.IsAccept = null;  // Mặc định là null khi tạo mới
+            newVerification.IsAccept = null; 
 
             _context.Verifications.Add(newVerification);
             await _context.SaveChangesAsync();
@@ -364,6 +361,121 @@ namespace Interaction.Controllers
 
             return trueVerifications;
         }
+        [HttpGet("GetVerificationsCountByDay")]
+        public async Task<ActionResult<int>> GetVerificationsCountByDay()
+        {
+            DateTime today = DateTime.Now.Date;
+            int count = await _context.Verifications
+                .Where(v => v.CreatedDate.Date == today)
+                .CountAsync();
+
+            return count;
+        }
+
+        [HttpGet("GetVerificationsCountByWeek")]
+        public async Task<ActionResult<int>> GetVerificationsCountByWeek()
+        {
+            DateTime today = DateTime.Now.Date;
+            DateTime startOfWeek = today.AddDays(-(int)today.DayOfWeek);
+            DateTime endOfWeek = startOfWeek.AddDays(6);
+
+            int count = await _context.Verifications
+                .Where(v => v.CreatedDate.Date >= startOfWeek && v.CreatedDate.Date <= endOfWeek)
+                .CountAsync();
+
+            return count;
+        }
+
+        [HttpGet("GetVerificationsCountByMonth")]
+        public async Task<ActionResult<int>> GetVerificationsCountByMonth()
+        {
+            DateTime today = DateTime.Now.Date;
+            DateTime startOfMonth = new DateTime(today.Year, today.Month, 1);
+            DateTime endOfMonth = startOfMonth.AddMonths(1).AddDays(-1);
+
+            int count = await _context.Verifications
+                .Where(v => v.CreatedDate.Date >= startOfMonth && v.CreatedDate.Date <= endOfMonth)
+                .CountAsync();
+
+            return count;
+        }
+        [HttpGet("GetUnverifiedVerificationsCountByDay")]
+        public async Task<ActionResult<int>> GetUnverifiedVerificationsCountByDay()
+        {
+            DateTime today = DateTime.Now.Date;
+            int count = await _context.Verifications
+                .Where(v => v.CreatedDate.Date == today && v.IsAccept == null)
+                .CountAsync();
+
+            return count;
+        }
+
+        [HttpGet("GetUnverifiedVerificationsCountByWeek")]
+        public async Task<ActionResult<int>> GetUnverifiedVerificationsCountByWeek()
+        {
+            DateTime today = DateTime.Now.Date;
+            DateTime startOfWeek = today.AddDays(-(int)today.DayOfWeek);
+            DateTime endOfWeek = startOfWeek.AddDays(6);
+
+            int count = await _context.Verifications
+                .Where(v => v.CreatedDate.Date >= startOfWeek && v.CreatedDate.Date <= endOfWeek && v.IsAccept == null)
+                .CountAsync();
+
+            return count;
+        }
+
+        [HttpGet("GetUnverifiedVerificationsCountByMonth")]
+        public async Task<ActionResult<int>> GetUnverifiedVerificationsCountByMonth()
+        {
+            DateTime today = DateTime.Now.Date;
+            DateTime startOfMonth = new DateTime(today.Year, today.Month, 1);
+            DateTime endOfMonth = startOfMonth.AddMonths(1).AddDays(-1);
+
+            int count = await _context.Verifications
+                .Where(v => v.CreatedDate.Date >= startOfMonth && v.CreatedDate.Date <= endOfMonth && v.IsAccept == null)
+                .CountAsync();
+
+            return count;
+        }
+        [HttpGet("GetVerifiedVerificationsCountByDay")]
+        public async Task<ActionResult<int>> GetVerifiedVerificationsCountByDay()
+        {
+            DateTime today = DateTime.Now.Date;
+            int count = await _context.Verifications
+                .Where(v => v.CreatedDate.Date == today && v.IsAccept == true)
+                .CountAsync();
+
+            return count;
+        }
+
+        [HttpGet("GetVerifiedVerificationsCountByWeek")]
+        public async Task<ActionResult<int>> GetVerifiedVerificationsCountByWeek()
+        {
+            DateTime today = DateTime.Now.Date;
+            DateTime startOfWeek = today.AddDays(-(int)today.DayOfWeek);
+            DateTime endOfWeek = startOfWeek.AddDays(6);
+
+            int count = await _context.Verifications
+                .Where(v => v.CreatedDate.Date >= startOfWeek && v.CreatedDate.Date <= endOfWeek && v.IsAccept == true)
+                .CountAsync();
+
+            return count;
+        }
+
+        [HttpGet("GetVerifiedVerificationsCountByMonth")]
+        public async Task<ActionResult<int>> GetVerifiedVerificationsCountByMonth()
+        {
+            DateTime today = DateTime.Now.Date;
+            DateTime startOfMonth = new DateTime(today.Year, today.Month, 1);
+            DateTime endOfMonth = startOfMonth.AddMonths(1).AddDays(-1);
+
+            int count = await _context.Verifications
+                .Where(v => v.CreatedDate.Date >= startOfMonth && v.CreatedDate.Date <= endOfMonth && v.IsAccept == true)
+                .CountAsync();
+
+            return count;
+        }
+
     }
 }
 
@@ -380,8 +492,6 @@ namespace Interaction.Controllers
         public AccountReportController(VerificationDbContext context)
         {
             _context = context;
-
-            // Khởi tạo HttpClient và đường dẫn API người dùng
             _client = new HttpClient();
             _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             UserApiUrl = "https://localhost:7006/api/User";
@@ -393,7 +503,6 @@ namespace Interaction.Controllers
 
             if (!response.IsSuccessStatusCode)
             {
-                // Xử lý lỗi hoặc trả về giá trị mặc định
                 return "Unknown User";
             }
 
