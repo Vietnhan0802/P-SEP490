@@ -6,7 +6,8 @@ import FBIcon from "../../images/common/fb-icon.png";
 import "../SignIn/signIn.scss";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import userInstance from "../../axios/axiosConfig";
+import { userInstance } from "../../axios/axiosConfig";
+
 import { jwtDecode } from "jwt-decode";
 import Cookies from "js-cookie";
 function ForgetPassword() {
@@ -25,25 +26,16 @@ function ForgetPassword() {
     console.log(inputs);
     try {
       const response = await userInstance.post(
-        "/SignIn",
-        JSON.stringify(inputs)
+        `/ForgotPassword/${inputs.email}`
       );
 
-      if (response?.data?.status === "OK") {
-        console.log("Sign in successful", response?.data?.result.role);
-        const decode = jwtDecode(response?.data?.result.token);
+      if (response?.data?.status === "NoContent") {
+        console.log(response.data);
 
-        // console.log(decode);
-        // console.log(response?.data?.result?.role)
-        Cookies.set("user", JSON.stringify(decode), { expires: 1 });
-        Cookies.set("role", JSON.stringify(response?.data?.result.role), {
-          expires: 1,
-        });
-        navigate("/home");
       } else {
         console.log(response.data);
         console.log(response?.data?.status);
-        console.log("Sign in failed", response?.data?.status);
+        console.log("Forgetpassword failed", response?.data?.status);
       }
     } catch (error) {
       // Check if it's an Axios error

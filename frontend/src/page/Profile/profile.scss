@@ -1,14 +1,28 @@
+#sidebar-profile {
+  border-radius: 8px ;
+  .edit-btn {
+    padding: 10px 20px;
+    background: var(--button-1, #20becb);
+    border: 1px solid var(--button-1, #20becb);
+    border-radius: 8px;
+    color: #fff;
+    font-weight: medium;
+  }
+  .avatar{
+    max-width: 200px;
+  }
+}
 #profile {
-  .profile-feedback{
+  .profile-feedback {
     border-radius: 8px;
     padding: 16px;
-    textarea:focus{
+    textarea:focus {
       border: 1px solid #20becb;
       padding: 10px;
       border-radius: 8px;
       outline: none;
       background-color: gainsboro;
-    } 
+    }
   }
   background-color: #fff;
   border-radius: 8px;
@@ -54,14 +68,6 @@
         color: #475467;
       }
     }
-    .edit-btn {
-      padding: 10px 20px;
-      background: var(--button-1, #20becb);
-      border: 1px solid var(--button-1, #20becb);
-      border-radius: 8px;
-      color: #fff;
-      font-weight: bold;
-    }
   }
   .personal-information {
     margin-top: 12px;
@@ -101,8 +107,8 @@
     }
   }
   .project {
-    &-icon{
-    width: 30px;
+    &-icon {
+      width: 30px;
     }
     &-header {
       padding: 12px 24px;
@@ -112,8 +118,8 @@
       border-top-right-radius: 8px;
       border-top-left-radius: 8px;
     }
-    .download-text{
-        color: #2f45ad;
+    .download-text {
+      color: #2f45ad;
     }
     .view-more {
       border-radius: 0px 0px 8px 8px;

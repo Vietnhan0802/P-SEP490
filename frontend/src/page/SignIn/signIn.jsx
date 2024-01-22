@@ -6,7 +6,7 @@ import FBIcon from "../../images/common/fb-icon.png";
 import "../SignIn/signIn.scss";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import userInstance from "../../axios/axiosConfig";
+import {userInstance} from "../../axios/axiosConfig";
 import { jwtDecode } from "jwt-decode";
 import Cookies from 'js-cookie';
 export default function SignIn() {
