@@ -33,7 +33,7 @@ builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
     .AddEntityFrameworkStores<AppDBContext>()
     .AddDefaultTokenProviders();
 
-builder.Services.AddCors(options =>
+/*builder.Services.AddCors(options =>
 {
     options.AddPolicy("CorsPolicy", policy =>
     {
@@ -42,7 +42,7 @@ builder.Services.AddCors(options =>
               .WithOrigins("https://localhost:3000")
               .AllowCredentials();
     });
-});
+});*/
 
 builder.Services.AddAuthentication(options =>
 {
@@ -103,7 +103,10 @@ app.UseHttpsRedirection();
 
 app.UseRouting();
 
-app.UseCors("CorsPolicy");
+app.UseCors(options =>
+{
+    options.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin();
+});
 
 app.UseAuthentication();
 
