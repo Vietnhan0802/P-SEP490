@@ -32,12 +32,13 @@ namespace User.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    fullName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    fullName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     date = table.Column<DateTime>(type: "datetime2", nullable: false),
                     isMale = table.Column<bool>(type: "bit", nullable: true),
                     tax = table.Column<int>(type: "int", nullable: false),
-                    address = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    address = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     avatar = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     idVerification = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     isBlock = table.Column<bool>(type: "bit", nullable: true),
                     createdDate = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -172,15 +173,15 @@ namespace User.Data.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "41bccbdf-c623-473e-9d97-a580fb4f82ef", "3", "Business", "Business" },
-                    { "ad6d6d51-cd1d-4bf6-ab7c-e1e1dc7a7da9", "2", "Person", "Person" },
+                    { "6c27f261-46d9-4264-ae1c-fe2991be6ad7", "3", "Business", "Business" },
+                    { "7c0b9725-649f-4242-b014-8f10959c93b9", "2", "Member", "Member" },
                     { "aeb27c30-d31d-43ec-9465-d04bf75d0f0d", "1", "Admin", "Admin" }
                 });
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
-                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName", "address", "avatar", "createdDate", "date", "fullName", "idVerification", "isBlock", "isMale", "tax" },
-                values: new object[] { "b80546cd-f4df-4a46-842e-22d3f9018ce3", 0, "34fc776d-db86-4f51-8ab0-747428fe7b67", "admin@gmail.com", true, true, null, "ADMIN@GMAIL.COM", "ADMIN@GMAIL.COM", "AQAAAAIAAYagAAAAEKfRMBPKBXLN+iuBr6fYHaz9oBSNBGLXET0n9ELPj19XuxmTP4MP8cxvPS6n7Ag11g==", "0949180802", false, "bf92ac81-0dac-429b-b040-ffd0ee04335d", false, "admin@gmail.com", "Bến Tre", null, new DateTime(2024, 1, 17, 21, 37, 55, 477, DateTimeKind.Local).AddTicks(6082), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Đầu bự vô địch", new Guid("00000000-0000-0000-0000-000000000000"), false, true, 1234567890 });
+                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName", "address", "avatar", "createdDate", "date", "description", "fullName", "idVerification", "isBlock", "isMale", "tax" },
+                values: new object[] { "b80546cd-f4df-4a46-842e-22d3f9018ce3", 0, "8425f54d-0d93-4f91-bcab-ec391a2b958e", "admin@gmail.com", true, true, null, "ADMIN@GMAIL.COM", "ADMIN@GMAIL.COM", "AQAAAAIAAYagAAAAECIoUZd1gkaeFndYloGi9+uUN3Djl873TcJVYr+W5G3naX0l17bicGJ8ssMA+rwQEA==", "0949180802", false, "f6428e63-9ec0-4e48-b533-1d9d73580d95", false, "admin@gmail.com", "Bến Tre", null, new DateTime(2024, 1, 21, 22, 12, 3, 329, DateTimeKind.Local).AddTicks(1100), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "Đầu bự vô địch", new Guid("00000000-0000-0000-0000-000000000000"), false, true, 1234567890 });
 
             migrationBuilder.InsertData(
                 table: "AspNetUserRoles",

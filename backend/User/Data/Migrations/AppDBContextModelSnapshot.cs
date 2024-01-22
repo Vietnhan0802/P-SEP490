@@ -75,7 +75,6 @@ namespace User.Data.Migrations
                         .HasColumnType("nvarchar(256)");
 
                     b.Property<string>("address")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("avatar")
@@ -87,8 +86,10 @@ namespace User.Data.Migrations
                     b.Property<DateTime>("date")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("description")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("fullName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("idVerification")
@@ -120,20 +121,20 @@ namespace User.Data.Migrations
                         {
                             Id = "b80546cd-f4df-4a46-842e-22d3f9018ce3",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "34fc776d-db86-4f51-8ab0-747428fe7b67",
+                            ConcurrencyStamp = "8425f54d-0d93-4f91-bcab-ec391a2b958e",
                             Email = "admin@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = true,
                             NormalizedEmail = "ADMIN@GMAIL.COM",
                             NormalizedUserName = "ADMIN@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEKfRMBPKBXLN+iuBr6fYHaz9oBSNBGLXET0n9ELPj19XuxmTP4MP8cxvPS6n7Ag11g==",
+                            PasswordHash = "AQAAAAIAAYagAAAAECIoUZd1gkaeFndYloGi9+uUN3Djl873TcJVYr+W5G3naX0l17bicGJ8ssMA+rwQEA==",
                             PhoneNumber = "0949180802",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "bf92ac81-0dac-429b-b040-ffd0ee04335d",
+                            SecurityStamp = "f6428e63-9ec0-4e48-b533-1d9d73580d95",
                             TwoFactorEnabled = false,
                             UserName = "admin@gmail.com",
                             address = "Bến Tre",
-                            createdDate = new DateTime(2024, 1, 17, 21, 37, 55, 477, DateTimeKind.Local).AddTicks(6082),
+                            createdDate = new DateTime(2024, 1, 21, 22, 12, 3, 329, DateTimeKind.Local).AddTicks(1100),
                             date = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             fullName = "Đầu bự vô địch",
                             idVerification = new Guid("00000000-0000-0000-0000-000000000000"),
@@ -179,14 +180,14 @@ namespace User.Data.Migrations
                         },
                         new
                         {
-                            Id = "ad6d6d51-cd1d-4bf6-ab7c-e1e1dc7a7da9",
+                            Id = "7c0b9725-649f-4242-b014-8f10959c93b9",
                             ConcurrencyStamp = "2",
-                            Name = "Person",
-                            NormalizedName = "Person"
+                            Name = "Member",
+                            NormalizedName = "Member"
                         },
                         new
                         {
-                            Id = "41bccbdf-c623-473e-9d97-a580fb4f82ef",
+                            Id = "6c27f261-46d9-4264-ae1c-fe2991be6ad7",
                             ConcurrencyStamp = "3",
                             Name = "Business",
                             NormalizedName = "Business"
