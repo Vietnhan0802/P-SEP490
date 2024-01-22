@@ -19,11 +19,11 @@ namespace Blog.Controllers
         private readonly AppDBContext _dbContext;
         private readonly IMapper _mapper;
         private readonly HttpClient client;
-        private readonly ILogger<CommentController> _logger;
+        private readonly ILogger<BlogController> _logger;
 
         public string UserApiUrl { get; private set; }
 
-        public BlogController(AppDBContext context, IMapper mapper, ILogger<CommentController> logger)
+        public BlogController(AppDBContext context, IMapper mapper, ILogger<BlogController> logger)
         {
             _dbContext = context;
             _mapper = mapper;
