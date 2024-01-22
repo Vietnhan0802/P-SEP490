@@ -2,6 +2,8 @@
 using Interaction.DBContext;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Net.Http.Headers;
+using System.Text.Json;
 
 namespace Interaction.Controllers
 {
@@ -9,17 +11,42 @@ namespace Interaction.Controllers
     public class InteractionController : ControllerBase
     {
         private readonly VerificationDbContext _context;
+        private readonly HttpClient client;
+
+        public string UserApiUrl { get; }
 
         public InteractionController(VerificationDbContext context)
         {
             _context = context;
+            client = new HttpClient();
+            var contentType = new MediaTypeWithQualityHeaderValue("application/json");
+            client.DefaultRequestHeaders.Accept.Add(contentType);
+            UserApiUrl = "https://localhost:7006/api/User";
         }
 
-        [HttpGet]
-        public async Task<ActionResult<List<ReportPost>>> GetReportPosts()
+        [HttpGet("GetNameUserCurrent/{idUser}")]
+        private async Task<string> GetNameUserCurrent(string idUser)
         {
-            return await _context.ReportPosts.ToListAsync();
+            HttpResponseMessage response = await client.GetAsync($"{UserApiUrl}/GetNameUser/{idUser}");
+            string strData = await response.Content.ReadAsStringAsync();
+            var option = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true,
+            };
+            var user = JsonSerializer.Deserialize<string>(strData, option);
+            return user;
         }
+
+        //[HttpGet]
+        //public async Task<ActionResult<List<ReportPost>>> GetReportPosts()
+        //{
+        //    var result = await _context.ReportPosts.ToListAsync();
+        //    foreach (var reportPost in result)
+        //    {
+        //        reportPost.ReporterId = await GetNameUserCurrent(reportPost.ReporterId);
+        //    }
+
+        //}
 
         [HttpGet("{id}")]
         public async Task<ActionResult<ReportPost>> GetReportPost(Guid id)
