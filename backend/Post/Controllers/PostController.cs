@@ -1,7 +1,8 @@
 ﻿using AutoMapper;
+using BusinessObjects.Entities.Blog;
 using BusinessObjects.Entities.Post;
+using BusinessObjects.ViewModels.Blog;
 using BusinessObjects.ViewModels.Post;
-using BusinessObjects.ViewModels.PostComment;
 using BusinessObjects.ViewModels.User;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -316,6 +317,110 @@ namespace Post.Controllers
             }
         }
 
+        [HttpPost("{id}/Like")]
+        public async Task<ActionResult> LikePost(Guid id)
+        {
+            try
+            {
+                var blog = await _dbContext.Posts.FindAsync(id);
+
+                if (blog == null)
+                {
+                    return NotFound($"Blog with id {id} not found.");
+                }
+
+                var existingLike = await _dbContext.PostLikes
+                    .FirstOrDefaultAsync(like => like.idPost == id && !like.IsDeleted);
+
+                if (existingLike != null)
+                {
+                    return BadRequest("User has already liked this blog.");
+                }
+
+                var newLike = new PostLikes
+                {
+                    idPost = id
+                };
+
+                _dbContext.PostLikes.Add(newLike);
+                await _dbContext.SaveChangesAsync();
+
+                return Ok($"Liked blog with id {id} successfully.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Internal server error");
+            }
+        }
+
+
+        [HttpPut("{id}/Unlike")]
+        public async Task<ActionResult> UnlikePost(Guid id)
+        {
+            try
+            {
+                var blog = await _dbContext.Posts.FindAsync(id);
+
+                if (blog == null)
+                {
+                    return NotFound($"Blog with id {id} not found.");
+                }
+
+
+                var existingLike = await _dbContext.PostLikes
+                    .FirstOrDefaultAsync(like => like.idPost == id && !like.IsDeleted);
+
+                if (existingLike == null)
+                {
+                    return BadRequest("User has not liked this blog.");
+                }
+
+                existingLike.IsDeleted = true;
+                await _dbContext.SaveChangesAsync();
+
+                return Ok($"Unliked blog with id {id} successfully.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Internal server error");
+            }
+        }
+
+        [HttpPost("ReplyComment/{idPostComment}")]
+        public async Task<ActionResult<ReplyPostViewModel>> ReplyComment(Guid idPostComment, ReplyPostViewModel replyViewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var parentComment = await _dbContext.PostComments.FindAsync(idPostComment);
+
+                    if (parentComment == null)
+                    {
+                        return NotFound($"Parent comment with id {idPostComment} not found.");
+                    }
+
+                    var replyEntity = new PostReply
+                    {
+                        Content = replyViewModel.Content,
+                        IsDeleted = false,
+                        CreatedDate = DateTime.Now
+                    };
+
+                    _dbContext.PostReplies.Add(replyEntity);
+                    await _dbContext.SaveChangesAsync();
+
+                    return Ok("Replied to the comment successfully.");
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Error while replying to the comment.");
+                    return StatusCode(500, "Internal server error");
+                }
+            }
+
+            return BadRequest("Invalid input or validation failed.");
+        }
 
     }
 }
