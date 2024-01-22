@@ -19,11 +19,11 @@ namespace Post.Controllers
         private readonly AppDBContext _dbContext;
         private readonly IMapper _mapper;
         private readonly HttpClient client;
-        private readonly ILogger<CommentPostController> _logger;
+        private readonly ILogger<PostController> _logger;
 
         public string UserApiUrl { get; private set; }
 
-        public PostController(AppDBContext context, IMapper mapper, ILogger<CommentPostController> logger)
+        public PostController(AppDBContext context, IMapper mapper, ILogger<PostController> logger)
         {
             _dbContext = context;
             _mapper = mapper;
