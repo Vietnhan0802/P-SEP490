@@ -28,8 +28,9 @@ namespace Interaction.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("AccountId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("AccountId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Content")
                         .IsRequired()
@@ -41,8 +42,9 @@ namespace Interaction.Migrations
                     b.Property<bool?>("IsAccepted")
                         .HasColumnType("bit");
 
-                    b.Property<Guid>("ReporterId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("ReporterId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -68,8 +70,9 @@ namespace Interaction.Migrations
                     b.Property<Guid>("PostId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("ReporterId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("ReporterId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -85,8 +88,9 @@ namespace Interaction.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("IdAccount")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("IdAccount")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool?>("IsAccept")
                         .HasColumnType("bit");
