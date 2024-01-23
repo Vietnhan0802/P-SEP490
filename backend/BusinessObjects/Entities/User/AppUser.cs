@@ -16,5 +16,9 @@ namespace BusinessObjects.Entities.User
         public Guid idVerification { get; set; }
         public bool? isBlock { get; set; } 
         public DateTime createdDate { get; set; }
+        [NotMapped]
+        public IFormFile ImageFile { get; set; }
+        [NotMapped]
+        public string ImageSrc { get; set; }
     }
 }
