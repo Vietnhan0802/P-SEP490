@@ -7,12 +7,10 @@ using BusinessObjects.Entities.Post;
 using BusinessObjects.Entities.Projects;
 using BusinessObjects.Entities.User;
 using BusinessObjects.ViewModels.Blog;
-using BusinessObjects.ViewModels.BlogComments;
 using BusinessObjects.ViewModels.Communication;
 using BusinessObjects.ViewModels.Credential;
 using BusinessObjects.ViewModels.Follow;
 using BusinessObjects.ViewModels.Post;
-using BusinessObjects.ViewModels.PostComment;
 using BusinessObjects.ViewModels.Project;
 using BusinessObjects.ViewModels.User;
 
@@ -27,6 +25,7 @@ namespace BusinessObjects.Mappers
             CreateMap<AppUser, SignIn>().ReverseMap();
             CreateMap<AppUser, ViewUser>().ReverseMap();
             CreateMap<AppUser, UpdateUser>().ReverseMap();
+            CreateMap<AppUser, UpdateAvatar>().ReverseMap();
 
             CreateMap<Degree, CreateDegree>().ReverseMap();
             CreateMap<Degree, UpdateDegree>().ReverseMap();

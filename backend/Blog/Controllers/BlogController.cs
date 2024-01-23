@@ -2,13 +2,13 @@
 using Blog.Data;
 using BusinessObjects.Entities.Blog;
 using BusinessObjects.ViewModels.Blog;
-using BusinessObjects.ViewModels.BlogComments;
 using BusinessObjects.ViewModels.User;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Net.Http.Headers;
 using System.Text.Json;
+using BlogReply = BusinessObjects.Entities.Blog.BlogReply;
 
 namespace Blog.Controllers
 {
@@ -19,11 +19,11 @@ namespace Blog.Controllers
         private readonly AppDBContext _dbContext;
         private readonly IMapper _mapper;
         private readonly HttpClient client;
-        private readonly ILogger<CommentController> _logger;
+        private readonly ILogger<BlogController> _logger;
 
         public string UserApiUrl { get; private set; }
 
-        public BlogController(AppDBContext context, IMapper mapper, ILogger<CommentController> logger)
+        public BlogController(AppDBContext context, IMapper mapper, ILogger<BlogController> logger)
         {
             _dbContext = context;
             _mapper = mapper;
@@ -193,7 +193,7 @@ namespace Blog.Controllers
         }
 
 
-        [HttpPost("{id}/Unlike")]
+        [HttpPut("{id}/Unlike")]
         public async Task<ActionResult> UnlikeBlog(Guid id)
         {
             try
@@ -205,7 +205,7 @@ namespace Blog.Controllers
                     return NotFound($"Blog with id {id} not found.");
                 }
 
-                // Kiểm tra xem người dùng đã like blog chưa
+               
                 var existingLike = await _dbContext.BlogLikes
                     .FirstOrDefaultAsync(like => like.idBlog == id && !like.IsDeleted);
 
@@ -384,40 +384,101 @@ namespace Blog.Controllers
             }
         }
 
-        //[HttpPost("LikeComment/{idBlogComment}")]
-        //public async Task<ActionResult> LikeComment(Guid idBlogComment)
+        //[HttpPost("LikeReplyComment/{idBlogReply}")]
+        //public async Task<ActionResult> LikeReplyComment(Guid idBlogReply)
         //{
         //    try
         //    {
-        //        var commentToLike = await _dbContext.BlogComments.FindAsync(idBlogComment);
+        //        var replyComment = await _dbContext.BlogComments.FindAsync(idBlogReply);
 
-        //        if (commentToLike == null)
+        //        if (replyComment == null)
         //        {
-        //            return NotFound($"Comment with id {idBlogComment} not found.");
+        //            return NotFound($"Reply comment with id {idBlogReply} not found.");
         //        }
 
-        //        if (commentToLike.BlogCommentLikes.Any(like => like.IdUser == userId))
+        //        // Kiểm tra xem người dùng đã like reply comment chưa
+        //        var existingLike = await _dbContext.BlogCommentLikes
+        //            .FirstOrDefaultAsync(like => like.idBlogCommentLike == idBlogReply && !like.IsDeleted);
+
+        //        if (existingLike != null)
         //        {
-        //            return BadRequest("User has already liked this comment.");
+        //            return BadRequest("User has already liked this reply comment.");
         //        }
 
-        //        var like = new BlogCommentLike
+        //        var newLike = new BlogCommentLike
         //        {
-        //            IdUser = userId,  
-        //            CreatedDate = DateTime.Now
+        //            idBlogCommentLike = idBlogReply
         //        };
 
-        //        commentToLike.BlogCommentLikes.Add(like);
-
+        //        _dbContext.BlogCommentLikes.Add(newLike);
         //        await _dbContext.SaveChangesAsync();
 
-        //        return Ok($"Comment with id {idBlogComment} liked successfully.");
+        //        return Ok($"Liked reply comment with id {idBlogReply} successfully.");
         //    }
         //    catch (Exception ex)
         //    {
+        //        _logger.LogError(ex, "Internal server error while liking reply comment.");
         //        return StatusCode(500, "Internal server error");
         //    }
         //}
+
+
+        [HttpGet("GetAllComments")]
+        public async Task<ActionResult<IEnumerable<CreateCommentBlog>>> GetAllComments()
+        {
+            try
+            {
+                var comments = await _dbContext.BlogComments
+                    .Where(comment => !comment.IsDeleted)
+                    .Select(comment => _mapper.Map<CreateCommentBlog>(comment))
+                    .ToListAsync();
+
+                return Ok(comments);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while retrieving all comments.");
+                return StatusCode(500, "Internal server error");
+            }
+        }
+
+
+        [HttpPost("ReplyComment/{idBlogComment}")]
+        public async Task<ActionResult<BlogReplyViewModel>> ReplyComment(Guid idBlogComment, BlogReplyViewModel replyViewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var parentComment = await _dbContext.BlogComments.FindAsync(idBlogComment);
+
+                    if (parentComment == null)
+                    {
+                        return NotFound($"Parent comment with id {idBlogComment} not found.");
+                    }
+
+                    var replyEntity = new BlogReply
+                    {
+                        Content = replyViewModel.Content,
+                        IsDeleted = false,
+                        CreatedDate = DateTime.Now
+                    };
+
+                    _dbContext.BlogReplies.Add(replyEntity);
+                    await _dbContext.SaveChangesAsync();
+
+                    return Ok("Replied to the comment successfully.");
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Error while replying to the comment.");
+                    return StatusCode(500, "Internal server error");
+                }
+            }
+
+            return BadRequest("Invalid input or validation failed.");
+        }
+
 
     }
 }
