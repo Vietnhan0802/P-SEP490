@@ -10,9 +10,9 @@ namespace BusinessObjects.Entities.Interaction
     {
         public Guid Id { get; set; }
 
-        public Guid AccountId { get; set; }
+        public string AccountId { get; set; }
 
-        public Guid ReporterId { get; set; }
+        public string ReporterId { get; set; }
 
         public bool? IsAccepted { get; set; }
 
