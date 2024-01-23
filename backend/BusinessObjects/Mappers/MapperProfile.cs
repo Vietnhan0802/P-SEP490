@@ -27,6 +27,7 @@ namespace BusinessObjects.Mappers
             CreateMap<AppUser, SignIn>().ReverseMap();
             CreateMap<AppUser, ViewUser>().ReverseMap();
             CreateMap<AppUser, UpdateUser>().ReverseMap();
+            CreateMap<AppUser, UpdateAvatar>().ReverseMap();
 
             CreateMap<Degree, CreateDegree>().ReverseMap();
             CreateMap<Degree, UpdateDegree>().ReverseMap();
