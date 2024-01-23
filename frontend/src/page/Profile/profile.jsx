@@ -22,7 +22,7 @@ import { CgProfile } from "react-icons/cg";
 import { MdOutlineFileDownloadDone } from "react-icons/md";
 function Profile() {
   const initialValue = {
-    avatar: "dafault",
+    avatar: "default",
     imageSrc: defaultImage,
     imageFile: null,
   }
@@ -85,15 +85,20 @@ function Profile() {
     e.preventDefault();
     const formData = new FormData();
     formData.append("avatar", value.avatar);
-    formData.append("imageFile", value.imageFile);
-    formData.append("imageSrc", value.imageSrc);
-    console.log(formData);
-    userInstance.put(`/UpdateAvatar/${user.Id}`, formData)
+    formData.append("ImageFile", value.imageFile);
+    formData.append("ImageSrc", value.imageSrc);
+    userInstance.put(`/UpdateAvatar/${user.Id}`, formData,
+    {
+      headers: {
+        'Content-Type': 'multipart/form-data', // Ensure Content-Type is set to multipart/form-data
+      },
+    }
+    )
       .then((res) => {
         console.log(res?.data);
       })
       .catch((err) => {
-        console.log(err);
+        console.log(err.response.data);
       })
   }
   const showPreview = (e) => {
@@ -108,6 +113,12 @@ function Profile() {
         });
       }
       reader.readAsDataURL(imageFile);
+    } else {
+      setValue({
+        ...value,
+        imageFile: null,
+        imageSrc: defaultImage
+      })
     }
   }
 
