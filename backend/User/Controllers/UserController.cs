@@ -404,13 +404,8 @@ namespace User.Controllers
             if (user != null)
             {
                 var tokenNew = Uri.EscapeDataString(token);
-                string redirectUrl = "http://localhost:3000/resetpassword";
-
-                var fullUrl = Url.Action(
-                  redirectUrl,
-                  new { tokenNew, email }
-                );
-                return Redirect(fullUrl);
+                string redirectUrl = $"http://localhost:3000/resetpassword?token={tokenNew}&email={email}";
+                return Redirect(redirectUrl);
             }
             return BadRequest("Undefined error!");
         }
