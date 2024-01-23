@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BusinessObjects.ViewModels.BlogComments
+namespace BusinessObjects.ViewModels.Post
 {
-    public class CreateCommentBlog
+    public class CommentPostViewModel
     {
         public string Content { get; set; }
     }
