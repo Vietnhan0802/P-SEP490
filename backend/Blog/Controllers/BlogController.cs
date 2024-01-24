@@ -1,15 +1,16 @@
 ﻿using AutoMapper;
 using Blog.Data;
 using BusinessObjects.Entities.Blog;
-using BusinessObjects.Entities.Post;
+using BusinessObjects.Entities.Credential;
 using BusinessObjects.ViewModels.Blog;
+using BusinessObjects.ViewModels.Credential;
 using BusinessObjects.ViewModels.User;
-using Microsoft.AspNetCore.Http;
+using Commons.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Net;
 using System.Net.Http.Headers;
 using System.Text.Json;
-using BlogReply = BusinessObjects.Entities.Blog.BloggReply;
 
 namespace Blog.Controllers
 {
@@ -19,16 +20,23 @@ namespace Blog.Controllers
     {
         private readonly AppDBContext _context;
         private readonly IMapper _mapper;
+        private readonly SaveImageService _saveImageService;
+        private readonly HttpClient client;
 
         public string UserApiUrl { get; private set; }
 
-        public BlogController(AppDBContext context, IMapper mapper)
+        public BlogController(AppDBContext context, IMapper mapper, SaveImageService saveImageService)
         {
             _context = context;
             _mapper = mapper;
+            _saveImageService = saveImageService;
+            client = new HttpClient();
+            var contentType = new MediaTypeWithQualityHeaderValue("application/json");
+            client.DefaultRequestHeaders.Accept.Add(contentType);
+            UserApiUrl = "https://localhost:7006/api/User";
         }
 
-        /*[HttpGet("GetNameUserCurrent/{idUser}")]
+        [HttpGet("GetNameUserCurrent/{idUser}")]
         private async Task<string> GetNameUserCurrent(string idUser)
         {
             HttpResponseMessage response = await client.GetAsync($"{UserApiUrl}/GetNameUser/{idUser}");
@@ -40,119 +48,113 @@ namespace Blog.Controllers
             var user = JsonSerializer.Deserialize<string>(strData, option);
 
             return user;
-        }*/
+        }
 
-        /*[HttpGet]
-        public async Task<ActionResult<IEnumerable<Blogg>>> GetBlogs()
+        [HttpGet("GetAllBlogs")]
+        public async Task<Response> GetAllBlogs()
         {
-            return await _dbContext.Blogs.ToListAsync();
+            var blogs = await _context.Blogs.Include(x => x.BloggImages).ToListAsync();
+            if (blogs == null)
+            {
+                return new Response(HttpStatusCode.NoContent, "List blogs doesn't empty!");
+            }
+            var result = _mapper.Map<List<ViewBlog>>(blogs);
+            foreach (var blog in result)
+            {
+                blog.fullName = await GetNameUserCurrent(blog.idAccount!);
+            }
+            return new Response(HttpStatusCode.OK, "Get list blogs success!", result);
+        }
+
+        [HttpGet("GetBlogById/{idBlog}")]
+        public async Task<Response> GetBlogById(Guid idBlog)
+        {
+            var blog = await _context.Blogs.Include(x => x.BloggImages).FirstOrDefaultAsync(x => x.idBlog == idBlog);
+            if (blog == null)
+            {
+                return new Response(HttpStatusCode.NotFound, "Blog doesn't exists!");
+            }
+            blog.view++;
+            await _context.SaveChangesAsync();
+            var result = _mapper.Map<ViewBlog>(blog);
+            result.fullName = await GetNameUserCurrent(result.idAccount!);
+            return new Response(HttpStatusCode.OK, "Get list blog success!", result);
         }
 
         [HttpPost("CreateBlog")]
-        public Task<Response> CreateBlog(string idUser, CreateBlog createBlog)
+        public async Task<Response> CreateBlog(string idUser, CreateBlog createBlog)
         {
             var blog = _mapper.Map<Blogg>(createBlog);
+            if (createBlog.CreateImages != null)
+            {
+                foreach (var image in createBlog.CreateImages)
+                {
+                    var imageName = await _saveImageService.SaveImage(image.ImageFile);
+                    blog.BloggImages.Add(new BloggImage { image = imageName });
+                }
+                blog.idAccount = idUser;
+                blog.isDeleted = false;
+                blog.createdDate = DateTime.Now;
+                await _context.Blogs.AddAsync(blog);
+                await _context.SaveChangesAsync();
+                return new Response(HttpStatusCode.OK, "Create blog is success!", _mapper.Map<ViewBlog>(blog));
+            }
+            return new Response(HttpStatusCode.OK, "Create blog is fail!");
         }
 
-        [HttpPost("CreateBlog/{idUser}")]
-        public async Task<ActionResult<CreateBlogViewModel>> CreateBlog(CreateBlogViewModel blogViewModel)
+        [HttpPut("UpdateBlog/{idBlog}")]
+        public async Task<Response> UpdateBlog(Guid idBlog, UpdateBlog updateBlog)
         {
-            if (ModelState.IsValid)
+            var blog = await _context.Blogs.FirstOrDefaultAsync(x => x.idBlog == idBlog);
+            if (blog == null)
             {
-                try
-                {
-                    var blogEntity = new Blogg
-                    {
-
-                        Title = blogViewModel.Title,
-                        Content = blogViewModel.Content,
-                    };
-
-                    _dbContext.Blogs.Add(blogEntity);
-                    await _dbContext.SaveChangesAsync();
-
-                    return Ok("Created a new product successfully.");
-                }
-                catch (Exception ex)
-                {
-                    return StatusCode(500, "Internal server error");
-                }
+                return new Response(HttpStatusCode.NotFound, "Blog doesn't exists!");
             }
-
-            return BadRequest("Invalid input or validation failed.");
+            if (updateBlog.UpdateImages != null)
+            {
+                foreach (var imageOld in blog.BloggImages)
+                {
+                    _saveImageService.DeleteImage(imageOld.image);
+                }
+                var result = _mapper.Map(updateBlog, blog);
+                foreach (var imageNew in result.BloggImages)
+                {
+                    imageNew.image = await _saveImageService.SaveImage(imageNew.ImageFile);
+                    result.BloggImages.Add(imageNew);
+                }
+                _context.Blogs.Update(result);
+                await _context.SaveChangesAsync();
+                return new Response(HttpStatusCode.OK, "Update blog is success!", _mapper.Map<UpdateBlog>(result));
+            }
+            return new Response(HttpStatusCode.OK, "Update blog is fail!");
         }
 
-        [HttpPut("UpdateBlog/{id}")]
-        public async Task<ActionResult> UpdateBlog(Guid id, UpdateBlogViewModel updatedBlog)
+        [HttpDelete("RemoveBlog/{idBlog}")]
+        public async Task<Response> RemoveBlog(Guid idBlog)
         {
-            try
+            var blog = await _context.Blogs.FirstOrDefaultAsync(x => x.idBlog == idBlog);
+            if (blog == null)
             {
-                var existingBlog = await _dbContext.Blogs.FindAsync(id);
-
-                if (existingBlog == null)
-                {
-                    return NotFound($"Blog with id {id} not found.");
-                }
-
-                existingBlog.Title = updatedBlog.Title;
-                existingBlog.Content = updatedBlog.Content;
-
-                _dbContext.Entry(existingBlog).State = EntityState.Modified;
-                await _dbContext.SaveChangesAsync();
-
-                return Ok($"Blog with id {id} updated successfully.");
+                return new Response(HttpStatusCode.NotFound, "Blog doesn't exists!");
             }
-            catch (Exception ex)
-            {
-                return StatusCode(500, "Internal server error");
-            }
+            blog.isDeleted = true;
+            _context.Blogs.Update(blog);
+            await _context.SaveChangesAsync();
+            return new Response(HttpStatusCode.NoContent, "Remove Blog success!");
         }
 
-        [HttpDelete("DeleteBlog/{id}")]
-        public async Task<ActionResult> DeleteBlog(Guid id)
+        [HttpGet("GetTotalLikeBlogs/{idBlog}")]
+        public async Task<Response> GetTotalLikeBlogs(Guid idBlog)
         {
-            try
-            {
-                var blogToDelete = await _dbContext.Blogs.FindAsync(id);
-
-                if (blogToDelete == null)
-                {
-                    return NotFound($"Blog with id {id} not found.");
-                }
-
-                blogToDelete.IsDeleted = true;
-                await _dbContext.SaveChangesAsync();
-                return Ok($"Blog with id {id} deleted successfully.");
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, "Internal server error");
-            }
+            var totalLikeBlogs = await _context.BlogLikes.Where(x => x.idBlog == idBlog).CountAsync();
+            return new Response(HttpStatusCode.OK, "Get all like blog is success!", totalLikeBlogs);
         }
 
-        [HttpGet("{id}/LikeCount")]
-        public async Task<ActionResult<int>> GetLikeCount(Guid id)
+        /*[HttpPost("LikeBlog")]
+        public Task<Response> LikeBlog(string idUser, Guid idBlog)
         {
-            try
-            {
-                var blog = await _dbContext.Blogs.FindAsync(id);
-
-                if (blog == null)
-                {
-                    return NotFound($"Blog with id {id} not found.");
-                }
-
-                var likeCount = await _dbContext.BlogLikes
-                    .CountAsync(like => like.idBlog == id && !like.IsDeleted);
-
-                return Ok(likeCount);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, "Internal server error");
-            }
+            var likeBlog = 
         }
-
 
         [HttpPost("{id}/Like")]
         public async Task<ActionResult> LikeBlog(Guid id)

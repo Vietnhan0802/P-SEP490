@@ -1,12 +1,14 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using BusinessObjects.Entities.Blog;
+using System.ComponentModel.DataAnnotations;
 
-namespace BusinessObjects.Entities.Blog
+namespace BusinessObjects.ViewModels.Blog
 {
-    public class Blogg
+    public class ViewBlog
     {
         [Key]
         public Guid idBlog { get; set; }
         public string? idAccount { get; set; }
+        public string? fullName { get; set; }
         public string? title { get; set; }
         public string? content { get; set; }
         public int view { get; set; }
