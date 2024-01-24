@@ -7,13 +7,13 @@ using System.Threading.Tasks;
 
 namespace BusinessObjects.Entities.Blog
 {
-    public class BlogCommentLike
+    public class BloggCommentLike
     {
         [Key]
         public Guid idBlogCommentLike { get; set; }
-        public bool IsDeleted { get; set; } = false;
-        public DateTime CreatedDate { get; set; } = DateTime.Now;
+        public string? idAccount { get; set; }
         public Guid idBlogComment { get; set; }
-        public BlogComment? BlogComment { get; set; }
+        public DateTime createdDate { get; set; }
+        public BloggComment BloggComment { get; set; }
     }
 }

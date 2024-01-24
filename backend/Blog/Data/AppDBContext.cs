@@ -8,13 +8,13 @@ namespace Blog.Data
 {
     public class AppDBContext: DbContext
     {
-        public DbSet<Blogs> Blogs { get; set; }
-        public DbSet<BlogReply> BlogReplies { get; set; }
-        public DbSet<BlogComment> BlogComments { get; set; }
-        public DbSet<BlogCommentLike> BlogCommentLikes { get; set; }
-        public DbSet<BlogImage> BlogImages { get; set; }
-        public DbSet<BlogLike> BlogLikes { get; set; }
-        public DbSet<BlogReplyLike> BlogReplyLikes { get; set; }
+        public DbSet<Blogg> Blogs { get; set; }
+        public DbSet<BloggReply> BlogReplies { get; set; }
+        public DbSet<BloggComment> BlogComments { get; set; }
+        public DbSet<BloggCommentLike> BlogCommentLikes { get; set; }
+        public DbSet<BloggImage> BlogImages { get; set; }
+        public DbSet<BloggLike> BlogLikes { get; set; }
+        public DbSet<BloggReplyLike> BlogReplyLikes { get; set; }
         public AppDBContext(DbContextOptions options) : base(options)
         {
         }
