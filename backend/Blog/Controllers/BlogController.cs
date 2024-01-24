@@ -49,9 +49,9 @@ namespace Blog.Controllers
         }
 
         [HttpPost("CreateBlog")]
-        public Task<Response> CreateBlog()
+        public Task<Response> CreateBlog(string idUser, CreateBlog createBlog)
         {
-
+            var blog = _mapper.Map<Blogg>(createBlog);
         }
 
         [HttpPost("CreateBlog/{idUser}")]
@@ -63,7 +63,7 @@ namespace Blog.Controllers
                 {
                     var blogEntity = new Blogg
                     {
-                        
+
                         Title = blogViewModel.Title,
                         Content = blogViewModel.Content,
                     };
@@ -204,7 +204,7 @@ namespace Blog.Controllers
                     return NotFound($"Blog with id {id} not found.");
                 }
 
-               
+
                 var existingLike = await _dbContext.BlogLikes
                     .FirstOrDefaultAsync(like => like.idBlog == id && !like.IsDeleted);
 
@@ -261,7 +261,7 @@ namespace Blog.Controllers
             }
         }
 
-*//*************************************************************************//*
+***********************************************************************
 
         [HttpGet("GetAllCommentsByBlogId/{blogId}")]
         public async Task<ActionResult<IEnumerable<CreateCommentBlog>>> GetAllCommentsByBlogId(Guid blogId)
