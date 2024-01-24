@@ -20,13 +20,17 @@ namespace BusinessObjects.Mappers
         {
             CreateMap<Blogg, CreateBlog>().ReverseMap();
             CreateMap<Blogg, CreateImage>().ReverseMap();
+            CreateMap<Blogg, UpdateBlog>().ReverseMap();
+            CreateMap<Blogg, UpdateImage>().ReverseMap();
+            CreateMap<Blogg, ViewBlog>().ReverseMap();
+
 
             CreateMap<AppUser, SignUpPerson>().ReverseMap();
             CreateMap<AppUser, SignUpBusiness>().ReverseMap();
             CreateMap<AppUser, SignIn>().ReverseMap();
-            CreateMap<AppUser, ViewUser>().ReverseMap();
             CreateMap<AppUser, UpdateUser>().ReverseMap();
             CreateMap<AppUser, UpdateAvatar>().ReverseMap();
+            CreateMap<AppUser, ViewUser>().ReverseMap();
 
             CreateMap<Degree, CreateDegree>().ReverseMap();
             CreateMap<Degree, UpdateDegree>().ReverseMap();
