@@ -28,9 +28,9 @@ namespace User.Controllers
         private readonly IEmailService _emailService;
         private readonly IMapper _mapper;
         private readonly IConfiguration _configuration;
-        private readonly IWebHostEnvironment _hostEnvironment;
+        private readonly SaveImageService _saveImageService;
 
-        public UserController(UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager, SignInManager<AppUser> signInManager, IEmailService emailService, IMapper mapper, IConfiguration configuration, IWebHostEnvironment hostEnvironment)
+        public UserController(UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager, SignInManager<AppUser> signInManager, IEmailService emailService, IMapper mapper, IConfiguration configuration, SaveImageService saveImageService)
         {
             _userManager = userManager;
             _roleManager = roleManager;
@@ -38,7 +38,7 @@ namespace User.Controllers
             _emailService = emailService;
             _mapper = mapper;
             _configuration = configuration;
-            _hostEnvironment = hostEnvironment;
+            _saveImageService = saveImageService;
         }
 
         [HttpGet("GetTotalUsersRegister/{startDate}/{endDate}")]
@@ -163,8 +163,8 @@ namespace User.Controllers
             if (updateAvatar.ImageFile != null)
             {
                 var result = _mapper.Map(updateAvatar, userExits);
-                DeleteImage(result.avatar);
-                result.avatar = await SaveImage(result.ImageFile);
+                _saveImageService.DeleteImage(result.avatar!);
+                result.avatar = await _saveImageService.SaveImage(result.ImageFile);
             }          
             await _userManager.UpdateAsync(userExits);
             return new Response(HttpStatusCode.OK, "Update user is success!", _mapper.Map<UpdateUser>(userExits));
@@ -489,7 +489,7 @@ namespace User.Controllers
             return new Response(HttpStatusCode.OK, "Login successfully", result);
         }
 
-        [NonAction]
+        /*[NonAction]
         public async Task<string> SaveImage(IFormFile imageFile)
         {
             string imageName = new String(Path.GetFileNameWithoutExtension(imageFile.FileName).Take(10).ToArray()).Replace(' ', '-');
@@ -508,6 +508,6 @@ namespace User.Controllers
             var imagePath = Path.Combine(_hostEnvironment.ContentRootPath, "Images", imageName);
             if (System.IO.File.Exists(imagePath))
                 System.IO.File.Delete(imagePath);
-        }
+        }*/
     }
 }
