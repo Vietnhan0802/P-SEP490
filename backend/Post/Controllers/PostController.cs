@@ -64,7 +64,6 @@ namespace Post.Controllers
                 {
                     var postEntity = new Posts
                     {
-                        idPost = postViewModel.idPost,
                         Title = postViewModel.Title,
                         Content = postViewModel.Content,
                         Major = postViewModel.Major,
@@ -102,7 +101,6 @@ namespace Post.Controllers
                 existingPost.Content = updatedPostViewModel.Content;
                 existingPost.Major = updatedPostViewModel.Major;
                 existingPost.Exp = updatedPostViewModel.Exp;
-                existingPost.View = updatedPostViewModel.View;
 
                 _dbContext.Posts.Update(existingPost);
                 await _dbContext.SaveChangesAsync();
