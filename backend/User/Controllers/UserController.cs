@@ -112,7 +112,7 @@ namespace User.Controllers
             return Ok(fullName);
         }
 
-        [HttpGet("BlockUser/{idUser}")]
+        [HttpPut("BlockUser/{idUser}")]
         public async Task<Response> BlockUser(string idUser)
         {
             var user = await _userManager.FindByIdAsync(idUser);
@@ -164,8 +164,7 @@ namespace User.Controllers
             {
                 var result = _mapper.Map(updateAvatar, userExits);
                 DeleteImage(result.avatar);
-                var avatarA = await SaveImage(result.ImageFile);
-                result.avatar = avatarA;
+                result.avatar = await SaveImage(result.ImageFile);
             }          
             await _userManager.UpdateAsync(userExits);
             return new Response(HttpStatusCode.OK, "Update user is success!", _mapper.Map<UpdateUser>(userExits));
@@ -372,7 +371,7 @@ namespace User.Controllers
         }
 
         [HttpGet("ConfirmEmail")]
-        public async Task<Response> ConfirmEmail(string token, string email)
+        public async Task<IActionResult> ConfirmEmail(string token, string email)
         {
             var userExits = await _userManager.FindByEmailAsync(email);
             if (userExits != null)
@@ -380,17 +379,18 @@ namespace User.Controllers
                 var result = await _userManager.ConfirmEmailAsync(userExits, token);
                 if (result.Succeeded)
                 {
-                    return new Response(HttpStatusCode.NoContent, "Email verified successfully!");
+                    string redirectUrl = "http://localhost:3000/confirmemail";
+                    return Redirect(redirectUrl);
                 }
             }
-            return new Response(HttpStatusCode.BadRequest, "User doesn't exists!");
+            return BadRequest("User doesn't exists!");
         }
 
         private string GetHtmlContent(string fullname, string url)
         {
             string response = "<div style = \"width:100%; background-color:lightblue; text-align:center; margin:10px\">";
             response += $"<h1> Welcome to {fullname}</h1>";
-            response += "<img src = \"https://baocaosu.us/tin/bo-anh-nguc-tran-cho-con-bu-tuyet-dep-cua-ba-me-nha-trang-5.jpg\">";
+            response += "<img src = \"https://inkythuatso.com/uploads/thumbnails/800/2023/01/1-meme-meo-cam-sung-sieu-ba-dao-17-15-34-21.jpg\">";
             response += "<h2>Thanks for subscribing!</h2>";
             response += $"<a href = \"{url}\">Please confirm by click the link!</a>";
             response += "<div><h1> Contact us: vantoitran2002@gmail.com</h1></div>";
@@ -408,7 +408,7 @@ namespace User.Controllers
                 string redirectUrl = $"http://localhost:3000/resetpassword?token={tokenNew}&email={email}";
                 return Redirect(redirectUrl);
             }
-            return BadRequest("Undefined error!");
+            return BadRequest("User doesn't exists!");
         }
 
         [HttpGet("GoogleSignIn")]
