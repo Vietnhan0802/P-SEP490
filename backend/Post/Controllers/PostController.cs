@@ -69,7 +69,7 @@ namespace Post.Controllers
                         Content = postViewModel.Content,
                         Major = postViewModel.Major,
                         Exp = postViewModel.Exp,
-                        View = postViewModel.View
+                        //View = postViewModel.View
                     };
 
                     _dbContext.Posts.Add(postEntity);

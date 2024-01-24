@@ -8,12 +8,11 @@ namespace BusinessObjects.ViewModels.Post
 {
     public class UpdatePostViewModel
     {
-        public Guid idPost { get; set; }
         public string Title { get; set; }
         public string Content { get; set; }
         public string Image { get; set; }
         public string Major { get; set; }
         public string Exp { get; set; }
-        public int View { get; set; }
+        //public int View { get; set; }
     }
 }

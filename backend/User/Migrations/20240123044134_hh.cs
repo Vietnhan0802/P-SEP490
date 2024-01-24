@@ -5,10 +5,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
 
-namespace User.Data.Migrations
+namespace User.Migrations
 {
     /// <inheritdoc />
-    public partial class Once : Migration
+    public partial class hh : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -173,15 +173,15 @@ namespace User.Data.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "6c27f261-46d9-4264-ae1c-fe2991be6ad7", "3", "Business", "Business" },
-                    { "7c0b9725-649f-4242-b014-8f10959c93b9", "2", "Member", "Member" },
+                    { "305e4a5f-9785-4ddd-a7af-96cf5c2a7ce4", "2", "Member", "Member" },
+                    { "7db349e4-0a2d-4aad-af49-590994cd0090", "3", "Business", "Business" },
                     { "aeb27c30-d31d-43ec-9465-d04bf75d0f0d", "1", "Admin", "Admin" }
                 });
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName", "address", "avatar", "createdDate", "date", "description", "fullName", "idVerification", "isBlock", "isMale", "tax" },
-                values: new object[] { "b80546cd-f4df-4a46-842e-22d3f9018ce3", 0, "8425f54d-0d93-4f91-bcab-ec391a2b958e", "admin@gmail.com", true, true, null, "ADMIN@GMAIL.COM", "ADMIN@GMAIL.COM", "AQAAAAIAAYagAAAAECIoUZd1gkaeFndYloGi9+uUN3Djl873TcJVYr+W5G3naX0l17bicGJ8ssMA+rwQEA==", "0949180802", false, "f6428e63-9ec0-4e48-b533-1d9d73580d95", false, "admin@gmail.com", "Bến Tre", null, new DateTime(2024, 1, 21, 22, 12, 3, 329, DateTimeKind.Local).AddTicks(1100), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "Đầu bự vô địch", new Guid("00000000-0000-0000-0000-000000000000"), false, true, 1234567890 });
+                values: new object[] { "b80546cd-f4df-4a46-842e-22d3f9018ce3", 0, "a0364846-6002-4235-9670-ce1689b0b19d", "admin@gmail.com", true, true, null, "ADMIN@GMAIL.COM", "ADMIN@GMAIL.COM", "AQAAAAIAAYagAAAAEPh5sRY+tReCrE+VeWcmoZ/y2sAQn98e+KEHzIg8pi1F/0OikKDNFoX0eGtAJ2J5xg==", "0949180802", false, "0c0c9381-9e36-4cdc-9ea2-46792bc59a83", false, "admin@gmail.com", "Bến Tre", null, new DateTime(2024, 1, 23, 11, 41, 34, 128, DateTimeKind.Local).AddTicks(5856), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "Đầu bự vô địch", new Guid("00000000-0000-0000-0000-000000000000"), false, true, 1234567890 });
 
             migrationBuilder.InsertData(
                 table: "AspNetUserRoles",
