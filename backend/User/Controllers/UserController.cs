@@ -153,7 +153,7 @@ namespace User.Controllers
         }
 
         [HttpPut("UpdateAvatar/{idUser}")]
-        public async Task<Response> UpdateAvatar(string idUser, UpdateAvatar updateAvatar)
+        public async Task<Response> UpdateAvatar(string idUser, [FromForm]UpdateAvatar updateAvatar)
         {
             var userExits = await _userManager.FindByIdAsync(idUser);
             if (userExits == null)
@@ -326,7 +326,7 @@ namespace User.Controllers
             if (user != null)
             {
                 var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-                var link = Url.Action(nameof(ResetPassword), "User", new { token, email = user.Email }, Request.Scheme);
+                var link = Url.Action(nameof(TokenResetPassword), "User", new { token, email = user.Email }, Request.Scheme);
                 EmailRequest emailRequest = new EmailRequest();
                 emailRequest.ToEmail = user.Email;
                 emailRequest.Subject = "Change Password";
@@ -398,18 +398,16 @@ namespace User.Controllers
         }
 
         [HttpGet("TokenResetPassword")]
-        public async Task<Response> TokenResetPassword(string token, string email)
+        public async Task<IActionResult> TokenResetPassword(string token, string email)
         {
             var user = await _userManager.FindByEmailAsync(email);
             if (user != null)
             {
-                var model = new TokenResetPassword
-                {
-                    token = token
-                };
-                return new Response(HttpStatusCode.OK, "", model);
+                var tokenNew = Uri.EscapeDataString(token);
+                string redirectUrl = $"http://localhost:3000/resetpassword?token={tokenNew}&email={email}";
+                return Redirect(redirectUrl);
             }
-            return new Response(HttpStatusCode.BadRequest, "Undefined error!");
+            return BadRequest("Undefined error!");
         }
 
         [HttpGet("GoogleSignIn")]
