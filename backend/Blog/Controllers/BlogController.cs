@@ -67,7 +67,6 @@ namespace Blog.Controllers
                         
                         Title = blogViewModel.Title,
                         Content = blogViewModel.Content,
-                        View = blogViewModel.View
                     };
 
                     _dbContext.Blogs.Add(blogEntity);
@@ -98,7 +97,6 @@ namespace Blog.Controllers
 
                 existingBlog.Title = updatedBlog.Title;
                 existingBlog.Content = updatedBlog.Content;
-                existingBlog.View = updatedBlog.View;
 
                 _dbContext.Entry(existingBlog).State = EntityState.Modified;
                 await _dbContext.SaveChangesAsync();

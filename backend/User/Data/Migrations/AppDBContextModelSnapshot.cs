@@ -8,7 +8,7 @@ using User.Data;
 
 #nullable disable
 
-namespace User.Migrations
+namespace User.Data.Migrations
 {
     [DbContext(typeof(AppDBContext))]
     partial class AppDBContextModelSnapshot : ModelSnapshot
@@ -121,21 +121,22 @@ namespace User.Migrations
                         {
                             Id = "b80546cd-f4df-4a46-842e-22d3f9018ce3",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "a0364846-6002-4235-9670-ce1689b0b19d",
+                            ConcurrencyStamp = "e87cf191-91de-454b-99a2-c9cffbd13441",
                             Email = "admin@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = true,
                             NormalizedEmail = "ADMIN@GMAIL.COM",
                             NormalizedUserName = "ADMIN@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEPh5sRY+tReCrE+VeWcmoZ/y2sAQn98e+KEHzIg8pi1F/0OikKDNFoX0eGtAJ2J5xg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEBZDAr1JGnAtuNrlsXBQ899KXurSL6tGM9G+q39osr+kNtyc2YWg5BYNU0MNCf9gjw==",
                             PhoneNumber = "0949180802",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "0c0c9381-9e36-4cdc-9ea2-46792bc59a83",
+                            SecurityStamp = "c8dca441-f826-4462-81bd-38858a666072",
                             TwoFactorEnabled = false,
                             UserName = "admin@gmail.com",
                             address = "Bến Tre",
-                            createdDate = new DateTime(2024, 1, 23, 11, 41, 34, 128, DateTimeKind.Local).AddTicks(5856),
+                            createdDate = new DateTime(2024, 1, 24, 19, 13, 31, 664, DateTimeKind.Local).AddTicks(9305),
                             date = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            description = "Tao là admin! Web này tao là bố!",
                             fullName = "Đầu bự vô địch",
                             idVerification = new Guid("00000000-0000-0000-0000-000000000000"),
                             isBlock = false,
@@ -180,14 +181,14 @@ namespace User.Migrations
                         },
                         new
                         {
-                            Id = "305e4a5f-9785-4ddd-a7af-96cf5c2a7ce4",
+                            Id = "b260a8c2-fff0-477b-a49d-5773b28bfa11",
                             ConcurrencyStamp = "2",
                             Name = "Member",
                             NormalizedName = "Member"
                         },
                         new
                         {
-                            Id = "7db349e4-0a2d-4aad-af49-590994cd0090",
+                            Id = "20ca53b3-0849-4d03-959c-57e1980c8cf5",
                             ConcurrencyStamp = "3",
                             Name = "Business",
                             NormalizedName = "Business"
