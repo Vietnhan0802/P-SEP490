@@ -15,5 +15,7 @@ namespace BusinessObjects.Entities.Blog
         public bool IsDeleted { get; set; } = false;
         public Guid idBlog { get; set; }
         public Blogs? Blog { get; set; }
+        /******/
+        public Guid IdUser { get; set; }
     }
 }

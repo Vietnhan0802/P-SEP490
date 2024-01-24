@@ -120,6 +120,9 @@ namespace Blog.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid>("IdUser")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
@@ -248,7 +251,7 @@ namespace Blog.Migrations
             modelBuilder.Entity("BusinessObjects.Entities.Blog.BlogLike", b =>
                 {
                     b.HasOne("BusinessObjects.Entities.Blog.Blogs", "Blog")
-                        .WithMany()
+                        .WithMany("BlogLikes")
                         .HasForeignKey("BlogidBlog");
 
                     b.Navigation("Blog");
@@ -257,7 +260,7 @@ namespace Blog.Migrations
             modelBuilder.Entity("BusinessObjects.Entities.Blog.BlogReply", b =>
                 {
                     b.HasOne("BusinessObjects.Entities.Blog.BlogComment", "BlogComment")
-                        .WithMany()
+                        .WithMany("BlogReplies")
                         .HasForeignKey("BlogCommentidBlogComment");
 
                     b.Navigation("BlogComment");
@@ -266,7 +269,7 @@ namespace Blog.Migrations
             modelBuilder.Entity("BusinessObjects.Entities.Blog.BlogReplyLike", b =>
                 {
                     b.HasOne("BusinessObjects.Entities.Blog.BlogReply", "BlogReply")
-                        .WithMany()
+                        .WithMany("BlogReplyLikes")
                         .HasForeignKey("BlogReplyidBlogReply");
 
                     b.Navigation("BlogReply");
@@ -275,11 +278,20 @@ namespace Blog.Migrations
             modelBuilder.Entity("BusinessObjects.Entities.Blog.BlogComment", b =>
                 {
                     b.Navigation("BlogCommentLikes");
+
+                    b.Navigation("BlogReplies");
+                });
+
+            modelBuilder.Entity("BusinessObjects.Entities.Blog.BlogReply", b =>
+                {
+                    b.Navigation("BlogReplyLikes");
                 });
 
             modelBuilder.Entity("BusinessObjects.Entities.Blog.Blogs", b =>
                 {
                     b.Navigation("BlogComments");
+
+                    b.Navigation("BlogLikes");
                 });
 #pragma warning restore 612, 618
         }

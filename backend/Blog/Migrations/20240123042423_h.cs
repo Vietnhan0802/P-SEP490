@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Blog.Migrations
 {
     /// <inheritdoc />
-    public partial class hhhh : Migration
+    public partial class h : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -79,7 +79,8 @@ namespace Blog.Migrations
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),
                     idBlog = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    BlogidBlog = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                    BlogidBlog = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    IdUser = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
