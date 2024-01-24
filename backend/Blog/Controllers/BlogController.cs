@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Blog.Data;
 using BusinessObjects.Entities.Blog;
+using BusinessObjects.Entities.Post;
 using BusinessObjects.ViewModels.Blog;
 using BusinessObjects.ViewModels.User;
 using Microsoft.AspNetCore.Http;
@@ -191,6 +192,7 @@ namespace Blog.Controllers
                 return StatusCode(500, "Internal server error");
             }
         }
+
 
 
         [HttpPut("{id}/Unlike")]

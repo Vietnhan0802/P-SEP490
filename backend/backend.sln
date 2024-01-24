@@ -29,7 +29,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Post", "Post\Post.csproj", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Blog", "Blog\Blog.csproj", "{DE242B79-A036-4DC5-BA5C-6CEAF314C301}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Statics", "Statics\Statics.csproj", "{5DDC9670-BEBE-4C9C-A4EF-9DE94360848A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Statics", "Statics\Statics.csproj", "{5DDC9670-BEBE-4C9C-A4EF-9DE94360848A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
