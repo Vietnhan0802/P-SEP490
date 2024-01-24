@@ -1,7 +1,8 @@
 import React from "react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import userInstance from "../../axios/axiosConfig";
+import {userInstance} from "../../axios/axiosConfig";
+
 export default function BusinessForm() {
   const [inputs, setInputs] = useState({});
   const navigate = useNavigate();

@@ -2,7 +2,8 @@ import React from "react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
-import userInstance from "../../axios/axiosConfig";
+import {userInstance} from "../../axios/axiosConfig";
+
 export default function PersonForm() {
   const [inputs, setInputs] = useState({
     email: "",
@@ -17,9 +18,8 @@ export default function PersonForm() {
   const navigate = useNavigate();
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log(inputs);
     try {
-      userInstance.post("/SignUpPerson", inputs);
+      userInstance.post("/SignUpMember", inputs);
       console.log("Sign up successful");
       navigate("/");
     } catch (error) {

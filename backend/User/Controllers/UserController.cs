@@ -160,12 +160,13 @@ namespace User.Controllers
             {
                 return new Response(HttpStatusCode.NotFound, "User doesn't exist!");
             }
-            if (updateAvatar.avatar != null)
+            if (updateAvatar.ImageFile != null)
             {
-                DeleteImage(updateAvatar.avatar);
-                updateAvatar.avatar = await SaveImage(updateAvatar.ImageFile);
-            }
-            _mapper.Map(updateAvatar, userExits);
+                var result = _mapper.Map(updateAvatar, userExits);
+                DeleteImage(result.avatar);
+                var avatarA = await SaveImage(result.ImageFile);
+                result.avatar = avatarA;
+            }          
             await _userManager.UpdateAsync(userExits);
             return new Response(HttpStatusCode.OK, "Update user is success!", _mapper.Map<UpdateUser>(userExits));
         }
@@ -319,7 +320,7 @@ namespace User.Controllers
             return new Response(HttpStatusCode.NoContent, "User change password successfully!");
         }
 
-        [HttpPost("ForgotPassword")]
+        [HttpPost("ForgotPassword/{email}")]
         public async Task<Response> ForgotPasswordUser(string email)
         {
             var user = await _userManager.FindByEmailAsync(email);
@@ -403,7 +404,7 @@ namespace User.Controllers
             var user = await _userManager.FindByEmailAsync(email);
             if (user != null)
             {
-                var tokenNew = Uri.EscapeDataString(token);
+                string tokenNew = Uri.EscapeDataString(token);
                 string redirectUrl = $"http://localhost:3000/resetpassword?token={tokenNew}&email={email}";
                 return Redirect(redirectUrl);
             }

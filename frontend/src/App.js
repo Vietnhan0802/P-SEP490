@@ -57,7 +57,7 @@ function App() {
     <div
       className="App"
       ref={appRef}
-      style={{ backgroundColor: "#1C2B3A", minHeight: "100vh",paddingBottom:"50px"}}
+      style={{ backgroundColor: "#1C2B3A", minHeight: "100vh"}}
     >
       {isHeaderVisible && <Header onItemClick={handleHeaderItemClick} />}
       <Routes>

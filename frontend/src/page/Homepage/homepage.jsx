@@ -7,14 +7,20 @@ import Post from "../Post/post";
 import Blog from "../Blog/blog";
 import DashBoard from "../DashBoard/dashBoard";
 import PostDetail from "../Detail/postDetail";
+import BlogDetail from "../Detail/blogDetail";
 function Homepage() {
   const [activeComponent, setActiveComponent] = useState("post");
   const [postId, setPostId] = useState(null);
+  const [blogId, setBlogId] = useState(null);
   const handleSidebarItemClick = (itemId) => {
     setActiveComponent(itemId);
   };
   const handlePostClick = (postId) => {
     setPostId(postId);
+    console.log(postId);
+  };
+  const handleBlogClick = (blogId) => {
+    setPostId(blogId);
     console.log(postId);
   };
   return (
@@ -30,11 +36,24 @@ function Homepage() {
             </Col>
             <Col md={6}>
               {activeComponent === "post" && (
-                <Post activePost={postId} onPostClick={handlePostClick} activeItem={activeComponent} onItemClick={handleSidebarItemClick}/>
+                <Post
+                  activePost={postId}
+                  onPostClick={handlePostClick}
+                  activeItem={activeComponent}
+                  onItemClick={handleSidebarItemClick}
+                />
               )}
-              {activeComponent === "blog" && <Blog />}
+              {activeComponent === "blog" && (
+                <Blog
+                  activeBlog={postId}
+                  onBlogClick={handleBlogClick}
+                  activeItem={activeComponent}
+                  onItemClick={handleSidebarItemClick}
+                />
+              )}
               {activeComponent === "dashboard" && <DashBoard />}
-              {activeComponent === "post_detail" && <PostDetail id={postId}/>}
+              {activeComponent === "post_detail" && <PostDetail id={postId} />}
+              {activeComponent === "blog_detail" && <BlogDetail id={blogId} />}
               {/* Render Blog component when activeComponent is "blog" */}
             </Col>
             <Col md={3}>

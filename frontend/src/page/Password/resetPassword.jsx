@@ -1,23 +1,32 @@
-import React, { useContext } from "react";
+import React, { useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import logoImg from "../../images/common/logo.png";
-import GGIcon from "../../images/common/gg-icon.png";
-import FBIcon from "../../images/common/fb-icon.png";
 import "../SignIn/signIn.scss";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import userInstance from "../../axios/axiosConfig";
+import { useNavigate, useParams } from "react-router-dom";
+import { userInstance } from "../../axios/axiosConfig";
 import { jwtDecode } from "jwt-decode";
 import Cookies from "js-cookie";
 function ResetPassword() {
-  Cookies.remove("user");
+  const urlParams = new URLSearchParams(window.location.search);
 
-  const [inputs, setInputs] = useState({});
+  // Get the value of the 'token' parameter
+  const token = urlParams.get('token');
+
+  // Get the value of the 'email' parameter
+  const email = urlParams.get('email');
+  const newToken = decodeURIComponent(token);
+  console.log(newToken)
+  const [inputs, setInputs] = useState({
+    password: "",
+    confirmPassword: ""
+  });
   const navigate = useNavigate();
   const handleChange = (event) => {
     const name = event.target.name;
     const value = event.target.value;
     setInputs((values) => ({ ...values, [name]: value }));
+    console.log(inputs);
   };
 
   const handleSubmit = async (event) => {
@@ -25,12 +34,11 @@ function ResetPassword() {
     console.log(inputs);
     try {
       const response = await userInstance.post(
-        "/SignIn",
-        JSON.stringify(inputs)
+        "/ResetPassword", { password: inputs.password, confirmPassword: inputs.confirmPassword, email: email, token: newToken }
       );
 
       if (response?.data?.status === "OK") {
-        console.log("Sign in successful", response?.data?.result.role);
+        console.log("Password Reset successfull", response?.data?.result.role);
         const decode = jwtDecode(response?.data?.result.token);
 
         // console.log(decode);
@@ -101,7 +109,7 @@ function ResetPassword() {
                       className="input-field rounded-50 w-100"
                       placeholder="Enter your password"
                       type="password"
-                      name="cornfirmPassword"
+                      name="confirmPassword"
                       value={inputs.confirmPassword || ""}
                       onChange={handleChange}
                     />
@@ -113,7 +121,7 @@ function ResetPassword() {
                     >
                       Return to Sign in
                     </a>
-                
+
                   </div>
                   <input
                     className="submit-btn rounded-50 size-20 white SFU-bold w-100"

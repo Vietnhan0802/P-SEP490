@@ -1,4 +1,6 @@
 #chat {
+  height: 100%;
+  overflow-y: auto;
   input:focus {
     outline: none;
   }

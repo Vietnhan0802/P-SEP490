@@ -7,7 +7,7 @@ import { BsChat } from "react-icons/bs";
 import { FiEye } from "react-icons/fi";
 import { RiAdminLine } from "react-icons/ri";
 import ReportPopup from "../../components/Popup/reportPopup";
-function Blog() {
+function Blog({blogId,onBlogClick,activeItem, onItemClick }) {
   const blogContent = [
     {
       id: 1,
@@ -62,7 +62,10 @@ function Blog() {
   ];
   const [inputValue, setInputValue] = useState("");
   const [blogPopups, setBlogPopups] = useState({});
-
+  const hanldeViewDetail = (blogId) => {
+    onBlogClick(blogId);
+    onItemClick("blog_detail");
+  }
   const handleReportClick = (blogId) => {
     setBlogPopups((prev) => ({ ...prev, [blogId]: true }));
   };
@@ -107,7 +110,7 @@ function Blog() {
                   <IoFlagOutline />{" "}
                 </div>
               </div>
-              <button className="view-btn btn">View Detail</button>
+              <button className="view-btn btn"  onClick={()=>hanldeViewDetail(item.id)}>View Detail</button>
             </div>
             {blogPopups[item.id] && (
               <ReportPopup

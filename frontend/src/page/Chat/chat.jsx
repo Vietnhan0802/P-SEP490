@@ -58,9 +58,9 @@ function Chat() {
     },
   ];
   return (
-    <>
-      <Row className="m-3">
-        <Col md={2} className="bg-white p-3">
+
+      <Row className="m-3"  style={{ height: "calc(100vh - 97px)",paddingBottom:"16px" }}>
+        <Col md={2} className="bg-white p-3 h-100">
           <div id="chat">
             <h1>Chat</h1>
             <div className="chat-search ">
@@ -162,7 +162,6 @@ function Chat() {
           </div>
         </Col>
       </Row>
-    </>
   );
 }
 
