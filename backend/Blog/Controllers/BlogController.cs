@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Net.Http.Headers;
 using System.Text.Json;
-using BlogReply = BusinessObjects.Entities.Blog.BlogReply;
+using BlogReply = BusinessObjects.Entities.Blog.BloggReply;
 
 namespace Blog.Controllers
 {
@@ -17,25 +17,18 @@ namespace Blog.Controllers
     [ApiController]
     public class BlogController : ControllerBase
     {
-        private readonly AppDBContext _dbContext;
+        private readonly AppDBContext _context;
         private readonly IMapper _mapper;
-        private readonly HttpClient client;
-        private readonly ILogger<BlogController> _logger;
 
         public string UserApiUrl { get; private set; }
 
-        public BlogController(AppDBContext context, IMapper mapper, ILogger<BlogController> logger)
+        public BlogController(AppDBContext context, IMapper mapper)
         {
-            _dbContext = context;
+            _context = context;
             _mapper = mapper;
-            client = new HttpClient();
-            var contentType = new MediaTypeWithQualityHeaderValue("application/json");
-            client.DefaultRequestHeaders.Accept.Add(contentType);
-            UserApiUrl = "https://localhost:7006/api/User";
-            _logger = logger;
         }
 
-        [HttpGet("GetNameUserCurrent/{idUser}")]
+        /*[HttpGet("GetNameUserCurrent/{idUser}")]
         private async Task<string> GetNameUserCurrent(string idUser)
         {
             HttpResponseMessage response = await client.GetAsync($"{UserApiUrl}/GetNameUser/{idUser}");
@@ -47,22 +40,28 @@ namespace Blog.Controllers
             var user = JsonSerializer.Deserialize<string>(strData, option);
 
             return user;
-        }
+        }*/
 
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Blogs>>> GetBlogs()
+        /*[HttpGet]
+        public async Task<ActionResult<IEnumerable<Blogg>>> GetBlogs()
         {
             return await _dbContext.Blogs.ToListAsync();
         }
 
         [HttpPost("CreateBlog")]
+        public Task<Response> CreateBlog()
+        {
+
+        }
+
+        [HttpPost("CreateBlog/{idUser}")]
         public async Task<ActionResult<CreateBlogViewModel>> CreateBlog(CreateBlogViewModel blogViewModel)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    var blogEntity = new Blogs
+                    var blogEntity = new Blogg
                     {
                         
                         Title = blogViewModel.Title,
@@ -175,7 +174,7 @@ namespace Blog.Controllers
                     return BadRequest("User has already liked this blog.");
                 }
 
-                var newLike = new BlogLike
+                var newLike = new BloggLike
                 {
                     idBlog = id
                 };
@@ -226,7 +225,7 @@ namespace Blog.Controllers
         }
 
         [HttpGet("SearchBlogByName")]
-        public async Task<ActionResult<IEnumerable<Blogs>>> SearchBlogByName(string searchTerm)
+        public async Task<ActionResult<IEnumerable<Blogg>>> SearchBlogByName(string searchTerm)
         {
             try
             {
@@ -243,7 +242,7 @@ namespace Blog.Controllers
         }
 
         [HttpGet("GetBlogDetails/{id}")]
-        public ActionResult<Blogs> GetPostDetails(Guid id)
+        public ActionResult<Blogg> GetPostDetails(Guid id)
         {
             try
             {
@@ -262,7 +261,7 @@ namespace Blog.Controllers
             }
         }
 
-/*************************************************************************/
+*//*************************************************************************//*
 
         [HttpGet("GetAllCommentsByBlogId/{blogId}")]
         public async Task<ActionResult<IEnumerable<CreateCommentBlog>>> GetAllCommentsByBlogId(Guid blogId)
@@ -311,7 +310,7 @@ namespace Blog.Controllers
                         return NotFound($"Không tìm thấy blog có id {blogId}.");
                     }
 
-                    var commentEntity = new BlogComment
+                    var commentEntity = new BloggComment
                     {
                         idBlog = blogId,
                         Content = commentViewModel.Content,
@@ -477,7 +476,7 @@ namespace Blog.Controllers
             }
 
             return BadRequest("Invalid input or validation failed.");
-        }
+        }*/
 
 
     }

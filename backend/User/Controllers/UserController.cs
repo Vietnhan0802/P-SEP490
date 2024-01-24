@@ -284,7 +284,6 @@ namespace User.Controllers
                     new Claim("Phone", user.PhoneNumber),
                     new Claim("Tax", user.tax.ToString()),
                     new Claim("Address", user.address),
-                    new Claim("Description", user.description)
                 };
                 foreach (var userRole in userRoles)
                 {
