@@ -55,10 +55,10 @@ namespace User.Controllers
             return new Response(HttpStatusCode.OK, "Get total blocked users is success!", totalBlockedUsers);
         }
 
-        [HttpGet("SearchUserByName/{name}")]
-        public async Task<Response> SearchUserByName(string name)
+        [HttpGet("SearchUserByName/{nameUser}")]
+        public async Task<Response> SearchUserByName(string nameUser)
         {
-            var users = await _userManager.Users.Where(x => x.fullName.Contains(name)).ToListAsync();
+            var users = await _userManager.Users.Where(x => x.fullName!.Contains(nameUser)).ToListAsync();
             if (users == null)
             {
                 return new Response(HttpStatusCode.NoContent, "No users found with the given name!");

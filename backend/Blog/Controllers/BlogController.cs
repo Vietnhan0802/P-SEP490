@@ -50,6 +50,26 @@ namespace Blog.Controllers
             return user;
         }
         /*-------------------------------------------Blog-------------------------------------------*/
+        [HttpGet("SearchBlogs/{nameBlog}")]
+        public async Task<Response> SearchBlogs(string nameBlog)
+        {
+            var blogs = await _context.Blogs.Include(x => x.BloggImages).Where(x => x.title!.Contains(nameBlog)).OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
+            if (blogs == null)
+            {
+                return new Response(HttpStatusCode.NoContent, "No blogs found with the given name!");
+            }
+            var result = _mapper.Map<List<ViewBlog>>(blogs);
+            foreach (var blog in result)
+            {
+                blog.fullName = await GetNameUserCurrent(blog.idAccount!);
+                foreach (var image in blog.BloggImages)
+                {
+                    image.ImageSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, image.image);
+                }
+            }
+            return new Response(HttpStatusCode.OK, "Search blogs success!", result);
+        }
+
         [HttpGet("GetAllBlogs")]
         public async Task<Response> GetAllBlogs()
         {
@@ -62,6 +82,10 @@ namespace Blog.Controllers
             foreach (var blog in result)
             {
                 blog.fullName = await GetNameUserCurrent(blog.idAccount!);
+                foreach (var image in blog.BloggImages)
+                {
+                    image.ImageSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, image.image);
+                }
             }
             return new Response(HttpStatusCode.OK, "Get list blogs success!", result);
         }
@@ -188,45 +212,24 @@ namespace Blog.Controllers
             return new Response(HttpStatusCode.NoContent, "Like or unlike blog is success!");
         }
         /*-------------------------------------------BlogComment-------------------------------------------*/
-
-        /*[HttpGet("SearchBlogByName")]
-        public async Task<ActionResult<IEnumerable<Blogg>>> SearchBlogByName(string searchTerm)
+        [HttpPost("CreateCommentBlog")]
+        public async Task<Response> CreateCommentBlog(string idUser, Guid idBlog, CreateBlogComment createBlogComment)
         {
-            try
+            var blog = await _context.Blogs.FirstOrDefaultAsync(x => x.idBlog == idBlog);
+            if (blog == null)
             {
-                var blogs = await _dbContext.Blogs
-                    .Where(blog => blog.Title.Contains(searchTerm) && !blog.IsDeleted)
-                    .ToListAsync();
-
-                return Ok(blogs);
+                return new Response(HttpStatusCode.NotFound, "Blog doesn't exist!");
             }
-            catch (Exception ex)
-            {
-                return StatusCode(500, "Internal server error");
-            }
+            var commentBlog = _mapper.Map<BloggComment>(createBlogComment);
+            commentBlog.idAccount = idUser;
+            commentBlog.idBlog = idBlog;
+            commentBlog.isDeleted = false;
+            commentBlog.createdDate = DateTime.Now;
+            await _context.BlogComments.AddAsync(commentBlog);
+            await _context.SaveChangesAsync();
+            return new Response(HttpStatusCode.OK, "Create comment blog is success!", commentBlog);
         }
-
-        [HttpGet("GetBlogDetails/{id}")]
-        public ActionResult<Blogg> GetPostDetails(Guid id)
-        {
-            try
-            {
-                var postDetails = _dbContext.Blogs.Find(id);
-
-                if (postDetails == null)
-                {
-                    return NotFound("Post not found");
-                }
-
-                return Ok(postDetails);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, "Internal server error");
-            }
-        }
-
-***********************************************************************
+        /*
 
         [HttpGet("GetAllCommentsByBlogId/{blogId}")]
         public async Task<ActionResult<IEnumerable<CreateCommentBlog>>> GetAllCommentsByBlogId(Guid blogId)
