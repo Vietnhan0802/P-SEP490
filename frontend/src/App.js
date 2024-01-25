@@ -2,7 +2,7 @@ import "./scss/font.scss";
 import "./scss/size.scss";
 import "./scss/color.scss";
 import "./scss/App.scss";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import SignIn from "./page/SignIn/signIn";
 import SignUp from "./page/SignUp/signUp";
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
@@ -18,6 +18,7 @@ function App() {
   const location = useLocation();
   const appRef = useRef(null);
   const navigate = useNavigate(); // Hook to handle navigation
+  const [changeImage, setChangeImage] = useState(false);
   useEffect(() => {
     // Kiểm tra chiều cao của .App và nếu lớn hơn 100vh thì chuyển về 100%
     const appElement = appRef.current;
@@ -53,19 +54,31 @@ function App() {
     location.pathname === "/forgetpassword" ||
     location.pathname === "/resetpassword"
   );
+
+  const handleChangeImg = (value) => {
+    if (value === "ok") {
+      setChangeImage(!changeImage);
+    }
+  };
+
   return (
     <div
       className="App"
       ref={appRef}
-      style={{ backgroundColor: "#1C2B3A", minHeight: "100vh"}}
+      style={{ backgroundColor: "#1C2B3A", minHeight: "100vh" }}
     >
-      {isHeaderVisible && <Header onItemClick={handleHeaderItemClick} />}
+      {isHeaderVisible && (
+        <Header onItemClick={handleHeaderItemClick} changeImage={changeImage} />
+      )}
       <Routes>
         <Route path="/" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/home" element={<Homepage />} />
         <Route path="/chat" element={<Chat />} />
-        <Route path="/profile" element={<Profile />} />
+        <Route
+          path="/profile"
+          element={<Profile handleChangeImg={handleChangeImg} />}
+        />
         <Route path="/notify" element={<Notify />} />
         <Route path="/forgetpassword" element={<ForgetPassword />} />
         <Route path="/resetpassword" element={<ResetPassword />} />

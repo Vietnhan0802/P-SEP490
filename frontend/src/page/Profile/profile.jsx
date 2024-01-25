@@ -1,16 +1,11 @@
-import React from "react";
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect } from "react";
+import { useState } from "react";
 import "../Profile/profile.scss";
-import { IoSearch } from "react-icons/io5";
-import avatar from "../../images/common/Avatar.png";
 import { RiHome3Line } from "react-icons/ri";
 import { FaChevronRight } from "react-icons/fa6";
-import { MdOutlineEmail } from "react-icons/md";
 import degree from "../../images/common/degree.png";
 import project from "../../images/common/project.png";
 import { FaArrowDownLong } from "react-icons/fa6";
-import SideBar from "../../components/sidebar";
 import Follow from "../../components/follow";
 import { Col, Row } from "react-bootstrap";
 import ProfileReport from "../../components/Popup/ProfileReport";
@@ -20,7 +15,9 @@ import { userInstance } from "../../axios/axiosConfig";
 import { FiEdit } from "react-icons/fi";
 import { CgProfile } from "react-icons/cg";
 import { MdOutlineFileDownloadDone } from "react-icons/md";
-function Profile() {
+import { MdOutlineReportGmailerrorred } from "react-icons/md";
+import { FiFlag } from "react-icons/fi";
+function Profile({ handleChangeImg }) {
   const initialValue = {
     avatar: "default",
     imageSrc: defaultImage,
@@ -34,7 +31,6 @@ function Profile() {
   const [activePopup, setActivePopup] = useState(false);
   const [display, setDisplay] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
-  const [selectedGender, setSelectedGender] = useState(null);
   const parsedDate = new Date(user.Date);
   const formattedDate = parsedDate.toISOString().split('T')[0];
   const [inputs, setInputs] = useState({
@@ -74,12 +70,9 @@ function Profile() {
     }));
   };
 
-  const handleCheckboxChange = (gender) => {
-    setSelectedGender(gender);
-  };
 
   const handleUpdateAppear = () => {
-    setDisplay(!display)
+    setDisplay(true);
   }
   const handleUpdateAvatar = e => {
     e.preventDefault();
@@ -88,14 +81,16 @@ function Profile() {
     formData.append("ImageFile", value.imageFile);
     formData.append("ImageSrc", value.imageSrc);
     userInstance.put(`/UpdateAvatar/${user.Id}`, formData,
-    {
-      headers: {
-        'Content-Type': 'multipart/form-data', // Ensure Content-Type is set to multipart/form-data
-      },
-    }
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data', // Ensure Content-Type is set to multipart/form-data
+        },
+      }
     )
       .then((res) => {
-        console.log(res?.data);
+        setDisplay(false)
+        if (res?.data?.status === 'OK') { handleChangeImg('ok')}
+        console.log(res?.data?.status);
       })
       .catch((err) => {
         console.log(err.response.data);
@@ -125,43 +120,52 @@ function Profile() {
   const handleReportPopup = () => {
     setActivePopup(!activePopup);
   };
+  useEffect(() => {
+    userInstance.get(`/GetUserById/${user.Id}`)
+      .then((res) => {
+        if (res?.data?.result.imageSrc === 'https://localhost:7006/Images/') return;
+        setValue({
+          ...value,
+          imageSrc: res?.data?.result.imageSrc,
+        })
+        console.log(res?.data?.result.imageSrc);
+      })
+      .catch((err) => {
+        console.log(err.response.data);
+      })
+  }, []);
   return (
     <>
       <Row className="mx-0 mt-3">
         <Col md={3}>
-          <div id="sidebar-profile" className="bg-white p-5 ">
+          <div id="sidebar-profile" className="bg-white p-5 position-relative ">
             <div className="text-center mb-3">
               <div className="person-name fs-3 fw-bold">{user.FullName}</div>
               <div className="account">{user.Username}</div>
             </div>
             <div className="information position-relative d-flex flex-column justify-content-center">
-              <img src={value.imageSrc} alt="" className="w-100 rounded avatar m-auto" onClick={handleUpdateAppear} />
-              {display && (<div>
-                <input type="file" accept="image/*" onChange={showPreview} />
-                <button onClick={handleUpdateAvatar}> Submit</button>
-              </div>)}
+              <img src={value.imageSrc} alt="" className="w-100 rounded avatar m-auto" />
+              {display ? (<div className="d-flex flex-column ">
+                <input type="file" accept="image/*" onChange={showPreview} className="my-2" />
+                <button onClick={handleUpdateAvatar} className="btn btn-primary m-auto"> Submit</button>
+              </div>) :
+                <button className="btn edit-btn mt-3 w-50 m-auto" onClick={handleUpdateAppear}>Edit Avatar</button>}
               <div className="w-100 text-center">
                 <div className="personal-information-text mt-4">
-
-                  <div>
-                    <button className="btn edit-btn">Edit Avatar</button>
-                    {/* <button
-                      className="btn edit-btn"
-                      onClick={() => handleReportPopup()}
-                    >
-                      Report
-                    </button> */}
-                  </div>
-
                 </div>
                 <div className="d-flex align-items-center justify-content-center mt-3">
                   <CgProfile className="me-3" /> 0 followers · 1 following
                 </div>
-
               </div>
+
+            </div>
+            <div
+              className="fs-3 position-absolute top-0 end-0"
+
+            >
               <ProfileReport trigger={activePopup} setTrigger={setActivePopup}>
                 <div className="bg-white profile-feedback">
-                  <h3 className="mt-2 mb-3 border-bottom">Submit feedback</h3>
+                  <h4 className="mt-2 mb-3 border-bottom">Submit feedback</h4>
                   <p>Please enter your feedback below</p>
                   <textarea
                     name=""
@@ -172,11 +176,11 @@ function Profile() {
                     className="mt-2"
                   ></textarea>
                   <div className="d-flex justify-content-end">
-                    {" "}
                     <button className="btn btn-secondary">Submit</button>
                   </div>
                 </div>
               </ProfileReport>
+              <FiFlag onClick={() => handleReportPopup()} />
             </div>
           </div>
 
@@ -190,9 +194,8 @@ function Profile() {
                 <p className="fw-bold">Profile</p>
               </div>
               <div>
-                {isEdit && <FiEdit onClick={() => hanldeEdit()} className="edit-icon  mt-4  mb-2 fs-2" />}
-                {!isEdit && <MdOutlineFileDownloadDone onClick={() => handleUpdateUser()} className="edit-icon  mt-4  mb-2 fs-2" />}
-
+                {!isEdit && <FiEdit onClick={() => hanldeEdit()} className="edit-icon  mt-4  mb-2 fs-2" />}
+                {isEdit && <MdOutlineFileDownloadDone onClick={() => handleUpdateUser()} className="edit-icon  mt-4  mb-2 fs-2" />}
               </div>
             </div>
 
@@ -206,20 +209,19 @@ function Profile() {
                     className=" infor-group w-100"
                     name="fullName"
                     value={inputs.fullName}
-                    disabled={isEdit}
+                    disabled={!isEdit}
                     onChange={handleChange}
                   />
                 </div>
                 <div className="p-2 w-50 mb-4 d-flex ">
                   <p className="me-4">Gender: </p>
-                  {isEdit ?
+                  {!isEdit ?
                     user.IsMale ? <p >Male</p> : <p>FeMale</p> : (<>
                       <label>
                         <input
                           type="checkbox"
                           checked={inputs.isMale}
                           name="isMale"
-                          disabled={isEdit}
                           onChange={() =>
                             handleChange({ target: { name: "isMale", value: true } })}
                         />
@@ -231,7 +233,6 @@ function Profile() {
                           type="checkbox"
                           checked={!inputs.isMale}
                           name="isMale"
-                          disabled={isEdit}
                           onChange={() =>
                             handleChange({ target: { name: "isMale", value: false } })}
                         />
@@ -248,7 +249,7 @@ function Profile() {
                     type="text"
                     name="userName"
                     value={inputs.userName}
-                    disabled={isEdit}
+                    disabled={!isEdit}
                     onChange={handleChange}
                     className=" infor-group  w-100"
                   />
@@ -260,7 +261,7 @@ function Profile() {
                     type="date"
                     name="date"
                     value={inputs.date}
-                    disabled={isEdit}
+                    disabled={!isEdit}
                     onChange={handleChange}
                     className=" infor-group  w-100"
                   />
@@ -273,7 +274,7 @@ function Profile() {
                     type="number"
                     name="tax"
                     value={inputs.tax}
-                    disabled={isEdit}
+                    disabled={!isEdit}
                     onChange={handleChange}
                     className=" infor-group  w-100"
                   />
@@ -284,7 +285,7 @@ function Profile() {
                     type="text"
                     name="phoneNumber"
                     value={inputs.phoneNumber}
-                    disabled={isEdit}
+                    disabled={!isEdit}
                     onChange={handleChange}
                     className=" infor-group  w-100"
                   />
@@ -297,7 +298,7 @@ function Profile() {
                   type="text"
                   name="address"
                   value={inputs.address}
-                  disabled={isEdit}
+                  disabled={!isEdit}
                   onChange={handleChange}
                   className=" infor-group  w-100"
                 />
@@ -308,6 +309,7 @@ function Profile() {
                 <textarea
                   className="w-100 infor-group"
                   type="text"
+                  disabled={!isEdit}
                   name="description"
                   placeholder="I'm a Product Designer based in Melbourne, Australia. I specialise in UX/UI design, brand strategy, and Webflow development."
                   value="Heloo"

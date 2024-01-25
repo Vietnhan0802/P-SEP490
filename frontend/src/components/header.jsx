@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../scss/header.scss";
@@ -10,15 +10,29 @@ import logoImg from "../images/common/logo.png";
 import Avatar from "../images/common/Avatar.png";
 import { IoChatbubblesOutline } from "react-icons/io5";
 import { IoIosNotificationsOutline } from "react-icons/io";
+import defaultImage from "../images/common/default.png"
 import Popup from "./Popup/Popup";
 import Notify from "../page/Notify/notify";
-export default function Header({ activeComponent, onItemClick }) {
+import { userInstance } from "../axios/axiosConfig";
+export default function Header({ activeComponent, onItemClick ,changeImage}) {
   const user = JSON.parse(Cookies.get("user"));
   const [activeItem, setActiveItem] = useState("home");
   const [activePopup, setActivePopup] = useState(false); 
   const [showPopup, setShowPopup] = useState(false);
-
-  
+  const [value, setValue] = useState({  imageSrc: '' });
+  const  imageSrc =defaultImage;
+  useEffect(() => {
+    userInstance.get(`/GetUserById/${user.Id}`)
+      .then((res) => {
+        if(res?.data?.result.imageSrc === 'https://localhost:7006/Images/') return; 
+        setValue( res?.data?.result.imageSrc,
+        )
+        console.log(res?.data?.result.imageSrc);
+      })
+      .catch((err) => {
+        console.log(err.response.data);
+      })
+   }, [changeImage]);
   const handlePopup = () => {
     setShowPopup(!showPopup);
     setActivePopup(!activePopup);
@@ -68,7 +82,7 @@ export default function Header({ activeComponent, onItemClick }) {
       </Col>
       <Col className="d-flex justify-content-end align-items-center" sm={4}>
         <div className=" d-flex align-items-center" onClick={handleAvatarClick}>
-          <img src={Avatar} alt="" className="avatar" />
+          <img src={value} alt="" className="avatar" />
           <div className="ms-2">
             <p>{user.FullName}</p>
             <p>{user.Email}</p>

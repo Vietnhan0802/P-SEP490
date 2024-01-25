@@ -8,6 +8,7 @@ import Blog from "../Blog/blog";
 import DashBoard from "../DashBoard/dashBoard";
 import PostDetail from "../Detail/postDetail";
 import BlogDetail from "../Detail/blogDetail";
+import ProjectDetail from "../ProjectDetail/projectDetail";
 function Homepage() {
   const [activeComponent, setActiveComponent] = useState("post");
   const [postId, setPostId] = useState(null);
@@ -17,67 +18,52 @@ function Homepage() {
   };
   const handlePostClick = (postId) => {
     setPostId(postId);
-    console.log(postId);
   };
   const handleBlogClick = (blogId) => {
-    setPostId(blogId);
-    console.log(postId);
+    setBlogId(blogId);
   };
   return (
     <div className="bg m-0">
-      {activeComponent !== "dashboard" ? (
-        <>
-          <Row className="mt-3 ms-0 me-0">
-            <Col md={3}>
-              <SideBar
+
+      <>
+        <Row className="mt-3 ms-0 me-0">
+          <Col md={3}>
+            <SideBar
+              activeItem={activeComponent}
+              onItemClick={handleSidebarItemClick}
+            />
+          </Col>
+          <Col md={`${activeComponent === 'dashboard' || activeComponent === 'projectDetail' ? 9 : 6}`}>
+            {activeComponent === "post" && (
+              <Post
+                activePost={postId}
+                onPostClick={handlePostClick}
                 activeItem={activeComponent}
                 onItemClick={handleSidebarItemClick}
               />
-            </Col>
-            <Col md={6}>
-              {activeComponent === "post" && (
-                <Post
-                  activePost={postId}
-                  onPostClick={handlePostClick}
-                  activeItem={activeComponent}
-                  onItemClick={handleSidebarItemClick}
-                />
-              )}
-              {activeComponent === "blog" && (
-                <Blog
-                  activeBlog={postId}
-                  onBlogClick={handleBlogClick}
-                  activeItem={activeComponent}
-                  onItemClick={handleSidebarItemClick}
-                />
-              )}
-              {activeComponent === "dashboard" && <DashBoard />}
-              {activeComponent === "post_detail" && <PostDetail id={postId} />}
-              {activeComponent === "blog_detail" && <BlogDetail id={blogId} />}
-              {/* Render Blog component when activeComponent is "blog" */}
-            </Col>
-            <Col md={3}>
-              {" "}
-              <Follow />
-            </Col>
-          </Row>
-        </>
-      ) : (
-        <>
-          <Row className="mt-3 ms-0 me-0">
-            <Col md={3}>
-              <SideBar
+            )}
+            {activeComponent === "blog" && (
+              <Blog
+                activeBlog={postId}
+                onBlogClick={handleBlogClick}
                 activeItem={activeComponent}
                 onItemClick={handleSidebarItemClick}
               />
-            </Col>
-            <Col md={9}>
-              <DashBoard />
-              {/* Render Blog component when activeComponent is "blog" */}
-            </Col>
-          </Row>
-        </>
-      )}
+            )}
+            {activeComponent === "post_detail" && <PostDetail id={postId} />}
+            {activeComponent === "blog_detail" && <BlogDetail id={blogId} />}
+            {activeComponent === "dashboard" && <DashBoard />}
+            {activeComponent === "projectDetail" && <ProjectDetail />}
+          </Col>
+          {(activeComponent !== "dashboard" && activeComponent !== "projectDetail"
+          ) && (
+              <Col md={3}>
+                <Follow />
+              </Col>
+            )}
+        </Row>
+      </>
+
     </div>
   );
 }

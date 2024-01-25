@@ -48,7 +48,7 @@ function SideBar({ activeItem, onItemClick }) {
       id: "current_project",
       icon: <MdOutlineSimCardDownload />,
       text: "Current Project",
-      userRole: "Person",
+      userRole: "member",
     },
     {
       id: "dashboard",
