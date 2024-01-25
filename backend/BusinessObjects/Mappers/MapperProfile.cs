@@ -23,7 +23,9 @@ namespace BusinessObjects.Mappers
             CreateMap<Blogg, UpdateBlog>().ReverseMap();
             CreateMap<Blogg, UpdateImage>().ReverseMap();
             CreateMap<Blogg, ViewBlog>().ReverseMap();
-
+            CreateMap<BloggComment, CreateBlogComment>().ReverseMap();
+            CreateMap<BloggComment, UpdateBlogComment>().ReverseMap();
+            CreateMap<BloggComment, ViewBlogComment>().ReverseMap();
 
             CreateMap<AppUser, SignUpPerson>().ReverseMap();
             CreateMap<AppUser, SignUpBusiness>().ReverseMap();
