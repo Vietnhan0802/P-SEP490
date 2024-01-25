@@ -16,6 +16,7 @@
   .blog-form {
     background-color: #fff;
     border-radius: 8px;
+    padding: 12px;
   }
   .blog-item {
     background-color: #fff;
@@ -36,10 +37,13 @@
   .input-text {
     border: 1px solid #d0d5dd;
     width: 100%;
+    max-height: 150px;
+    resize: both;
+    overflow: auto;
     font-size: 16px;
     font-weight: 500;
-    color: #2f45ad;
     border-radius: 8px;
+    padding: 16px;
     &:focus {
       outline: none;
     }
