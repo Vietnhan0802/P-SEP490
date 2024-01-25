@@ -1,6 +1,6 @@
 ﻿namespace BusinessObjects.ViewModels.Blog
 {
-    public class UpdateBlogComment
+    public class CreateUpdateBlogComment
     {
         public string? content { get; set; }
     }

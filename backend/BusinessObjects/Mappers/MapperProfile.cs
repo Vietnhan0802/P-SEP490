@@ -18,14 +18,13 @@ namespace BusinessObjects.Mappers
     {
         public MapperProfile()
         {
-            CreateMap<Blogg, CreateBlog>().ReverseMap();
-            CreateMap<Blogg, CreateImage>().ReverseMap();
-            CreateMap<Blogg, UpdateBlog>().ReverseMap();
-            CreateMap<Blogg, UpdateImage>().ReverseMap();
+            CreateMap<Blogg, CreateUpdateBlog>().ReverseMap();
+            CreateMap<Blogg, CreateUpdateImage>().ReverseMap();
             CreateMap<Blogg, ViewBlog>().ReverseMap();
-            CreateMap<BloggComment, CreateBlogComment>().ReverseMap();
-            CreateMap<BloggComment, UpdateBlogComment>().ReverseMap();
+            CreateMap<BloggComment, CreateUpdateBlogComment>().ReverseMap();
             CreateMap<BloggComment, ViewBlogComment>().ReverseMap();
+            CreateMap<BloggReply, CreateUpdateBlogReply>().ReverseMap();
+            CreateMap<BloggReply, ViewBlogReply>().ReverseMap();
 
             CreateMap<AppUser, SignUpPerson>().ReverseMap();
             CreateMap<AppUser, SignUpBusiness>().ReverseMap();

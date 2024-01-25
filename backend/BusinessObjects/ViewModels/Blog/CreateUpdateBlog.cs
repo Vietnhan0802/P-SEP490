@@ -1,9 +1,9 @@
 ﻿namespace BusinessObjects.ViewModels.Blog
 {
-    public class UpdateBlog
+    public class CreateUpdateBlog
     {
         public string? title { get; set; }
         public string? content { get; set; }
-        public List<UpdateImage> UpdateImages { get; set; }
+        public List<CreateUpdateImage> CreateUpdateImages { get; set; }
     }
 }
