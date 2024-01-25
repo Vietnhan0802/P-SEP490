@@ -9,6 +9,7 @@ import PostTable from "./DashboardTable/PostTable";
 import BlogTable from "./DashboardTable/BlogTable";
 import AccessTable from "./DashboardTable/AccessTable";
 import ReportTable from "./DashboardTable/ReportTable";
+import VerifyTable from "./DashboardTable/VerifyTable";
 function DashBoard() {
   const [activeTab, setActiveTab] = useState("post");
   const value = 13;
@@ -26,6 +27,8 @@ function DashBoard() {
         return <AccessTable />;
       case "report":
         return <ReportTable />;
+        case "verify":
+          return <VerifyTable />;
       default:
         return null;
     }
@@ -168,7 +171,9 @@ function DashBoard() {
 
             <p className="text-center my-2  ">Not processed yet</p>
             <div className="verification  d-flex justify-content-center">
-              <div className="mt-2 d-flex align-items-center justify-content-center detail">
+              <div className="mt-2 d-flex align-items-center justify-content-center detail"
+              onClick={() => handleTabClick("verify")}
+              >
                 <MdFullscreen className="me-2 fs-30" /> <p>View Detail</p>
               </div>
             </div>

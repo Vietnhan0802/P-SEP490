@@ -2,12 +2,14 @@ import React from "react";
 import { useState } from "react";
 import "../Blog/blog.scss";
 import avatar from "../../images/common/Avatar.png";
+import { CiCircleChevRight } from "react-icons/ci";
 import { IoFlagOutline } from "react-icons/io5";
 import { BsChat } from "react-icons/bs";
 import { FiEye } from "react-icons/fi";
 import { RiAdminLine } from "react-icons/ri";
 import ReportPopup from "../../components/Popup/reportPopup";
-function Blog({blogId,onBlogClick,activeItem, onItemClick }) {
+import {userInstance} from "../../axios/axiosConfig";
+function Blog({ blogId, onBlogClick, activeItem, onItemClick }) {
   const blogContent = [
     {
       id: 1,
@@ -69,6 +71,15 @@ function Blog({blogId,onBlogClick,activeItem, onItemClick }) {
   const handleReportClick = (blogId) => {
     setBlogPopups((prev) => ({ ...prev, [blogId]: true }));
   };
+  const handleCreateBlog = () => {  
+    userInstance.post("/create-blog", {
+      content: inputValue,
+    }).then((res) => {
+      console.log(res.data);
+    }).catch((err) => {
+      console.log(err);
+    })
+  }
   // Handler function to update the state when the input changes
   const handleInputChange = (event) => {
     setInputValue(event.target.value);
@@ -76,12 +87,25 @@ function Blog({blogId,onBlogClick,activeItem, onItemClick }) {
   return (
     <div>
       <div id="blog">
+        <div className="blog-form p-2">
+          <div className="d-flex align-items-center">
+            <textarea
+              type="text"
+              value={inputValue}
+              onChange={handleInputChange}
+              className="input-text"
+              placeholder="Create new Post..."
+            />
+            <button className="btn">
+              <CiCircleChevRight className=" fs-3" onClick={handleCreateBlog} />
+            </button>
+          </div>
+        </div>
         {blogContent.map((item) => (
           <div
             key={item.id}
-            className={`blog-item p-2 ${
-              blogPopups[item.id] ? "position-relative" : ""
-            }`}
+            className={`blog-item p-2 ${blogPopups[item.id] ? "position-relative" : ""
+              }`}
           >
             <div className="d-flex align-items-center">
               <div alt="profile" className="profile">
@@ -110,7 +134,7 @@ function Blog({blogId,onBlogClick,activeItem, onItemClick }) {
                   <IoFlagOutline />{" "}
                 </div>
               </div>
-              <button className="view-btn btn"  onClick={()=>hanldeViewDetail(item.id)}>View Detail</button>
+              <button className="view-btn btn" onClick={() => hanldeViewDetail(item.id)}>View Detail</button>
             </div>
             {blogPopups[item.id] && (
               <ReportPopup
