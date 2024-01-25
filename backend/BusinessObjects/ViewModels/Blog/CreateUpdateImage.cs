@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BusinessObjects.ViewModels.Blog
 {
-    public class UpdateImage
+    public class CreateUpdateImage
     {
         public string image { get; set; }
 
