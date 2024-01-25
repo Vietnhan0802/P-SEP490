@@ -160,9 +160,12 @@ namespace User.Controllers
             {
                 return new Response(HttpStatusCode.NotFound, "User doesn't exist!");
             }
+            if (userExits.avatar != null)
+            {
+                _saveImageService.DeleteImage(userExits.avatar);
+            }
             if (updateAvatar.ImageFile != null)
             {
-                _saveImageService.DeleteImage(userExits.avatar!);
                 var result = _mapper.Map(updateAvatar, userExits);
                 result.avatar = await _saveImageService.SaveImage(result.ImageFile);
             }          

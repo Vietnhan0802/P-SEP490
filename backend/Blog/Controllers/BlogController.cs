@@ -49,11 +49,27 @@ namespace Blog.Controllers
 
             return user;
         }
-
+        /*-------------------------------------------Blog-------------------------------------------*/
         [HttpGet("GetAllBlogs")]
         public async Task<Response> GetAllBlogs()
         {
-            var blogs = await _context.Blogs.Include(x => x.BloggImages).ToListAsync();
+            var blogs = await _context.Blogs.Include(x => x.BloggImages).OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
+            if (blogs == null)
+            {
+                return new Response(HttpStatusCode.NoContent, "List blogs doesn't empty!");
+            }
+            var result = _mapper.Map<List<ViewBlog>>(blogs);
+            foreach (var blog in result)
+            {
+                blog.fullName = await GetNameUserCurrent(blog.idAccount!);
+            }
+            return new Response(HttpStatusCode.OK, "Get list blogs success!", result);
+        }
+
+        [HttpGet("GetBlogByUser/{idUser}")]
+        public async Task<Response> GetBlogByUser(string idUser)
+        {
+            var blogs = await _context.Blogs.Include(x => x.BloggImages).Where(x => x.idAccount == idUser && x.isDeleted == false).OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
             if (blogs == null)
             {
                 return new Response(HttpStatusCode.NoContent, "List blogs doesn't empty!");
@@ -150,83 +166,30 @@ namespace Blog.Controllers
             return new Response(HttpStatusCode.OK, "Get all like blog is success!", totalLikeBlogs);
         }
 
-        /*[HttpPost("LikeBlog")]
-        public Task<Response> LikeBlog(string idUser, Guid idBlog)
+        [HttpPost("LikeOrUnlikeBlog/{idUser}/{idBlog}")]
+        public async Task<Response> LikeOrUnlikeBlog(string idUser, Guid idBlog)
         {
-            var likeBlog = 
-        }
-
-        [HttpPost("{id}/Like")]
-        public async Task<ActionResult> LikeBlog(Guid id)
-        {
-            try
+            var existLike = await _context.BlogLikes.FirstOrDefaultAsync(x => x.idAccount == idUser && x.idBlog == idBlog);
+            if (existLike == null)
             {
-                var blog = await _dbContext.Blogs.FindAsync(id);
-
-                if (blog == null)
+                var like = new BloggLike
                 {
-                    return NotFound($"Blog with id {id} not found.");
-                }
-
-                var existingLike = await _dbContext.BlogLikes
-                    .FirstOrDefaultAsync(like => like.idBlog == id && !like.IsDeleted);
-
-                if (existingLike != null)
-                {
-                    return BadRequest("User has already liked this blog.");
-                }
-
-                var newLike = new BloggLike
-                {
-                    idBlog = id
+                    idAccount = idUser,
+                    idBlog = idBlog,
+                    createdDate = DateTime.Now
                 };
-
-                _dbContext.BlogLikes.Add(newLike);
-                await _dbContext.SaveChangesAsync();
-
-                return Ok($"Liked blog with id {id} successfully.");
+                await _context.BlogLikes.AddAsync(like);
             }
-            catch (Exception ex)
+            else
             {
-                return StatusCode(500, "Internal server error");
+                _context.BlogLikes.Remove(existLike);
             }
+            await _context.SaveChangesAsync();
+            return new Response(HttpStatusCode.NoContent, "Like or unlike blog is success!");
         }
+        /*-------------------------------------------BlogComment-------------------------------------------*/
 
-
-
-        [HttpPut("{id}/Unlike")]
-        public async Task<ActionResult> UnlikeBlog(Guid id)
-        {
-            try
-            {
-                var blog = await _dbContext.Blogs.FindAsync(id);
-
-                if (blog == null)
-                {
-                    return NotFound($"Blog with id {id} not found.");
-                }
-
-
-                var existingLike = await _dbContext.BlogLikes
-                    .FirstOrDefaultAsync(like => like.idBlog == id && !like.IsDeleted);
-
-                if (existingLike == null)
-                {
-                    return BadRequest("User has not liked this blog.");
-                }
-
-                existingLike.IsDeleted = true;
-                await _dbContext.SaveChangesAsync();
-
-                return Ok($"Unliked blog with id {id} successfully.");
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, "Internal server error");
-            }
-        }
-
-        [HttpGet("SearchBlogByName")]
+        /*[HttpGet("SearchBlogByName")]
         public async Task<ActionResult<IEnumerable<Blogg>>> SearchBlogByName(string searchTerm)
         {
             try
@@ -479,7 +442,5 @@ namespace Blog.Controllers
 
             return BadRequest("Invalid input or validation failed.");
         }*/
-
-
     }
 }
