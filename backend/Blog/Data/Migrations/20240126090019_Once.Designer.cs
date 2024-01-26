@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Blog.Data.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20240126060402_Once")]
+    [Migration("20240126090019_Once")]
     partial class Once
     {
         /// <inheritdoc />
@@ -117,7 +117,6 @@ namespace Blog.Data.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("image")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("idBlogImage");

@@ -56,7 +56,7 @@ namespace Blog.Data.Migrations
                 {
                     idBlogImage = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     idBlog = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    image = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    image = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     createdDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>

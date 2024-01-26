@@ -12,7 +12,7 @@ using Post.Data;
 namespace Post.Data.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20240126060416_Once")]
+    [Migration("20240126090032_Once")]
     partial class Once
     {
         /// <inheritdoc />
@@ -32,18 +32,15 @@ namespace Post.Data.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("content")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("createdDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("exp")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("idAccount")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("idProject")
@@ -56,11 +53,9 @@ namespace Post.Data.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("major")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("title")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("view")
@@ -78,14 +73,12 @@ namespace Post.Data.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("content")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("createdDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("idAccount")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("idPost")
@@ -111,7 +104,6 @@ namespace Post.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("idAccount")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("idPostComment")
@@ -137,7 +129,6 @@ namespace Post.Data.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("image")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("idPostImage");
@@ -157,7 +148,6 @@ namespace Post.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("idAccount")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("idPost")
@@ -177,14 +167,12 @@ namespace Post.Data.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("content")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("createdDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("idAccount")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("idPostComment")
@@ -210,7 +198,6 @@ namespace Post.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("idAccount")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("idPostReply")

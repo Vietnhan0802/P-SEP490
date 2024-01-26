@@ -114,7 +114,6 @@ namespace Blog.Data.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("image")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("idBlogImage");

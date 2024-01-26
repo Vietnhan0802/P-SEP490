@@ -133,9 +133,9 @@ namespace Blog.Controllers
         public async Task<Response> CreateBlog(string idUser, CreateUpdateBlog createUpdateBlog)
         {
             var blog = _mapper.Map<Blogg>(createUpdateBlog);
-            if (createUpdateBlog.CreateUpdateImages != null)
+            if (createUpdateBlog.CreateUpdateImageBlogs != null)
             {
-                foreach (var image in createUpdateBlog.CreateUpdateImages)
+                foreach (var image in createUpdateBlog.CreateUpdateImageBlogs)
                 {
                     var imageName = await _saveImageService.SaveImage(image.ImageFile);
                     blog.BloggImages.Add(new BloggImage { image = imageName });
@@ -158,7 +158,7 @@ namespace Blog.Controllers
             {
                 return new Response(HttpStatusCode.NotFound, "Blog doesn't exists!");
             }
-            if (createUpdateBlog.CreateUpdateImages != null)
+            if (createUpdateBlog.CreateUpdateImageBlogs != null)
             {
                 foreach (var imageOld in blog.BloggImages)
                 {
@@ -377,7 +377,7 @@ namespace Blog.Controllers
         [HttpGet("GetTotalLikeBlogReplies/{idBlogReply}")]
         public async Task<Response> GetTotalLikeBlogReplies(Guid idBlogReply)
         {
-            var totalLikeBlogReplies = await _context.BlogReplyLikes.Where(x => x.idBlogReplyLike == idBlogReply).CountAsync();
+            var totalLikeBlogReplies = await _context.BlogReplyLikes.Where(x => x.idBlogReply == idBlogReply).CountAsync();
             return new Response(HttpStatusCode.OK, "Get all like blog replies is success!", totalLikeBlogReplies);
         }
 

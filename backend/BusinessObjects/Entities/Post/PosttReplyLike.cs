@@ -6,9 +6,9 @@ namespace BusinessObjects.Entities.Post
     {
         [Key]
         public Guid idPostReplyLike { get; set; }
-        public string idAccount { get; set; }
+        public string? idAccount { get; set; }
         public Guid idPostReply { get; set; }
         public DateTime createdDate { get; set; }
-        public PosttReply PosttReply { get; set; }
+        public PosttReply? PosttReply { get; set; }
     }
 }

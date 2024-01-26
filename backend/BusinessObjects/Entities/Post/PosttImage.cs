@@ -9,9 +9,9 @@ namespace BusinessObjects.Entities.Post
         [Key]
         public Guid idPostImage { get; set; }
         public Guid idPost { get; set; }
-        public string image { get; set; }
+        public string? image { get; set; }
         public DateTime createdDate { get; set; }
-        public Postt Postt { get; set; }
+        public Postt? Postt { get; set; }
 
         [NotMapped]
         public IFormFile ImageFile { get; set; }

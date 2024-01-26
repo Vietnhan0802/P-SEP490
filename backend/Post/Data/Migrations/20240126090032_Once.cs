@@ -16,12 +16,12 @@ namespace Post.Data.Migrations
                 columns: table => new
                 {
                     idPost = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    idAccount = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    idAccount = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     idProject = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    title = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    content = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    major = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    exp = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    title = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    content = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    major = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    exp = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     view = table.Column<int>(type: "int", nullable: false),
                     isBlock = table.Column<bool>(type: "bit", nullable: false),
                     isDeleted = table.Column<bool>(type: "bit", nullable: false),
@@ -37,9 +37,9 @@ namespace Post.Data.Migrations
                 columns: table => new
                 {
                     idPostComment = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    idAccount = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    idAccount = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     idPost = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    content = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    content = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     isDeleted = table.Column<bool>(type: "bit", nullable: false),
                     createdDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
@@ -60,7 +60,7 @@ namespace Post.Data.Migrations
                 {
                     idPostImage = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     idPost = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    image = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    image = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     createdDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
@@ -79,7 +79,7 @@ namespace Post.Data.Migrations
                 columns: table => new
                 {
                     idPostLike = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    idAccount = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    idAccount = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     idPost = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     createdDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
@@ -99,7 +99,7 @@ namespace Post.Data.Migrations
                 columns: table => new
                 {
                     idPostCommentLike = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    idAccount = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    idAccount = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     idPostComment = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     createdDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
@@ -119,9 +119,9 @@ namespace Post.Data.Migrations
                 columns: table => new
                 {
                     idPostReply = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    idAccount = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    idAccount = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     idPostComment = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    content = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    content = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     isDeleted = table.Column<bool>(type: "bit", nullable: false),
                     createdDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
@@ -141,7 +141,7 @@ namespace Post.Data.Migrations
                 columns: table => new
                 {
                     idPostReplyLike = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    idAccount = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    idAccount = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     idPostReply = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     createdDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },

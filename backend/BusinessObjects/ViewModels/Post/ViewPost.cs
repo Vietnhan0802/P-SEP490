@@ -1,12 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using BusinessObjects.Entities.Post;
 
-namespace BusinessObjects.Entities.Post
+namespace BusinessObjects.ViewModels.Post
 {
-    public class Postt
+    public class ViewPost
     {
-        [Key]
         public Guid idPost { get; set; }
         public string? idAccount { get; set; }
+        public string? fullName { get; set; }
         public Guid idProject { get; set; }
         public string? title { get; set; }
         public string? content { get; set; }
