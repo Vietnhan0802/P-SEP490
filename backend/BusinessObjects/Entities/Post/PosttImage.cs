@@ -1,22 +1,17 @@
 ﻿using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace BusinessObjects.Entities.Blog
+namespace BusinessObjects.Entities.Post
 {
-    public class BloggImage
+    public class PosttImage
     {
         [Key]
-        public Guid idBlogImage { get; set; }
-        public Guid idBlog { get; set; }
+        public Guid idPostImage { get; set; }
+        public Guid idPost { get; set; }
         public string? image { get; set; }
         public DateTime createdDate { get; set; }
-        public Blogg? Blogg { get; set; }
+        public Postt? Postt { get; set; }
 
         [NotMapped]
         public IFormFile ImageFile { get; set; }

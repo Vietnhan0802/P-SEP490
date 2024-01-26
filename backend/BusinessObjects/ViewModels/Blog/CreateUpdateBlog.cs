@@ -4,6 +4,6 @@
     {
         public string? title { get; set; }
         public string? content { get; set; }
-        public List<CreateUpdateImage> CreateUpdateImages { get; set; }
+        public List<CreateUpdateImageBlog>? CreateUpdateImageBlogs { get; set; }
     }
 }

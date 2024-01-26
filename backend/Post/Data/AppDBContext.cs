@@ -1,4 +1,5 @@
-﻿using BusinessObjects.Entities.Post;
+﻿using BusinessObjects.Entities.Blog;
+using BusinessObjects.Entities.Post;
 using BusinessObjects.Entities.Projects;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
@@ -8,20 +9,50 @@ namespace Post.Data
 {
     public class AppDBContext: DbContext
     {
-        public DbSet<Posts> Posts { get; set; }
-        public DbSet<PostReplyLike> PostReplyLikes { get; set; }
-        public DbSet<PostLikes> PostLikes { get; set; }
-        public DbSet<PostImage> PostImages { get; set; }
-        public DbSet<PostCommentLike> PostCommentLikes { get; set; }
-        public DbSet<PostComment> PostComments { get; set; }
-        public DbSet<PostReply> PostReplies { get; set; }
-        public DbSet<ProjectInfo> Projects { get; set; }
         public AppDBContext(DbContextOptions options) : base(options)
         {
         }
 
+        public DbSet<Postt> Postts { get; set; }
+        public DbSet<PosttLike> PosttLikes { get; set; }
+        public DbSet<PosttImage> PosttImages { get; set; }
+        public DbSet<PosttComment> PosttComments { get; set; }
+        public DbSet<PosttCommentLike> PosttCommentLikes { get; set; }
+        public DbSet<PosttReply> PosttReplies { get; set; }
+        public DbSet<PosttReplyLike> PosttReplyLikes { get; set; }
+        
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Postt>()
+                .HasMany(x => x.PosttLikes)
+                .WithOne(x => x.Postt)
+                .HasForeignKey(x => x.idPost);
+
+            modelBuilder.Entity<Postt>()
+                .HasMany(x => x.PosttImages)
+                .WithOne(x => x.Postt)
+                .HasForeignKey(x => x.idPost);
+
+            modelBuilder.Entity<Postt>()
+                .HasMany(x => x.PosttComments)
+                .WithOne(x => x.Postt)
+                .HasForeignKey(x => x.idPost);
+
+            modelBuilder.Entity<PosttComment>()
+                .HasMany(x => x.PosttReplies)
+                .WithOne(x => x.PosttComment)
+                .HasForeignKey(x => x.idPostComment);
+
+            modelBuilder.Entity<PosttComment>()
+                .HasMany(x => x.PosttCommentLikes)
+                .WithOne(x => x.PosttComment)
+                .HasForeignKey(x => x.idPostComment);
+
+            modelBuilder.Entity<PosttReply>()
+                .HasMany(x => x.PosttReplyLikes)
+                .WithOne(x => x.PosttReply)
+                .HasForeignKey(x => x.idPostReply);
+
             base.OnModelCreating(modelBuilder);
         }
     }

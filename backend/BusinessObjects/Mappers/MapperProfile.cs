@@ -3,12 +3,14 @@ using BusinessObjects.Entities.Blog;
 using BusinessObjects.Entities.Communication;
 using BusinessObjects.Entities.Credential;
 using BusinessObjects.Entities.Follow;
+using BusinessObjects.Entities.Post;
 using BusinessObjects.Entities.Projects;
 using BusinessObjects.Entities.User;
 using BusinessObjects.ViewModels.Blog;
 using BusinessObjects.ViewModels.Communication;
 using BusinessObjects.ViewModels.Credential;
 using BusinessObjects.ViewModels.Follow;
+using BusinessObjects.ViewModels.Post;
 using BusinessObjects.ViewModels.Project;
 using BusinessObjects.ViewModels.User;
 
@@ -19,12 +21,20 @@ namespace BusinessObjects.Mappers
         public MapperProfile()
         {
             CreateMap<Blogg, CreateUpdateBlog>().ReverseMap();
-            CreateMap<Blogg, CreateUpdateImage>().ReverseMap();
+            CreateMap<Blogg, CreateUpdateImageBlog>().ReverseMap();
             CreateMap<Blogg, ViewBlog>().ReverseMap();
             CreateMap<BloggComment, CreateUpdateBlogComment>().ReverseMap();
             CreateMap<BloggComment, ViewBlogComment>().ReverseMap();
             CreateMap<BloggReply, CreateUpdateBlogReply>().ReverseMap();
             CreateMap<BloggReply, ViewBlogReply>().ReverseMap();
+
+            CreateMap<Postt, CreateUpdatePost>().ReverseMap();
+            CreateMap<Postt, CreateUpdateImagePost>().ReverseMap();
+            CreateMap<Postt, ViewPost>().ReverseMap();
+            CreateMap<PosttComment, CreateUpdatePostComment>().ReverseMap();
+            CreateMap<PosttComment, ViewPostComment>().ReverseMap();
+            CreateMap<PosttReply, CreateUpdatePostReply>().ReverseMap();
+            CreateMap<PosttReply, ViewPostReply>().ReverseMap();
 
             CreateMap<AppUser, SignUpPerson>().ReverseMap();
             CreateMap<AppUser, SignUpBusiness>().ReverseMap();

@@ -17,6 +17,5 @@ namespace BusinessObjects.Entities.Projects
         public bool? isDeleted { get; set; }
         public DateTime createdDate { get; set; }
         public ICollection<ProjectMember>? ProjectMembers { get; set; }
-        public ICollection<Posts> Posts { get; set; } = new List<Posts>();
     }
 }

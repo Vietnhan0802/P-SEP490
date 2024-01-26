@@ -14,6 +14,6 @@ namespace BusinessObjects.Entities.Blog
         public string? idAccount { get; set; }
         public Guid idBlogComment { get; set; }
         public DateTime createdDate { get; set; }
-        public BloggComment BloggComment { get; set; }
+        public BloggComment? BloggComment { get; set; }
     }
 }
