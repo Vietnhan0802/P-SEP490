@@ -21,7 +21,7 @@ namespace Blog.Controllers
         private readonly SaveImageService _saveImageService;
         private readonly HttpClient client;
 
-        public string UserApiUrl { get; private set; }
+        public string UserApiUrl { get; }
 
         public BlogController(AppDBContext context, IMapper mapper, SaveImageService saveImageService)
         {
@@ -282,6 +282,35 @@ namespace Blog.Controllers
             return new Response(HttpStatusCode.NoContent, "Remove blog comment is success!");
         }
 
+        [HttpGet("GetTotalLikeBlogComments/{idBlogComment}")]
+        public async Task<Response> GetTotalLikeBlogComments(Guid idBlogComment)
+        {
+            var totalLikeBlogComments = await _context.BlogCommentLikes.Where(x => x.idBlogComment == idBlogComment).CountAsync();
+            return new Response(HttpStatusCode.OK, "Get all like blog comments is success!", totalLikeBlogComments);
+        }
+
+        [HttpPost("LikeOrUnlikeBlogComment/{idUser}/{idBlogComment}")]
+        public async Task<Response> LikeOrUnlikeBlogComment(string idUser, Guid idBlogComment)
+        {
+            var existLike = await _context.BlogCommentLikes.FirstOrDefaultAsync(x => x.idAccount == idUser && x.idBlogComment == idBlogComment);
+            if (existLike == null)
+            {
+                var like = new BloggCommentLike
+                {
+                    idAccount = idUser,
+                    idBlogComment = idBlogComment,
+                    createdDate = DateTime.Now
+                };
+                await _context.BlogCommentLikes.AddAsync(like);
+            }
+            else
+            {
+                _context.BlogCommentLikes.Remove(existLike);
+            }
+            await _context.SaveChangesAsync();
+            return new Response(HttpStatusCode.NoContent, "Like or unlike blog comment is success!");
+        }
+
         /*------------------------------------------------------------BlogReply------------------------------------------------------------*/
 
         [HttpGet("GetAllBlogReplies/{idBlogComment}")]
@@ -343,6 +372,35 @@ namespace Blog.Controllers
             blogReply.isDeleted = true;
             await _context.SaveChangesAsync();
             return new Response(HttpStatusCode.NoContent, "Remove blog reply is success!");
+        }
+
+        [HttpGet("GetTotalLikeBlogReplies/{idBlogReply}")]
+        public async Task<Response> GetTotalLikeBlogReplies(Guid idBlogReply)
+        {
+            var totalLikeBlogReplies = await _context.BlogReplyLikes.Where(x => x.idBlogReplyLike == idBlogReply).CountAsync();
+            return new Response(HttpStatusCode.OK, "Get all like blog replies is success!", totalLikeBlogReplies);
+        }
+
+        [HttpPost("LikeOrUnlikeBlogReply/{idUser}/{idBlogReply}")]
+        public async Task<Response> LikeOrUnlikeBlogReply(string idUser, Guid idBlogReply)
+        {
+            var existLike = await _context.BlogReplyLikes.FirstOrDefaultAsync(x => x.idAccount == idUser && x.idBlogReply == idBlogReply);
+            if (existLike == null)
+            {
+                var like = new BloggReplyLike
+                {
+                    idAccount = idUser,
+                    idBlogReply = idBlogReply,
+                    createdDate = DateTime.Now
+                };
+                await _context.BlogReplyLikes.AddAsync(like);
+            }
+            else
+            {
+                _context.BlogReplyLikes.Remove(existLike);
+            }
+            await _context.SaveChangesAsync();
+            return new Response(HttpStatusCode.NoContent, "Like or unlike blog reply is success!");
         }
     }
 }
