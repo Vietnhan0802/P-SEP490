@@ -35,7 +35,7 @@ namespace Post.Controllers
             _logger = logger;
         }
 
-        [HttpGet("GetNameUserCurrent/{idUser}")]
+        /*[HttpGet("GetNameUserCurrent/{idUser}")]
         private async Task<string> GetNameUserCurrent(string idUser)
         {
             HttpResponseMessage response = await client.GetAsync($"{UserApiUrl}/GetNameUser/{idUser}");
@@ -196,7 +196,7 @@ namespace Post.Controllers
             }
         }
 
-        /*************************************************************/
+        *//*************************************************************//*
 
         [HttpGet("GetAllCommentsByPostId/{postId}")]
         public async Task<ActionResult<IEnumerable<CommentPostViewModel>>> GetAllCommentsByPostId(Guid postId)
@@ -418,7 +418,7 @@ namespace Post.Controllers
             }
 
             return BadRequest("Invalid input or validation failed.");
-        }
+        }*/
 
     }
 }
