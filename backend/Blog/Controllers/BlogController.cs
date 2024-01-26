@@ -76,7 +76,7 @@ namespace Blog.Controllers
             var blogs = await _context.Blogs.Include(x => x.BloggImages).OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
             if (blogs == null)
             {
-                return new Response(HttpStatusCode.NoContent, "List blogs doesn't empty!");
+                return new Response(HttpStatusCode.NoContent, "Blogs doesn't empty!");
             }
             var result = _mapper.Map<List<ViewBlog>>(blogs);
             foreach (var blog in result)
@@ -87,7 +87,7 @@ namespace Blog.Controllers
                     image.ImageSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, image.image);
                 }
             }
-            return new Response(HttpStatusCode.OK, "Get list blogs is success!", result);
+            return new Response(HttpStatusCode.OK, "Getall blogs is success!", result);
         }
 
         [HttpGet("GetBlogByUser/{idUser}")]
@@ -96,7 +96,7 @@ namespace Blog.Controllers
             var blogs = await _context.Blogs.Include(x => x.BloggImages).Where(x => x.idAccount == idUser && x.isDeleted == false).OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
             if (blogs == null)
             {
-                return new Response(HttpStatusCode.NoContent, "List blogs doesn't empty!");
+                return new Response(HttpStatusCode.NoContent, "Blogs doesn't empty!");
             }
             var result = _mapper.Map<List<ViewBlog>>(blogs);
             foreach (var blog in result)
@@ -107,7 +107,7 @@ namespace Blog.Controllers
                     image.ImageSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, image.image);
                 }
             }
-            return new Response(HttpStatusCode.OK, "Get list blogs is success!", result);
+            return new Response(HttpStatusCode.OK, "Getall blogs is success!", result);
         }
 
         [HttpGet("GetBlogById/{idBlog}")]
@@ -194,7 +194,7 @@ namespace Blog.Controllers
         public async Task<Response> GetTotalLikeBlogs(Guid idBlog)
         {
             var totalLikeBlogs = await _context.BlogLikes.Where(x => x.idBlog == idBlog).CountAsync();
-            return new Response(HttpStatusCode.OK, "Get all like blogs is success!", totalLikeBlogs);
+            return new Response(HttpStatusCode.OK, "Getall like blogs is success!", totalLikeBlogs);
         }
 
         [HttpPost("LikeOrUnlikeBlog/{idUser}/{idBlog}")]
@@ -227,14 +227,14 @@ namespace Blog.Controllers
             var comments = await _context.BlogComments.Where(x => x.idBlog == idBlog).OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
             if (comments == null)
             {
-                return new Response(HttpStatusCode.NoContent, "List comments doesn't empty!");
+                return new Response(HttpStatusCode.NoContent, "Comments doesn't empty!");
             }
             var result = _mapper.Map<List<ViewBlogComment>>(comments);
             foreach (var comment in result)
             {
                 comment.fullName = await GetNameUserCurrent(comment.idAccount!);
             }
-            return new Response(HttpStatusCode.OK, "Get list comments is success!", result);
+            return new Response(HttpStatusCode.OK, "Getall comments is success!", result);
         }
 
         [HttpPost("CreateBlogComment/{idUser}/{idBlog}")]
@@ -286,7 +286,7 @@ namespace Blog.Controllers
         public async Task<Response> GetTotalLikeBlogComments(Guid idBlogComment)
         {
             var totalLikeBlogComments = await _context.BlogCommentLikes.Where(x => x.idBlogComment == idBlogComment).CountAsync();
-            return new Response(HttpStatusCode.OK, "Get all like blog comments is success!", totalLikeBlogComments);
+            return new Response(HttpStatusCode.OK, "Getall like blog comments is success!", totalLikeBlogComments);
         }
 
         [HttpPost("LikeOrUnlikeBlogComment/{idUser}/{idBlogComment}")]
@@ -319,14 +319,14 @@ namespace Blog.Controllers
             var replies = await _context.BlogReplies.Where(x => x.idBlogComment == idBlogComment).OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
             if (replies == null)
             {
-                return new Response(HttpStatusCode.NoContent, "List replies doesn't empty!");
+                return new Response(HttpStatusCode.NoContent, "Replies doesn't empty!");
             }
             var result = _mapper.Map<List<ViewBlogReply>>(replies);
             foreach (var reply in result)
             {
                 reply.fullName = await GetNameUserCurrent(reply.idAccount!);
             }
-            return new Response(HttpStatusCode.OK, "Get list replies is success!", result);
+            return new Response(HttpStatusCode.OK, "Getall replies is success!", result);
         }
 
         [HttpPost("CreateBlogReply/{idUser}/{idBlogComment}")]
@@ -378,7 +378,7 @@ namespace Blog.Controllers
         public async Task<Response> GetTotalLikeBlogReplies(Guid idBlogReply)
         {
             var totalLikeBlogReplies = await _context.BlogReplyLikes.Where(x => x.idBlogReply == idBlogReply).CountAsync();
-            return new Response(HttpStatusCode.OK, "Get all like blog replies is success!", totalLikeBlogReplies);
+            return new Response(HttpStatusCode.OK, "Getall like blog replies is success!", totalLikeBlogReplies);
         }
 
         [HttpPost("LikeOrUnlikeBlogReply/{idUser}/{idBlogReply}")]

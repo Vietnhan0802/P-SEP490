@@ -28,6 +28,10 @@ namespace BusinessObjects.Mappers
             CreateMap<BloggReply, CreateUpdateBlogReply>().ReverseMap();
             CreateMap<BloggReply, ViewBlogReply>().ReverseMap();
 
+            CreateMap<Conversation, ViewConversation>().ReverseMap();
+            CreateMap<Message, CreateUpdateMessage>().ReverseMap();
+            CreateMap<Message, ViewMessage>().ReverseMap();
+
             CreateMap<Postt, CreateUpdatePost>().ReverseMap();
             CreateMap<Postt, CreateUpdateImagePost>().ReverseMap();
             CreateMap<Postt, ViewPost>().ReverseMap();
@@ -54,7 +58,7 @@ namespace BusinessObjects.Mappers
 
             CreateMap<Follower, FollowingView>().ReverseMap();
 
-            CreateMap<Conversation, ConversationView>().ReverseMap();   
+            CreateMap<Conversation, ViewConversation>().ReverseMap();   
         }
     }
 }

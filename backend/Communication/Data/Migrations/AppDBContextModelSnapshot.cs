@@ -32,11 +32,9 @@ namespace Communication.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("idAccount1")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("idAccount2")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("idConversation");
@@ -51,7 +49,6 @@ namespace Communication.Data.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("content")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("createdDate")
@@ -61,11 +58,9 @@ namespace Communication.Data.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("idReceiver")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("idSender")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool?>("isDeleted")

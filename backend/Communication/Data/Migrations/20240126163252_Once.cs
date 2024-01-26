@@ -16,8 +16,8 @@ namespace Communication.Data.Migrations
                 columns: table => new
                 {
                     idConversation = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    idAccount1 = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    idAccount2 = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    idAccount1 = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    idAccount2 = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     createdDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
@@ -31,9 +31,9 @@ namespace Communication.Data.Migrations
                 {
                     idMessage = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     idConversation = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    idSender = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    idReceiver = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    content = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    idSender = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    idReceiver = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    content = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     isDeleted = table.Column<bool>(type: "bit", nullable: true),
                     createdDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
