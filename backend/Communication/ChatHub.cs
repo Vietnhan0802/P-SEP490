@@ -8,16 +8,15 @@ namespace Communication
 {
     public class ChatHub : Hub
     {
-        public async Task StartConversation(string idSender, ViewConversation viewConversation)
-        {
-            await Clients.User(idSender).SendAsync("ReceiverConversation", viewConversation);
-        }
-
-        public async Task GetAllConversation(ViewConversation viewConversation)
+        public async Task GetConversationByUser(ViewConversation viewConversation)
         {
             await Clients.Caller.SendAsync("ReceiverAllConversation", viewConversation);
         }
 
+        public async Task StartConversation(string idCurrentUser, string idReceiver)
+        {
+            await Clients.User(idReceiver).SendAsync("StartConversation", idCurrentUser);
+        }
         public async Task SendMessage(string idSender, string idReceiver, ViewMessage viewMessage)
         {
             await Clients.User(idSender).SendAsync("ReceiverMessage", viewMessage);
@@ -29,5 +28,10 @@ namespace Communication
             await Clients.User(idSender).SendAsync("ReceiverMessage", viewMessage);
             await Clients.User(idReceiver).SendAsync("ReceiverMessage", viewMessage);
         }
+
+/*        public async Task RecallMessage(string idSender, string idREceiver)
+        {
+            await
+        }*/
     }
 }
