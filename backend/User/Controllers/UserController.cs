@@ -74,7 +74,9 @@ namespace User.Controllers
         [HttpGet("GetAllUsers")]
         public async Task<Response> GetAllUsers()
         {
-            var users = await _userManager.Users.ToListAsync();
+            var adminRole = await _userManager.GetUsersInRoleAsync("Admin");
+            var adminId = adminRole.Select(x => x.Id).ToList();
+            var users = await _userManager.Users.Where(x => !adminId.Contains(x.Id)).ToListAsync();
             if (users == null)
             {
                 return new Response(HttpStatusCode.NoContent, "User list is empty!");

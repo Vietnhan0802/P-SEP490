@@ -9,6 +9,7 @@
         public string? idReceiver { get; set; }
         public string? receiverName { get; set; }
         public string? content { get; set; }
+        public bool? isRevoked { get; set; }
         public bool? isDeleted { get; set; }
         public DateTime createdDate { get; set; }
     }
