@@ -85,6 +85,11 @@ namespace User.Controllers
             foreach (var user in result)
             {
                 user.ImageSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, user.avatar);
+                foreach(var role in users)
+                {
+                    var userRoles = await _userManager.GetRolesAsync(role);
+                    user.role = userRoles.FirstOrDefault()!;
+                }
             }
             return new Response(HttpStatusCode.OK, "Get all users is success!", result);
         }
@@ -299,7 +304,7 @@ namespace User.Controllers
                 var result = new
                 {
                     token = new JwtSecurityTokenHandler().WriteToken(jwtToken),
-                    role = string.Join(",", userRoles)
+                    role = userRoles.FirstOrDefault()
                 };
                 return new Response(HttpStatusCode.OK, "Login successfully", result);
             }

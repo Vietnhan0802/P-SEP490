@@ -5,7 +5,7 @@ namespace BusinessObjects.ViewModels.User
 {
     public class ViewUser
     {
-        public Guid Id { get; set; }
+        public string Id { get; set; }
         public string userName { get; set; }
         public string email { get; set; }
         public string fullName { get; set; }
@@ -18,6 +18,7 @@ namespace BusinessObjects.ViewModels.User
         public string description { get; set; }
         public Guid idVerification { get; set; }
         public bool isBlock { get; set; }
+        public string role { get; set; }
         public DateTime createdDate { get; set; }
 
         [NotMapped]
