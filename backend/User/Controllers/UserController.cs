@@ -67,6 +67,11 @@ namespace User.Controllers
             foreach (var user in result)
             {
                 user.ImageSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, user.avatar);
+                foreach (var role in users)
+                {
+                    var userRoles = await _userManager.GetRolesAsync(role);
+                    user.role = userRoles.FirstOrDefault()!;
+                }
             }
             return new Response(HttpStatusCode.OK, $"Found {users.Count} user(s) with the given name", result);
         }
@@ -104,6 +109,8 @@ namespace User.Controllers
             }
             var result = _mapper.Map<ViewUser>(user);
             result.ImageSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, result.avatar);
+            var userRoles = await _userManager.GetRolesAsync(user);
+            result.role = userRoles.FirstOrDefault()!;
             return new Response(HttpStatusCode.OK, "Get user is success!", result);
         }
 
