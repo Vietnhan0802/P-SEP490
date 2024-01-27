@@ -62,6 +62,12 @@ namespace Communication.Controllers
 
         /*------------------------------------------------------------Message------------------------------------------------------------*/
 
+        [HttpGet("GetMessageByConversation/{idConversation}")]
+        /*public Task<Response> GetMessageByConversation(Guid idConversation)
+        {
+
+        }*/
+
         [HttpPost("CreateMessage/{idSender}/{idReceiver}")]
         public async Task<Response> CreateMessage(string idSender, string idReceiver, CreateUpdateMessage createUpdateMessage)
         {

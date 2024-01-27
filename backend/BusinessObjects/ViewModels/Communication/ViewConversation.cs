@@ -9,6 +9,7 @@ namespace BusinessObjects.ViewModels.Communication
         public string? fullName1 { get; set; }
         public string? idAccount2 { get; set; }
         public string? fullName2 { get; set; }
+        public bool? isDeleted { get; set; }
         public DateTime createdDate { get; set; }
     }
 }
