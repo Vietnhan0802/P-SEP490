@@ -38,7 +38,7 @@ namespace User.Data
                     fullName = "Đầu bự vô địch",
                     isMale = true,
                     PhoneNumber = "0949180802",
-                    tax = 1234567890,
+                    tax = "1234567890",
                     address = "Bến Tre",
                     description = "Tao là admin! Web này tao là bố!",
                     isBlock = false,

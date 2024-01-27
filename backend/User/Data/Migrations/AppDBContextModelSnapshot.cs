@@ -101,8 +101,8 @@ namespace User.Data.Migrations
                     b.Property<bool?>("isMale")
                         .HasColumnType("bit");
 
-                    b.Property<int>("tax")
-                        .HasColumnType("int");
+                    b.Property<string>("tax")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -121,27 +121,27 @@ namespace User.Data.Migrations
                         {
                             Id = "b80546cd-f4df-4a46-842e-22d3f9018ce3",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "e87cf191-91de-454b-99a2-c9cffbd13441",
+                            ConcurrencyStamp = "118e6f80-3388-4d1e-a7e5-b0f635925997",
                             Email = "admin@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = true,
                             NormalizedEmail = "ADMIN@GMAIL.COM",
                             NormalizedUserName = "ADMIN@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEBZDAr1JGnAtuNrlsXBQ899KXurSL6tGM9G+q39osr+kNtyc2YWg5BYNU0MNCf9gjw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEKa3uI48RCxID672+N6MGttne5RwemYexCbap4uNSLDC91IiJS19LNywawjbya2DoA==",
                             PhoneNumber = "0949180802",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "c8dca441-f826-4462-81bd-38858a666072",
+                            SecurityStamp = "b4d8a517-cbaa-4753-a1a0-dfa7101a4802",
                             TwoFactorEnabled = false,
                             UserName = "admin@gmail.com",
                             address = "Bến Tre",
-                            createdDate = new DateTime(2024, 1, 24, 19, 13, 31, 664, DateTimeKind.Local).AddTicks(9305),
+                            createdDate = new DateTime(2024, 1, 27, 12, 10, 36, 714, DateTimeKind.Local).AddTicks(3709),
                             date = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             description = "Tao là admin! Web này tao là bố!",
                             fullName = "Đầu bự vô địch",
                             idVerification = new Guid("00000000-0000-0000-0000-000000000000"),
                             isBlock = false,
                             isMale = true,
-                            tax = 1234567890
+                            tax = "1234567890"
                         });
                 });
 
@@ -181,14 +181,14 @@ namespace User.Data.Migrations
                         },
                         new
                         {
-                            Id = "b260a8c2-fff0-477b-a49d-5773b28bfa11",
+                            Id = "c32ed209-544e-4fed-a630-55e2434aebf8",
                             ConcurrencyStamp = "2",
                             Name = "Member",
                             NormalizedName = "Member"
                         },
                         new
                         {
-                            Id = "20ca53b3-0849-4d03-959c-57e1980c8cf5",
+                            Id = "0e1edae9-df90-41b4-8251-029ecc571184",
                             ConcurrencyStamp = "3",
                             Name = "Business",
                             NormalizedName = "Business"
