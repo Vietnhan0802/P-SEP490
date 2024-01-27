@@ -62,10 +62,10 @@ namespace Communication.Controllers
 
         /*------------------------------------------------------------Message------------------------------------------------------------*/
 
-        [HttpGet("GetMessageByConversation/{idConversation}")]
-        /*public Task<Response> GetMessageByConversation(Guid idConversation)
+        /*[HttpGet("GetMessageByConversation/{idConversation}")]
+        public async Task<Response> GetMessageByConversation(Guid idConversation)
         {
-
+            var messages = await _context.Messages.Where(x => x.idConversation == idConversation).ToListAsync();
         }*/
 
         [HttpPost("CreateMessage/{idSender}/{idReceiver}")]

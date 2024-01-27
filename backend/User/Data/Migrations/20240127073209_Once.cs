@@ -173,15 +173,15 @@ namespace User.Data.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "0e1edae9-df90-41b4-8251-029ecc571184", "3", "Business", "Business" },
+                    { "795a61c9-a95e-44b9-b776-3c7c8e599d63", "3", "Business", "Business" },
                     { "aeb27c30-d31d-43ec-9465-d04bf75d0f0d", "1", "Admin", "Admin" },
-                    { "c32ed209-544e-4fed-a630-55e2434aebf8", "2", "Member", "Member" }
+                    { "bc0db0b0-7ee9-4289-b39a-8dbd06dc016b", "2", "Member", "Member" }
                 });
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName", "address", "avatar", "createdDate", "date", "description", "fullName", "idVerification", "isBlock", "isMale", "tax" },
-                values: new object[] { "b80546cd-f4df-4a46-842e-22d3f9018ce3", 0, "118e6f80-3388-4d1e-a7e5-b0f635925997", "admin@gmail.com", true, true, null, "ADMIN@GMAIL.COM", "ADMIN@GMAIL.COM", "AQAAAAIAAYagAAAAEKa3uI48RCxID672+N6MGttne5RwemYexCbap4uNSLDC91IiJS19LNywawjbya2DoA==", "0949180802", false, "b4d8a517-cbaa-4753-a1a0-dfa7101a4802", false, "admin@gmail.com", "Bến Tre", null, new DateTime(2024, 1, 27, 12, 10, 36, 714, DateTimeKind.Local).AddTicks(3709), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Tao là admin! Web này tao là bố!", "Đầu bự vô địch", new Guid("00000000-0000-0000-0000-000000000000"), false, true, "1234567890" });
+                values: new object[] { "b80546cd-f4df-4a46-842e-22d3f9018ce3", 0, "5b99b886-547a-4e45-9142-18b63042c6e6", "admin@gmail.com", true, true, null, "ADMIN@GMAIL.COM", "ADMIN@GMAIL.COM", "AQAAAAIAAYagAAAAEGHlKa5qmW3+Isvu1KR1VDf63MAgBDlaf1482cgaBWjXIQKfVntwY49dO0Sn3Q07Vw==", "0949180802", false, "f0a2489c-ea3c-488b-bbc8-ad1b0e0cbce4", false, "admin@gmail.com", "Bến Tre", null, new DateTime(2024, 1, 27, 14, 32, 9, 155, DateTimeKind.Local).AddTicks(5735), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Tao là admin! Web này tao là bố!", "Đầu bự vô địch", new Guid("00000000-0000-0000-0000-000000000000"), false, true, "1234567890" });
 
             migrationBuilder.InsertData(
                 table: "AspNetUserRoles",
