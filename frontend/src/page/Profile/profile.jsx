@@ -89,7 +89,7 @@ function Profile({ handleChangeImg }) {
     )
       .then((res) => {
         setDisplay(false)
-        if (res?.data?.status === 'OK') { handleChangeImg('ok')}
+        if (res?.data?.status === 'OK') { handleChangeImg('ok') }
         console.log(res?.data?.status);
       })
       .catch((err) => {
@@ -120,6 +120,7 @@ function Profile({ handleChangeImg }) {
   const handleReportPopup = () => {
     setActivePopup(!activePopup);
   };
+  console.log(inputs);
   useEffect(() => {
     userInstance.get(`/GetUserById/${user.Id}`)
       .then((res) => {
@@ -149,7 +150,7 @@ function Profile({ handleChangeImg }) {
                 <input type="file" accept="image/*" onChange={showPreview} className="my-2" />
                 <button onClick={handleUpdateAvatar} className="btn btn-primary m-auto"> Submit</button>
               </div>) :
-                <button className="btn edit-btn mt-3 w-50 m-auto" onClick={handleUpdateAppear}>Edit Avatar</button>}
+                <button className="btn edit-btn mt-3 w-75 m-auto" onClick={handleUpdateAppear}>Edit Avatar</button>}
               <div className="w-100 text-center">
                 <div className="personal-information-text mt-4">
                 </div>
@@ -312,7 +313,7 @@ function Profile({ handleChangeImg }) {
                   disabled={!isEdit}
                   name="description"
                   placeholder="I'm a Product Designer based in Melbourne, Australia. I specialise in UX/UI design, brand strategy, and Webflow development."
-                  value="Heloo"
+                  value={inputs.description}
                   onChange={handleChange}
                 ></textarea>
               </div>

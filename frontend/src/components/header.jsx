@@ -14,25 +14,26 @@ import defaultImage from "../images/common/default.png"
 import Popup from "./Popup/Popup";
 import Notify from "../page/Notify/notify";
 import { userInstance } from "../axios/axiosConfig";
-export default function Header({ activeComponent, onItemClick ,changeImage}) {
+export default function Header({ activeComponent, onItemClick, changeImage }) {
   const user = JSON.parse(Cookies.get("user"));
   const [activeItem, setActiveItem] = useState("home");
-  const [activePopup, setActivePopup] = useState(false); 
+  const [activePopup, setActivePopup] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
-  const [value, setValue] = useState({  imageSrc: '' });
-  const  imageSrc =defaultImage;
+  const [value, setValue] = useState({ imageSrc: '' });
   useEffect(() => {
     userInstance.get(`/GetUserById/${user.Id}`)
       .then((res) => {
-        if(res?.data?.result.imageSrc === 'https://localhost:7006/Images/') return; 
-        setValue( res?.data?.result.imageSrc,
-        )
-        console.log(res?.data?.result.imageSrc);
+        if (res?.data?.result.imageSrc === 'https://localhost:7006/Images/') {
+          setValue(defaultImage)
+        } else {
+          setValue(res?.data?.result.imageSrc)
+        }
+
       })
       .catch((err) => {
         console.log(err.response.data);
       })
-   }, [changeImage]);
+  }, [changeImage]);
   const handlePopup = () => {
     setShowPopup(!showPopup);
     setActivePopup(!activePopup);
@@ -56,23 +57,20 @@ export default function Header({ activeComponent, onItemClick ,changeImage}) {
       </Col>
       <Col className="justify-content-center d-flex align-items-center" sm={4}>
         <LuHome
-          className={`home-icon ${
-            activeItem === "home" ? "active-header-item" : ""
-          }`}
+          className={`home-icon ${activeItem === "home" ? "active-header-item" : ""
+            }`}
           onClick={() => handleItemClick("home")}
         />
         <IoChatbubblesOutline
-          className={`chat-icon ${
-            activeItem === "chat" ? "active-header-item" : ""
-          }`}
+          className={`chat-icon ${activeItem === "chat" ? "active-header-item" : ""
+            }`}
           onClick={() => handleItemClick("chat")}
         />
 
         <div >
           <IoIosNotificationsOutline
-            className={`notify-icon ${
-              activePopup === true ? "active-header-item" : ""
-            }`}
+            className={`notify-icon ${activePopup === true ? "active-header-item" : ""
+              }`}
             onClick={() => handlePopup()}
           />
           <Popup trigger={showPopup}>

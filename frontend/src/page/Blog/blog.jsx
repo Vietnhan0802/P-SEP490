@@ -8,7 +8,7 @@ import { BsChat } from "react-icons/bs";
 import { FiEye } from "react-icons/fi";
 import { RiAdminLine } from "react-icons/ri";
 import ReportPopup from "../../components/Popup/reportPopup";
-import {userInstance} from "../../axios/axiosConfig";
+import { userInstance } from "../../axios/axiosConfig";
 function Blog({ blogId, onBlogClick, activeItem, onItemClick }) {
   const blogContent = [
     {
@@ -62,7 +62,7 @@ function Blog({ blogId, onBlogClick, activeItem, onItemClick }) {
       comment: 123,
     },
   ];
-  const [inputValue, setInputValue] = useState("");
+  const [inputs, setInputs] = useState({})
   const [blogPopups, setBlogPopups] = useState({});
   const hanldeViewDetail = (blogId) => {
     onBlogClick(blogId);
@@ -71,9 +71,9 @@ function Blog({ blogId, onBlogClick, activeItem, onItemClick }) {
   const handleReportClick = (blogId) => {
     setBlogPopups((prev) => ({ ...prev, [blogId]: true }));
   };
-  const handleCreateBlog = () => {  
+  const handleCreateBlog = () => {
     userInstance.post("/create-blog", {
-      content: inputValue,
+
     }).then((res) => {
       console.log(res.data);
     }).catch((err) => {
@@ -82,24 +82,37 @@ function Blog({ blogId, onBlogClick, activeItem, onItemClick }) {
   }
   // Handler function to update the state when the input changes
   const handleInputChange = (event) => {
-    setInputValue(event.target.value);
+    const name = event.target.name;
+    const value = event.target.value;
+    console.log(inputs)
+    setInputs((values) => ({ ...values, [name]: value }));
   };
   return (
     <div>
       <div id="blog">
         <div className="blog-form p-2">
-          <div className="d-flex align-items-center">
-            <textarea
-              type="text"
-              value={inputValue}
+          <div className="d-flex align-items-center flex-column">
+            <input type="text" name="title" value={inputs.title}
               onChange={handleInputChange}
               className="input-text"
-              placeholder="Create new Post..."
+              placeholder="Enter the title"
             />
+            <textarea
+              type="text"
+              value={inputs.content}
+              name="content"
+              onChange={handleInputChange}
+              className="input-text"
+              placeholder="Enter your content..."
+            />
+          </div>
+          <div className="d-flex  justify-content-between mt-2">
+            <button className="btn btn-outline-primary">Add Image</button>
             <button className="btn">
               <CiCircleChevRight className=" fs-3" onClick={handleCreateBlog} />
             </button>
           </div>
+
         </div>
         {blogContent.map((item) => (
           <div
