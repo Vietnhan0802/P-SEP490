@@ -38,6 +38,7 @@ namespace Communication.Data.Migrations
                     idReceiver = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     isDeletedByReceiver = table.Column<bool>(type: "bit", nullable: true),
                     content = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    isRecall = table.Column<bool>(type: "bit", nullable: true),
                     createdDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>

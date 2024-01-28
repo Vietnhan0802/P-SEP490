@@ -75,6 +75,9 @@ namespace Communication.Data.Migrations
                     b.Property<bool?>("isDeletedBySender")
                         .HasColumnType("bit");
 
+                    b.Property<bool?>("isRecall")
+                        .HasColumnType("bit");
+
                     b.HasKey("idMessage");
 
                     b.HasIndex("idConversation");
