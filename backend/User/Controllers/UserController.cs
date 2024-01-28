@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.Data;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using System.Security.Claims;
@@ -90,10 +91,13 @@ namespace User.Controllers
             foreach (var user in result)
             {
                 user.ImageSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, user.avatar);
-                foreach(var role in users)
+                foreach (var role in users)
                 {
-                    var userRoles = await _userManager.GetRolesAsync(role);
-                    user.role = userRoles.FirstOrDefault()!;
+                    if (user.Id == role.Id)
+                    {
+                        var userRoles = await _userManager.GetRolesAsync(role);
+                        user.role = userRoles.FirstOrDefault()!;
+                    } 
                 }
             }
             return new Response(HttpStatusCode.OK, "Get all users is success!", result);
