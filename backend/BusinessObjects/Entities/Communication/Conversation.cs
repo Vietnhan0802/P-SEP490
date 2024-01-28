@@ -11,6 +11,6 @@ namespace BusinessObjects.Entities.Communication
         public bool? isDeletedBySender { get; set; }
         public bool? isDeletedByReceiver { get; set; }
         public DateTime createdDate { get; set; }
-        public List<Message>? Messages { get; set; }
+        public ICollection<Message>? Messages { get; set; }
     }
 }
