@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Communication.Data.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20240127174732_Once")]
+    [Migration("20240128074937_Once")]
     partial class Once
     {
         /// <inheritdoc />
@@ -76,6 +76,9 @@ namespace Communication.Data.Migrations
                         .HasColumnType("bit");
 
                     b.Property<bool?>("isDeletedBySender")
+                        .HasColumnType("bit");
+
+                    b.Property<bool?>("isRecall")
                         .HasColumnType("bit");
 
                     b.HasKey("idMessage");
