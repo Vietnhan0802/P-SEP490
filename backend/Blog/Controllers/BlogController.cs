@@ -130,7 +130,7 @@ namespace Blog.Controllers
         }
 
         [HttpPost("CreateBlog")]
-        public async Task<Response> CreateBlog(string idUser, CreateUpdateBlog createUpdateBlog)
+        public async Task<Response> CreateBlog(string idUser, [FromForm]CreateUpdateBlog createUpdateBlog)
         {
             var blog = _mapper.Map<Blogg>(createUpdateBlog);
             if (createUpdateBlog.CreateUpdateImageBlogs != null)
@@ -138,16 +138,17 @@ namespace Blog.Controllers
                 foreach (var image in createUpdateBlog.CreateUpdateImageBlogs)
                 {
                     var imageName = await _saveImageService.SaveImage(image.ImageFile);
-                    blog.BloggImages.Add(new BloggImage { image = imageName });
+                    blog.BloggImages!.Add(new BloggImage { image = imageName });
                 }
-                blog.idAccount = idUser;
-                blog.isDeleted = false;
-                blog.createdDate = DateTime.Now;
-                await _context.Blogs.AddAsync(blog);
-                await _context.SaveChangesAsync();
-                return new Response(HttpStatusCode.OK, "Create blog is success!", _mapper.Map<ViewBlog>(blog));
+                
             }
-            return new Response(HttpStatusCode.BadRequest, "Create blog is fail!");
+            blog.BloggImages = null;
+            blog.idAccount = idUser;
+            blog.isDeleted = false;
+            blog.createdDate = DateTime.Now;
+            await _context.Blogs.AddAsync(blog);
+            await _context.SaveChangesAsync();
+            return new Response(HttpStatusCode.OK, "Create blog is success!", _mapper.Map<ViewBlog>(blog));
         }
 
         [HttpPut("UpdateBlog/{idBlog}")]
