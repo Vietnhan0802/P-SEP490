@@ -62,8 +62,8 @@ namespace Communication.Controllers
             return new Response(HttpStatusCode.NoContent, "Conversation had been existed!");
         }
 
-        [HttpDelete("RemoveConversation")]
-        public async Task<Response> RemoveConversation(Guid idConversation, string idCurrentUser)
+        [HttpDelete("RemoveConversation/{idCurrentUser}/{idConversation}")]
+        public async Task<Response> RemoveConversation(string idCurrentUser, Guid idConversation)
         {
             var conversation = await _context.Conversations.FirstOrDefaultAsync(x => x.idConversation == idConversation);
             if (conversation == null)
@@ -73,17 +73,19 @@ namespace Communication.Controllers
             if (idCurrentUser == conversation.idAccount1)
             {
                 conversation.isDeletedBySender = true;
-                var messages = await _context.Messages.Where(x => x.idConversation == conversation.idConversation).ToListAsync();
-                foreach (var message in messages)
-                {
-                    message.isDeletedBySender = true;
-                }
             }
             else if (idCurrentUser == conversation.idAccount2)
             {
                 conversation.isDeletedByReceiver = true;
-                var messages = await _context.Messages.Where(x => x.idConversation == conversation.idConversation).ToListAsync();
-                foreach (var message in messages)
+            }
+            var messages = await _context.Messages.Where(x => x.idConversation == conversation.idConversation).ToListAsync();
+            foreach (var message in messages)
+            {
+                if (idCurrentUser == message.idSender)
+                {
+                    message.isDeletedBySender = true;
+                }
+                else if (idCurrentUser == message.idReceiver)
                 {
                     message.isDeletedByReceiver = true;
                 }
@@ -94,80 +96,72 @@ namespace Communication.Controllers
 
         /*------------------------------------------------------------Message------------------------------------------------------------*/
 
-        [HttpGet("GetMessages/{currentUser}/{idSender}/{idReceiver}")]
-        public async Task<Response> GetMessages(string currentUser, string idSender, string idReceiver)
+        [HttpGet("GetMessages/{idConversation}/{idCurrentUser}")]
+        public async Task<Response> GetMessages(Guid idConversation, string idCurrentUser)
         {
-            var messages = await _context.Messages.Where(x => x.idSender == idSender && x.idReceiver == idReceiver).ToListAsync();
-            if (currentUser == idSender)
+            var messages = await _context.Messages.Where(x => x.idConversation == idConversation).ToListAsync();
+            foreach (var message in messages)
             {
-                messages = messages.Where(x => x.isDeletedBySender == false).ToList();
+                messages = messages.Where(x => (x.idSender == idCurrentUser && x.isDeletedBySender == false) 
+                                            || (x.idReceiver == idCurrentUser && x.isDeletedByReceiver == false)).ToList();
             }
-            else if (currentUser == idReceiver) 
-            {
-                messages = messages.Where(x => x.isDeletedByReceiver == false).ToList();
-            }
-            return new Response(HttpStatusCode.NoContent, "Conversation had been existed!");
+            var result = _mapper.Map<List<ViewMessage>>(messages);
+            await _chatHub.GetMessages(result);
+            return new Response(HttpStatusCode.NoContent, "Conversation had been existed!", result);
         }
 
-        [HttpPost("CreateMessage/{idSender}/{idReceiver}")]
-        public async Task<Response> CreateMessage(string idSender, string idReceiver, CreateUpdateMessage createUpdateMessage)
+        [HttpPost("SendMessage/{idCurrentUser}/{idReceiver}/{idConversation}")]
+        public async Task<Response> SendMessage(string idCurrentUser, string idReceiver, Guid idConversation, CreateUpdateMessage createUpdateMessage)
         {
-            var conversation = await _context.Conversations.FirstOrDefaultAsync(x => (x.idAccount1 == idSender && x.idAccount2 == idReceiver) || (x.idAccount1 == idReceiver && x.idAccount2 == idSender));
-            if (conversation != null)
+            var message = new Message
             {
-                var message = new Message
-                {
-                    idConversation = conversation.idConversation,
-                    idSender = idSender,
-                    idReceiver = idReceiver,
-                    content = createUpdateMessage.content,
-                    isDeletedBySender = false,
-                    isDeletedByReceiver = false,
-                    createdDate = DateTime.Now,
-                };
-                await _context.Messages.AddAsync(message);
-                await _context.SaveChangesAsync();
-                var result = _mapper.Map<ViewMessage>(message);
-                await _chatHub.SendMessage(idSender, idReceiver, result);
-                return new Response(HttpStatusCode.OK, "Send message is success!", result);
-            }
-            return new Response(HttpStatusCode.NotFound, "Conversation doesn't exist!");
-        }
-
-        [HttpPut("UpdateMessage/{idMessage}")]
-        public async Task<Response> UpdateMessage(Guid idMessage, CreateUpdateMessage createUpdateMessage)
-        {
-            var message = await _context.Messages.FirstOrDefaultAsync(x => x.idMessage == idMessage);
-            if (message == null)
-            {
-                return new Response(HttpStatusCode.NotFound, "Message doesn't exist!");
-            }
-            _mapper.Map(createUpdateMessage, message);
-            _context.Messages.Update(message);
+                idConversation = idConversation,
+                idSender = idCurrentUser,
+                idReceiver = idReceiver,
+                content = createUpdateMessage.content,
+                isDeletedBySender = false,
+                isDeletedByReceiver = false,
+                createdDate = DateTime.Now,
+            };
+            await _context.Messages.AddAsync(message);
             await _context.SaveChangesAsync();
             var result = _mapper.Map<ViewMessage>(message);
-            await _chatHub.UpdateMessage(result.idSender!, result.idReceiver!, result);
-            return new Response(HttpStatusCode.OK, "Update message is success!", result);
+            await _chatHub.SendMessage(idCurrentUser, idReceiver, result);
+            return new Response(HttpStatusCode.OK, "Send message is success!", result);
         }
 
-        [HttpDelete("DeleteMessage/{idMessage}")]
-        public async Task<Response> RecallMessage(Guid idMessage, string deletedBy)
+        [HttpDelete("DeleteMessage/{idMessage}/{idCurrentUser}")]
+        public async Task<Response> DeleteMessage(Guid idMessage, string idCurrentUser)
         {
             var message = await _context.Messages.FirstOrDefaultAsync(x => x.idMessage == idMessage);
             if (message == null)
             {
                 return new Response(HttpStatusCode.NotFound, "Message doesn't exist!");
             }
-            if (message.idSender == deletedBy)
+            if (idCurrentUser == message.idSender)
             {
                 message.isDeletedBySender = true;
             }
-            else if (message.idReceiver == deletedBy)
+            else if (idCurrentUser == message.idReceiver)
             {
                 message.isDeletedByReceiver = true;
             }
             await _context.SaveChangesAsync();
             return new Response(HttpStatusCode.OK, "Delete message is success!");
+        }
+
+        [HttpDelete("RecallMessage/{idMessage}")]
+        public async Task<Response> RecallMessage(string idCurrentUser, Guid idMessage)
+        {
+            var message = await _context.Messages.FirstOrDefaultAsync(x => x.idMessage == idMessage);
+            if (message == null)
+            {
+                return new Response(HttpStatusCode.NotFound, "Message doesn't exist!");
+            }
+            message.isRecall = true;
+            await _context.SaveChangesAsync();
+            await _chatHub.RecallMessage(idCurrentUser, idMessage);
+            return new Response(HttpStatusCode.OK, "Recall message is success!");
         }
     }
 }

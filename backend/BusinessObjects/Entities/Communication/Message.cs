@@ -12,6 +12,7 @@ namespace BusinessObjects.Entities.Communication
         public string? idReceiver { get; set; }
         public bool? isDeletedByReceiver { get; set; }
         public string? content { get; set; }
+        public bool? isRecall { get; set; }
         public DateTime createdDate { get; set; }
         public Conversation? Conversation { get; set; }
     }
