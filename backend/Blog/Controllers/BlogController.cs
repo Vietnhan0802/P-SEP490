@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Blog.Data;
 using BusinessObjects.Entities.Blog;
 using BusinessObjects.ViewModels.Blog;
