@@ -1,14 +1,14 @@
 ﻿using BusinessObjects.Enums.Interaction.Verification;
-using System.ComponentModel.DataAnnotations;
 
-namespace BusinessObjects.Entities.Interaction
+namespace BusinessObjects.ViewModels.Interaction
 {
-    public class AccountReport
+    public class ViewAccountReport
     {
-        [Key]
-        public Guid idAccountReport { get; set; }
+        public Guid idReport { get; set; }
         public string? idReporter { get; set; }
+        public string? nameReporter { get; set; }
         public string? idReported { get; set; }
+        public string? nameReported { get; set; }
         public string? content { get; set; }
         public Status? status { get; set; }
         public DateTime? createdDate { get; set; }

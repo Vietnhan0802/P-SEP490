@@ -10,6 +10,8 @@ namespace Interaction.Data
         }
 
         public DbSet<Verification> Verifications { get; set; }
+        public DbSet<AccountReport> AccountReports { get; set; }
+        public DbSet<PostReport> PostReports { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

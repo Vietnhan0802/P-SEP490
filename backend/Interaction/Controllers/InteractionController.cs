@@ -47,7 +47,7 @@ namespace Interaction.Controllers
             return user!;
         }
 
-        /*------------------------------------------------------------Blog------------------------------------------------------------*/
+        /*------------------------------------------------------------Verification------------------------------------------------------------*/
 
         [HttpGet("GetAllVerificationsWaiting")]
         public async Task<Response> GetAllVerificationsWaiting()
@@ -127,5 +127,8 @@ namespace Interaction.Controllers
                 return new Response(HttpStatusCode.BadRequest, "Update status is fail!");
             }
         }
+
+        /*------------------------------------------------------------Verification------------------------------------------------------------*/
+
     }
 }
