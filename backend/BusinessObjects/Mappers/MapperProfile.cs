@@ -23,8 +23,9 @@ namespace BusinessObjects.Mappers
         public MapperProfile()
         {
             CreateMap<Blogg, CreateUpdateBlog>().ReverseMap();
-            CreateMap<Blogg, CreateUpdateImageBlog>().ReverseMap();
+            CreateMap<Blogg, CreateUpdateBlogImage>().ReverseMap();
             CreateMap<Blogg, ViewBlog>().ReverseMap();
+            CreateMap<BloggImage, ViewBlogImage>().ReverseMap();
             CreateMap<BloggComment, CreateUpdateBlogComment>().ReverseMap();
             CreateMap<BloggComment, ViewBlogComment>().ReverseMap();
             CreateMap<BloggReply, CreateUpdateBlogReply>().ReverseMap();
