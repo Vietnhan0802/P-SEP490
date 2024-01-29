@@ -101,26 +101,44 @@ function Blog({ blogId, onBlogClick, activeItem, onItemClick }) {
         console.log(err);
       });
   };
-
+  const readFileAsDataURL = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        resolve(event.target.result);
+      };
+      reader.onerror = (error) => {
+        reject(error);
+      };
+      reader.readAsDataURL(file);
+    });
+  };
   // Handler function to update the state when the input changes
   const handleInputChange = (event) => {
     const { name, value, type } = event.target;
     if (type === 'file') {
       const files = Array.from(event.target.files);
-      const newImages = files.map(element => ({
-        image: element.name,
-        imageFile: element,
-        imageSrc: URL.createObjectURL(element),
-      }));
-      setInputs((values) => ({
-        ...values,
-        CreateUpdateImageBlogs: [...values.CreateUpdateImageBlogs, ...newImages],
-      }));
+
+      // Use FileReader to convert each file to base64
+      const newImages = files.map(async (element) => {
+        const base64String = await readFileAsDataURL(element);
+        return {
+          image: element.name,
+          imageFile: element,
+          imageSrc: base64String,
+        };
+      });
+      Promise.all(newImages).then((convertedImages) => {
+        setInputs((values) => ({
+          ...values,
+          CreateUpdateImageBlogs: [...values.CreateUpdateImageBlogs, ...convertedImages],
+        }));
+      });
     } else {
       setInputs((values) => ({ ...values, [name]: value }));
     }
   };
-  // console.log(inputs)
+
   return (
     <div>
       <div id="blog">
