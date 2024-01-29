@@ -7,7 +7,6 @@ import { Row, Col, Image } from "react-bootstrap";
 import { CiSearch } from "react-icons/ci";
 import { LuHome } from "react-icons/lu";
 import logoImg from "../images/common/logo.png";
-import Avatar from "../images/common/Avatar.png";
 import { IoChatbubblesOutline } from "react-icons/io5";
 import { IoIosNotificationsOutline } from "react-icons/io";
 import defaultImage from "../images/common/default.png"

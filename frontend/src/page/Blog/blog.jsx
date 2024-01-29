@@ -1,14 +1,14 @@
 import React from "react";
 import { useState } from "react";
 import "../Blog/blog.scss";
-import avatar from "../../images/common/Avatar.png";
 import { CiCircleChevRight } from "react-icons/ci";
 import { IoFlagOutline } from "react-icons/io5";
 import { BsChat } from "react-icons/bs";
 import { FiEye } from "react-icons/fi";
 import { RiAdminLine } from "react-icons/ri";
 import ReportPopup from "../../components/Popup/reportPopup";
-import { userInstance } from "../../axios/axiosConfig";
+import { blogInstance } from "../../axios/axiosConfig";
+import Cookies from "js-cookie";
 function Blog({ blogId, onBlogClick, activeItem, onItemClick }) {
   const blogContent = [
     {
@@ -71,9 +71,13 @@ function Blog({ blogId, onBlogClick, activeItem, onItemClick }) {
   const handleReportClick = (blogId) => {
     setBlogPopups((prev) => ({ ...prev, [blogId]: true }));
   };
-  const handleCreateBlog = () => {
-    userInstance.post("/create-blog", {
+  const userId = JSON.parse(Cookies.get("userId"));
 
+  const handleCreateBlog = () => {
+    blogInstance.post(`/CreateBlog/${userId}`, inputs, {
+      headers: {
+        accept: 'application/json'
+      }
     }).then((res) => {
       console.log(res.data);
     }).catch((err) => {
@@ -108,8 +112,8 @@ function Blog({ blogId, onBlogClick, activeItem, onItemClick }) {
           </div>
           <div className="d-flex  justify-content-between mt-2">
             <button className="btn btn-outline-primary">Add Image</button>
-            <button className="btn">
-              <CiCircleChevRight className=" fs-3" onClick={handleCreateBlog} />
+            <button className="btn"  onClick={handleCreateBlog} >
+              <CiCircleChevRight className=" fs-3"/>
             </button>
           </div>
 

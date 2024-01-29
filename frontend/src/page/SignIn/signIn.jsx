@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import logoImg from "../../images/common/logo.png";
 import GGIcon from "../../images/common/gg-icon.png";
@@ -6,7 +6,7 @@ import FBIcon from "../../images/common/fb-icon.png";
 import "../SignIn/signIn.scss";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {userInstance} from "../../axios/axiosConfig";
+import { userInstance } from "../../axios/axiosConfig";
 import { jwtDecode } from "jwt-decode";
 import Cookies from 'js-cookie';
 export default function SignIn() {
@@ -32,8 +32,9 @@ export default function SignIn() {
       if (response?.data?.status === "OK") {
         console.log("Sign in successful", response?.data?.result.role);
         const decode = jwtDecode(response?.data?.result.token);
-        
-        // console.log(decode);
+
+        console.log(decode);
+        Cookies.set('userId', JSON.stringify(decode.Id), { expires: 1 })
         // console.log(response?.data?.result?.role)
         Cookies.set('user', JSON.stringify(decode), { expires: 1 });
         Cookies.set('role', JSON.stringify(response?.data?.result.role), { expires: 1 });

@@ -130,7 +130,7 @@ namespace Blog.Controllers
         }
 
         [HttpPost("CreateBlog")]
-        public async Task<Response> CreateBlog(string idUser, [FromForm]CreateUpdateBlog createUpdateBlog)
+        public async Task<Response> CreateBlog(string idUser, CreateUpdateBlog createUpdateBlog)
         {
             var blog = _mapper.Map<Blogg>(createUpdateBlog);
             if (createUpdateBlog.CreateUpdateImageBlogs != null)

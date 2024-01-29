@@ -8,7 +8,6 @@ import SignUp from "./page/SignUp/signUp";
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import Homepage from "./page/Homepage/homepage";
 import Chat from "./page/Chat/chat";
-import DashBoard from "./page/DashBoard/dashBoard";
 import Header from "./components/header";
 import Profile from "./page/Profile/profile";
 import Notify from "./page/Notify/notify";
