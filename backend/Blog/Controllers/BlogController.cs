@@ -62,7 +62,7 @@ namespace Blog.Controllers
             foreach (var blog in result)
             {
                 blog.fullName = await GetNameUserCurrent(blog.idAccount!);
-                foreach (var image in blog.BloggImages)
+                foreach (var image in blog.ViewBlogImages!)
                 {
                     image.ImageSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, image.image);
                 }
@@ -82,7 +82,7 @@ namespace Blog.Controllers
             foreach (var blog in result)
             {
                 blog.fullName = await GetNameUserCurrent(blog.idAccount!);
-                foreach (var image in blog.BloggImages)
+                foreach (var image in blog.ViewBlogImages!)
                 {
                     image.ImageSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, image.image);
                 }
@@ -102,7 +102,7 @@ namespace Blog.Controllers
             foreach (var blog in result)
             {
                 blog.fullName = await GetNameUserCurrent(blog.idAccount!);
-                foreach (var image in blog.BloggImages)
+                foreach (var image in blog.ViewBlogImages!)
                 {
                     image.ImageSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, image.image);
                 }
@@ -122,7 +122,7 @@ namespace Blog.Controllers
             await _context.SaveChangesAsync();
             var result = _mapper.Map<ViewBlog>(blog);
             result.fullName = await GetNameUserCurrent(result.idAccount!);
-            foreach (var image in result.BloggImages)
+            foreach (var image in result.ViewBlogImages!)
             {
                 image.ImageSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, image.image);
             }
@@ -133,20 +133,27 @@ namespace Blog.Controllers
         public async Task<Response> CreateBlog(string idUser, [FromForm]CreateUpdateBlog createUpdateBlog)
         {
             var blog = _mapper.Map<Blogg>(createUpdateBlog);
-            if (createUpdateBlog.CreateUpdateImageBlogs != null)
-            {
-                foreach (var image in createUpdateBlog.CreateUpdateImageBlogs)
-                {
-                    var imageName = await _saveImageService.SaveImage(image.ImageFile);
-                    blog.BloggImages!.Add(new BloggImage { image = imageName });
-                }
-                
-            }
-            blog.BloggImages = null;
             blog.idAccount = idUser;
             blog.isDeleted = false;
             blog.createdDate = DateTime.Now;
             await _context.Blogs.AddAsync(blog);
+            if (createUpdateBlog.CreateUpdateBlogImages != null)
+            {
+                foreach (var image in createUpdateBlog.CreateUpdateBlogImages)
+                {
+                    var imageName = await _saveImageService.SaveImage(image.ImageFile);
+                    BloggImage bloggImage = new BloggImage() {
+                        idBlog = blog.idBlog,
+                        image = imageName,
+                        createdDate = DateTime.Now
+                    };
+                    await _context.BlogImages.AddAsync(bloggImage);
+                }
+            }
+            else 
+            {
+                blog.BloggImages = null;
+            }
             await _context.SaveChangesAsync();
             return new Response(HttpStatusCode.OK, "Create blog is success!", _mapper.Map<ViewBlog>(blog));
         }
@@ -159,14 +166,14 @@ namespace Blog.Controllers
             {
                 return new Response(HttpStatusCode.NotFound, "Blog doesn't exists!");
             }
-            if (createUpdateBlog.CreateUpdateImageBlogs != null)
+            if (createUpdateBlog.CreateUpdateBlogImages != null)
             {
-                foreach (var imageOld in blog.BloggImages)
+                foreach (var imageOld in blog.BloggImages!)
                 {
-                    _saveImageService.DeleteImage(imageOld.image);
+                    _saveImageService.DeleteImage(imageOld.image!);
                 }
                 var result = _mapper.Map(createUpdateBlog, blog);
-                foreach (var imageNew in result.BloggImages)
+                foreach (var imageNew in result.BloggImages!)
                 {
                     imageNew.image = await _saveImageService.SaveImage(imageNew.ImageFile);
                     result.BloggImages.Add(imageNew);
