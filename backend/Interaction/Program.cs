@@ -1,10 +1,13 @@
-using Interaction.DBContext;
+using BusinessObjects.Mappers;
+using Interaction.Data;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddDbContext<VerificationDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("MyStoreDB")));
+builder.Services.AddAutoMapper(typeof(MapperProfile));
+builder.Services.AddDbContext<AppDBContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("AppDB")));
+
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -20,6 +23,13 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseRouting();
+
+app.UseCors(options =>
+{
+    options.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin();
+});
 
 app.UseAuthorization();
 

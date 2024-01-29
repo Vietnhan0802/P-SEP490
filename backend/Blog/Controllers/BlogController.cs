@@ -129,7 +129,7 @@ namespace Blog.Controllers
             return new Response(HttpStatusCode.OK, "Get blog is success!", result);
         }
 
-        [HttpPost("CreateBlog")]
+        [HttpPost("CreateBlog/{idUser}")]
         public async Task<Response> CreateBlog(string idUser, [FromForm]CreateUpdateBlog createUpdateBlog)
         {
             var blog = _mapper.Map<Blogg>(createUpdateBlog);
