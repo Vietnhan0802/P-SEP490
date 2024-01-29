@@ -155,7 +155,11 @@ namespace Blog.Controllers
                 blog.BloggImages = null;
             }
             await _context.SaveChangesAsync();
-            return new Response(HttpStatusCode.OK, "Create blog is success!", _mapper.Map<ViewBlog>(blog));
+            var blogImages = await _context.BlogImages.Where(x => x.idBlog == blog.idBlog).ToListAsync();
+            var viewBlog =  _mapper.Map<ViewBlog>(blog);
+            var viewImages = _mapper.Map<List<ViewBlogImage>>(blogImages);
+            viewBlog.ViewBlogImages = viewImages;
+            return new Response(HttpStatusCode.OK, "Create blog is success!", viewBlog);
         }
 
         [HttpPut("UpdateBlog/{idBlog}")]
