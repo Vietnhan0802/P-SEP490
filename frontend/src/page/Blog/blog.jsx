@@ -65,7 +65,7 @@ function Blog({ blogId, onBlogClick, activeItem, onItemClick }) {
   const [inputs, setInputs] = useState({
     title: '',
     content: '',
-    CreateUpdateImageBlogs: [], // new state for managing multiple images
+    CreateUpdateBlogImages: [], // new state for managing multiple images
   });
   const [blogPopups, setBlogPopups] = useState({});
   const hanldeViewDetail = (blogId) => {
@@ -82,10 +82,10 @@ function Blog({ blogId, onBlogClick, activeItem, onItemClick }) {
     formData.append('title', inputs.title);
     formData.append('content', inputs.content);
 
-    inputs.CreateUpdateImageBlogs.forEach((imageInfo, index) => {
-      formData.append(`CreateUpdateImageBlogs[${index}].image`, imageInfo.image);
-      formData.append(`CreateUpdateImageBlogs[${index}].imageFile`, imageInfo.imageFile);
-      formData.append(`CreateUpdateImageBlogs[${index}].imageSrc`, imageInfo.imageSrc);
+    inputs.CreateUpdateBlogImages.forEach((imageInfo, index) => {
+      formData.append(`CreateUpdateBlogImages[${index}].image`, imageInfo.image);
+      formData.append(`CreateUpdateBlogImages[${index}].imageFile`, imageInfo.imageFile);
+      formData.append(`CreateUpdateBlogImages[${index}].imageSrc`, imageInfo.imageSrc);
     });
 
     blogInstance.post(`/CreateBlog/${userId}`, formData, {
@@ -131,7 +131,7 @@ function Blog({ blogId, onBlogClick, activeItem, onItemClick }) {
       Promise.all(newImages).then((convertedImages) => {
         setInputs((values) => ({
           ...values,
-          CreateUpdateImageBlogs: [...values.CreateUpdateImageBlogs, ...convertedImages],
+          CreateUpdateBlogImages: [...values.CreateUpdateBlogImages, ...convertedImages],
         }));
       });
     } else {
