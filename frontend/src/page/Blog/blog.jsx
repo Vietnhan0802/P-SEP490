@@ -1,14 +1,14 @@
 import React from "react";
 import { useState } from "react";
 import "../Blog/blog.scss";
-import avatar from "../../images/common/Avatar.png";
 import { CiCircleChevRight } from "react-icons/ci";
 import { IoFlagOutline } from "react-icons/io5";
 import { BsChat } from "react-icons/bs";
 import { FiEye } from "react-icons/fi";
 import { RiAdminLine } from "react-icons/ri";
 import ReportPopup from "../../components/Popup/reportPopup";
-import { userInstance } from "../../axios/axiosConfig";
+import { blogInstance } from "../../axios/axiosConfig";
+import Cookies from "js-cookie";
 function Blog({ blogId, onBlogClick, activeItem, onItemClick }) {
   const blogContent = [
     {
@@ -62,7 +62,11 @@ function Blog({ blogId, onBlogClick, activeItem, onItemClick }) {
       comment: 123,
     },
   ];
-  const [inputs, setInputs] = useState({})
+  const [inputs, setInputs] = useState({
+    title: '',
+    content: '',
+    CreateUpdateImageBlogs: [], // new state for managing multiple images
+  });
   const [blogPopups, setBlogPopups] = useState({});
   const hanldeViewDetail = (blogId) => {
     onBlogClick(blogId);
@@ -71,22 +75,52 @@ function Blog({ blogId, onBlogClick, activeItem, onItemClick }) {
   const handleReportClick = (blogId) => {
     setBlogPopups((prev) => ({ ...prev, [blogId]: true }));
   };
+  const userId = JSON.parse(Cookies.get("userId"));
+  console.log(inputs)
   const handleCreateBlog = () => {
-    userInstance.post("/create-blog", {
+    const formData = new FormData();
+    formData.append('title', inputs.title);
+    formData.append('content', inputs.content);
 
-    }).then((res) => {
-      console.log(res.data);
-    }).catch((err) => {
-      console.log(err);
+    inputs.CreateUpdateImageBlogs.forEach((imageInfo, index) => {
+      formData.append(`CreateUpdateImageBlogs[${index}].image`, imageInfo.image);
+      formData.append(`CreateUpdateImageBlogs[${index}].imageFile`, imageInfo.imageFile);
+      formData.append(`CreateUpdateImageBlogs[${index}].imageSrc`, imageInfo.imageSrc);
+    });
+
+    blogInstance.post(`/CreateBlog/${userId}`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        accept: 'application/json',
+      },
     })
-  }
+      .then((res) => {
+        console.log(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   // Handler function to update the state when the input changes
   const handleInputChange = (event) => {
-    const name = event.target.name;
-    const value = event.target.value;
-    console.log(inputs)
-    setInputs((values) => ({ ...values, [name]: value }));
+    const { name, value, type } = event.target;
+    if (type === 'file') {
+      const files = Array.from(event.target.files);
+      const newImages = files.map(element => ({
+        image: element.name,
+        imageFile: element,
+        imageSrc: URL.createObjectURL(element),
+      }));
+      setInputs((values) => ({
+        ...values,
+        CreateUpdateImageBlogs: [...values.CreateUpdateImageBlogs, ...newImages],
+      }));
+    } else {
+      setInputs((values) => ({ ...values, [name]: value }));
+    }
   };
+  // console.log(inputs)
   return (
     <div>
       <div id="blog">
@@ -105,11 +139,19 @@ function Blog({ blogId, onBlogClick, activeItem, onItemClick }) {
               className="input-text"
               placeholder="Enter your content..."
             />
+            <input
+              type="file"
+              name="images"
+              onChange={handleInputChange}
+              className="form-control"
+              multiple
+            />
           </div>
+
           <div className="d-flex  justify-content-between mt-2">
             <button className="btn btn-outline-primary">Add Image</button>
-            <button className="btn">
-              <CiCircleChevRight className=" fs-3" onClick={handleCreateBlog} />
+            <button className="btn" onClick={handleCreateBlog} >
+              <CiCircleChevRight className=" fs-3" />
             </button>
           </div>
 

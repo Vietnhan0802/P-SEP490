@@ -38,8 +38,9 @@ export const credentialInstance = createAxiosInstance("https://localhost:7003/ap
 export const accountReportInstance = createAxiosInstance("https://localhost:7004/api/AccountReport");
 export const reportPostInstance = createAxiosInstance("https://localhost:7004/api/ReportPost");
 export const verificationsInstance = createAxiosInstance("https://localhost:7004/api/Verifications");
-export const userInstance = createAxiosInstance("https://localhost:7006/api/User");
 export const projectInstance = createAxiosInstance("https://localhost:7005/api/ProjectInfo");
+export const userInstance = createAxiosInstance("https://localhost:7006/api/User");
+export const blogInstance = createAxiosInstance("https://localhost:7007/api/Blog");
 export const notifyInstance = createAxiosInstance("https://localhost:7009/api/Notificationss");
 export const staticInstance = createAxiosInstance("https://localhost:7010/api/Statics");
 

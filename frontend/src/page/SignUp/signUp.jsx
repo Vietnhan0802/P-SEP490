@@ -12,7 +12,6 @@ import BusinessForm from "./BusinessForm";
 export default function SignIn() {
   const [showForm1, setShowForm1] = useState(true);
   const [showForm2, setShowForm2] = useState(false);
-  const [activeItem, setActiveItem] = useState("user");
 
   const handleFormClick = (formNumber) => {
     // Reset the visibility of both forms

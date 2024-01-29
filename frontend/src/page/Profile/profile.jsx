@@ -15,7 +15,6 @@ import { userInstance } from "../../axios/axiosConfig";
 import { FiEdit } from "react-icons/fi";
 import { CgProfile } from "react-icons/cg";
 import { MdOutlineFileDownloadDone } from "react-icons/md";
-import { MdOutlineReportGmailerrorred } from "react-icons/md";
 import { FiFlag } from "react-icons/fi";
 function Profile({ handleChangeImg }) {
   const initialValue = {
@@ -120,7 +119,7 @@ function Profile({ handleChangeImg }) {
   const handleReportPopup = () => {
     setActivePopup(!activePopup);
   };
-  console.log(inputs);
+  // console.log(inputs);
   useEffect(() => {
     userInstance.get(`/GetUserById/${user.Id}`)
       .then((res) => {
@@ -129,7 +128,7 @@ function Profile({ handleChangeImg }) {
           ...value,
           imageSrc: res?.data?.result.imageSrc,
         })
-        console.log(res?.data?.result.imageSrc);
+        // console.log(res?.data?.result.imageSrc);
       })
       .catch((err) => {
         console.log(err.response.data);
