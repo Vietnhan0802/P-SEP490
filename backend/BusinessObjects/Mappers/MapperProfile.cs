@@ -3,6 +3,7 @@ using BusinessObjects.Entities.Blog;
 using BusinessObjects.Entities.Communication;
 using BusinessObjects.Entities.Credential;
 using BusinessObjects.Entities.Follow;
+using BusinessObjects.Entities.Interaction;
 using BusinessObjects.Entities.Post;
 using BusinessObjects.Entities.Projects;
 using BusinessObjects.Entities.User;
@@ -10,6 +11,7 @@ using BusinessObjects.ViewModels.Blog;
 using BusinessObjects.ViewModels.Communication;
 using BusinessObjects.ViewModels.Credential;
 using BusinessObjects.ViewModels.Follow;
+using BusinessObjects.ViewModels.Interaction;
 using BusinessObjects.ViewModels.Post;
 using BusinessObjects.ViewModels.Project;
 using BusinessObjects.ViewModels.User;
@@ -31,6 +33,8 @@ namespace BusinessObjects.Mappers
             CreateMap<Conversation, ViewConversation>().ReverseMap();
             CreateMap<Message, CreateUpdateMessage>().ReverseMap();
             CreateMap<Message, ViewMessage>().ReverseMap();
+
+            CreateMap<Verification, ViewVerification>().ReverseMap();
 
             CreateMap<Postt, CreateUpdatePost>().ReverseMap();
             CreateMap<Postt, CreateUpdateImagePost>().ReverseMap();
