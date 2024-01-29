@@ -12,6 +12,7 @@ namespace BusinessObjects.Entities.User
         public string? tax { get; set; }
         public string? address { get; set; }
         public string? avatar { get; set; }
+        [Column(TypeName = "text")]
         public string? description { get; set; }
         public Guid idVerification { get; set; }
         public bool? isBlock { get; set; } 
