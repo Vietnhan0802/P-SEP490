@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
 using System.Net.Http.Headers;
+using System.Reflection.Metadata;
 using System.Text.Json;
 
 namespace Blog.Controllers
@@ -77,15 +78,18 @@ namespace Blog.Controllers
             if (blogs == null)
             {
                 return new Response(HttpStatusCode.NoContent, "Blogs doesn't empty!");
-            }
+            }            
             var result = _mapper.Map<List<ViewBlog>>(blogs);
             foreach (var blog in result)
             {
                 blog.fullName = await GetNameUserCurrent(blog.idAccount!);
-                foreach (var image in blog.ViewBlogImages!)
+                var blogImages = await _context.BlogImages.Where(x => x.idBlog == blog.idBlog).ToListAsync();
+                var viewImages = _mapper.Map<List<ViewBlogImage>>(blogImages);      
+                foreach (var image in viewImages)
                 {
                     image.ImageSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, image.image);
                 }
+                blog.ViewBlogImages = viewImages;
             }
             return new Response(HttpStatusCode.OK, "Getall blogs is success!", result);
         }

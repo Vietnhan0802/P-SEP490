@@ -124,7 +124,7 @@ namespace User.Controllers
             {
                 return NotFound("User doesn't exist!");
             }
-            string fullName = user.fullName;
+            string fullName = user.fullName!;
             return Ok(fullName);
         }
 
@@ -169,7 +169,7 @@ namespace User.Controllers
         }
 
         [HttpPut("UpdateAvatar/{idUser}")]
-        public async Task<Response> UpdateAvatar(string idUser, [FromForm]UpdateAvatar updateAvatar)
+        public async Task<Response> UpdateAvatar(string idUser, [FromForm] UpdateAvatar updateAvatar)
         {
             var userExits = await _userManager.FindByIdAsync(idUser);
             if (userExits == null)
