@@ -6,6 +6,6 @@
         public string? content { get; set; }
         public string? major { get; set; }
         public string? exp { get; set; }
-        public List<CreateUpdateImagePost>? CreateUpdateImagePosts { get; set; }
+        public List<CreateUpdatePostImage>? CreateUpdatePostImages { get; set; }
     }
 }
