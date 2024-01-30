@@ -108,10 +108,13 @@ namespace Post.Controllers
             foreach (var post in result)
             {
                 post.fullName = await GetNameUserCurrent(post.idAccount!);
-                foreach (var image in post.ViewPostImages!)
+                var postImages = await _context.PosttImages.Where(x => x.idPost == post.idPost).ToListAsync();
+                var viewImages = _mapper.Map<List<ViewPostImage>>(postImages);
+                foreach (var image in viewImages)
                 {
                     image.ImageSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, image.image);
                 }
+                post.ViewPostImages = viewImages;
             }
             return new Response(HttpStatusCode.OK, "Get list posts is success!", result);
         }
@@ -177,22 +180,30 @@ namespace Post.Controllers
             {
                 return new Response(HttpStatusCode.NotFound, "Post doesn't exists!");
             }
-            if (createUpdatePost.CreateUpdatePostImages != null)
+            /*if (createUpdatePost.CreateUpdatePostImages != null)
             {
-                foreach (var imageOld in post.PosttImages!)
+                var imagePosts = await _context.PosttImages.Where(x => x.idPost == post.idPost).ToListAsync();
+                foreach (var imageOld in imagePosts)
                 {
+                    var image = _mapper.Map(createUpdatePost.CreateUpdatePostImages, imagePosts);
+                    foreach (var imageNew in image)
+                    {
+                        if (image.)
+                    }
                     _saveImageService.DeleteImage(imageOld.image!);
                 }
-                var result = _mapper.Map(createUpdatePost, post);
-                foreach (var imageNew in result.PosttImages!)
+                
+                foreach (var imageNew in post.PosttImages!)
                 {
                     imageNew.image = await _saveImageService.SaveImage(imageNew.ImageFile);
-                    result.PosttImages.Add(imageNew);
+                    _context.Update(imageNew);
+
                 }
+                var result = _mapper.Map(createUpdatePost, post);
                 _context.Postts.Update(result);
                 await _context.SaveChangesAsync();
                 return new Response(HttpStatusCode.OK, "Update post is success!", _mapper.Map<ViewPost>(result));
-            }
+            }*/
             return new Response(HttpStatusCode.BadRequest, "Update post is fail!");
         }
 
