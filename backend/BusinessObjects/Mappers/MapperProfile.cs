@@ -48,8 +48,9 @@ namespace BusinessObjects.Mappers
             CreateMap<Notificationn, ViewNotification>().ReverseMap();
 
             CreateMap<Postt, CreateUpdatePost>().ReverseMap();
-            CreateMap<Postt, CreateUpdateImagePost>().ReverseMap();
+            CreateMap<Postt, CreateUpdatePostImage>().ReverseMap();
             CreateMap<Postt, ViewPost>().ReverseMap();
+            CreateMap<PosttImage, ViewPostImage>().ReverseMap();
             CreateMap<PosttComment, CreateUpdatePostComment>().ReverseMap();
             CreateMap<PosttComment, ViewPostComment>().ReverseMap();
             CreateMap<PosttReply, CreateUpdatePostReply>().ReverseMap();

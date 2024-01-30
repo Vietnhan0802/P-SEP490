@@ -16,8 +16,6 @@ namespace BusinessObjects.ViewModels.Post
         public bool isBlock { get; set; }
         public bool isDeleted { get; set; }
         public DateTime createdDate { get; set; }
-        public ICollection<PosttImage>? PosttImages { get; set; }
-        public ICollection<PosttLike>? PosttLikes { get; set; }
-        public ICollection<PosttComment>? PosttComments { get; set; }
+        public ICollection<ViewPostImage>? ViewPostImages { get; set; }
     }
 }

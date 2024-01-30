@@ -65,7 +65,7 @@ namespace Post.Controllers
             foreach (var post in result)
             {
                 post.fullName = await GetNameUserCurrent(post.idAccount!);
-                foreach (var image in post.PosttImages)
+                foreach (var image in post.ViewPostImages!)
                 {
                     image.ImageSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, image.image);
                 }
@@ -85,10 +85,13 @@ namespace Post.Controllers
             foreach (var post in result)
             {
                 post.fullName = await GetNameUserCurrent(post.idAccount!);
-                foreach (var image in post.PosttImages)
+                var postImages = await _context.PosttImages.Where(x => x.idPost == post.idPost).ToListAsync();
+                var viewImages = _mapper.Map<List<ViewPostImage>>(postImages);
+                foreach (var image in viewImages)
                 {
                     image.ImageSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, image.image);
                 }
+                post.ViewPostImages = viewImages;
             }
             return new Response(HttpStatusCode.OK, "Get list posts is success!", result);
         }
@@ -105,7 +108,7 @@ namespace Post.Controllers
             foreach (var post in result)
             {
                 post.fullName = await GetNameUserCurrent(post.idAccount!);
-                foreach (var image in post.PosttImages)
+                foreach (var image in post.ViewPostImages!)
                 {
                     image.ImageSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, image.image);
                 }
@@ -125,7 +128,7 @@ namespace Post.Controllers
             await _context.SaveChangesAsync();
             var result = _mapper.Map<ViewPost>(post);
             result.fullName = await GetNameUserCurrent(result.idAccount!);
-            foreach (var image in result.PosttImages)
+            foreach (var image in result.ViewPostImages!)
             {
                 image.ImageSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, image.image);
             }
@@ -136,21 +139,34 @@ namespace Post.Controllers
         public async Task<Response> CreatePost(string idUser, CreateUpdatePost createUpdatePost)
         {
             var post = _mapper.Map<Postt>(createUpdatePost);
-            if (createUpdatePost.CreateUpdateImagePosts != null)
+            post.idAccount = idUser;
+            post.isDeleted = false;
+            post.createdDate = DateTime.Now;
+            await _context.Postts.AddAsync(post);
+            if (createUpdatePost.CreateUpdatePostImages != null)
             {
-                foreach (var image in createUpdatePost.CreateUpdateImagePosts)
+                foreach (var image in createUpdatePost.CreateUpdatePostImages)
                 {
                     var imageName = await _saveImageService.SaveImage(image.ImageFile);
-                    post.PosttImages.Add(new PosttImage { image = imageName });
+                    PosttImage posttImage = new PosttImage()
+                    {
+                        idPost = post.idPost,
+                        image = imageName,
+                        createdDate = DateTime.Now
+                    };
+                    await _context.PosttImages.AddAsync(posttImage);
                 }
-                post.idAccount = idUser;
-                post.isDeleted = false;
-                post.createdDate = DateTime.Now;
-                await _context.Postts.AddAsync(post);
-                await _context.SaveChangesAsync();
-                return new Response(HttpStatusCode.OK, "Create post is success!", _mapper.Map<ViewPost>(post));
             }
-            return new Response(HttpStatusCode.BadRequest, "Create post is fail!");
+            else
+            {
+                post.PosttImages = null;
+            }
+            await _context.SaveChangesAsync();
+            var postImages = await _context.PosttImages.Where(x => x.idPost == post.idPost).ToListAsync();
+            var viewPost = _mapper.Map<ViewPost>(post);
+            var viewImages = _mapper.Map<List<ViewPostImage>>(postImages);
+            viewPost.ViewPostImages = viewImages;
+            return new Response(HttpStatusCode.OK, "Create post is success!", viewPost);
         }
 
         [HttpPut("UpdatePost/{idPost}")]
@@ -161,14 +177,14 @@ namespace Post.Controllers
             {
                 return new Response(HttpStatusCode.NotFound, "Post doesn't exists!");
             }
-            if (createUpdatePost.CreateUpdateImagePosts != null)
+            if (createUpdatePost.CreateUpdatePostImages != null)
             {
-                foreach (var imageOld in post.PosttImages)
+                foreach (var imageOld in post.PosttImages!)
                 {
-                    _saveImageService.DeleteImage(imageOld.image);
+                    _saveImageService.DeleteImage(imageOld.image!);
                 }
                 var result = _mapper.Map(createUpdatePost, post);
-                foreach (var imageNew in result.PosttImages)
+                foreach (var imageNew in result.PosttImages!)
                 {
                     imageNew.image = await _saveImageService.SaveImage(imageNew.ImageFile);
                     result.PosttImages.Add(imageNew);
