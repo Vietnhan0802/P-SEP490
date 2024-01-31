@@ -1,11 +1,8 @@
 ﻿using AutoMapper;
-using BusinessObjects.Entities.Blog;
 using BusinessObjects.Entities.Post;
-using BusinessObjects.ViewModels.Blog;
 using BusinessObjects.ViewModels.Post;
 using BusinessObjects.ViewModels.User;
 using Commons.Helpers;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Post.Data;
@@ -138,7 +135,7 @@ namespace Post.Controllers
             return new Response(HttpStatusCode.OK, "Get post is success!", result);
         }
 
-        [HttpPost("CreatePost")]
+        [HttpPost("CreatePost/{idUser}")]
         public async Task<Response> CreatePost(string idUser, CreateUpdatePost createUpdatePost)
         {
             var post = _mapper.Map<Postt>(createUpdatePost);
@@ -180,31 +177,37 @@ namespace Post.Controllers
             {
                 return new Response(HttpStatusCode.NotFound, "Post doesn't exists!");
             }
-            /*if (createUpdatePost.CreateUpdatePostImages != null)
+            _mapper.Map(createUpdatePost, post);
+            var images = await _context.PosttImages.Where(x => x.idPost == post.idPost).ToListAsync();
+            foreach (var image in images)
             {
-                var imagePosts = await _context.PosttImages.Where(x => x.idPost == post.idPost).ToListAsync();
-                foreach (var imageOld in imagePosts)
+                _context.PosttImages.Remove(image);
+                _saveImageService.DeleteImage(image.image!);
+            }
+            if (createUpdatePost.CreateUpdatePostImages != null)
+            {
+                foreach (var image in createUpdatePost.CreateUpdatePostImages)
                 {
-                    var image = _mapper.Map(createUpdatePost.CreateUpdatePostImages, imagePosts);
-                    foreach (var imageNew in image)
+                    var imageName = await _saveImageService.SaveImage(image.ImageFile);
+                    PosttImage posttImage = new PosttImage()
                     {
-                        if (image.)
-                    }
-                    _saveImageService.DeleteImage(imageOld.image!);
+                        idPost = post.idPost,
+                        image = imageName,
+                        createdDate = DateTime.Now
+                    };
+                    await _context.PosttImages.AddAsync(posttImage);
                 }
-                
-                foreach (var imageNew in post.PosttImages!)
-                {
-                    imageNew.image = await _saveImageService.SaveImage(imageNew.ImageFile);
-                    _context.Update(imageNew);
-
-                }
-                var result = _mapper.Map(createUpdatePost, post);
-                _context.Postts.Update(result);
-                await _context.SaveChangesAsync();
-                return new Response(HttpStatusCode.OK, "Update post is success!", _mapper.Map<ViewPost>(result));
-            }*/
-            return new Response(HttpStatusCode.BadRequest, "Update post is fail!");
+            }
+            else
+            {
+                post.PosttImages = null;
+            }
+            _context.Postts.Update(post);
+            await _context.SaveChangesAsync();
+            var postImages = await _context.PosttImages.Where(x => x.idPost == post.idPost).ToListAsync();
+            var viewPost = _mapper.Map<ViewPost>(post);
+            viewPost.ViewPostImages = _mapper.Map<List<ViewPostImage>>(postImages);
+            return new Response(HttpStatusCode.BadRequest, "Update post is success!", viewPost);
         }
 
         [HttpDelete("RemovePost/{idPost}")]
