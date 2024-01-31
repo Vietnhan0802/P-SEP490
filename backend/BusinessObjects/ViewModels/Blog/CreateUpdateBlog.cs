@@ -4,6 +4,6 @@
     {
         public string? title { get; set; }
         public string? content { get; set; }
-        public List<CreateUpdateBlogImage>? CreateUpdateBlogImages { get; set; }
+        public ICollection<CreateUpdateBlogImage>? CreateUpdateBlogImages { get; set; }
     }
 }
