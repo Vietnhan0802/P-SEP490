@@ -15,7 +15,7 @@ import avatar from "../../../images/common/Avatar.png";
 import { IoSearchOutline } from "react-icons/io5";
 import "../DashboardTable/table.scss";
 import { GoDotFill } from "react-icons/go";
-
+import { blogInstance } from "../../../axios/axiosConfig";
 function createData(id, name, email, date, title, description, report, status) {
   return {
     id,
@@ -152,11 +152,8 @@ const headCells = [
 
 function EnhancedTableHead(props) {
   const {
-    onSelectAllClick,
     order,
     orderBy,
-    numSelected,
-    rowCount,
     onRequestSort,
   } = props;
   const createSortHandler = (property) => (event) => {
@@ -236,14 +233,32 @@ export default function BlogTable() {
   const isSelected = (id) => selected.indexOf(id) !== -1;
 
   // Avoid a layout jump when reaching the last page with empty rows.
-
+  const [blogRows, setUserRows] = React.useState([]);
+  React.useEffect(() => {
+    blogInstance.get('GetAllBlogs')
+      .then((res) => {
+        // id, name, email, date, title, description, report, status
+        const fetchedBlogRows = res.data.result.map(element => (
+          createData(
+            element.idBlog,
+            element.title,
+            element.content,
+            element.role,
+            element.description,
+            element.isBlock
+          )
+        ));
+        setUserRows(fetchedBlogRows);
+      })
+      .catch((err) => { console.log(err) })
+  }, []);
   const visibleRows = React.useMemo(
     () =>
-      stableSort(rows, getComparator(order, orderBy)).slice(
+      stableSort(blogRows, getComparator(order, orderBy)).slice(
         page * rowsPerPage,
         page * rowsPerPage + rowsPerPage
       ),
-    [order, orderBy, page, rowsPerPage]
+    [order, orderBy, page, rowsPerPage, blogRows]
   );
 
   return (
@@ -308,7 +323,7 @@ export default function BlogTable() {
                     </TableCell>
                     <TableCell align="left" className="blur">{row.date}</TableCell>
                     <TableCell align="left">
-                      <p style={{fontSize:"16px",fontWeight:"500"}}>{row.title}</p>
+                      <p style={{ fontSize: "16px", fontWeight: "500" }}>{row.title}</p>
                       <p className="blur">{row.description}</p>
                     </TableCell>
                     <TableCell align="right">{row.report}</TableCell>
@@ -316,9 +331,8 @@ export default function BlogTable() {
                       <div
                         className="d-flex align-items-center justify-content-end"
                       >
-                        <div className={`block-box ${
-                          row.report === 3 ? "active-block" : ""
-                        }`}>
+                        <div className={`block-box ${row.report === 3 ? "active-block" : ""
+                          }`}>
                           <GoDotFill className="me-1" />
                           {row.status}
                         </div>

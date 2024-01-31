@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import "../Blog/blog.scss";
 import { CiCircleChevRight } from "react-icons/ci";
@@ -6,68 +6,49 @@ import { IoFlagOutline } from "react-icons/io5";
 import { BsChat } from "react-icons/bs";
 import { FiEye } from "react-icons/fi";
 import { RiAdminLine } from "react-icons/ri";
+import { CiHeart } from "react-icons/ci";
 import ReportPopup from "../../components/Popup/reportPopup";
 import { blogInstance } from "../../axios/axiosConfig";
 import Cookies from "js-cookie";
+function calculateTimeDifference(targetDate) {
+  // Convert the target date string to a Date object
+  const targetTime = new Date(targetDate).getTime();
+
+  // Get the current time
+  const currentTime = new Date().getTime();
+
+  // Calculate the difference in milliseconds
+  const timeDifference = currentTime - targetTime;
+
+  // Calculate the difference in seconds, minutes, hours, and days
+  const seconds = Math.floor(timeDifference / 1000);
+  const minutes = Math.floor(seconds / 60);
+  const hours = Math.floor(minutes / 60);
+  const days = Math.floor(hours / 24);
+
+  // Return an object with the time difference values
+  if (minutes < 60) {
+    return minutes === 1 ? `${minutes} minute ago` : `${minutes} minutes ago`;
+  } else if (hours < 24) {
+    return hours === 1 ? `${hours} hour ago` : `${hours} hours ago`;
+  } else {
+    return days === 1 ? `${days} day ago` : `${hours} days ago`;
+  }
+}
 function Blog({ blogId, onBlogClick, activeItem, onItemClick }) {
-  const blogContent = [
-    {
-      id: 1,
-      name: "Admin",
-      img: <RiAdminLine />,
-      time: "10 minutes ago",
-      content:
-        "Lorem ipsum dolor sit amet consectetur. Adipiscing malesuada mattis nulla interdum porta et. Massa purus nulla sit curabitur volutpat a. Magna nulla placerat nullam magna adipiscing cras euismod sed odio. Maecenas augue sagittis pellentesque rhoncus eget morbi. Nisl amet cursus mauris mi viverra elit scelerisque lobortis in. Facilisis est pellentesque consectetur nunc. Dictum lacus aliquam nunc auctor ullamcorper nulla odio sagittis in. Volutpat vel integer lacus lorem. Nunc ipsum urna egestas gravida a. Id fames mus amet suscipit amet tellus ipsum sit viverra. Quisque neque nibh imperdiet vitae pellentesque urna donec in. Vitae pretium consequat tortor pharetra. Lobortis sed id convallis imperdiet est. Odio pulvinar amet mattis elementum et ornare tristique pharetra. Metus sed nisl ipsum proin imperdiet. Tortor consectetur scelerisque vivamus purus amet pretium dui. Fringilla vulputate vel nec tellus ac. Etiam nunc ante sit pellentesque viverra metus arcu. Turpis tempus aliquam magnis volutpat. Ipsum amet ipsum enim vitae. Donec id dui venenatis et nisi viverra. Pulvinar aliquam viverra ac ultricies euismod mattis. Ultrices molestie faucibus sit non. Diam quisque elit tempus porttitor. Pellentesque laoreet dolor erat dolor sit urna elit consequat nulla. Nullam ut enim magna nibh pretium non faucibus sed lacus. Quam lectus id odio amet enim amet eget viverra urna. At aliquet vitae sapien faucibus urna tempus in..",
-      view: 12,
-      comment: 123,
-    },
-    {
-      id: 2,
-      name: "Admin",
-      img: <RiAdminLine />,
-      time: "10 minutes ago",
-      content:
-        "Lorem ipsum dolor sit amet consectetur. Adipiscing malesuada mattis nulla interdum porta et. Massa purus nulla sit curabitur volutpat a. Magna nulla placerat nullam magna adipiscing cras euismod sed odio. Maecenas augue sagittis pellentesque rhoncus eget morbi. Nisl amet cursus mauris mi viverra elit scelerisque lobortis in. Facilisis est pellentesque consectetur nunc. Dictum lacus aliquam nunc auctor ullamcorper nulla odio sagittis in. Volutpat vel integer lacus lorem. Nunc ipsum urna egestas gravida a. Id fames mus amet suscipit amet tellus ipsum sit viverra. Quisque neque nibh imperdiet vitae pellentesque urna donec in. Vitae pretium consequat tortor pharetra. Lobortis sed id convallis imperdiet est. Odio pulvinar amet mattis elementum et ornare tristique pharetra. Metus sed nisl ipsum proin imperdiet. Tortor consectetur scelerisque vivamus purus amet pretium dui. Fringilla vulputate vel nec tellus ac. Etiam nunc ante sit pellentesque viverra metus arcu. Turpis tempus aliquam magnis volutpat. Ipsum amet ipsum enim vitae. Donec id dui venenatis et nisi viverra. Pulvinar aliquam viverra ac ultricies euismod mattis. Ultrices molestie faucibus sit non. Diam quisque elit tempus porttitor. Pellentesque laoreet dolor erat dolor sit urna elit consequat nulla. Nullam ut enim magna nibh pretium non faucibus sed lacus. Quam lectus id odio amet enim amet eget viverra urna. At aliquet vitae sapien faucibus urna tempus in..",
-      view: 12,
-      comment: 123,
-    },
-    {
-      id: 3,
-      name: "Admin",
-      img: <RiAdminLine />,
-      time: "10 minutes ago",
-      content:
-        "Lorem ipsum dolor sit amet consectetur. Adipiscing malesuada mattis nulla interdum porta et. Massa purus nulla sit curabitur volutpat a. Magna nulla placerat nullam magna adipiscing cras euismod sed odio. Maecenas augue sagittis pellentesque rhoncus eget morbi. Nisl amet cursus mauris mi viverra elit scelerisque lobortis in. Facilisis est pellentesque consectetur nunc. Dictum lacus aliquam nunc auctor ullamcorper nulla odio sagittis in. Volutpat vel integer lacus lorem. Nunc ipsum urna egestas gravida a. Id fames mus amet suscipit amet tellus ipsum sit viverra. Quisque neque nibh imperdiet vitae pellentesque urna donec in. Vitae pretium consequat tortor pharetra. Lobortis sed id convallis imperdiet est. Odio pulvinar amet mattis elementum et ornare tristique pharetra. Metus sed nisl ipsum proin imperdiet. Tortor consectetur scelerisque vivamus purus amet pretium dui. Fringilla vulputate vel nec tellus ac. Etiam nunc ante sit pellentesque viverra metus arcu. Turpis tempus aliquam magnis volutpat. Ipsum amet ipsum enim vitae. Donec id dui venenatis et nisi viverra. Pulvinar aliquam viverra ac ultricies euismod mattis. Ultrices molestie faucibus sit non. Diam quisque elit tempus porttitor. Pellentesque laoreet dolor erat dolor sit urna elit consequat nulla. Nullam ut enim magna nibh pretium non faucibus sed lacus. Quam lectus id odio amet enim amet eget viverra urna. At aliquet vitae sapien faucibus urna tempus in..",
-      view: 12,
-      comment: 123,
-    },
-    {
-      id: 4,
-      name: "Admin",
-      img: <RiAdminLine />,
-      time: "10 minutes ago",
-      content:
-        "Lorem ipsum dolor sit amet consectetur. Adipiscing malesuada mattis nulla interdum porta et. Massa purus nulla sit curabitur volutpat a. Magna nulla placerat nullam magna adipiscing cras euismod sed odio. Maecenas augue sagittis pellentesque rhoncus eget morbi. Nisl amet cursus mauris mi viverra elit scelerisque lobortis in. Facilisis est pellentesque consectetur nunc. Dictum lacus aliquam nunc auctor ullamcorper nulla odio sagittis in. Volutpat vel integer lacus lorem. Nunc ipsum urna egestas gravida a. Id fames mus amet suscipit amet tellus ipsum sit viverra. Quisque neque nibh imperdiet vitae pellentesque urna donec in. Vitae pretium consequat tortor pharetra. Lobortis sed id convallis imperdiet est. Odio pulvinar amet mattis elementum et ornare tristique pharetra. Metus sed nisl ipsum proin imperdiet. Tortor consectetur scelerisque vivamus purus amet pretium dui. Fringilla vulputate vel nec tellus ac. Etiam nunc ante sit pellentesque viverra metus arcu. Turpis tempus aliquam magnis volutpat. Ipsum amet ipsum enim vitae. Donec id dui venenatis et nisi viverra. Pulvinar aliquam viverra ac ultricies euismod mattis. Ultrices molestie faucibus sit non. Diam quisque elit tempus porttitor. Pellentesque laoreet dolor erat dolor sit urna elit consequat nulla. Nullam ut enim magna nibh pretium non faucibus sed lacus. Quam lectus id odio amet enim amet eget viverra urna. At aliquet vitae sapien faucibus urna tempus in..",
-      view: 12,
-      comment: 123,
-    },
-    {
-      id: 5,
-      name: "Admin",
-      img: <RiAdminLine />,
-      time: "10 minutes ago",
-      content:
-        "Lorem ipsum dolor sit amet consectetur. Adipiscing malesuada mattis nulla interdum porta et. Massa purus nulla sit curabitur volutpat a. Magna nulla placerat nullam magna adipiscing cras euismod sed odio. Maecenas augue sagittis pellentesque rhoncus eget morbi. Nisl amet cursus mauris mi viverra elit scelerisque lobortis in. Facilisis est pellentesque consectetur nunc. Dictum lacus aliquam nunc auctor ullamcorper nulla odio sagittis in. Volutpat vel integer lacus lorem. Nunc ipsum urna egestas gravida a. Id fames mus amet suscipit amet tellus ipsum sit viverra. Quisque neque nibh imperdiet vitae pellentesque urna donec in. Vitae pretium consequat tortor pharetra. Lobortis sed id convallis imperdiet est. Odio pulvinar amet mattis elementum et ornare tristique pharetra. Metus sed nisl ipsum proin imperdiet. Tortor consectetur scelerisque vivamus purus amet pretium dui. Fringilla vulputate vel nec tellus ac. Etiam nunc ante sit pellentesque viverra metus arcu. Turpis tempus aliquam magnis volutpat. Ipsum amet ipsum enim vitae. Donec id dui venenatis et nisi viverra. Pulvinar aliquam viverra ac ultricies euismod mattis. Ultrices molestie faucibus sit non. Diam quisque elit tempus porttitor. Pellentesque laoreet dolor erat dolor sit urna elit consequat nulla. Nullam ut enim magna nibh pretium non faucibus sed lacus. Quam lectus id odio amet enim amet eget viverra urna. At aliquet vitae sapien faucibus urna tempus in..",
-      view: 12,
-      comment: 123,
-    },
-  ];
+  const createData = (id, createdDate, title, content, view, viewBlogImages, fullName) => {
+    return {
+      id, createdDate, title, content, view, viewBlogImages, fullName
+    }
+  }
+
   const [inputs, setInputs] = useState({
     title: '',
     content: '',
     CreateUpdateBlogImages: [], // new state for managing multiple images
   });
   const [blogPopups, setBlogPopups] = useState({});
+  const [data, setData] = useState([]);
   const hanldeViewDetail = (blogId) => {
     onBlogClick(blogId);
     onItemClick("blog_detail");
@@ -76,7 +57,7 @@ function Blog({ blogId, onBlogClick, activeItem, onItemClick }) {
     setBlogPopups((prev) => ({ ...prev, [blogId]: true }));
   };
   const userId = JSON.parse(Cookies.get("userId"));
-  console.log(inputs)
+  const role = JSON.parse(Cookies.get("role"));
   const handleCreateBlog = () => {
     const formData = new FormData();
     formData.append('title', inputs.title);
@@ -138,11 +119,33 @@ function Blog({ blogId, onBlogClick, activeItem, onItemClick }) {
       setInputs((values) => ({ ...values, [name]: value }));
     }
   };
-
+  useEffect(() => {
+    blogInstance.get('GetAllBlogs')
+      .then((res) => {
+        const blogList = res?.data?.result;
+        setData([]);
+        blogList.map((element) => {
+          const time = calculateTimeDifference(element.createdDate);
+          setData((prevData) => ([
+            ...prevData,
+            createData(
+              element.idBlog,
+              time,
+              element.title,
+              element.content,
+              element.view,
+              element.viewBlogImages,
+              element.fullName)
+          ]));
+        })
+      })
+      .catch((error) => { console.error(error) });
+  }, []);
+  console.log(data);
   return (
     <div>
       <div id="blog">
-        <div className="blog-form p-2">
+        {role === 'Admin' ? <div className="blog-form p-2">
           <div className="d-flex align-items-center flex-column">
             <input type="text" name="title" value={inputs.title}
               onChange={handleInputChange}
@@ -173,8 +176,9 @@ function Blog({ blogId, onBlogClick, activeItem, onItemClick }) {
             </button>
           </div>
 
-        </div>
-        {blogContent.map((item) => (
+        </div> : ""}
+
+        {data.map((item) => (
           <div
             key={item.id}
             className={`blog-item p-2 ${blogPopups[item.id] ? "position-relative" : ""
@@ -182,15 +186,21 @@ function Blog({ blogId, onBlogClick, activeItem, onItemClick }) {
           >
             <div className="d-flex align-items-center">
               <div alt="profile" className="profile">
-                {item.img}
+                <RiAdminLine />
               </div>
               <div className="ms-2">
-                <h6 className="mb-0">{item.name}</h6>
-                <p className="mb-0">{item.time}</p>
+                <h6 className="mb-0">{item.fullName}</h6>
+                <p className="mb-0">{item.createdDate}</p>
               </div>
             </div>
+            <h3 className="mt-2">{item.title}</h3>
 
             <p className="mt-2">{item.content}</p>
+            <div className="d-flex">
+              {item.viewBlogImages.map(items => (
+                <img src={items.imageSrc} alt="" className="w-50 p-2" />
+              ))}
+            </div>
             <div className="d-flex justify-content-between mt-2">
               <div className="d-flex align-items-center">
                 <div className="d-flex align-items-center me-3">
@@ -198,7 +208,7 @@ function Blog({ blogId, onBlogClick, activeItem, onItemClick }) {
                   {item.view}
                 </div>
                 <div className="d-flex align-items-center me-3">
-                  <BsChat className="me-2" /> {item.comment}
+                  <CiHeart className="me-2" /> {item.comment}
                 </div>
                 <div
                   className="d-flex align-items-center me-3"

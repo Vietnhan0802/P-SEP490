@@ -16,12 +16,26 @@
   .post-form {
     background-color: #fff;
     border-radius: 8px;
-
+    .input-text {
+      border: 1px solid #d0d5dd;
+      width: 100%;
+      max-height: 150px;
+      resize: both;
+      overflow: auto;
+      font-size: 16px;
+      font-weight: 500;
+      border-radius: 8px;
+      padding: 16px;
+      margin: 5px 0px;
+      &:focus {
+        outline: none;
+      }
+    }
   }
   .post-item {
     background-color: #fff;
     border-radius: 8px;
-    
+
     .profile {
       width: 28px;
       height: 28px;
