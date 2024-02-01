@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
 using System.Net.Http.Headers;
+using System.Reflection.Metadata;
 using System.Text.Json;
 
 namespace Blog.Controllers
@@ -35,7 +36,7 @@ namespace Blog.Controllers
         }
 
         [HttpGet("GetNameUserCurrent/{idUser}")]
-        private async Task<string> GetNameUserCurrent(string idUser)
+        private async Task<ViewUser> GetNameUserCurrent(string idUser)
         {
             HttpResponseMessage response = await client.GetAsync($"{UserApiUrl}/GetNameUser/{idUser}");
             string strData = await response.Content.ReadAsStringAsync();
@@ -43,7 +44,7 @@ namespace Blog.Controllers
             {
                 PropertyNameCaseInsensitive = true,
             };
-            var user = JsonSerializer.Deserialize<string>(strData, option);
+            var user = JsonSerializer.Deserialize<ViewUser>(strData, option);
 
             return user!;
         }
@@ -61,7 +62,7 @@ namespace Blog.Controllers
             var result = _mapper.Map<List<ViewBlog>>(blogs);
             foreach (var blog in result)
             {
-                blog.fullName = await GetNameUserCurrent(blog.idAccount!);
+                //blog.fullName = await GetNameUserCurrent(blog.idAccount!);
                 foreach (var image in blog.ViewBlogImages!)
                 {
                     image.ImageSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, image.image);
@@ -82,7 +83,9 @@ namespace Blog.Controllers
             foreach (var blog in result)
             {
                 blog.like = await _context.BlogLikes.Where(x => x.idBlog == blog.idBlog).CountAsync();
-                blog.fullName = await GetNameUserCurrent(blog.idAccount!);
+                var infoUser = await GetNameUserCurrent(blog.idAccount!);
+                blog.fullName = infoUser.fullName;
+                blog.avatar = infoUser.avatar;
                 var blogImages = await _context.BlogImages.Where(x => x.idBlog == blog.idBlog).ToListAsync();
                 var viewImages = _mapper.Map<List<ViewBlogImage>>(blogImages);      
                 foreach (var image in viewImages)
@@ -106,7 +109,9 @@ namespace Blog.Controllers
             foreach (var blog in result)
             {
                 blog.like = await _context.BlogLikes.Where(x => x.idBlog == blog.idBlog).CountAsync();
-                blog.fullName = await GetNameUserCurrent(blog.idAccount!);
+                var infoUser = await GetNameUserCurrent(blog.idAccount!);
+                blog.fullName = infoUser.fullName;
+                blog.avatar = infoUser.avatar;
                 var blogImages = await _context.BlogImages.Where(x => x.idBlog == blog.idBlog).ToListAsync();
                 var viewImages = _mapper.Map<List<ViewBlogImage>>(blogImages);
                 foreach (var image in viewImages)
@@ -128,7 +133,9 @@ namespace Blog.Controllers
             }
             var result = _mapper.Map<ViewBlog>(blog);
             result.like = await _context.BlogLikes.Where(x => x.idBlog == blog.idBlog).CountAsync();
-            result.fullName = await GetNameUserCurrent(result.idAccount!);
+            var infoUser = await GetNameUserCurrent(result.idAccount!);
+            result.fullName = infoUser.fullName;
+            result.avatar = infoUser.avatar;
             var blogImages = await _context.BlogImages.Where(x => x.idBlog == blog.idBlog).ToListAsync();
             var viewImages = _mapper.Map<List<ViewBlogImage>>(blogImages);
             foreach (var image in viewImages)
@@ -250,7 +257,7 @@ namespace Blog.Controllers
             return new Response(HttpStatusCode.NoContent, "Like or unlike blog is success!");
         }
 
-        /*------------------------------------------------------------BlogComment------------------------------------------------------------*/
+        //*------------------------------------------------------------BlogComment------------------------------------------------------------*//*
 
         [HttpGet("GetAllCommentByBlog/{idBlog}")]
         public async Task<Response> GetCommentByPost(Guid idBlog)
@@ -264,13 +271,17 @@ namespace Blog.Controllers
             foreach (var comment in resultComments)
             {
                 comment.like = await _context.BlogCommentLikes.Where(x => x.idBlogComment == comment.idBlogComment).CountAsync();
-                comment.fullName = await GetNameUserCurrent(comment.idAccount!);
+                var infoUserComment = await GetNameUserCurrent(comment.idAccount!);
+                comment.fullName = infoUserComment.fullName;
+                comment.avatar = infoUserComment.avatar;
                 var replies = await _context.BlogReplies.Where(x => x.idBlogComment == comment.idBlogComment && x.isDeleted == false).OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
                 var resultReplies = _mapper.Map<List<ViewBlogReply>>(replies);
                 foreach (var reply in resultReplies)
                 {
                     reply.like = await _context.BlogReplyLikes.Where(x => x.idBlogReply == reply.idBlogReply).CountAsync();
-                    reply.fullName = await GetNameUserCurrent(reply.idAccount!);
+                    var infoUserReply = await GetNameUserCurrent(reply.idAccount!);
+                    reply.fullName = infoUserReply.fullName;
+                    reply.avatar = infoUserReply.avatar;
                 }
                 comment.ViewBlogReplies = resultReplies;
             }
@@ -344,7 +355,7 @@ namespace Blog.Controllers
             return new Response(HttpStatusCode.NoContent, "Like or unlike blog comment is success!");
         }
 
-        /*------------------------------------------------------------BlogReply------------------------------------------------------------*/
+        //*------------------------------------------------------------BlogReply------------------------------------------------------------*//*
 
         [HttpPost("CreateBlogReply/{idUser}/{idBlogComment}")]
         public async Task<Response> CreateBlogReply(string idUser, Guid idBlogComment, CreateUpdateBlogReply createUpdateBlogReply)

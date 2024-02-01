@@ -9,6 +9,7 @@ namespace BusinessObjects.ViewModels.Blog
         public Guid idBlog { get; set; }
         public string? idAccount { get; set; }
         public string? fullName { get; set; }
+        public string? avatar { get; set; }
         public string? title { get; set; }
         public string? content { get; set; }
         public int view { get; set; }
