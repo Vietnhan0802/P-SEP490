@@ -16,6 +16,5 @@ namespace BusinessObjects.ViewModels.Blog
         public bool isDeleted { get; set; }
         public DateTime createdDate { get; set; }
         public ICollection<ViewBlogImage>? ViewBlogImages { get; set; }
-        public ICollection<ViewBlogComment>? ViewBlogComments { get; set; }
     }
 }
