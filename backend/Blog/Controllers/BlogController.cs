@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
 using System.Net.Http.Headers;
-using System.Reflection.Metadata;
 using System.Text.Json;
 
 namespace Blog.Controllers
@@ -74,14 +73,15 @@ namespace Blog.Controllers
         [HttpGet("GetAllBlogs")]
         public async Task<Response> GetAllBlogs()
         {
-            var blogs = await _context.Blogs.Include(x => x.BloggImages).OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
+            var blogs = await _context.Blogs.Where(x => x.isDeleted == false).OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
             if (blogs == null)
             {
-                return new Response(HttpStatusCode.NoContent, "Blogs doesn't empty!");
+                return new Response(HttpStatusCode.NoContent, "No blogs found!");
             }            
             var result = _mapper.Map<List<ViewBlog>>(blogs);
             foreach (var blog in result)
             {
+                blog.like = await _context.BlogLikes.Where(x => x.idBlog == blog.idBlog).CountAsync();
                 blog.fullName = await GetNameUserCurrent(blog.idAccount!);
                 var blogImages = await _context.BlogImages.Where(x => x.idBlog == blog.idBlog).ToListAsync();
                 var viewImages = _mapper.Map<List<ViewBlogImage>>(blogImages);      
@@ -105,11 +105,15 @@ namespace Blog.Controllers
             var result = _mapper.Map<List<ViewBlog>>(blogs);
             foreach (var blog in result)
             {
+                blog.like = await _context.BlogLikes.Where(x => x.idBlog == blog.idBlog).CountAsync();
                 blog.fullName = await GetNameUserCurrent(blog.idAccount!);
-                foreach (var image in blog.ViewBlogImages!)
+                var blogImages = await _context.BlogImages.Where(x => x.idBlog == blog.idBlog).ToListAsync();
+                var viewImages = _mapper.Map<List<ViewBlogImage>>(blogImages);
+                foreach (var image in viewImages)
                 {
                     image.ImageSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, image.image);
                 }
+                blog.ViewBlogImages = viewImages;
             }
             return new Response(HttpStatusCode.OK, "Getall blogs is success!", result);
         }
@@ -117,19 +121,40 @@ namespace Blog.Controllers
         [HttpGet("GetBlogById/{idBlog}")]
         public async Task<Response> GetBlogById(Guid idBlog)
         {
-            var blog = await _context.Blogs.Include(x => x.BloggImages).FirstOrDefaultAsync(x => x.idBlog == idBlog);
+            var blog = await _context.Blogs.FirstOrDefaultAsync(x => x.idBlog == idBlog);
             if (blog == null)
             {
                 return new Response(HttpStatusCode.NotFound, "Blog doesn't exists!");
             }
-            blog.view++;
-            await _context.SaveChangesAsync();
             var result = _mapper.Map<ViewBlog>(blog);
+            result.like = await _context.BlogLikes.Where(x => x.idBlog == blog.idBlog).CountAsync();
             result.fullName = await GetNameUserCurrent(result.idAccount!);
             foreach (var image in result.ViewBlogImages!)
             {
                 image.ImageSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, image.image);
             }
+            var comments = await _context.BlogComments.Where(x => x.idBlog == idBlog).OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
+            if (comments == null)
+            {
+                return new Response(HttpStatusCode.NoContent, "No comments found!");
+            }
+            var resultComments = _mapper.Map<List<ViewBlogComment>>(comments);
+            foreach (var comment in resultComments)
+            {
+                comment.like = await _context.BlogCommentLikes.Where(x => x.idBlogComment == comment.idBlogComment).CountAsync();
+                comment.fullName = await GetNameUserCurrent(comment.idAccount!);
+                var replies = await _context.BlogReplies.Where(x => x.idBlogComment == comment.idBlogComment).OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
+                var resultReplies = _mapper.Map<List<ViewBlogReply>>(replies);
+                foreach (var reply in resultReplies)
+                {
+                    reply.like = await _context.BlogReplyLikes.Where(x => x.idBlogReply == reply.idBlogReply).CountAsync();
+                    reply.fullName = await GetNameUserCurrent(reply.fullName!);
+                }
+                comment.ViewBlogReplies = resultReplies;
+            }
+            result.ViewBlogComments = resultComments;
+            blog.view++;
+            await _context.SaveChangesAsync();
             return new Response(HttpStatusCode.OK, "Get blog is success!", result);
         }
 
@@ -174,23 +199,37 @@ namespace Blog.Controllers
             {
                 return new Response(HttpStatusCode.NotFound, "Blog doesn't exists!");
             }
+            _mapper.Map(createUpdateBlog, blog);
+            var images = await _context.BlogImages.Where(x => x.idBlog == blog.idBlog).ToListAsync();
+            foreach (var image in images)
+            {
+                _context.BlogImages.Remove(image);
+                _saveImageService.DeleteImage(image.image!);
+            }
             if (createUpdateBlog.CreateUpdateBlogImages != null)
             {
-                foreach (var imageOld in blog.BloggImages!)
+                foreach (var image in createUpdateBlog.CreateUpdateBlogImages)
                 {
-                    _saveImageService.DeleteImage(imageOld.image!);
+                    var imageName = await _saveImageService.SaveImage(image.ImageFile);
+                    BloggImage bloggImage = new BloggImage()
+                    {
+                        idBlog = blog.idBlog,
+                        image = imageName,
+                        createdDate = DateTime.Now
+                    };
+                    await _context.BlogImages.AddAsync(bloggImage);
                 }
-                var result = _mapper.Map(createUpdateBlog, blog);
-                foreach (var imageNew in result.BloggImages!)
-                {
-                    imageNew.image = await _saveImageService.SaveImage(imageNew.ImageFile);
-                    result.BloggImages.Add(imageNew);
-                }
-                _context.Blogs.Update(result);
-                await _context.SaveChangesAsync();
-                return new Response(HttpStatusCode.OK, "Update blog is success!", _mapper.Map<ViewBlog>(result));
             }
-            return new Response(HttpStatusCode.BadRequest, "Update blog is fail!");
+            else
+            {
+                blog.BloggImages = null;
+            }
+            _context.Blogs.Update(blog);
+            await _context.SaveChangesAsync();
+            var blogImages = await _context.BlogImages.Where(x => x.idBlog == blog.idBlog).ToListAsync();
+            var viewBlog = _mapper.Map<ViewBlog>(blog);
+            viewBlog.ViewBlogImages = _mapper.Map<List<ViewBlogImage>>(blogImages);
+            return new Response(HttpStatusCode.BadRequest, "Update blog is success!", viewBlog);
         }
 
         [HttpDelete("RemoveBlog/{idBlog}")]
@@ -204,13 +243,6 @@ namespace Blog.Controllers
             blog.isDeleted = true;
             await _context.SaveChangesAsync();
             return new Response(HttpStatusCode.NoContent, "Remove blog is success!");
-        }
-
-        [HttpGet("GetTotalLikeBlogs/{idBlog}")]
-        public async Task<Response> GetTotalLikeBlogs(Guid idBlog)
-        {
-            var totalLikeBlogs = await _context.BlogLikes.Where(x => x.idBlog == idBlog).CountAsync();
-            return new Response(HttpStatusCode.OK, "Getall like blogs is success!", totalLikeBlogs);
         }
 
         [HttpPost("LikeOrUnlikeBlog/{idUser}/{idBlog}")]
