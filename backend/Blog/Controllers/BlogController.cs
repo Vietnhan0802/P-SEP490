@@ -129,11 +129,14 @@ namespace Blog.Controllers
             var result = _mapper.Map<ViewBlog>(blog);
             result.like = await _context.BlogLikes.Where(x => x.idBlog == blog.idBlog).CountAsync();
             result.fullName = await GetNameUserCurrent(result.idAccount!);
-            foreach (var image in result.ViewBlogImages!)
+            var blogImages = await _context.BlogImages.Where(x => x.idBlog == blog.idBlog).ToListAsync();
+            var viewImages = _mapper.Map<List<ViewBlogImage>>(blogImages);
+            foreach (var image in viewImages)
             {
                 image.ImageSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, image.image);
             }
-            var comments = await _context.BlogComments.Where(x => x.idBlog == idBlog).OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
+            result.ViewBlogImages = viewImages;
+            var comments = await _context.BlogComments.Where(x => x.idBlog == idBlog && x.isDeleted == false).OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
             if (comments == null)
             {
                 return new Response(HttpStatusCode.NoContent, "No comments found!");
@@ -143,12 +146,12 @@ namespace Blog.Controllers
             {
                 comment.like = await _context.BlogCommentLikes.Where(x => x.idBlogComment == comment.idBlogComment).CountAsync();
                 comment.fullName = await GetNameUserCurrent(comment.idAccount!);
-                var replies = await _context.BlogReplies.Where(x => x.idBlogComment == comment.idBlogComment).OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
+                var replies = await _context.BlogReplies.Where(x => x.idBlogComment == comment.idBlogComment && x.isDeleted == false).OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
                 var resultReplies = _mapper.Map<List<ViewBlogReply>>(replies);
                 foreach (var reply in resultReplies)
                 {
                     reply.like = await _context.BlogReplyLikes.Where(x => x.idBlogReply == reply.idBlogReply).CountAsync();
-                    reply.fullName = await GetNameUserCurrent(reply.fullName!);
+                    reply.fullName = await GetNameUserCurrent(reply.idAccount!);
                 }
                 comment.ViewBlogReplies = resultReplies;
             }
@@ -269,22 +272,6 @@ namespace Blog.Controllers
 
         /*------------------------------------------------------------BlogComment------------------------------------------------------------*/
 
-        [HttpGet("GetAllBlogComments/{idBlog}")]
-        public async Task<Response> GetAllBlogComments(Guid idBlog)
-        {
-            var comments = await _context.BlogComments.Where(x => x.idBlog == idBlog).OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
-            if (comments == null)
-            {
-                return new Response(HttpStatusCode.NoContent, "Comments doesn't empty!");
-            }
-            var result = _mapper.Map<List<ViewBlogComment>>(comments);
-            foreach (var comment in result)
-            {
-                comment.fullName = await GetNameUserCurrent(comment.idAccount!);
-            }
-            return new Response(HttpStatusCode.OK, "Getall comments is success!", result);
-        }
-
         [HttpPost("CreateBlogComment/{idUser}/{idBlog}")]
         public async Task<Response> CreateBlogComment(string idUser, Guid idBlog, CreateUpdateBlogComment createUpdateBlogComment)
         {
@@ -330,13 +317,6 @@ namespace Blog.Controllers
             return new Response(HttpStatusCode.NoContent, "Remove blog comment is success!");
         }
 
-        [HttpGet("GetTotalLikeBlogComments/{idBlogComment}")]
-        public async Task<Response> GetTotalLikeBlogComments(Guid idBlogComment)
-        {
-            var totalLikeBlogComments = await _context.BlogCommentLikes.Where(x => x.idBlogComment == idBlogComment).CountAsync();
-            return new Response(HttpStatusCode.OK, "Getall like blog comments is success!", totalLikeBlogComments);
-        }
-
         [HttpPost("LikeOrUnlikeBlogComment/{idUser}/{idBlogComment}")]
         public async Task<Response> LikeOrUnlikeBlogComment(string idUser, Guid idBlogComment)
         {
@@ -360,22 +340,6 @@ namespace Blog.Controllers
         }
 
         /*------------------------------------------------------------BlogReply------------------------------------------------------------*/
-
-        [HttpGet("GetAllBlogReplies/{idBlogComment}")]
-        public async Task<Response> GetAllBlogReplies(Guid idBlogComment)
-        {
-            var replies = await _context.BlogReplies.Where(x => x.idBlogComment == idBlogComment).OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
-            if (replies == null)
-            {
-                return new Response(HttpStatusCode.NoContent, "Replies doesn't empty!");
-            }
-            var result = _mapper.Map<List<ViewBlogReply>>(replies);
-            foreach (var reply in result)
-            {
-                reply.fullName = await GetNameUserCurrent(reply.idAccount!);
-            }
-            return new Response(HttpStatusCode.OK, "Getall replies is success!", result);
-        }
 
         [HttpPost("CreateBlogReply/{idUser}/{idBlogComment}")]
         public async Task<Response> CreateBlogReply(string idUser, Guid idBlogComment, CreateUpdateBlogReply createUpdateBlogReply)
@@ -420,13 +384,6 @@ namespace Blog.Controllers
             blogReply.isDeleted = true;
             await _context.SaveChangesAsync();
             return new Response(HttpStatusCode.NoContent, "Remove blog reply is success!");
-        }
-
-        [HttpGet("GetTotalLikeBlogReplies/{idBlogReply}")]
-        public async Task<Response> GetTotalLikeBlogReplies(Guid idBlogReply)
-        {
-            var totalLikeBlogReplies = await _context.BlogReplyLikes.Where(x => x.idBlogReply == idBlogReply).CountAsync();
-            return new Response(HttpStatusCode.OK, "Getall like blog replies is success!", totalLikeBlogReplies);
         }
 
         [HttpPost("LikeOrUnlikeBlogReply/{idUser}/{idBlogReply}")]
