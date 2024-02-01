@@ -136,26 +136,6 @@ namespace Blog.Controllers
                 image.ImageSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, image.image);
             }
             result.ViewBlogImages = viewImages;
-            var comments = await _context.BlogComments.Where(x => x.idBlog == idBlog && x.isDeleted == false).OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
-            if (comments == null)
-            {
-                return new Response(HttpStatusCode.NoContent, "No comments found!");
-            }
-            var resultComments = _mapper.Map<List<ViewBlogComment>>(comments);
-            foreach (var comment in resultComments)
-            {
-                comment.like = await _context.BlogCommentLikes.Where(x => x.idBlogComment == comment.idBlogComment).CountAsync();
-                comment.fullName = await GetNameUserCurrent(comment.idAccount!);
-                var replies = await _context.BlogReplies.Where(x => x.idBlogComment == comment.idBlogComment && x.isDeleted == false).OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
-                var resultReplies = _mapper.Map<List<ViewBlogReply>>(replies);
-                foreach (var reply in resultReplies)
-                {
-                    reply.like = await _context.BlogReplyLikes.Where(x => x.idBlogReply == reply.idBlogReply).CountAsync();
-                    reply.fullName = await GetNameUserCurrent(reply.idAccount!);
-                }
-                comment.ViewBlogReplies = resultReplies;
-            }
-            result.ViewBlogComments = resultComments;
             blog.view++;
             await _context.SaveChangesAsync();
             return new Response(HttpStatusCode.OK, "Get blog is success!", result);
@@ -271,6 +251,31 @@ namespace Blog.Controllers
         }
 
         /*------------------------------------------------------------BlogComment------------------------------------------------------------*/
+
+        [HttpGet("GetAllCommentByPost/{idBlog}")]
+        public async Task<Response> GetCommentByPost(Guid idBlog)
+        {
+            var comments = await _context.BlogComments.Where(x => x.idBlog == idBlog && x.isDeleted == false).OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
+            if (comments == null)
+            {
+                return new Response(HttpStatusCode.NoContent, "No comments found!");
+            }
+            var resultComments = _mapper.Map<List<ViewBlogComment>>(comments);
+            foreach (var comment in resultComments)
+            {
+                comment.like = await _context.BlogCommentLikes.Where(x => x.idBlogComment == comment.idBlogComment).CountAsync();
+                comment.fullName = await GetNameUserCurrent(comment.idAccount!);
+                var replies = await _context.BlogReplies.Where(x => x.idBlogComment == comment.idBlogComment && x.isDeleted == false).OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
+                var resultReplies = _mapper.Map<List<ViewBlogReply>>(replies);
+                foreach (var reply in resultReplies)
+                {
+                    reply.like = await _context.BlogReplyLikes.Where(x => x.idBlogReply == reply.idBlogReply).CountAsync();
+                    reply.fullName = await GetNameUserCurrent(reply.idAccount!);
+                }
+                comment.ViewBlogReplies = resultReplies;
+            }
+            return new Response(HttpStatusCode.OK, "Get blog is success!", resultComments);
+        }
 
         [HttpPost("CreateBlogComment/{idUser}/{idBlog}")]
         public async Task<Response> CreateBlogComment(string idUser, Guid idBlog, CreateUpdateBlogComment createUpdateBlogComment)
