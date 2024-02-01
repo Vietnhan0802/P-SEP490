@@ -4,6 +4,7 @@ using BusinessObjects.ViewModels.Notification;
 using BusinessObjects.ViewModels.User;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Notification.Data;
 using System.Net;
 using System.Net.Http.Headers;
@@ -47,8 +48,25 @@ namespace Notification.Controllers
 
         /*------------------------------------------------------------Notification------------------------------------------------------------*/
 
-        [HttpPost("CreateNotificationFollow")]
-        public async Task<Response> CreateNotificationFollow(string idSender, string idReceiver)
+        [HttpGet("GetNotificationByUser/{idUser}")]
+        public async Task<Response> GetNotificationByUser(string idUser)
+        {
+            var notifications = await _context.Notifications.Where(x => x.idReceiver == idUser).OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
+            if (notifications == null)
+            {
+                return new Response(HttpStatusCode.NoContent, "No notifications found!");
+            }
+            var result = _mapper.Map<List<ViewNotification>>(notifications);
+            foreach (var notification in result)
+            {
+                notification.nameSender = await GetNameUserCurrent(notification.idSender!);
+                notification.content = $"{notification.nameSender} {notification.content}";
+            }
+            return new Response(HttpStatusCode.OK, "Getall notifications is success!", result);
+        }
+
+        [HttpPost("CreateNotificationFollow/{idSender}/{idReceiver}")]
+        public async Task<ViewNotification> CreateNotificationFollow(string idSender, string idReceiver)
         {
             Notificationn notification = new Notificationn()
             {
@@ -56,15 +74,35 @@ namespace Notification.Controllers
                 idReceiver = idReceiver,
                 content = "has just started following you.",
                 isRead = false,
-                url = idSender
+                url = idSender,
+                createdDate = DateTime.Now
             };
             await _context.Notifications.AddAsync(notification);
             await _context.SaveChangesAsync();
             var result = _mapper.Map<ViewNotification>(notification);
             result.nameSender = await GetNameUserCurrent(idSender);
-            result.nameReceiver = await GetNameUserCurrent(idReceiver);
             result.content = $"{result.nameSender} {notification.content}";
-            return new Response(HttpStatusCode.OK, "Create notification is success!", result);
+            return result;
+        }
+
+        [HttpPost("CreateNotificationComment/{idSender}/{idReceiver}")]
+        public async Task<ViewNotification> CreateNotificationComment(string idSender, string idReceiver)
+        {
+            Notificationn notification = new Notificationn()
+            {
+                idSender = idSender,
+                idReceiver = idReceiver,
+                content = "commented on one of your posts.",
+                isRead = false,
+                url = idSender,
+                createdDate = DateTime.Now
+            };
+            await _context.Notifications.AddAsync(notification);
+            await _context.SaveChangesAsync();
+            var result = _mapper.Map<ViewNotification>(notification);
+            result.nameSender = await GetNameUserCurrent(idSender);
+            result.content = $"{result.nameSender} {notification.content}";
+            return result;
         }
     }
 }
