@@ -124,8 +124,12 @@ namespace User.Controllers
             {
                 return NotFound("User doesn't exist!");
             }
-            string fullName = user.fullName!;
-            return Ok(fullName);
+            var result = new
+            {
+                fullName = user.fullName!,
+                avatar = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, user.avatar)
+            };
+            return Ok(result);
         }
 
         [HttpPut("BlockUser/{idUser}")]

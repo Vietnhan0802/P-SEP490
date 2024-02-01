@@ -7,6 +7,7 @@ namespace BusinessObjects.ViewModels.Blog
         public Guid idBlogComment { get; set; }
         public string? idAccount { get; set; }
         public string? fullName { get; set; }
+        public string? avatar { get; set; }
         public Guid idBlog { get; set; }
         public string? content { get; set; }
         public int like { get; set; }
