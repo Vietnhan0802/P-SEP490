@@ -1,5 +1,6 @@
 using AutoMapper;
 using Blog.Data;
+using Blog.Validator;
 using BusinessObjects.Entities.Blog;
 using BusinessObjects.ViewModels.Blog;
 using BusinessObjects.ViewModels.User;
@@ -8,7 +9,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
 using System.Net.Http.Headers;
-using System.Reflection.Metadata;
 using System.Text.Json;
 
 namespace Blog.Controllers
@@ -149,8 +149,15 @@ namespace Blog.Controllers
         }
 
         [HttpPost("CreateBlog/{idUser}")]
-        public async Task<Response> CreateBlog(string idUser, [FromForm]CreateUpdateBlog createUpdateBlog)
+        public async Task<Response> CreateBlog(string idUser, [FromForm] CreateUpdateBlog createUpdateBlog)
         {
+            var validator = new CreateUpdateBlogValidator();
+            var validatorResult = validator.Validate(createUpdateBlog);
+            var error = validatorResult.Errors.Select(x => x.ErrorMessage).ToList();
+            if (!validatorResult.IsValid)
+            {
+                return new Response(HttpStatusCode.BadRequest, "Invalid data", error);
+            }
             var blog = _mapper.Map<Blogg>(createUpdateBlog);
             blog.idAccount = idUser;
             blog.isDeleted = false;
