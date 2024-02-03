@@ -30,7 +30,8 @@ app.UseStaticFiles(new StaticFileOptions
     FileProvider = new PhysicalFileProvider(Path.Combine(app.Environment.ContentRootPath, "Images")),
     RequestPath = "/Images"
 });
-/*app.UseHttpsRedirection();*/
+
+app.UseHttpsRedirection();
 
 app.UseRouting();
 

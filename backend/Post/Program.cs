@@ -1,6 +1,7 @@
 using BusinessObjects.Mappers;
 using Commons.Helpers;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using Post.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -24,7 +25,20 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(Path.Combine(app.Environment.ContentRootPath, "Images")),
+    RequestPath = "/Images"
+});
+
 app.UseHttpsRedirection();
+
+app.UseRouting();
+
+app.UseCors(options =>
+{
+    options.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin();
+});
 
 app.UseAuthorization();
 
