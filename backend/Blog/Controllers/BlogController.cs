@@ -78,7 +78,7 @@ namespace Blog.Controllers
             if (blogs == null)
             {
                 return new Response(HttpStatusCode.NoContent, "Blog list is empty!");
-            }            
+            }
             var result = _mapper.Map<List<ViewBlog>>(blogs);
             foreach (var blog in result)
             {
@@ -87,7 +87,7 @@ namespace Blog.Controllers
                 blog.fullName = infoUser.fullName;
                 blog.avatar = infoUser.avatar;
                 var blogImages = await _context.BlogImages.Where(x => x.idBlog == blog.idBlog).ToListAsync();
-                var viewImages = _mapper.Map<List<ViewBlogImage>>(blogImages);      
+                var viewImages = _mapper.Map<List<ViewBlogImage>>(blogImages);
                 foreach (var image in viewImages)
                 {
                     image.ImageSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, image.image);
@@ -100,7 +100,7 @@ namespace Blog.Controllers
         [HttpGet("GetBlogByUser/{idUser}")]
         public async Task<Response> GetBlogByUser(string idUser)
         {
-            var blogs = await _context.Blogs.Include(x => x.BloggImages).Where(x => x.idAccount == idUser && x.isDeleted == false).OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
+            var blogs = await _context.Blogs.Where(x => x.idAccount == idUser && x.isDeleted == false).OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
             if (blogs == null)
             {
                 return new Response(HttpStatusCode.NoContent, "Blog list is empty!");
@@ -168,7 +168,8 @@ namespace Blog.Controllers
                 foreach (var image in createUpdateBlog.CreateUpdateBlogImages)
                 {
                     var imageName = await _saveImageService.SaveImage(image.ImageFile);
-                    BloggImage bloggImage = new BloggImage() {
+                    BloggImage bloggImage = new BloggImage() 
+                    {
                         idBlog = blog.idBlog,
                         image = imageName,
                         createdDate = DateTime.Now
