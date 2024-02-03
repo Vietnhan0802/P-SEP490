@@ -1,9 +1,5 @@
-﻿using BusinessObjects.Entities.Blog;
-using BusinessObjects.Entities.Post;
-using BusinessObjects.Entities.Projects;
+﻿using BusinessObjects.Entities.Post;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Reflection.Emit;
 
 namespace Post.Data
 {
