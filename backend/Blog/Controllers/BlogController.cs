@@ -304,46 +304,35 @@ namespace Blog.Controllers
         }
 
         [HttpPost("CreateBlogComment/{idUser}/{idBlog}")]
-        public async Task<Response> CreateBlogComment(string idUser, Guid idBlog, CreateUpdateBlogComment createUpdateBlogComment)
+        public async Task<Response> CreateBlogComment(string idUser, Guid idBlog, string content)
         {
-            var validator = new CreateUpdateBlogCommentValidator();
-            var validatorResult = validator.Validate(createUpdateBlogComment);
-            var error = validatorResult.Errors.Select(x => x.ErrorMessage).ToList();
-            if (!validatorResult.IsValid)
-            {
-                return new Response(HttpStatusCode.BadRequest, "Invalid data", error);
-            }
             var blog = await _context.Blogs.FirstOrDefaultAsync(x => x.idBlog == idBlog);
             if (blog == null)
             {
                 return new Response(HttpStatusCode.NotFound, "Blog doesn't exist!");
             }
-            var blogComment = _mapper.Map<BloggComment>(createUpdateBlogComment);
-            blogComment.idAccount = idUser;
-            blogComment.idBlog = idBlog;
-            blogComment.isDeleted = false;
-            blogComment.createdDate = DateTime.Now;
+            BloggComment blogComment = new BloggComment()
+            {
+                idAccount = idUser,
+                idBlog = idBlog,
+                content = content,
+                isDeleted = false,
+                createdDate = DateTime.Now
+            };
             await _context.BlogComments.AddAsync(blogComment);
             await _context.SaveChangesAsync();
             return new Response(HttpStatusCode.OK, "Create comment is success!", _mapper.Map<ViewBlogComment>(blogComment));
         }
 
         [HttpPut("UpdateBlogComment/{idBlogComment}")]
-        public async Task<Response> UpdateBlogComment(Guid idBlogComment, CreateUpdateBlogComment createUpdateBlogComment)
+        public async Task<Response> UpdateBlogComment(Guid idBlogComment, string content)
         {
-            var validator = new CreateUpdateBlogCommentValidator();
-            var validatorResult = validator.Validate(createUpdateBlogComment);
-            var error = validatorResult.Errors.Select(x => x.ErrorMessage).ToList();
-            if (!validatorResult.IsValid)
-            {
-                return new Response(HttpStatusCode.BadRequest, "Invalid data", error);
-            }
             var blogComment = await _context.BlogComments.FirstOrDefaultAsync(x => x.idBlogComment == idBlogComment);
             if (blogComment == null)
             {
                 return new Response(HttpStatusCode.NotFound, "Comment doesn't exist!");
             }
-            _mapper.Map(createUpdateBlogComment, blogComment);
+            blogComment.content = content;
             _context.BlogComments.Update(blogComment);
             await _context.SaveChangesAsync();
             return new Response(HttpStatusCode.OK, "Update comment is success!", _mapper.Map<ViewBlogComment>(blogComment));
@@ -387,46 +376,35 @@ namespace Blog.Controllers
         //*------------------------------------------------------------BlogReply------------------------------------------------------------*//*
 
         [HttpPost("CreateBlogReply/{idUser}/{idBlogComment}")]
-        public async Task<Response> CreateBlogReply(string idUser, Guid idBlogComment, CreateUpdateBlogReply createUpdateBlogReply)
+        public async Task<Response> CreateBlogReply(string idUser, Guid idBlogComment, string content)
         {
-            var validator = new CreateUpdateBlogReplyValidator();
-            var validatorResult = validator.Validate(createUpdateBlogReply);
-            var error = validatorResult.Errors.Select(x => x.ErrorMessage).ToList();
-            if (!validatorResult.IsValid)
-            {
-                return new Response(HttpStatusCode.BadRequest, "Invalid data", error);
-            }
             var blogComment = await _context.BlogComments.FirstOrDefaultAsync(x => x.idBlogComment == idBlogComment);
             if (blogComment == null)
             {
                 return new Response(HttpStatusCode.NotFound, "Comment doesn't exist!");
             }
-            var blogReply = _mapper.Map<BloggReply>(createUpdateBlogReply);
-            blogReply.idAccount = idUser;
-            blogReply.idBlogComment = idBlogComment;
-            blogReply.isDeleted = false;
-            blogReply.createdDate = DateTime.Now;
+            BloggReply blogReply = new BloggReply()
+            {
+                idAccount = idUser,
+                idBlogComment = idBlogComment,
+                content = content,
+                isDeleted = false,
+                createdDate = DateTime.Now
+            };
             await _context.BlogReplies.AddAsync(blogReply);
             await _context.SaveChangesAsync();
             return new Response(HttpStatusCode.OK, "Create reply is success!", _mapper.Map<ViewBlogReply>(blogReply));
         }
 
         [HttpPut("UpdateBlogReply/{idBlogReply}")]
-        public async Task<Response> UpdateBlogReply(Guid idBlogReply, CreateUpdateBlogReply createUpdateBlogReply)
+        public async Task<Response> UpdateBlogReply(Guid idBlogReply, string content)
         {
-            var validator = new CreateUpdateBlogReplyValidator();
-            var validatorResult = validator.Validate(createUpdateBlogReply);
-            var error = validatorResult.Errors.Select(x => x.ErrorMessage).ToList();
-            if (!validatorResult.IsValid)
-            {
-                return new Response(HttpStatusCode.BadRequest, "Invalid data", error);
-            }
             var blogReply = await _context.BlogReplies.FirstOrDefaultAsync(x => x.idBlogReply == idBlogReply);
             if (blogReply == null)
             {
                 return new Response(HttpStatusCode.NotFound, "Reply doesn't exist!");
             }
-            _mapper.Map(createUpdateBlogReply, blogReply);
+            blogReply.content = content;
             _context.BlogReplies.Update(blogReply);
             await _context.SaveChangesAsync();
             return new Response(HttpStatusCode.OK, "Update reply is success!", _mapper.Map<ViewBlogReply>(blogReply));
