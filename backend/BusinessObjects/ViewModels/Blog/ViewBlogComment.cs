@@ -1,6 +1,4 @@
-﻿using BusinessObjects.Entities.Blog;
-
-namespace BusinessObjects.ViewModels.Blog
+﻿namespace BusinessObjects.ViewModels.Blog
 {
     public class ViewBlogComment
     {

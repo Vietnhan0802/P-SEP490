@@ -33,7 +33,7 @@ namespace Notification.Controllers
         }
 
         [HttpGet("GetNameUserCurrent/{idUser}")]
-        private async Task<string> GetNameUserCurrent(string idUser)
+        private async Task<ViewUser> GetNameUserCurrent(string idUser)
         {
             HttpResponseMessage response = await client.GetAsync($"{UserApiUrl}/GetNameUser/{idUser}");
             string strData = await response.Content.ReadAsStringAsync();
@@ -41,7 +41,7 @@ namespace Notification.Controllers
             {
                 PropertyNameCaseInsensitive = true,
             };
-            var user = JsonSerializer.Deserialize<string>(strData, option);
+            var user = JsonSerializer.Deserialize<ViewUser>(strData, option);
 
             return user!;
         }
@@ -59,11 +59,19 @@ namespace Notification.Controllers
             var result = _mapper.Map<List<ViewNotification>>(notifications);
             foreach (var notification in result)
             {
-                notification.nameSender = await GetNameUserCurrent(notification.idSender!);
+                var infoUser = await GetNameUserCurrent(notification.idSender!);
+                notification.nameSender = infoUser.fullName;
+                notification.avatar = infoUser.avatar;
                 notification.content = $"{notification.nameSender} {notification.content}";
             }
             return new Response(HttpStatusCode.OK, "Getall notifications is success!", result);
         }
+
+        [HttpGet("GetNotificationById/{idNotification}")]
+        /*public Task<Response> GetNotificationById(Guid idNotification)
+        {
+
+        }*/
 
         [HttpPost("CreateNotificationFollow/{idSender}/{idReceiver}")]
         public async Task<ViewNotification> CreateNotificationFollow(string idSender, string idReceiver)
@@ -80,7 +88,9 @@ namespace Notification.Controllers
             await _context.Notifications.AddAsync(notification);
             await _context.SaveChangesAsync();
             var result = _mapper.Map<ViewNotification>(notification);
-            result.nameSender = await GetNameUserCurrent(idSender);
+            var infoUser = await GetNameUserCurrent(result.idSender!);
+            result.nameSender = infoUser.fullName;
+            result.avatar = infoUser.avatar;
             result.content = $"{result.nameSender} {notification.content}";
             return result;
         }
@@ -100,7 +110,9 @@ namespace Notification.Controllers
             await _context.Notifications.AddAsync(notification);
             await _context.SaveChangesAsync();
             var result = _mapper.Map<ViewNotification>(notification);
-            result.nameSender = await GetNameUserCurrent(idSender);
+            var infoUser = await GetNameUserCurrent(result.idSender!);
+            result.nameSender = infoUser.fullName;
+            result.avatar = infoUser.avatar;
             result.content = $"{result.nameSender} {notification.content}";
             return result;
         }

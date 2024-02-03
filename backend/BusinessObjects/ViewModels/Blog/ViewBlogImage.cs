@@ -1,5 +1,4 @@
-﻿using BusinessObjects.Entities.Blog;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BusinessObjects.ViewModels.Blog
