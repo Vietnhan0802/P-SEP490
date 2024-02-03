@@ -1,8 +1,5 @@
 ﻿using BusinessObjects.Entities.Blog;
-using BusinessObjects.Entities.Projects;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Reflection.Emit;
 
 namespace Blog.Data
 {

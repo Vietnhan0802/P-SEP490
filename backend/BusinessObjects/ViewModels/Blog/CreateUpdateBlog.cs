@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace BusinessObjects.ViewModels.Blog
+﻿namespace BusinessObjects.ViewModels.Blog
 {
     public class CreateUpdateBlog
     {
