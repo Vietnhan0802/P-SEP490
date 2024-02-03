@@ -1,14 +1,15 @@
 using AutoMapper;
 using Blog.Data;
+using Blog.Validator;
 using BusinessObjects.Entities.Blog;
 using BusinessObjects.ViewModels.Blog;
 using BusinessObjects.ViewModels.User;
 using Commons.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Net.Http.Headers;
-using System.Reflection.Metadata;
 using System.Text.Json;
 
 namespace Blog.Controllers
@@ -51,7 +52,7 @@ namespace Blog.Controllers
 
         /*------------------------------------------------------------Blog------------------------------------------------------------*/
 
-        [HttpGet("SearchBlogs/{nameBlog}")]
+        /*[HttpGet("SearchBlogs/{nameBlog}")]
         public async Task<Response> SearchBlogs(string nameBlog)
         {
             var blogs = await _context.Blogs.Include(x => x.BloggImages).Where(x => x.title!.Contains(nameBlog)).OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
@@ -69,7 +70,7 @@ namespace Blog.Controllers
                 }
             }
             return new Response(HttpStatusCode.OK, "Search blogs success!", result);
-        }
+        }*/
 
         [HttpGet("GetAllBlogs")]
         public async Task<Response> GetAllBlogs()
@@ -77,7 +78,7 @@ namespace Blog.Controllers
             var blogs = await _context.Blogs.Where(x => x.isDeleted == false).OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
             if (blogs == null)
             {
-                return new Response(HttpStatusCode.NoContent, "No blogs found!");
+                return new Response(HttpStatusCode.NoContent, "Blog list is empty!");
             }            
             var result = _mapper.Map<List<ViewBlog>>(blogs);
             foreach (var blog in result)
@@ -94,7 +95,7 @@ namespace Blog.Controllers
                 }
                 blog.ViewBlogImages = viewImages;
             }
-            return new Response(HttpStatusCode.OK, "Getall blogs is success!", result);
+            return new Response(HttpStatusCode.OK, "Get blog list is success!", result);
         }
 
         [HttpGet("GetBlogByUser/{idUser}")]
@@ -103,7 +104,7 @@ namespace Blog.Controllers
             var blogs = await _context.Blogs.Include(x => x.BloggImages).Where(x => x.idAccount == idUser && x.isDeleted == false).OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
             if (blogs == null)
             {
-                return new Response(HttpStatusCode.NoContent, "Blogs doesn't empty!");
+                return new Response(HttpStatusCode.NoContent, "Blog list is empty!");
             }
             var result = _mapper.Map<List<ViewBlog>>(blogs);
             foreach (var blog in result)
@@ -120,7 +121,7 @@ namespace Blog.Controllers
                 }
                 blog.ViewBlogImages = viewImages;
             }
-            return new Response(HttpStatusCode.OK, "Getall blogs is success!", result);
+            return new Response(HttpStatusCode.OK, "Get blog list is success!", result);
         }
 
         [HttpGet("GetBlogById/{idBlog}")]
@@ -129,7 +130,7 @@ namespace Blog.Controllers
             var blog = await _context.Blogs.FirstOrDefaultAsync(x => x.idBlog == idBlog);
             if (blog == null)
             {
-                return new Response(HttpStatusCode.NotFound, "Blog doesn't exists!");
+                return new Response(HttpStatusCode.NotFound, "Blog doesn't exist!");
             }
             var result = _mapper.Map<ViewBlog>(blog);
             result.like = await _context.BlogLikes.Where(x => x.idBlog == blog.idBlog).CountAsync();
@@ -149,8 +150,15 @@ namespace Blog.Controllers
         }
 
         [HttpPost("CreateBlog/{idUser}")]
-        public async Task<Response> CreateBlog(string idUser, [FromForm]CreateUpdateBlog createUpdateBlog)
+        public async Task<Response> CreateBlog(string idUser, [FromForm] CreateUpdateBlog createUpdateBlog)
         {
+            var validator = new CreateUpdateBlogValidator();
+            var validatorResult = validator.Validate(createUpdateBlog);
+            var error = validatorResult.Errors.Select(x => x.ErrorMessage).ToList();
+            if (!validatorResult.IsValid)
+            {
+                return new Response(HttpStatusCode.BadRequest, "Invalid data", error);
+            }
             var blog = _mapper.Map<Blogg>(createUpdateBlog);
             blog.idAccount = idUser;
             blog.isDeleted = false;
@@ -182,12 +190,19 @@ namespace Blog.Controllers
         }
 
         [HttpPut("UpdateBlog/{idBlog}")]
-        public async Task<Response> UpdateBlog(Guid idBlog, CreateUpdateBlog createUpdateBlog)
+        public async Task<Response> UpdateBlog(Guid idBlog, [FromForm] CreateUpdateBlog createUpdateBlog)
         {
+            var validator = new CreateUpdateBlogValidator();
+            var validatorResult = validator.Validate(createUpdateBlog);
+            var error = validatorResult.Errors.Select(x => x.ErrorMessage).ToList();
+            if (!validatorResult.IsValid)
+            {
+                return new Response(HttpStatusCode.BadRequest, "Invalid data", error);
+            }
             var blog = await _context.Blogs.FirstOrDefaultAsync(x => x.idBlog == idBlog);
             if (blog == null)
             {
-                return new Response(HttpStatusCode.NotFound, "Blog doesn't exists!");
+                return new Response(HttpStatusCode.NotFound, "Blog doesn't exist!");
             }
             _mapper.Map(createUpdateBlog, blog);
             var images = await _context.BlogImages.Where(x => x.idBlog == blog.idBlog).ToListAsync();
@@ -228,7 +243,7 @@ namespace Blog.Controllers
             var blog = await _context.Blogs.FirstOrDefaultAsync(x => x.idBlog == idBlog);
             if (blog == null)
             {
-                return new Response(HttpStatusCode.NotFound, "Blog doesn't exists!");
+                return new Response(HttpStatusCode.NotFound, "Blog doesn't exist!");
             }
             blog.isDeleted = true;
             await _context.SaveChangesAsync();
@@ -260,12 +275,12 @@ namespace Blog.Controllers
         //*------------------------------------------------------------BlogComment------------------------------------------------------------*//*
 
         [HttpGet("GetAllCommentByBlog/{idBlog}")]
-        public async Task<Response> GetCommentByPost(Guid idBlog)
+        public async Task<Response> GetAllCommentByBlog(Guid idBlog)
         {
             var comments = await _context.BlogComments.Where(x => x.idBlog == idBlog && x.isDeleted == false).OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
             if (comments == null)
             {
-                return new Response(HttpStatusCode.NoContent, "No comments found!");
+                return new Response(HttpStatusCode.NoContent, "Comment list is empty!");
             }
             var resultComments = _mapper.Map<List<ViewBlogComment>>(comments);
             foreach (var comment in resultComments)
@@ -285,12 +300,19 @@ namespace Blog.Controllers
                 }
                 comment.ViewBlogReplies = resultReplies;
             }
-            return new Response(HttpStatusCode.OK, "Get blog is success!", resultComments);
+            return new Response(HttpStatusCode.OK, "Get comment list is success!", resultComments);
         }
 
         [HttpPost("CreateBlogComment/{idUser}/{idBlog}")]
         public async Task<Response> CreateBlogComment(string idUser, Guid idBlog, CreateUpdateBlogComment createUpdateBlogComment)
         {
+            var validator = new CreateUpdateBlogCommentValidator();
+            var validatorResult = validator.Validate(createUpdateBlogComment);
+            var error = validatorResult.Errors.Select(x => x.ErrorMessage).ToList();
+            if (!validatorResult.IsValid)
+            {
+                return new Response(HttpStatusCode.BadRequest, "Invalid data", error);
+            }
             var blog = await _context.Blogs.FirstOrDefaultAsync(x => x.idBlog == idBlog);
             if (blog == null)
             {
@@ -303,21 +325,28 @@ namespace Blog.Controllers
             blogComment.createdDate = DateTime.Now;
             await _context.BlogComments.AddAsync(blogComment);
             await _context.SaveChangesAsync();
-            return new Response(HttpStatusCode.OK, "Create blog comment is success!", _mapper.Map<ViewBlogComment>(blogComment));
+            return new Response(HttpStatusCode.OK, "Create comment is success!", _mapper.Map<ViewBlogComment>(blogComment));
         }
 
         [HttpPut("UpdateBlogComment/{idBlogComment}")]
         public async Task<Response> UpdateBlogComment(Guid idBlogComment, CreateUpdateBlogComment createUpdateBlogComment)
         {
+            var validator = new CreateUpdateBlogCommentValidator();
+            var validatorResult = validator.Validate(createUpdateBlogComment);
+            var error = validatorResult.Errors.Select(x => x.ErrorMessage).ToList();
+            if (!validatorResult.IsValid)
+            {
+                return new Response(HttpStatusCode.BadRequest, "Invalid data", error);
+            }
             var blogComment = await _context.BlogComments.FirstOrDefaultAsync(x => x.idBlogComment == idBlogComment);
             if (blogComment == null)
             {
-                return new Response(HttpStatusCode.NotFound, "Blog comment doesn't exist!");
+                return new Response(HttpStatusCode.NotFound, "Comment doesn't exist!");
             }
             _mapper.Map(createUpdateBlogComment, blogComment);
             _context.BlogComments.Update(blogComment);
             await _context.SaveChangesAsync();
-            return new Response(HttpStatusCode.OK, "Update blog comment is success!", _mapper.Map<ViewBlogComment>(blogComment));
+            return new Response(HttpStatusCode.OK, "Update comment is success!", _mapper.Map<ViewBlogComment>(blogComment));
         }
 
         [HttpDelete("RemoveBlogComment/{idBlogComment}")]
@@ -326,11 +355,11 @@ namespace Blog.Controllers
             var blogComment = await _context.BlogComments.FirstOrDefaultAsync(x => x.idBlogComment == idBlogComment);
             if (blogComment == null)
             {
-                return new Response(HttpStatusCode.NotFound, "Blog comment doesn't exist!");
+                return new Response(HttpStatusCode.NotFound, "Comment doesn't exist!");
             }
             blogComment.isDeleted = true;
             await _context.SaveChangesAsync();
-            return new Response(HttpStatusCode.NoContent, "Remove blog comment is success!");
+            return new Response(HttpStatusCode.NoContent, "Remove comment is success!");
         }
 
         [HttpPost("LikeOrUnlikeBlogComment/{idUser}/{idBlogComment}")]
@@ -352,7 +381,7 @@ namespace Blog.Controllers
                 _context.BlogCommentLikes.Remove(existLike);
             }
             await _context.SaveChangesAsync();
-            return new Response(HttpStatusCode.NoContent, "Like or unlike blog comment is success!");
+            return new Response(HttpStatusCode.NoContent, "Like or unlike comment is success!");
         }
 
         //*------------------------------------------------------------BlogReply------------------------------------------------------------*//*
@@ -360,10 +389,17 @@ namespace Blog.Controllers
         [HttpPost("CreateBlogReply/{idUser}/{idBlogComment}")]
         public async Task<Response> CreateBlogReply(string idUser, Guid idBlogComment, CreateUpdateBlogReply createUpdateBlogReply)
         {
+            var validator = new CreateUpdateBlogReplyValidator();
+            var validatorResult = validator.Validate(createUpdateBlogReply);
+            var error = validatorResult.Errors.Select(x => x.ErrorMessage).ToList();
+            if (!validatorResult.IsValid)
+            {
+                return new Response(HttpStatusCode.BadRequest, "Invalid data", error);
+            }
             var blogComment = await _context.BlogComments.FirstOrDefaultAsync(x => x.idBlogComment == idBlogComment);
             if (blogComment == null)
             {
-                return new Response(HttpStatusCode.NotFound, "Blog comment doesn't exist!");
+                return new Response(HttpStatusCode.NotFound, "Comment doesn't exist!");
             }
             var blogReply = _mapper.Map<BloggReply>(createUpdateBlogReply);
             blogReply.idAccount = idUser;
@@ -372,21 +408,28 @@ namespace Blog.Controllers
             blogReply.createdDate = DateTime.Now;
             await _context.BlogReplies.AddAsync(blogReply);
             await _context.SaveChangesAsync();
-            return new Response(HttpStatusCode.OK, "Create blog reply is success!", _mapper.Map<ViewBlogReply>(blogReply));
+            return new Response(HttpStatusCode.OK, "Create reply is success!", _mapper.Map<ViewBlogReply>(blogReply));
         }
 
         [HttpPut("UpdateBlogReply/{idBlogReply}")]
         public async Task<Response> UpdateBlogReply(Guid idBlogReply, CreateUpdateBlogReply createUpdateBlogReply)
         {
+            var validator = new CreateUpdateBlogReplyValidator();
+            var validatorResult = validator.Validate(createUpdateBlogReply);
+            var error = validatorResult.Errors.Select(x => x.ErrorMessage).ToList();
+            if (!validatorResult.IsValid)
+            {
+                return new Response(HttpStatusCode.BadRequest, "Invalid data", error);
+            }
             var blogReply = await _context.BlogReplies.FirstOrDefaultAsync(x => x.idBlogReply == idBlogReply);
             if (blogReply == null)
             {
-                return new Response(HttpStatusCode.NotFound, "Blog reply doesn't exist!");
+                return new Response(HttpStatusCode.NotFound, "Reply doesn't exist!");
             }
             _mapper.Map(createUpdateBlogReply, blogReply);
             _context.BlogReplies.Update(blogReply);
             await _context.SaveChangesAsync();
-            return new Response(HttpStatusCode.OK, "Update blog reply is success!", _mapper.Map<ViewBlogReply>(blogReply));
+            return new Response(HttpStatusCode.OK, "Update reply is success!", _mapper.Map<ViewBlogReply>(blogReply));
         }
 
         [HttpDelete("RemoveBlogReply/{idBlogReply}")]
@@ -395,11 +438,11 @@ namespace Blog.Controllers
             var blogReply = await _context.BlogReplies.FirstOrDefaultAsync(x => x.idBlogReply == idBlogReply);
             if (blogReply == null)
             {
-                return new Response(HttpStatusCode.NotFound, "Blog reply doesn't exist!");
+                return new Response(HttpStatusCode.NotFound, "Reply doesn't exist!");
             }
             blogReply.isDeleted = true;
             await _context.SaveChangesAsync();
-            return new Response(HttpStatusCode.NoContent, "Remove blog reply is success!");
+            return new Response(HttpStatusCode.NoContent, "Remove reply is success!");
         }
 
         [HttpPost("LikeOrUnlikeBlogReply/{idUser}/{idBlogReply}")]
