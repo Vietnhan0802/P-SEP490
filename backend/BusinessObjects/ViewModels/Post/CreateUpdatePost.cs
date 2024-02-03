@@ -4,8 +4,6 @@
     {
         public string? title { get; set; }
         public string? content { get; set; }
-        public string? major { get; set; }
-        public string? exp { get; set; }
-        public List<CreateUpdatePostImage>? CreateUpdatePostImages { get; set; }
+        public ICollection<CreateUpdatePostImage>? CreateUpdatePostImages { get; set; }
     }
 }
