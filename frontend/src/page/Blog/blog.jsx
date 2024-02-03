@@ -3,7 +3,6 @@ import { useState } from "react";
 import "../Blog/blog.scss";
 import { CiCircleChevRight } from "react-icons/ci";
 import { IoFlagOutline } from "react-icons/io5";
-import { BsChat } from "react-icons/bs";
 import { FiEye } from "react-icons/fi";
 import { RiAdminLine } from "react-icons/ri";
 import { CiHeart } from "react-icons/ci";
@@ -36,9 +35,9 @@ function calculateTimeDifference(targetDate) {
   }
 }
 function Blog({ blogId, onBlogClick, activeItem, onItemClick }) {
-  const createData = (id, createdDate, title, content, view, viewBlogImages, fullName) => {
+  const createData = (id, createdDate, title, content, view, like, viewBlogImages, fullName) => {
     return {
-      id, createdDate, title, content, view, viewBlogImages, fullName
+      id, createdDate, title, content, view, like, viewBlogImages, fullName
     }
   }
 
@@ -134,6 +133,7 @@ function Blog({ blogId, onBlogClick, activeItem, onItemClick }) {
               element.title,
               element.content,
               element.view,
+              element.like,
               element.viewBlogImages,
               element.fullName)
           ]));
@@ -208,7 +208,7 @@ function Blog({ blogId, onBlogClick, activeItem, onItemClick }) {
                   {item.view}
                 </div>
                 <div className="d-flex align-items-center me-3">
-                  <CiHeart className="me-2" /> {item.comment}
+                  <CiHeart className="me-2" /> {item.like}
                 </div>
                 <div
                   className="d-flex align-items-center me-3"
