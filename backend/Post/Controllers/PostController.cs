@@ -3,9 +3,11 @@ using BusinessObjects.Entities.Post;
 using BusinessObjects.ViewModels.Post;
 using BusinessObjects.ViewModels.User;
 using Commons.Helpers;
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Post.Data;
+using Post.Validator;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Text.Json;
@@ -35,7 +37,7 @@ namespace Post.Controllers
         }
 
         [HttpGet("GetNameUserCurrent/{idUser}")]
-        private async Task<string> GetNameUserCurrent(string idUser)
+        private async Task<ViewUser> GetNameUserCurrent(string idUser)
         {
             HttpResponseMessage response = await client.GetAsync($"{UserApiUrl}/GetNameUser/{idUser}");
             string strData = await response.Content.ReadAsStringAsync();
@@ -43,14 +45,14 @@ namespace Post.Controllers
             {
                 PropertyNameCaseInsensitive = true,
             };
-            var user = JsonSerializer.Deserialize<string>(strData, option);
+            var user = JsonSerializer.Deserialize<ViewUser>(strData, option);
 
             return user!;
         }
 
         /*------------------------------------------------------------Post------------------------------------------------------------*/
 
-        [HttpGet("SearchPosts/{namePost}")]
+        /*[HttpGet("SearchPosts/{namePost}")]
         public async Task<Response> SearchPosts(string namePost)
         {
             var posts = await _context.Postts.Include(x => x.PosttImages).Where(x => x.title!.Contains(namePost)).OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
@@ -68,20 +70,23 @@ namespace Post.Controllers
                 }
             }
             return new Response(HttpStatusCode.OK, "Search posts success!", result);
-        }
+        }*/
 
         [HttpGet("GetAllPosts")]
         public async Task<Response> GetAllPosts()
         {
-            var posts = await _context.Postts.Include(x => x.PosttImages).OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
+            var posts = await _context.Postts.Where(x => x.isDeleted == false).OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
             if (posts == null)
             {
-                return new Response(HttpStatusCode.NoContent, "List posts doesn't empty!");
+                return new Response(HttpStatusCode.NoContent, "Post list is empty!");
             }
             var result = _mapper.Map<List<ViewPost>>(posts);
             foreach (var post in result)
             {
-                post.fullName = await GetNameUserCurrent(post.idAccount!);
+                post.like = await _context.PosttLikes.Where(x => x.idPost == post.idPost).CountAsync();
+                var infoUser = await GetNameUserCurrent(post.idAccount!);
+                post.fullName = infoUser.fullName;
+                post.avatar = infoUser.avatar;
                 var postImages = await _context.PosttImages.Where(x => x.idPost == post.idPost).ToListAsync();
                 var viewImages = _mapper.Map<List<ViewPostImage>>(postImages);
                 foreach (var image in viewImages)
@@ -90,21 +95,24 @@ namespace Post.Controllers
                 }
                 post.ViewPostImages = viewImages;
             }
-            return new Response(HttpStatusCode.OK, "Get list posts is success!", result);
+            return new Response(HttpStatusCode.OK, "Get post list is success!", result);
         }
 
         [HttpGet("GetPostByUser/{idUser}")]
         public async Task<Response> GetPostByUser(string idUser)
         {
-            var posts = await _context.Postts.Include(x => x.PosttImages).Where(x => x.idAccount == idUser && x.isDeleted == false).OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
+            var posts = await _context.Postts.Where(x => x.idAccount == idUser && x.isDeleted == false).OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
             if (posts == null)
             {
-                return new Response(HttpStatusCode.NoContent, "List posts doesn't empty!");
+                return new Response(HttpStatusCode.NoContent, "Post list is empty!");
             }
             var result = _mapper.Map<List<ViewPost>>(posts);
             foreach (var post in result)
             {
-                post.fullName = await GetNameUserCurrent(post.idAccount!);
+                post.like = await _context.PosttLikes.Where(x => x.idPost == post.idPost).CountAsync();
+                var infoUser = await GetNameUserCurrent(post.idAccount!);
+                post.fullName = infoUser.fullName;
+                post.avatar = infoUser.avatar;
                 var postImages = await _context.PosttImages.Where(x => x.idPost == post.idPost).ToListAsync();
                 var viewImages = _mapper.Map<List<ViewPostImage>>(postImages);
                 foreach (var image in viewImages)
@@ -113,33 +121,47 @@ namespace Post.Controllers
                 }
                 post.ViewPostImages = viewImages;
             }
-            return new Response(HttpStatusCode.OK, "Get list posts is success!", result);
+            return new Response(HttpStatusCode.OK, "Get post list is success!", result);
         }
 
         [HttpGet("GetPostById/{idPost}")]
         public async Task<Response> GetPostById(Guid idPost)
         {
-            var post = await _context.Postts.Include(x => x.PosttImages).FirstOrDefaultAsync(x => x.idPost == idPost);
+            var post = await _context.Postts.FirstOrDefaultAsync(x => x.idPost == idPost);
             if (post == null)
             {
-                return new Response(HttpStatusCode.NotFound, "Post doesn't exists!");
+                return new Response(HttpStatusCode.NotFound, "Post doesn't exist!");
             }
-            post.view++;
-            await _context.SaveChangesAsync();
             var result = _mapper.Map<ViewPost>(post);
-            result.fullName = await GetNameUserCurrent(result.idAccount!);
-            foreach (var image in result.ViewPostImages!)
+            result.like = await _context.PosttLikes.Where(x => x.idPost == post.idPost).CountAsync();
+            var infoUser = await GetNameUserCurrent(result.idAccount!);
+            result.fullName = infoUser.fullName;
+            result.avatar = infoUser.avatar;
+            var postImages = await _context.PosttImages.Where(x => x.idPost == post.idPost).ToListAsync();
+            var viewImages = _mapper.Map<List<ViewPostImage>>(postImages);
+            foreach (var image in viewImages)
             {
                 image.ImageSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, image.image);
             }
+            result.ViewPostImages = viewImages;
+            post.view++;
+            await _context.SaveChangesAsync();
             return new Response(HttpStatusCode.OK, "Get post is success!", result);
         }
 
-        [HttpPost("CreatePost/{idUser}")]
-        public async Task<Response> CreatePost(string idUser, CreateUpdatePost createUpdatePost)
+        [HttpPost("CreatePost/{idUser}/{idProject}")]
+        public async Task<Response> CreatePost(string idUser, Guid idProject, [FromForm] CreateUpdatePost createUpdatePost)
         {
+            var validator = new CreateUpdatePostValidator();
+            var validatorResult = validator.Validate(createUpdatePost);
+            var error = validatorResult.Errors.Select(x => x.ErrorMessage).ToList();
+            if (!validatorResult.IsValid)
+            {
+                return new Response(HttpStatusCode.BadRequest, "Invalid data", error);
+            }
             var post = _mapper.Map<Postt>(createUpdatePost);
             post.idAccount = idUser;
+            post.idProject = idProject;
             post.isDeleted = false;
             post.createdDate = DateTime.Now;
             await _context.Postts.AddAsync(post);
@@ -170,12 +192,19 @@ namespace Post.Controllers
         }
 
         [HttpPut("UpdatePost/{idPost}")]
-        public async Task<Response> UpdatePost(Guid idPost, CreateUpdatePost createUpdatePost)
+        public async Task<Response> UpdatePost(Guid idPost, [FromForm] CreateUpdatePost createUpdatePost)
         {
+            var validator = new CreateUpdatePostValidator();
+            var validatorResult = validator.Validate(createUpdatePost);
+            var error = validatorResult.Errors.Select(x => x.ErrorMessage).ToList();
+            if (!validatorResult.IsValid)
+            {
+                return new Response(HttpStatusCode.BadRequest, "Invalid data", error);
+            }
             var post = await _context.Postts.FirstOrDefaultAsync(x => x.idPost == idPost);
             if (post == null)
             {
-                return new Response(HttpStatusCode.NotFound, "Post doesn't exists!");
+                return new Response(HttpStatusCode.NotFound, "Post doesn't exist!");
             }
             _mapper.Map(createUpdatePost, post);
             var images = await _context.PosttImages.Where(x => x.idPost == post.idPost).ToListAsync();
@@ -216,18 +245,11 @@ namespace Post.Controllers
             var post = await _context.Postts.FirstOrDefaultAsync(x => x.idPost == idPost);
             if (post == null)
             {
-                return new Response(HttpStatusCode.NotFound, "Post doesn't exists!");
+                return new Response(HttpStatusCode.NotFound, "Post doesn't exist!");
             }
             post.isDeleted = true;
             await _context.SaveChangesAsync();
             return new Response(HttpStatusCode.NoContent, "Remove post is success!");
-        }
-
-        [HttpGet("GetTotalLikePosts/{idPost}")]
-        public async Task<Response> GetTotalLikePosts(Guid idPost)
-        {
-            var totalLikePosts = await _context.PosttLikes.Where(x => x.idPost == idPost).CountAsync();
-            return new Response(HttpStatusCode.OK, "Get all like posts is success!", totalLikePosts);
         }
 
         [HttpPost("LikeOrUnlikePost/{idUser}/{idPost}")]
@@ -257,22 +279,42 @@ namespace Post.Controllers
         [HttpGet("GetAllPostComments/{idPost}")]
         public async Task<Response> GetAllPostComments(Guid idPost)
         {
-            var comments = await _context.PosttComments.Where(x => x.idPost == idPost).OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
+            var comments = await _context.PosttComments.Where(x => x.idPost == idPost && x.isDeleted == false).OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
             if (comments == null)
             {
-                return new Response(HttpStatusCode.NoContent, "List comments doesn't empty!");
+                return new Response(HttpStatusCode.NoContent, "Comment list is empty!");
             }
             var result = _mapper.Map<List<ViewPostComment>>(comments);
             foreach (var comment in result)
             {
-                comment.fullName = await GetNameUserCurrent(comment.idAccount!);
+                comment.like = await _context.PosttCommentLikes.Where(x => x.idPostComment == comment.idPostComment).CountAsync();
+                var infoUserComment = await GetNameUserCurrent(comment.idAccount!);
+                comment.fullName = infoUserComment.fullName;
+                comment.avatar = infoUserComment.avatar;
+                var replies = await _context.PosttReplies.Where(x => x.idPostComment == comment.idPostComment && x.isDeleted == false).OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
+                var resultReplies = _mapper.Map<List<ViewPostReply>>(replies);
+                foreach (var reply in resultReplies)
+                {
+                    reply.like = await _context.PosttReplyLikes.Where(x => x.idPostReply == reply.idPostReply).CountAsync();
+                    var infoUserReply = await GetNameUserCurrent(reply.idAccount!);
+                    reply.fullName = infoUserReply.fullName;
+                    reply.avatar = infoUserReply.avatar;
+                }
+                comment.ViewPostReplies = resultReplies;
             }
-            return new Response(HttpStatusCode.OK, "Get list comments is success!", result);
+            return new Response(HttpStatusCode.OK, "Get comment list is success!", result);
         }
 
         [HttpPost("CreatePostComment/{idUser}/{idPost}")]
         public async Task<Response> CreatePostComment(string idUser, Guid idPost, CreateUpdatePostComment createUpdatePostComment)
         {
+            var validator = new CreateUpdatePostCommentValidatior();
+            var validatorResult = validator.Validate(createUpdatePostComment);
+            var error = validatorResult.Errors.Select(x => x.ErrorMessage).ToList();
+            if (!validatorResult.IsValid)
+            {
+                return new Response(HttpStatusCode.BadRequest, "Invalid data", error);
+            }
             var post = await _context.Postts.FirstOrDefaultAsync(x => x.idPost == idPost);
             if (post == null)
             {
@@ -289,8 +331,15 @@ namespace Post.Controllers
         }
 
         [HttpPut("UpdatePostComment/{idPostComment}")]
-        public async Task<Response> UpdatePostComment(Guid idPostComment, CreateUpdatePostComment createUpdatePostComment)
+        public async Task<Response> UpdatePostComment(Guid idPostComment, [FromForm] CreateUpdatePostComment createUpdatePostComment)
         {
+            var validator = new CreateUpdatePostCommentValidatior();
+            var validatorResult = validator.Validate(createUpdatePostComment);
+            var error = validatorResult.Errors.Select(x => x.ErrorMessage).ToList();
+            if (!validatorResult.IsValid)
+            {
+                return new Response(HttpStatusCode.BadRequest, "Invalid data", error);
+            }
             var postComment = await _context.PosttComments.FirstOrDefaultAsync(x => x.idPostComment == idPostComment);
             if (postComment == null)
             {
@@ -313,13 +362,6 @@ namespace Post.Controllers
             postComment.isDeleted = true;
             await _context.SaveChangesAsync();
             return new Response(HttpStatusCode.NoContent, "Remove post comment is success!");
-        }
-
-        [HttpGet("GetTotalLikePostComments/{idPostComment}")]
-        public async Task<Response> GetTotalLikePostComments(Guid idPostComment)
-        {
-            var totalLikePostComments = await _context.PosttCommentLikes.Where(x => x.idPostComment == idPostComment).CountAsync();
-            return new Response(HttpStatusCode.OK, "Get all like post comments is success!", totalLikePostComments);
         }
 
         [HttpPost("LikeOrUnlikePostComment/{idUser}/{idPostComment}")]
@@ -346,25 +388,16 @@ namespace Post.Controllers
 
         /*------------------------------------------------------------BlogReply------------------------------------------------------------*/
 
-        [HttpGet("GetAllPostReplies/{idPostComment}")]
-        public async Task<Response> GetAllPostReplies(Guid idPostComment)
-        {
-            var replies = await _context.PosttReplies.Where(x => x.idPostComment == idPostComment).OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
-            if (replies == null)
-            {
-                return new Response(HttpStatusCode.NoContent, "List replies doesn't empty!");
-            }
-            var result = _mapper.Map<List<ViewPostReply>>(replies);
-            foreach (var reply in result)
-            {
-                reply.fullName = await GetNameUserCurrent(reply.idAccount!);
-            }
-            return new Response(HttpStatusCode.OK, "Get list replies is success!", result);
-        }
-
         [HttpPost("CreatePostReply/{idUser}/{idPostComment}")]
         public async Task<Response> CreatePostReply(string idUser, Guid idPostComment, CreateUpdatePostReply createUpdatePostReply)
         {
+            var validator = new CreateUpdatePostReplyValidator();
+            var validatorResult = validator.Validate(createUpdatePostReply);
+            var error = validatorResult.Errors.Select(x => x.ErrorMessage).ToList();
+            if (!validatorResult.IsValid)
+            {
+                return new Response(HttpStatusCode.BadRequest, "Invalid data", error);
+            }
             var postComment = await _context.PosttComments.FirstOrDefaultAsync(x => x.idPostComment == idPostComment);
             if (postComment == null)
             {
@@ -383,6 +416,13 @@ namespace Post.Controllers
         [HttpPut("UpdatePostReply/{idPostReply}")]
         public async Task<Response> UpdatePostReply(Guid idPostReply, CreateUpdatePostReply createUpdatePostReply)
         {
+            var validator = new CreateUpdatePostReplyValidator();
+            var validatorResult = validator.Validate(createUpdatePostReply);
+            var error = validatorResult.Errors.Select(x => x.ErrorMessage).ToList();
+            if (!validatorResult.IsValid)
+            {
+                return new Response(HttpStatusCode.BadRequest, "Invalid data", error);
+            }
             var postReply = await _context.PosttReplies.FirstOrDefaultAsync(x => x.idPostReply == idPostReply);
             if (postReply == null)
             {
@@ -405,13 +445,6 @@ namespace Post.Controllers
             postReply.isDeleted = true;
             await _context.SaveChangesAsync();
             return new Response(HttpStatusCode.NoContent, "Remove post reply is success!");
-        }
-
-        [HttpGet("GetTotalLikePostReplies/{idPostReply}")]
-        public async Task<Response> GetTotalLikePostReplies(Guid idPostReply)
-        {
-            var totalLikePostReplies = await _context.PosttReplyLikes.Where(x => x.idPostReply == idPostReply).CountAsync();
-            return new Response(HttpStatusCode.OK, "Get all like post replies is success!", totalLikePostReplies);
         }
 
         [HttpPost("LikeOrUnlikePostReply/{idUser}/{idPostReply}")]
