@@ -7,6 +7,7 @@ using BusinessObjects.ViewModels.User;
 using Commons.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Text.Json;
@@ -272,7 +273,7 @@ namespace Blog.Controllers
             return new Response(HttpStatusCode.NoContent, "Like or unlike blog is success!");
         }
 
-        //*------------------------------------------------------------BlogComment------------------------------------------------------------*//*
+        //*------------------------------------------------------------BlogComment------------------------------------------------------------*//
 
         [HttpGet("GetAllCommentByBlog/{idBlog}")]
         public async Task<Response> GetAllCommentByBlog(Guid idBlog)
@@ -303,7 +304,7 @@ namespace Blog.Controllers
             return new Response(HttpStatusCode.OK, "Get comment list is success!", resultComments);
         }
 
-        [HttpPost("CreateBlogComment/{idUser}/{idBlog}")]
+        [HttpPost("CreateBlogComment/{idUser}/{idBlog}/{content}")]
         public async Task<Response> CreateBlogComment(string idUser, Guid idBlog, string content)
         {
             var blog = await _context.Blogs.FirstOrDefaultAsync(x => x.idBlog == idBlog);
@@ -324,7 +325,7 @@ namespace Blog.Controllers
             return new Response(HttpStatusCode.OK, "Create comment is success!", _mapper.Map<ViewBlogComment>(blogComment));
         }
 
-        [HttpPut("UpdateBlogComment/{idBlogComment}")]
+        [HttpPut("UpdateBlogComment/{idBlogComment}/{content}")]
         public async Task<Response> UpdateBlogComment(Guid idBlogComment, string content)
         {
             var blogComment = await _context.BlogComments.FirstOrDefaultAsync(x => x.idBlogComment == idBlogComment);
@@ -375,7 +376,7 @@ namespace Blog.Controllers
 
         //*------------------------------------------------------------BlogReply------------------------------------------------------------*//*
 
-        [HttpPost("CreateBlogReply/{idUser}/{idBlogComment}")]
+        [HttpPost("CreateBlogReply/{idUser}/{idBlogComment}/{content}")]
         public async Task<Response> CreateBlogReply(string idUser, Guid idBlogComment, string content)
         {
             var blogComment = await _context.BlogComments.FirstOrDefaultAsync(x => x.idBlogComment == idBlogComment);
@@ -396,7 +397,7 @@ namespace Blog.Controllers
             return new Response(HttpStatusCode.OK, "Create reply is success!", _mapper.Map<ViewBlogReply>(blogReply));
         }
 
-        [HttpPut("UpdateBlogReply/{idBlogReply}")]
+        [HttpPut("UpdateBlogReply/{idBlogReply}/{content}")]
         public async Task<Response> UpdateBlogReply(Guid idBlogReply, string content)
         {
             var blogReply = await _context.BlogReplies.FirstOrDefaultAsync(x => x.idBlogReply == idBlogReply);
