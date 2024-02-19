@@ -50,13 +50,20 @@ function BlogDetail(id) {
     // If the original content is not set (i.e., it's an empty string), set it with the current content
     setOriginalContent(originalContent || '');
   };
-
-  const handleUpdateComment = (comment) => {
-    // Implement the logic to update the comment on the server
-    // ...
-
-    // Reset the update state
+  const handleUpdateCommentCancel = () => {
     setUpdateCommentShow(null);
+    setState(!state);
+  };
+  const handleUpdateComment = (idBlogComment, content) => {
+    blogInstance.put(`UpdateBlogComment/${idBlogComment}/${content}`)
+      .then(() => {
+        setUpdateCommentShow(null);
+        setState(!state);
+      }
+      )
+      .catch((error) => {
+        console.error(error);
+      })
   };
   const handleViewReply = (blogId) => {
     setViewReply((prev) => (prev === blogId ? null : blogId));
@@ -74,7 +81,7 @@ function BlogDetail(id) {
     );
   };
   const handleCreateComment = () => {
-    blogInstance.post(`CreateBlogComment/${userId}/${idBlog}?content=${content}`, {
+    blogInstance.post(`CreateBlogComment/${userId}/${idBlog}/${content}`, {
       headers: {
         accept: 'application/json'
       }
@@ -135,6 +142,11 @@ function BlogDetail(id) {
       <p>
         {data.content}
       </p>
+      <div>
+        {data.viewBlogImages.map((item)=>(
+          <img src={item.imageSrc} alt="" className="w-100"/>
+        ))}
+      </div>
       <div className="d-flex align-items-center border-bottom pb-3 mt-2 border-dark">
         <div className="d-flex align-items-center me-3">
           <FiEye className="me-2" /> {data.view + 1}
@@ -196,25 +208,25 @@ function BlogDetail(id) {
                     value={originalContent || item.content}
                     onChange={(e) => handleUpdateInputComment(item.idBlogComment, e.target.value)}
                   />
-                  <button onClick={() => handleUpdateCommentAppear(item.idBlogComment, item.content)}>Cancel</button>
-                  <button onClick={() => handleUpdateComment(item)}>Save</button>
+                  <button onClick={() => handleUpdateCommentCancel(item.idBlogComment)}>Cancel</button>
+                  <button onClick={() => handleUpdateComment(item.idBlogComment, item.content)}>Save</button>
                 </>
               )}
               <div className="rep d-flex w-100" >
-                <div className={`d-flex justify-content-between w-100 align-items-center ${viewReply !== item.id ? 'justify-content-end' : "justify-content-between"}`}>
-                  {viewReply !== item.id ?
+                <div className={`d-flex justify-content-between w-100 align-items-center ${viewReply !== item.idBlogComment ? 'justify-content-end' : "justify-content-between"}`}>
+                  {viewReply !== item.idBlogComment ?
                     <div className="d-flex justify-content-between align-items-center w-100 py-2">
-                      <p onClick={() => handleViewReply(item.id)}>View Reply</p>
-                      <p onClick={() => handleViewReply(item.id)}>Reply</p>
+                      <p onClick={() => handleViewReply(item.idBlogComment)}>View Reply</p>
+                      <p onClick={() => handleViewReply(item.idBlogComment)}>Reply</p>
                     </div> :
                     <div className="d-flex justify-content-end align-items-center w-100">
-                      <p onClick={() => handleViewReply(item.id)}>Close</p>
+                      <p onClick={() => handleViewReply(item.idBlogComment)}>Close</p>
                     </div>
                   }
                 </div>
               </div>
               <div>
-                {viewReply === item.id && (
+                {viewReply === item.id ? (
                   item.viewBlogReplies.map((reply) => (
                     <>
                       <div className="d-flex">
@@ -231,7 +243,7 @@ function BlogDetail(id) {
                       </div>
                     </>
                   ))
-                )}
+                ):null}
               </div>
             </div>
           </div>
