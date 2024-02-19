@@ -306,46 +306,35 @@ namespace Post.Controllers
         }
 
         [HttpPost("CreatePostComment/{idUser}/{idPost}")]
-        public async Task<Response> CreatePostComment(string idUser, Guid idPost, CreateUpdatePostComment createUpdatePostComment)
+        public async Task<Response> CreatePostComment(string idUser, Guid idPost, string content)
         {
-            var validator = new CreateUpdatePostCommentValidatior();
-            var validatorResult = validator.Validate(createUpdatePostComment);
-            var error = validatorResult.Errors.Select(x => x.ErrorMessage).ToList();
-            if (!validatorResult.IsValid)
-            {
-                return new Response(HttpStatusCode.BadRequest, "Invalid data", error);
-            }
             var post = await _context.Postts.FirstOrDefaultAsync(x => x.idPost == idPost);
             if (post == null)
             {
                 return new Response(HttpStatusCode.NotFound, "Post doesn't exist!");
             }
-            var postComment = _mapper.Map<PosttComment>(createUpdatePostComment);
-            postComment.idAccount = idUser;
-            postComment.idPost = idPost;
-            postComment.isDeleted = false;
-            postComment.createdDate = DateTime.Now;
+            PosttComment postComment = new PosttComment()
+            {
+                idAccount = idUser,
+                idPost = idPost,
+                content = content,
+                isDeleted = false,
+                createdDate = DateTime.Now
+            };
             await _context.PosttComments.AddAsync(postComment);
             await _context.SaveChangesAsync();
             return new Response(HttpStatusCode.OK, "Create post comment is success!", _mapper.Map<ViewPostComment>(postComment));
         }
 
         [HttpPut("UpdatePostComment/{idPostComment}")]
-        public async Task<Response> UpdatePostComment(Guid idPostComment, [FromForm] CreateUpdatePostComment createUpdatePostComment)
+        public async Task<Response> UpdatePostComment(Guid idPostComment, string content)
         {
-            var validator = new CreateUpdatePostCommentValidatior();
-            var validatorResult = validator.Validate(createUpdatePostComment);
-            var error = validatorResult.Errors.Select(x => x.ErrorMessage).ToList();
-            if (!validatorResult.IsValid)
-            {
-                return new Response(HttpStatusCode.BadRequest, "Invalid data", error);
-            }
             var postComment = await _context.PosttComments.FirstOrDefaultAsync(x => x.idPostComment == idPostComment);
             if (postComment == null)
             {
                 return new Response(HttpStatusCode.NotFound, "Post comment doesn't exist!");
             }
-            _mapper.Map(createUpdatePostComment, postComment);
+            postComment.content = content;
             _context.PosttComments.Update(postComment);
             await _context.SaveChangesAsync();
             return new Response(HttpStatusCode.OK, "Update post comment is success!", _mapper.Map<ViewPostComment>(postComment));
@@ -389,46 +378,35 @@ namespace Post.Controllers
         /*------------------------------------------------------------BlogReply------------------------------------------------------------*/
 
         [HttpPost("CreatePostReply/{idUser}/{idPostComment}")]
-        public async Task<Response> CreatePostReply(string idUser, Guid idPostComment, CreateUpdatePostReply createUpdatePostReply)
+        public async Task<Response> CreatePostReply(string idUser, Guid idPostComment, string content)
         {
-            var validator = new CreateUpdatePostReplyValidator();
-            var validatorResult = validator.Validate(createUpdatePostReply);
-            var error = validatorResult.Errors.Select(x => x.ErrorMessage).ToList();
-            if (!validatorResult.IsValid)
-            {
-                return new Response(HttpStatusCode.BadRequest, "Invalid data", error);
-            }
             var postComment = await _context.PosttComments.FirstOrDefaultAsync(x => x.idPostComment == idPostComment);
             if (postComment == null)
             {
                 return new Response(HttpStatusCode.NotFound, "Post comment doesn't exist!");
             }
-            var postReply = _mapper.Map<PosttReply>(createUpdatePostReply);
-            postReply.idAccount = idUser;
-            postReply.idPostComment = idPostComment;
-            postReply.isDeleted = false;
-            postReply.createdDate = DateTime.Now;
+            PosttReply postReply = new PosttReply()
+            {
+                idAccount = idUser,
+                idPostComment = idPostComment,
+                content = content,
+                isDeleted = false,
+                createdDate = DateTime.Now
+            };
             await _context.PosttReplies.AddAsync(postReply);
             await _context.SaveChangesAsync();
             return new Response(HttpStatusCode.OK, "Create post reply is success!", _mapper.Map<ViewPostReply>(postReply));
         }
 
         [HttpPut("UpdatePostReply/{idPostReply}")]
-        public async Task<Response> UpdatePostReply(Guid idPostReply, CreateUpdatePostReply createUpdatePostReply)
+        public async Task<Response> UpdatePostReply(Guid idPostReply, string content)
         {
-            var validator = new CreateUpdatePostReplyValidator();
-            var validatorResult = validator.Validate(createUpdatePostReply);
-            var error = validatorResult.Errors.Select(x => x.ErrorMessage).ToList();
-            if (!validatorResult.IsValid)
-            {
-                return new Response(HttpStatusCode.BadRequest, "Invalid data", error);
-            }
             var postReply = await _context.PosttReplies.FirstOrDefaultAsync(x => x.idPostReply == idPostReply);
             if (postReply == null)
             {
                 return new Response(HttpStatusCode.NotFound, "Post reply doesn't exist!");
             }
-            _mapper.Map(createUpdatePostReply, postReply);
+            postReply.content = content;
             _context.PosttReplies.Update(postReply);
             await _context.SaveChangesAsync();
             return new Response(HttpStatusCode.OK, "Update post reply is success!", _mapper.Map<ViewPostReply>(postReply));
