@@ -52,26 +52,6 @@ namespace Blog.Controllers
 
         /*------------------------------------------------------------Blog------------------------------------------------------------*/
 
-        /*[HttpGet("SearchBlogs/{nameBlog}")]
-        public async Task<Response> SearchBlogs(string nameBlog)
-        {
-            var blogs = await _context.Blogs.Include(x => x.BloggImages).Where(x => x.title!.Contains(nameBlog)).OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
-            if (blogs == null)
-            {
-                return new Response(HttpStatusCode.NoContent, "No blogs found with the given name!");
-            }
-            var result = _mapper.Map<List<ViewBlog>>(blogs);
-            foreach (var blog in result)
-            {
-                //blog.fullName = await GetNameUserCurrent(blog.idAccount!);
-                foreach (var image in blog.ViewBlogImages!)
-                {
-                    image.ImageSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, image.image);
-                }
-            }
-            return new Response(HttpStatusCode.OK, "Search blogs success!", result);
-        }*/
-
         [HttpGet("GetAllBlogs")]
         public async Task<Response> GetAllBlogs()
         {
