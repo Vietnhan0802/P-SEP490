@@ -7,6 +7,7 @@ namespace BusinessObjects.ViewModels.Project
         public Guid idProjectMember { get; set; }
         public string? idAccount { get; set; }
         public string fullName { get; set; }
+        public string avatar { get; set; }
         public Guid? idProject { get; set; }
         public string name { get; set; }
         public bool isAcept { get; set; }
