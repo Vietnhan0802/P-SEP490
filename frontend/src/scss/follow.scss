@@ -1,21 +1,46 @@
-.follow{
+.follow {
     height: 800px;
     border-radius: 8px;
     background-color: #fff;
-    padding: 29px 62px 35px 16px;
-    .text{
-        color: #2F45AD;
-        font-weight:  bold;
+    padding: 13px;
+    .follow-avata-box{
+        position: relative;
     }
-    .user-image{
-        width: 40px;
-        height: 40px;
+    .user-tick{
+        position: absolute;
+        bottom: 0px;
+        right: 0px;
+        width: 18px;
+    }
+    .follow-user-name {
+        font-size: 18px;
+        line-height: 1;
+        margin-bottom: 3px;
+    }
+
+    .follow-user-email {
+        font-size: 13px;
+        line-height: 1;
+    }
+
+    .text {
+        color: #2F45AD;
+        font-weight: bold;
+        margin-bottom: 15px;
+        font-size: 20px;
+    }
+
+    .user-image {
+        width: 45px;
+        height: 45px;
         border-radius: 50%;
     }
-    button{
+
+    button {
         bottom: 10px;
     }
-    .dot{
+
+    .dot {
         color: #20BECB;
     }
 }
