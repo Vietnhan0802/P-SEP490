@@ -9,6 +9,7 @@ namespace BusinessObjects.Entities.Projects
         public string? idAccount { get; set; }
         public Guid? idProject { get; set; }
         public Enums.Project.Type type { get; set; }
+        public string cvUrl { get; set; }
         public bool? isAcept { get; set; }
         public DateTime confirmedDate { get; set; }
         public DateTime createdDate { get; set; }
