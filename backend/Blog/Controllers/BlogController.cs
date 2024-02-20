@@ -51,8 +51,8 @@ namespace Blog.Controllers
 
         /*------------------------------------------------------------Blog------------------------------------------------------------*/
 
-        [HttpGet("GetAllBlogs")]
-        public async Task<Response> GetAllBlogs()
+        [HttpGet("GetAllBlogs/{idUser}")]
+        public async Task<Response> GetAllBlogs(string idUser)
         {
             var blogs = await _context.Blogs.Where(x => x.isDeleted == false).OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
             if (blogs == null)
@@ -63,6 +63,11 @@ namespace Blog.Controllers
             foreach (var blog in result)
             {
                 blog.like = await _context.BlogLikes.Where(x => x.idBlog == blog.idBlog).CountAsync();
+                var isLike = await _context.BlogLikes.FirstOrDefaultAsync(x => x.idAccount == idUser);
+                if (isLike != null)
+                {
+                    blog.isLike = true;
+                }
                 var infoUser = await GetNameUserCurrent(blog.idAccount!);
                 blog.fullName = infoUser.fullName;
                 blog.avatar = infoUser.avatar;
@@ -89,6 +94,11 @@ namespace Blog.Controllers
             foreach (var blog in result)
             {
                 blog.like = await _context.BlogLikes.Where(x => x.idBlog == blog.idBlog).CountAsync();
+                var isLike = await _context.BlogLikes.FirstOrDefaultAsync(x => x.idAccount == idUser);
+                if (isLike != null)
+                {
+                    blog.isLike = true;
+                }
                 var infoUser = await GetNameUserCurrent(blog.idAccount!);
                 blog.fullName = infoUser.fullName;
                 blog.avatar = infoUser.avatar;
@@ -103,8 +113,8 @@ namespace Blog.Controllers
             return new Response(HttpStatusCode.OK, "Get blog list is success!", result);
         }
 
-        [HttpGet("GetBlogById/{idBlog}")]
-        public async Task<Response> GetBlogById(Guid idBlog)
+        [HttpGet("GetBlogById/{idBlog}/{idUser}")]
+        public async Task<Response> GetBlogById(Guid idBlog, string idUser)
         {
             var blog = await _context.Blogs.FirstOrDefaultAsync(x => x.idBlog == idBlog);
             if (blog == null)
@@ -113,6 +123,11 @@ namespace Blog.Controllers
             }
             var result = _mapper.Map<ViewBlog>(blog);
             result.like = await _context.BlogLikes.Where(x => x.idBlog == blog.idBlog).CountAsync();
+            var isLike = await _context.BlogLikes.FirstOrDefaultAsync(x => x.idAccount == idUser);
+            if (isLike != null)
+            {
+                result.isLike = true;
+            }
             var infoUser = await GetNameUserCurrent(result.idAccount!);
             result.fullName = infoUser.fullName;
             result.avatar = infoUser.avatar;
