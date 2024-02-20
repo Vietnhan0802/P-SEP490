@@ -1,4 +1,6 @@
 ﻿using BusinessObjects.Enums.Project;
+using Microsoft.AspNetCore.Http;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BusinessObjects.ViewModels.Project
 {
@@ -9,5 +11,10 @@ namespace BusinessObjects.ViewModels.Project
         public string avatar { get; set; }
         public Process process { get; set; }
         public Visibility visibility { get; set; }
+
+        [NotMapped]
+        public IFormFile ImageFile { get; set; }
+        [NotMapped]
+        public string ImageSrc { get; set; }
     }
 }

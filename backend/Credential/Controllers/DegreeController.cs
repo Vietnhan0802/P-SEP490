@@ -31,7 +31,7 @@ namespace Credential.Controllers
         }
 
         [HttpGet("GetNameUserCurrent/{idUser}")]
-        private async Task<string> GetNameUserCurrent(string idUser)
+        private async Task<ViewUser> GetNameUserCurrent(string idUser)
         {
             HttpResponseMessage response = await client.GetAsync($"{UserApiUrl}/GetNameUser/{idUser}");
             string strData = await response.Content.ReadAsStringAsync();
@@ -39,8 +39,9 @@ namespace Credential.Controllers
             {
                 PropertyNameCaseInsensitive = true,
             };
-            var user = JsonSerializer.Deserialize<string>(strData, option);
-            return user;
+            var user = JsonSerializer.Deserialize<ViewUser>(strData, option);
+
+            return user!;
         }
 
         [HttpGet("GetAllDegree")]
@@ -54,7 +55,9 @@ namespace Credential.Controllers
             var result = _mapper.Map<List<ViewDegree>>(degrees);
             foreach (var degree in result)
             {
-                degree.fullName = await GetNameUserCurrent(degree.idAccount);
+                var infoUser = await GetNameUserCurrent(degree.idAccount!);
+                degree.fullName = infoUser.fullName;
+                degree.avatar = infoUser.avatar;
             }
             return new Response(HttpStatusCode.OK, "Get all degree success!", result);
         }
@@ -70,7 +73,9 @@ namespace Credential.Controllers
             var result = _mapper.Map<List<ViewDegree>>(degrees);
             foreach (var degree in result)
             {
-                degree.fullName = await GetNameUserCurrent(degree.idAccount);
+                var infoUser = await GetNameUserCurrent(degree.idAccount!);
+                degree.fullName = infoUser.fullName;
+                degree.avatar = infoUser.avatar;
             }
             return new Response(HttpStatusCode.OK, "Get degree by user success!", result);
         }
@@ -84,7 +89,9 @@ namespace Credential.Controllers
                 return new Response(HttpStatusCode.NotFound, "Degree doesn't exists!");
             }
             var result = _mapper.Map<ViewDegree>(degree);
-            result.fullName = await GetNameUserCurrent(result.idAccount);
+            var infoUser = await GetNameUserCurrent(result.idAccount!);
+            result.fullName = infoUser.fullName;
+            result.avatar = infoUser.avatar;
             return new Response(HttpStatusCode.OK, "Get degree by is success!", result);
         }
 

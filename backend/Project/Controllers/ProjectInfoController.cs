@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
+using BusinessObjects.Entities.Credential;
 using BusinessObjects.Entities.Projects;
 using BusinessObjects.Enums.Project;
 using BusinessObjects.ViewModels.Project;
 using BusinessObjects.ViewModels.User;
+using Commons.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Project.Data;
@@ -18,14 +20,16 @@ namespace Project.Controllers
     {
         private readonly AppDBContext _context;
         private readonly IMapper _mapper;
+        private readonly SaveImageService _saveImageService;
         private readonly HttpClient client;
 
         public string UserApiUrl { get; private set; }
 
-        public ProjectInfoController(AppDBContext context, IMapper mapper)
+        public ProjectInfoController(AppDBContext context, IMapper mapper, SaveImageService saveImageService)
         {
             _context = context;
             _mapper = mapper;
+            _saveImageService = saveImageService;
             client = new HttpClient();
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
             client.DefaultRequestHeaders.Accept.Add(contentType);
@@ -33,7 +37,7 @@ namespace Project.Controllers
         }
 
         [HttpGet("GetNameUserCurrent/{idUser}")]
-        private async Task<string> GetNameUserCurrent(string idUser)
+        private async Task<ViewUser> GetNameUserCurrent(string idUser)
         {
             HttpResponseMessage response = await client.GetAsync($"{UserApiUrl}/GetNameUser/{idUser}");
             string strData = await response.Content.ReadAsStringAsync();
@@ -41,9 +45,10 @@ namespace Project.Controllers
             {
                 PropertyNameCaseInsensitive = true,
             };
-            var user = JsonSerializer.Deserialize<string>(strData, option);
-            return user;
-        }   
+            var user = JsonSerializer.Deserialize<ViewUser>(strData, option);
+
+            return user!;
+        }
 
         [HttpGet("GetTotalProjects")]
         public async Task<Response> GetTotalProjects()
@@ -90,14 +95,17 @@ namespace Project.Controllers
             var projects = await _context.ProjectInfos.Where(x => x.isDeleted == false && x.visibility == BusinessObjects.Enums.Project.Visibility.Public).OrderByDescending(x => x.createdDate).ToListAsync();
             if (projects == null)
             {
-                return new Response(HttpStatusCode.NotFound, "Project doesn't exists!");
+                return new Response(HttpStatusCode.NoContent, "Project list is empty!");
             }
             var result = _mapper.Map<List<ProjectInfoView>>(projects);
             foreach (var project in result)
             {
-                project.fullName = await GetNameUserCurrent(project.idAccount);
+                var infoUser = await GetNameUserCurrent(project.idAccount!);
+                project.fullName = infoUser.fullName;
+                project.avatarUser = infoUser.avatar;
+                project.avatar = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, project.avatar);
             }
-            return new Response(HttpStatusCode.OK, "Get all project success!", result);
+            return new Response(HttpStatusCode.OK, "Get project list is success!", result);
         }
 
         [HttpGet("GetProjectByUser/{idUser}")]
@@ -106,14 +114,17 @@ namespace Project.Controllers
             var projects = await _context.ProjectInfos.Where(x => x.idAccount == idUser && x.isDeleted == false).OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
             if (projects == null)
             {
-                return new Response(HttpStatusCode.NotFound, "Project doesn't exists!");
+                return new Response(HttpStatusCode.NoContent, "Project list is empty!");
             }
             var result = _mapper.Map<List<ProjectInfoView>>(projects);
             foreach (var project in result)
             {
-                project.fullName = await GetNameUserCurrent(idUser);
+                var infoUser = await GetNameUserCurrent(project.idAccount!);
+                project.fullName = infoUser.fullName;
+                project.avatarUser = infoUser.avatar;
+                project.avatar = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, project.avatar);
             }
-            return new Response(HttpStatusCode.OK, "Get project by user success!", result);
+            return new Response(HttpStatusCode.OK, "Get project list is success!", result);
         }
 
         [HttpGet("GetProjectById/{idProject}")]
@@ -125,13 +136,20 @@ namespace Project.Controllers
                 return new Response(HttpStatusCode.NotFound, "Project doesn't exists!");
             }
             var result = _mapper.Map<ProjectInfoView>(project);
-            result.fullName = await GetNameUserCurrent(result.idAccount);
-            return new Response(HttpStatusCode.OK, "Get project by is success!", result);
+            var infoUser = await GetNameUserCurrent(result.idAccount!);
+            result.fullName = infoUser.fullName;
+            result.avatarUser = infoUser.avatar;
+            result.avatar = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, result.avatar);
+            return new Response(HttpStatusCode.OK, "Get project is success!", result);
         }
 
         [HttpPost("CreateProject/{idUser}")]
-        public async Task<Response> CreateProject(string idUser, ProjectInfoCreate projectInfoCreate)
+        public async Task<Response> CreateProject(string idUser, [FromForm] ProjectInfoCreate projectInfoCreate)
         {
+            if (projectInfoCreate.ImageFile != null)
+            {
+                projectInfoCreate.avatar = await _saveImageService.SaveImage(projectInfoCreate.ImageFile);
+            }
             var project = _mapper.Map<ProjectInfo>(projectInfoCreate);
             project.idAccount = idUser;
             project.isDeleted = false;
@@ -148,6 +166,14 @@ namespace Project.Controllers
             if (project == null)
             {
                 return new Response(HttpStatusCode.NotFound, "Project doesn't exists!");
+            }
+            if (project.avatar != null)
+            {
+                _saveImageService.DeleteImage(project.avatar);
+            }
+            if (projectInfoUpdate.ImageFile != null)
+            {
+                projectInfoUpdate.avatar = await _saveImageService.SaveImage(projectInfoUpdate.ImageFile);
             }
             _mapper.Map(projectInfoUpdate, project);
             _context.ProjectInfos.Update(project);
@@ -198,7 +224,9 @@ namespace Project.Controllers
             }
             foreach (var projectApplication in projectApplications)
             {
-                projectApplication.fullName = await GetNameUserCurrent(projectApplication.idAccount);
+                var infoUser = await GetNameUserCurrent(projectApplication.idAccount!);
+                projectApplication.fullName = infoUser.fullName;
+                projectApplication.avatar = infoUser.avatar;
             }
             return new Response(HttpStatusCode.OK, "Get all project application success!", projectApplications);
         }
@@ -225,19 +253,22 @@ namespace Project.Controllers
             }
             foreach (var projectInvite in projectInvites)
             {
-                projectInvite.fullName = await GetNameUserCurrent(projectInvite.idAccount);
+                var infoUser = await GetNameUserCurrent(projectInvite.idAccount!);
+                projectInvite.fullName = infoUser.fullName;
+                projectInvite.avatar = infoUser.avatar;
             }
             return new Response(HttpStatusCode.OK, "Get all project invite success!", projectInvites);
         }
 
-        [HttpPost("CreateProjectApplication/{idUser}/{idProject}")]
-        public async Task<Response> CreateProjectApplication(string idUser, Guid idProject)
+        [HttpPost("CreateProjectApplication/{idUser}/{idProject}/{cvUrl}")]
+        public async Task<Response> CreateProjectApplication(string idUser, Guid idProject, string cvUrl)
         {
             ProjectMember projectApplication = new ProjectMember()
             {
                 idAccount = idUser,
                 idProject = idProject,
                 type = BusinessObjects.Enums.Project.Type.Applied,
+                cvUrl = cvUrl,
                 isAcept = null,
                 createdDate = DateTime.Now
             };
