@@ -10,7 +10,8 @@ import { FiEye } from "react-icons/fi";
 import ReportPopup from "../../components/Popup/reportPopup";
 import Img1 from "../../images/common/post-img-1.png";
 import Img2 from "../../images/common/post-img-2.png";
-function Post({postId,onPostClick,activeItem, onItemClick }) {
+import Cookies from "js-cookie";
+function Post({ postId, onPostClick, activeItem, onItemClick }) {
   const postContent = [
     {
       id: 1,
@@ -63,8 +64,14 @@ function Post({postId,onPostClick,activeItem, onItemClick }) {
       comment: 123,
     },
   ];
+  const role = JSON.parse(Cookies.get("role"));
+  const [inputs, setInputs] = useState();
   const [inputValue, setInputValue] = useState("");
   const [blogPopups, setBlogPopups] = useState({});
+  const handleCreatePost = () => {
+
+  }
+
   const hanldeViewDetail = (postId) => {
     onPostClick(postId);
     onItemClick("post_detail");
@@ -78,32 +85,45 @@ function Post({postId,onPostClick,activeItem, onItemClick }) {
   };
   return (
     <div id="post">
-      <div className="post-form p-2">
-        <div className="d-flex align-items-center">
-          <input
-            type="text"
-            value={inputValue}
+      {role === 'Business' ? <div className="post-form p-2">
+        <div className="d-flex align-items-center flex-column">
+          <input type="text" name="title"
+            // value={inputs.title}
             onChange={handleInputChange}
             className="input-text"
-            placeholder="Create new Post..."
+            placeholder="Enter the title"
           />
-          <button className="btn">
+          <textarea
+            type="text"
+            // value={inputs.content}
+            name="content"
+            onChange={handleInputChange}
+            className="input-text"
+            placeholder="Enter your content..."
+          />
+          <input
+            type="file"
+            name="images"
+            onChange={handleInputChange}
+            className="form-control"
+            multiple
+          />
+        </div>
+
+        <div className="d-flex  justify-content-end mt-2">
+          {/* <button className="btn btn-outline-primary">Add Image</button> */}
+          <button className="btn" onClick={handleCreatePost} >
             <CiCircleChevRight className=" fs-3" />
           </button>
         </div>
-        <div>
-          <button className="btn image d-flex align-items-center">
-            <LuImagePlus className="me-2" />
-            Add image
-          </button>
-        </div>
-      </div>
+
+      </div> : ''}
+
       {postContent.map((item) => (
         <div
           key={item.id}
-          className={`post-item mt-2 p-2 ${
-            blogPopups[item.id] ? "position-relative" : ""
-          }`}
+          className={`post-item mt-2 p-2 ${blogPopups[item.id] ? "position-relative" : ""
+            }`}
         >
           <div className="d-flex align-items-center">
             <img src={avatar} alt="profile" className="profile" />
@@ -132,7 +152,7 @@ function Post({postId,onPostClick,activeItem, onItemClick }) {
                 <IoFlagOutline />{" "}
               </div>
             </div>
-            <button className="view-btn btn" onClick={()=>hanldeViewDetail(item.id)}>View Detail</button>
+            <button className="view-btn btn" onClick={() => hanldeViewDetail(item.id)}>View Detail</button>
           </div>
           {blogPopups[item.id] && (
             <ReportPopup
