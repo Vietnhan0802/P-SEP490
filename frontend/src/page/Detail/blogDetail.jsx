@@ -45,6 +45,17 @@ function BlogDetail(id) {
   const [state, setState] = useState(true)
   const [updateCommentShow, setUpdateCommentShow] = useState(null);
   const [originalContent, setOriginalContent] = useState('');
+console.log(data)
+  const handleLikeOrUnlikeBlog = ()=>{
+
+    blogInstance.post(`LikeOrUnlikeBlog/${userId}/${idBlog}`)
+    .then((res)=>{
+      console.log(res?.data?.result)
+    })
+    .catch((error)=>{
+      console.error(error)
+    })
+  }
   const handleUpdateCommentAppear = (blogId, originalContent) => {
     setUpdateCommentShow((prev) => (prev === blogId ? null : blogId));
     // If the original content is not set (i.e., it's an empty string), set it with the current content
@@ -143,15 +154,24 @@ function BlogDetail(id) {
         {data.content}
       </p>
       <div>
-        {data.viewBlogImages.map((item)=>(
-          <img src={item.imageSrc} alt="" className="w-100"/>
-        ))}
+        {data.viewBlogImages && (
+          data.viewBlogImages.length === 1 ? (
+            <img src={data.viewBlogImages[0].imageSrc} alt="" className="w-100" />
+          ) : (
+            data.viewBlogImages.map((item, index) => (
+              <img key={index} src={item.imageSrc} alt="" className="w-100" />
+            ))
+          )
+        )}
+
       </div>
       <div className="d-flex align-items-center border-bottom pb-3 mt-2 border-dark">
         <div className="d-flex align-items-center me-3">
           <FiEye className="me-2" /> {data.view + 1}
         </div>
-        <div className="d-flex align-items-center me-3">
+        <div className="d-flex align-items-center me-3"
+        onClick={()=>handleLikeOrUnlikeBlog()}
+        >
           <CiHeart className="me-2" /> {data.like}
         </div>
         <div
@@ -243,7 +263,7 @@ function BlogDetail(id) {
                       </div>
                     </>
                   ))
-                ):null}
+                ) : null}
               </div>
             </div>
           </div>
