@@ -50,28 +50,6 @@ namespace Post.Controllers
             return user!;
         }
 
-        /*------------------------------------------------------------Post------------------------------------------------------------*/
-
-        /*[HttpGet("SearchPosts/{namePost}")]
-        public async Task<Response> SearchPosts(string namePost)
-        {
-            var posts = await _context.Postts.Include(x => x.PosttImages).Where(x => x.title!.Contains(namePost)).OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
-            if (posts == null)
-            {
-                return new Response(HttpStatusCode.NoContent, "No posts found with the given name!");
-            }
-            var result = _mapper.Map<List<ViewPost>>(posts);
-            foreach (var post in result)
-            {
-                post.fullName = await GetNameUserCurrent(post.idAccount!);
-                foreach (var image in post.ViewPostImages!)
-                {
-                    image.ImageSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, image.image);
-                }
-            }
-            return new Response(HttpStatusCode.OK, "Search posts success!", result);
-        }*/
-
         [HttpGet("GetAllPosts")]
         public async Task<Response> GetAllPosts()
         {
