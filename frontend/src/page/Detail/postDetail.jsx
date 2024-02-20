@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import "./detail.scss";
 import avatar from "../../images/common/Avatar.png";
 import img1 from "../../images/common/post-img-1.png";
@@ -11,6 +11,8 @@ import Emerson from "../../images/cmt/Emerson.png";
 import Jordyn from "../../images/cmt/Jordyn.png";
 import Terry from "../../images/cmt/Terry.png";
 import Zaire from "../../images/cmt/Zaire.png";
+import Cookies from "js-cookie";
+import { postInstance } from "../../axios/axiosConfig";
 function PostDetail(id) {
   const postContent = [
     {
@@ -54,6 +56,25 @@ function PostDetail(id) {
         "Lorem ipsum dolor sit amet consectetur. Ornare dictumst id lorem faucibus sit quam. Tincidunt penatibus neque varius elit natoque ut. Nulla duis odio et sem in tortor ipsum lobortis.",
     },
   ];
+
+  const userId = JSON.parse(Cookies.get("userId"));
+  const idPost = id.id;
+  const [data,setData]=useState();
+
+  const memoizedPostInstance = useMemo(() => {
+    return postInstance; // hoặc tạo một instance mới nếu cần
+  }, []);
+
+  useEffect(() => {
+    memoizedPostInstance.get(`GetPostById/${idPost}`)
+      .then((res) => {
+        setData(res?.data?.result);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, [memoizedPostInstance, idPost]);
+  console.log(data);
   return (
     <div id="postDetail" className="p-3">
       <div className="d-flex align-items-center mb-2">

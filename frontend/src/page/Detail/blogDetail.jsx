@@ -35,6 +35,9 @@ function calculateTimeDifference(targetDate) {
   }
 }
 function BlogDetail(id) {
+
+  //__________________________________________________________________//
+
   const userId = JSON.parse(Cookies.get("userId"));
   const idBlog = id.id;
 
@@ -45,16 +48,18 @@ function BlogDetail(id) {
   const [state, setState] = useState(true)
   const [updateCommentShow, setUpdateCommentShow] = useState(null);
   const [originalContent, setOriginalContent] = useState('');
-console.log(data)
-  const handleLikeOrUnlikeBlog = ()=>{
+
+  //__________________________________________________________________//
+
+  const handleLikeOrUnlikeBlog = () => {
 
     blogInstance.post(`LikeOrUnlikeBlog/${userId}/${idBlog}`)
-    .then((res)=>{
-      console.log(res?.data?.result)
-    })
-    .catch((error)=>{
-      console.error(error)
-    })
+      .then((res) => {
+        console.log(res?.data?.result)
+      })
+      .catch((error) => {
+        console.error(error)
+      })
   }
   const handleUpdateCommentAppear = (blogId, originalContent) => {
     setUpdateCommentShow((prev) => (prev === blogId ? null : blogId));
@@ -170,7 +175,7 @@ console.log(data)
           <FiEye className="me-2" /> {data.view + 1}
         </div>
         <div className="d-flex align-items-center me-3"
-        onClick={()=>handleLikeOrUnlikeBlog()}
+          onClick={() => handleLikeOrUnlikeBlog()}
         >
           <CiHeart className="me-2" /> {data.like}
         </div>

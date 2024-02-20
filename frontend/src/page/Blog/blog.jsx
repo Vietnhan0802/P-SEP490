@@ -41,6 +41,7 @@ function Blog({ blogId, onBlogClick, activeItem, onItemClick }) {
     }
   }
 
+  //_________________________________________________________//
   const [inputs, setInputs] = useState({
     title: '',
     content: '',
@@ -48,6 +49,11 @@ function Blog({ blogId, onBlogClick, activeItem, onItemClick }) {
   });
   const [blogPopups, setBlogPopups] = useState({});
   const [data, setData] = useState([]);
+  const userId = JSON.parse(Cookies.get("userId"));
+  const role = JSON.parse(Cookies.get("role"));
+
+  //_________________________________________________________//
+
   const hanldeViewDetail = (blogId) => {
     onBlogClick(blogId);
     onItemClick("blog_detail");
@@ -55,8 +61,6 @@ function Blog({ blogId, onBlogClick, activeItem, onItemClick }) {
   const handleReportClick = (blogId) => {
     setBlogPopups((prev) => ({ ...prev, [blogId]: true }));
   };
-  const userId = JSON.parse(Cookies.get("userId"));
-  const role = JSON.parse(Cookies.get("role"));
   const handleCreateBlog = () => {
     const formData = new FormData();
     formData.append('title', inputs.title);
