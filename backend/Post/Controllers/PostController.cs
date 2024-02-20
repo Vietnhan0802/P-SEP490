@@ -50,28 +50,6 @@ namespace Post.Controllers
             return user!;
         }
 
-        /*------------------------------------------------------------Post------------------------------------------------------------*/
-
-        /*[HttpGet("SearchPosts/{namePost}")]
-        public async Task<Response> SearchPosts(string namePost)
-        {
-            var posts = await _context.Postts.Include(x => x.PosttImages).Where(x => x.title!.Contains(namePost)).OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
-            if (posts == null)
-            {
-                return new Response(HttpStatusCode.NoContent, "No posts found with the given name!");
-            }
-            var result = _mapper.Map<List<ViewPost>>(posts);
-            foreach (var post in result)
-            {
-                post.fullName = await GetNameUserCurrent(post.idAccount!);
-                foreach (var image in post.ViewPostImages!)
-                {
-                    image.ImageSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, image.image);
-                }
-            }
-            return new Response(HttpStatusCode.OK, "Search posts success!", result);
-        }*/
-
         [HttpGet("GetAllPosts")]
         public async Task<Response> GetAllPosts()
         {
@@ -305,7 +283,7 @@ namespace Post.Controllers
             return new Response(HttpStatusCode.OK, "Get comment list is success!", result);
         }
 
-        [HttpPost("CreatePostComment/{idUser}/{idPost}")]
+        [HttpPost("CreatePostComment/{idUser}/{idPost}/{content}")]
         public async Task<Response> CreatePostComment(string idUser, Guid idPost, string content)
         {
             var post = await _context.Postts.FirstOrDefaultAsync(x => x.idPost == idPost);
@@ -326,7 +304,7 @@ namespace Post.Controllers
             return new Response(HttpStatusCode.OK, "Create post comment is success!", _mapper.Map<ViewPostComment>(postComment));
         }
 
-        [HttpPut("UpdatePostComment/{idPostComment}")]
+        [HttpPut("UpdatePostComment/{idPostComment}/{content}")]
         public async Task<Response> UpdatePostComment(Guid idPostComment, string content)
         {
             var postComment = await _context.PosttComments.FirstOrDefaultAsync(x => x.idPostComment == idPostComment);
@@ -377,7 +355,7 @@ namespace Post.Controllers
 
         /*------------------------------------------------------------BlogReply------------------------------------------------------------*/
 
-        [HttpPost("CreatePostReply/{idUser}/{idPostComment}")]
+        [HttpPost("CreatePostReply/{idUser}/{idPostComment}/{content}")]
         public async Task<Response> CreatePostReply(string idUser, Guid idPostComment, string content)
         {
             var postComment = await _context.PosttComments.FirstOrDefaultAsync(x => x.idPostComment == idPostComment);
@@ -398,7 +376,7 @@ namespace Post.Controllers
             return new Response(HttpStatusCode.OK, "Create post reply is success!", _mapper.Map<ViewPostReply>(postReply));
         }
 
-        [HttpPut("UpdatePostReply/{idPostReply}")]
+        [HttpPut("UpdatePostReply/{idPostReply}/{content}")]
         public async Task<Response> UpdatePostReply(Guid idPostReply, string content)
         {
             var postReply = await _context.PosttReplies.FirstOrDefaultAsync(x => x.idPostReply == idPostReply);
