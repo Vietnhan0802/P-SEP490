@@ -260,7 +260,7 @@ namespace Blog.Controllers
         //*------------------------------------------------------------BlogComment------------------------------------------------------------*//
 
         [HttpGet("GetAllCommentByBlog/{idBlog}")]
-        public async Task<Response> GetAllCommentByBlog(Guid idBlog)
+        public async Task<Response> GetAllCommentByBlog(Guid idBlog, string idUser)
         {
             var comments = await _context.BlogComments.Where(x => x.idBlog == idBlog && x.isDeleted == false).OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
             if (comments == null)
@@ -271,6 +271,11 @@ namespace Blog.Controllers
             foreach (var comment in resultComments)
             {
                 comment.like = await _context.BlogCommentLikes.Where(x => x.idBlogComment == comment.idBlogComment).CountAsync();
+                var isLikeComment = await _context.BlogCommentLikes.FirstOrDefaultAsync(x => x.idAccount == idUser);
+                if (isLikeComment != null)
+                {
+                    comment.isLike = true;
+                }
                 var infoUserComment = await GetNameUserCurrent(comment.idAccount!);
                 comment.fullName = infoUserComment.fullName;
                 comment.avatar = infoUserComment.avatar;
@@ -279,6 +284,11 @@ namespace Blog.Controllers
                 foreach (var reply in resultReplies)
                 {
                     reply.like = await _context.BlogReplyLikes.Where(x => x.idBlogReply == reply.idBlogReply).CountAsync();
+                    var isLikeReply = await _context.BlogReplyLikes.FirstOrDefaultAsync(x => x.idAccount == idUser);
+                    if (isLikeReply != null)
+                    {
+                        reply.isLike = true;
+                    }
                     var infoUserReply = await GetNameUserCurrent(reply.idAccount!);
                     reply.fullName = infoUserReply.fullName;
                     reply.avatar = infoUserReply.avatar;
