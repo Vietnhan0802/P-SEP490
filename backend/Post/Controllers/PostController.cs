@@ -103,7 +103,7 @@ namespace Post.Controllers
         }
 
         [HttpGet("GetPostById/{idPost}")]
-        public async Task<Response> GetPostById(Guid idPost)
+        public async Task<Response> GetPostById(Guid idPost, string idUser)
         {
             var post = await _context.Postts.FirstOrDefaultAsync(x => x.idPost == idPost);
             if (post == null)
@@ -112,6 +112,11 @@ namespace Post.Controllers
             }
             var result = _mapper.Map<ViewPost>(post);
             result.like = await _context.PosttLikes.Where(x => x.idPost == post.idPost).CountAsync();
+            var isLike = await _context.PosttLikes.FirstOrDefaultAsync(x => x.idAccount == idUser);
+            if (isLike != null)
+            {
+                result.isLike = true;
+            }
             var infoUser = await GetNameUserCurrent(result.idAccount!);
             result.fullName = infoUser.fullName;
             result.avatar = infoUser.avatar;
