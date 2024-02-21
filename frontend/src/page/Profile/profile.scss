@@ -70,10 +70,9 @@
     }
   }
   .personal-information {
-    margin-top: 12px;
     input,
     textarea {
-      padding: 14px;
+      padding: 9px;
     }
     .infor-group {
       border-radius: 8px;
@@ -125,4 +124,12 @@
       border-radius: 0px 0px 8px 8px;
     }
   }
+}
+.edit-btn-infor{
+  position: absolute;
+  right: 15px;
+
+}
+#profile{
+  position: relative;
 }
