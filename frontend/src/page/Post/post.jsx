@@ -225,7 +225,7 @@ function Post({ postId, onPostClick, activeItem, onItemClick }) {
           </div>
           <h4 className="mt-2">{item.title}</h4>
 
-          <p className="mt-2">{item.content}</p>
+          <p className="mt-2" style={{whiteSpace:'pre-wrap'}}>{item.content}</p>
 
           <div className="d-flex ">
             {item.viewPostImages?.map(items => (
