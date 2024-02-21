@@ -259,7 +259,7 @@ namespace Post.Controllers
 
         /*------------------------------------------------------------BlogComment------------------------------------------------------------*/
 
-        [HttpGet("GetAllPostComments/{idPost}")]
+        [HttpGet("GetAllPostComments/{idPost}/{idUser}")]
         public async Task<Response> GetAllPostComments(Guid idPost, string idUser)
         {
             var comments = await _context.PosttComments.Where(x => x.idPost == idPost && x.isDeleted == false).OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
