@@ -260,7 +260,7 @@ namespace Post.Controllers
         /*------------------------------------------------------------BlogComment------------------------------------------------------------*/
 
         [HttpGet("GetAllPostComments/{idPost}")]
-        public async Task<Response> GetAllPostComments(Guid idPost)
+        public async Task<Response> GetAllPostComments(Guid idPost, string idUser)
         {
             var comments = await _context.PosttComments.Where(x => x.idPost == idPost && x.isDeleted == false).OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
             if (comments == null)
@@ -271,6 +271,11 @@ namespace Post.Controllers
             foreach (var comment in result)
             {
                 comment.like = await _context.PosttCommentLikes.Where(x => x.idPostComment == comment.idPostComment).CountAsync();
+                var isLikeComment = await _context.PosttCommentLikes.FirstOrDefaultAsync(x => x.idAccount == idUser);
+                if (isLikeComment != null)
+                {
+                    comment.isLike = true;
+                }
                 var infoUserComment = await GetNameUserCurrent(comment.idAccount!);
                 comment.fullName = infoUserComment.fullName;
                 comment.avatar = infoUserComment.avatar;
@@ -279,6 +284,11 @@ namespace Post.Controllers
                 foreach (var reply in resultReplies)
                 {
                     reply.like = await _context.PosttReplyLikes.Where(x => x.idPostReply == reply.idPostReply).CountAsync();
+                    var isLikeReply = await _context.PosttReplyLikes.FirstOrDefaultAsync(x => x.idAccount == idUser);
+                    if (isLikeReply != null)
+                    {
+                        comment.isLike = true;
+                    }
                     var infoUserReply = await GetNameUserCurrent(reply.idAccount!);
                     reply.fullName = infoUserReply.fullName;
                     reply.avatar = infoUserReply.avatar;
