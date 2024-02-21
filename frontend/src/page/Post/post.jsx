@@ -3,67 +3,42 @@ import { useState } from "react";
 import "../Post/post.scss";
 import { CiCircleChevRight } from "react-icons/ci";
 import { BsChat } from "react-icons/bs";
-import avatar from "../../images/common/Avatar.png";
 import { IoFlagOutline } from "react-icons/io5";
 import { FiEye } from "react-icons/fi";
+import defaultAvatar from "../../images/common/default.png"
 import ReportPopup from "../../components/Popup/reportPopup";
 import Img1 from "../../images/common/post-img-1.png";
 import Img2 from "../../images/common/post-img-2.png";
 import Cookies from "js-cookie";
 import { postInstance, projectInstance } from "../../axios/axiosConfig"
+function calculateTimeDifference(targetDate) {
+  // Convert the target date string to a Date object
+  const targetTime = new Date(targetDate).getTime();
+
+  // Get the current time
+  const currentTime = new Date().getTime();
+
+  // Calculate the difference in milliseconds
+  const timeDifference = currentTime - targetTime;
+
+  // Calculate the difference in seconds, minutes, hours, and days
+  const seconds = Math.floor(timeDifference / 1000);
+  const minutes = Math.floor(seconds / 60);
+  const hours = Math.floor(minutes / 60);
+  const days = Math.floor(hours / 24);
+
+  // Return an object with the time difference values
+  if (minutes < 60) {
+    return minutes === 1 ? `${minutes} minute ago` : `${minutes} minutes ago`;
+  } else if (hours < 24) {
+    return hours === 1 ? `${hours} hour ago` : `${hours} hours ago`;
+  } else {
+    return days === 1 ? `${days} day ago` : `${hours} days ago`;
+  }
+}
+
 function Post({ postId, onPostClick, activeItem, onItemClick }) {
-  const postContent = [
-    {
-      id: 1,
-      name: "Admin",
-      // img: <RiAdminLine />,
-      time: "10 minutes ago",
-      content:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam voluptates, voluptate, quidem, dolorum quae doloremque exercitationem voluptatum quod officiis doloribus quos. Quisquam voluptates, voluptate, quidem, dolorum quae doloremque exercitationem voluptatum quod officiis doloribus quos.",
-      view: 12,
-      comment: 123,
-    },
-    {
-      id: 2,
-      name: "Admin",
-      // img: <RiAdminLine />,
-      time: "10 minutes ago",
-      content:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam voluptates, voluptate, quidem, dolorum quae doloremque exercitationem voluptatum quod officiis doloribus quos. Quisquam voluptates, voluptate, quidem, dolorum quae doloremque exercitationem voluptatum quod officiis doloribus quos.",
-      view: 12,
-      comment: 123,
-    },
-    {
-      id: 3,
-      name: "Admin",
-      // img: <RiAdminLine />,
-      time: "10 minutes ago",
-      content:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam voluptates, voluptate, quidem, dolorum quae doloremque exercitationem voluptatum quod officiis doloribus quos. Quisquam voluptates, voluptate, quidem, dolorum quae doloremque exercitationem voluptatum quod officiis doloribus quos.",
-      view: 12,
-      comment: 123,
-    },
-    {
-      id: 4,
-      name: "Admin",
-      // img: <RiAdminLine />,
-      time: "10 minutes ago",
-      content:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam voluptates, voluptate, quidem, dolorum quae doloremque exercitationem voluptatum quod officiis doloribus quos. Quisquam voluptates, voluptate, quidem, dolorum quae doloremque exercitationem voluptatum quod officiis doloribus quos.",
-      view: 12,
-      comment: 123,
-    },
-    {
-      id: 5,
-      name: "Admin",
-      // img: <RiAdminLine />,
-      time: "10 minutes ago",
-      content:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam voluptates, voluptate, quidem, dolorum quae doloremque exercitationem voluptatum quod officiis doloribus quos. Quisquam voluptates, voluptate, quidem, dolorum quae doloremque exercitationem voluptatum quod officiis doloribus quos.",
-      view: 12,
-      comment: 123,
-    },
-  ];
+
   const role = JSON.parse(Cookies.get("role"));
   const userId = JSON.parse(Cookies.get("userId"));
   const [inputs, setInputs] = useState({
@@ -73,12 +48,42 @@ function Post({ postId, onPostClick, activeItem, onItemClick }) {
     project: ''
   });
   const [project, setProject] = useState();
-  const [inputValue, setInputValue] = useState("");
   const [blogPopups, setBlogPopups] = useState({});
-  const [selectedOption, setSelectedOption] = useState('');
-
+  const [postList, setPostList] = useState([])
 
   //______________________________//
+
+  const createData = (id, createdDate, avatar, title, content, view, like, viewPostImages, fullName) => {
+    return {
+      id, createdDate, avatar, title, content, view, like, viewPostImages, fullName
+    }
+  }
+
+  useEffect(() => {
+    postInstance.get('GetAllPosts')
+      .then((res) => {
+        const postList = res?.data?.result;
+        setPostList([]);
+        postList.map((element) => {
+          const time = calculateTimeDifference(element.createdDate);
+          setPostList((prevData) => ([
+            ...prevData,
+            createData(
+              element.idPost,
+              time,
+              element.avatar,
+              element.title,
+              element.content,
+              element.view,
+              element.like,
+              element.viewPostImages,
+              element.fullName)
+          ]));
+        })
+      })
+      .catch((error) => { console.error(error) });
+  }, []);
+
   useEffect(() => {
     projectInstance.get('GetAllProjects')
       .then((res) => {
@@ -88,19 +93,19 @@ function Post({ postId, onPostClick, activeItem, onItemClick }) {
         console.error(error);
       })
   }, []);
-
+  console.log(postList)
   const handleCreatePost = () => {
     const formData = new FormData();
     formData.append('title', inputs.title);
     formData.append('content', inputs.content);
 
-    inputs.CreateUpdateBlogImages.forEach((imageInfo, index) => {
+    inputs.CreateUpdatePostImages.forEach((imageInfo, index) => {
       formData.append(`CreateUpdatePostImages[${index}].image`, imageInfo.image);
       formData.append(`CreateUpdatePostImages[${index}].imageFile`, imageInfo.imageFile);
       formData.append(`CreateUpdatePostImages[${index}].imageSrc`, imageInfo.imageSrc);
     });
 
-    postInstance.post(`/CreateBlog/${userId}`, formData, {
+    postInstance.post(`/CreatePost/${userId}/${inputs.project}`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
         accept: 'application/json',
@@ -108,6 +113,12 @@ function Post({ postId, onPostClick, activeItem, onItemClick }) {
     })
       .then((res) => {
         console.log(res.data);
+        setInputs({
+          title: '',
+          content: '',
+          CreateUpdatePostImages: [], // new state for managing multiple images
+          project: ''
+        })
       })
       .catch((err) => {
         console.log(err);
@@ -158,7 +169,6 @@ function Post({ postId, onPostClick, activeItem, onItemClick }) {
       setInputs((values) => ({ ...values, [name]: value }));
     }
   };
-  console.log(inputs)
   return (
     <div id="post">
       {role === 'Business' ? <div className="post-form p-2">
@@ -186,14 +196,13 @@ function Post({ postId, onPostClick, activeItem, onItemClick }) {
           />
           <label>Select a project(optional):</label>
           <select id="dropdown" name="project" value={inputs.project} onChange={handleInputChange}>
-            {project.map((item) =>
+            {project?.map((item) =>
               (<option key={item.idProject} value={item.idProject}>{item.name}</option>)
             )}
           </select>
         </div>
 
         <div className="d-flex  justify-content-end mt-2">
-          {/* <button className="btn btn-outline-primary">Add Image</button> */}
           <button className="btn" onClick={handleCreatePost} >
             <CiCircleChevRight className=" fs-3" />
           </button>
@@ -201,24 +210,28 @@ function Post({ postId, onPostClick, activeItem, onItemClick }) {
 
       </div> : ''}
 
-      {postContent.map((item) => (
+      {postList.map((item) => (
         <div
           key={item.id}
           className={`post-item mt-2 p-2 ${blogPopups[item.id] ? "position-relative" : ""
             }`}
         >
           <div className="d-flex align-items-center">
-            <img src={avatar} alt="profile" className="profile" />
+            <img src={item.avatar === 'https://localhost:7006/Images/' ? defaultAvatar : item.avatar} alt="profile" className="profile" />
             <div className="ms-2">
-              <h6 className="mb-0">{item.name}</h6>
-              <p className="mb-0">{item.time}</p>
+              <h6 className="mb-0">{item.fullName}</h6>
+              <p className="mb-0">{item.createdDate}</p>
             </div>
           </div>
+          <h4 className="mt-2">{item.title}</h4>
+
+          <p className="mt-2" style={{whiteSpace:'pre-wrap'}}>{item.content}</p>
+
           <div className="d-flex ">
-            <img src={Img1} alt="post-img" className="w-50 " />
-            <img src={Img2} alt="post-img" className="w-50 ps-1" />
+            {item.viewPostImages?.map(items => (
+              <img src={items.imageSrc} alt="" className="w-50 p-2" />
+            ))}
           </div>
-          <p className="mt-2">{item.content}</p>
           <div className="d-flex justify-content-between mt-2">
             <div className="d-flex align-items-center">
               <div className="d-flex align-items-center me-3">

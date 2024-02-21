@@ -4,11 +4,10 @@ import avatarDefault from "../../images/common/default.png";
 import { IoFlagOutline } from "react-icons/io5";
 import { FiEye } from "react-icons/fi";
 import { VscSend } from "react-icons/vsc";
-import { blogInstance, userInstance } from "../../axios/axiosConfig";
-import { CiHeart } from "react-icons/ci";
+import { blogInstance } from "../../axios/axiosConfig";
+import { FaHeart } from "react-icons/fa";
 import Cookies from "js-cookie";
 import Dropdown from 'react-bootstrap/Dropdown';
-import { BsThreeDots } from "react-icons/bs";
 function calculateTimeDifference(targetDate) {
   // Convert the target date string to a Date object
   const targetTime = new Date(targetDate).getTime();
@@ -35,6 +34,9 @@ function calculateTimeDifference(targetDate) {
   }
 }
 function BlogDetail(id) {
+
+  //__________________________________________________________________//
+
   const userId = JSON.parse(Cookies.get("userId"));
   const idBlog = id.id;
 
@@ -45,16 +47,16 @@ function BlogDetail(id) {
   const [state, setState] = useState(true)
   const [updateCommentShow, setUpdateCommentShow] = useState(null);
   const [originalContent, setOriginalContent] = useState('');
-console.log(data)
-  const handleLikeOrUnlikeBlog = ()=>{
+  //__________________________________________________________________//
 
+  const handleLikeOrUnlikeBlog = () => {
     blogInstance.post(`LikeOrUnlikeBlog/${userId}/${idBlog}`)
-    .then((res)=>{
-      console.log(res?.data?.result)
-    })
-    .catch((error)=>{
-      console.error(error)
-    })
+      .then((res) => {
+        
+      })
+      .catch((error) => {
+        console.error(error)
+      })
   }
   const handleUpdateCommentAppear = (blogId, originalContent) => {
     setUpdateCommentShow((prev) => (prev === blogId ? null : blogId));
@@ -119,7 +121,7 @@ console.log(data)
   }, [state]);
 
   useEffect(() => {
-    memoizedBlogInstance.get(`GetBlogById/${idBlog}`)
+    memoizedBlogInstance.get(`GetBlogById/${idBlog}/${userId}`)
       .then((res) => {
         setData(res?.data?.result);
       })
@@ -140,6 +142,8 @@ console.log(data)
       })
   }
   const dateTime = calculateTimeDifference(data.createdDate);
+  const [like, setLike] = useState(data.isLike);
+
   return (
     <div id="BlogDetail" className="p-3">
       <div className="d-flex align-items-center mb-2">
@@ -170,9 +174,9 @@ console.log(data)
           <FiEye className="me-2" /> {data.view + 1}
         </div>
         <div className="d-flex align-items-center me-3"
-        onClick={()=>handleLikeOrUnlikeBlog()}
+          onClick={() => handleLikeOrUnlikeBlog()}
         >
-          <CiHeart className="me-2" /> {data.like}
+          <FaHeart className={`me-2 ${like === true ? 'red' : ''}`} /> {data.like}
         </div>
         <div
           className="d-flex align-items-center me-3"

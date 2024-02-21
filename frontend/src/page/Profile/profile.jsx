@@ -10,7 +10,7 @@ import Follow from "../../components/follow";
 import { Col, Row } from "react-bootstrap";
 import ProfileReport from "../../components/Popup/ProfileReport";
 import Cookies from "js-cookie";
-import defaultImage from "../../images/common/default.png"
+import defaultImage from "../../images/common/default.png";
 import { userInstance } from "../../axios/axiosConfig";
 import { FiEdit } from "react-icons/fi";
 import { CgProfile } from "react-icons/cg";
@@ -21,7 +21,7 @@ function Profile({ handleChangeImg }) {
     avatar: "default",
     imageSrc: defaultImage,
     imageFile: null,
-  }
+  };
 
   // ````````````````````````````
   const [value, setValue] = useState(initialValue);
@@ -31,7 +31,7 @@ function Profile({ handleChangeImg }) {
   const [display, setDisplay] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const parsedDate = new Date(user.Date);
-  const formattedDate = parsedDate.toISOString().split('T')[0];
+  const formattedDate = parsedDate.toISOString().split("T")[0];
   const [inputs, setInputs] = useState({
     userName: user.Username,
     fullName: user.FullName,
@@ -45,22 +45,22 @@ function Profile({ handleChangeImg }) {
   // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   const handleUpdateUser = () => {
     setIsEdit(!isEdit);
-    userInstance.put(`/UpdateUser/${user.Id}`, inputs,
-      {
+    userInstance
+      .put(`/UpdateUser/${user.Id}`, inputs, {
         headers: {
-          'Content-Type': 'application/json',
-        }
-      },)
+          "Content-Type": "application/json",
+        },
+      })
       .then((res) => {
         console.log(res?.data);
       })
       .catch((err) => {
         console.log(err?.data);
-      })
-  }
+      });
+  };
   const hanldeEdit = () => {
     setIsEdit(!isEdit);
-  }
+  };
   const handleChange = (event) => {
     const { name, value, type, checked } = event.target;
     setInputs((prevInputs) => ({
@@ -69,32 +69,32 @@ function Profile({ handleChangeImg }) {
     }));
   };
 
-
   const handleUpdateAppear = () => {
     setDisplay(true);
-  }
-  const handleUpdateAvatar = e => {
+  };
+  const handleUpdateAvatar = (e) => {
     e.preventDefault();
     const formData = new FormData();
     formData.append("avatar", value.avatar);
     formData.append("ImageFile", value.imageFile);
     formData.append("ImageSrc", value.imageSrc);
-    userInstance.put(`/UpdateAvatar/${user.Id}`, formData,
-      {
+    userInstance
+      .put(`/UpdateAvatar/${user.Id}`, formData, {
         headers: {
-          'Content-Type': 'multipart/form-data', // Ensure Content-Type is set to multipart/form-data
+          "Content-Type": "multipart/form-data", // Ensure Content-Type is set to multipart/form-data
         },
-      }
-    )
+      })
       .then((res) => {
-        setDisplay(false)
-        if (res?.data?.status === 'OK') { handleChangeImg('ok') }
+        setDisplay(false);
+        if (res?.data?.status === "OK") {
+          handleChangeImg("ok");
+        }
         console.log(res?.data?.status);
       })
       .catch((err) => {
         console.log(err.response.data);
-      })
-  }
+      });
+  };
   const showPreview = (e) => {
     if (e.target.files && e.target.files[0]) {
       let imageFile = e.target.files[0];
@@ -105,34 +105,36 @@ function Profile({ handleChangeImg }) {
           imageFile,
           imageSrc: x.target.result,
         });
-      }
+      };
       reader.readAsDataURL(imageFile);
     } else {
       setValue({
         ...value,
         imageFile: null,
-        imageSrc: defaultImage
-      })
+        imageSrc: defaultImage,
+      });
     }
-  }
+  };
 
   const handleReportPopup = () => {
     setActivePopup(!activePopup);
   };
   // console.log(inputs);
   useEffect(() => {
-    userInstance.get(`/GetUserById/${user.Id}`)
+    userInstance
+      .get(`/GetUserById/${user.Id}`)
       .then((res) => {
-        if (res?.data?.result.imageSrc === 'https://localhost:7006/Images/') return;
+        if (res?.data?.result.imageSrc === "https://localhost:7006/Images/")
+          return;
         setValue({
           ...value,
           imageSrc: res?.data?.result.imageSrc,
-        })
+        });
         // console.log(res?.data?.result.imageSrc);
       })
       .catch((err) => {
         console.log(err.response.data);
-      })
+      });
   }, []);
   return (
     <>
@@ -144,25 +146,43 @@ function Profile({ handleChangeImg }) {
               <div className="account">{user.Username}</div>
             </div>
             <div className="information position-relative d-flex flex-column justify-content-center">
-              <img src={value.imageSrc} alt="" className="w-100 rounded avatar m-auto" />
-              {display ? (<div className="d-flex flex-column ">
-                <input type="file" accept="image/*" onChange={showPreview} className="my-2" />
-                <button onClick={handleUpdateAvatar} className="btn btn-primary m-auto"> Submit</button>
-              </div>) :
-                <button className="btn edit-btn mt-3 w-75 m-auto" onClick={handleUpdateAppear}>Edit Avatar</button>}
-              <div className="w-100 text-center">
-                <div className="personal-information-text mt-4">
+              <img
+                src={value.imageSrc}
+                alt=""
+                className="w-100 rounded avatar m-auto"
+              />
+              {display ? (
+                <div className="d-flex flex-column ">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={showPreview}
+                    className="my-2"
+                  />
+                  <button
+                    onClick={handleUpdateAvatar}
+                    className="btn btn-primary m-auto"
+                  >
+                    {" "}
+                    Submit
+                  </button>
                 </div>
+              ) : (
+                <button
+                  className="btn edit-btn mt-3 w-75 m-auto"
+                  onClick={handleUpdateAppear}
+                >
+                  Edit Avatar
+                </button>
+              )}
+              <div className="w-100 text-center">
+                <div className="personal-information-text mt-4"></div>
                 <div className="d-flex align-items-center justify-content-center mt-3">
                   <CgProfile className="me-3" /> 0 followers · 1 following
                 </div>
               </div>
-
             </div>
-            <div
-              className="fs-3 position-absolute top-0 end-0"
-
-            >
+            <div className="fs-3 position-absolute top-0 end-0">
               <ProfileReport trigger={activePopup} setTrigger={setActivePopup}>
                 <div className="bg-white profile-feedback">
                   <h4 className="mt-2 mb-3 border-bottom">Submit feedback</h4>
@@ -183,27 +203,28 @@ function Profile({ handleChangeImg }) {
               <FiFlag onClick={() => handleReportPopup()} />
             </div>
           </div>
-
         </Col>
         <Col md={6}>
           <div id="profile">
-            <div className="nav d-flex align-items-center   justify-content-between w-100">
-              <div className="bread-brumb mt-4 text-center d-flex align-items-center mb-2">
-                <RiHome3Line className="me-2" />{" "}
-                <FaChevronRight className="me-2 opacity-50" />{" "}
-                <p className="fw-bold">Profile</p>
-              </div>
-              <div>
-                {!isEdit && <FiEdit onClick={() => hanldeEdit()} className="edit-icon  mt-4  mb-2 fs-2" />}
-                {isEdit && <MdOutlineFileDownloadDone onClick={() => handleUpdateUser()} className="edit-icon  mt-4  mb-2 fs-2" />}
-              </div>
+            <div className="edit-btn-infor">
+              {!isEdit && (
+                <FiEdit
+                  onClick={() => hanldeEdit()}
+                  className="edit-icon mb-2 fs-2"
+                />
+              )}
+              {isEdit && (
+                <MdOutlineFileDownloadDone
+                  onClick={() => handleUpdateUser()}
+                  className="edit-icon mb-2 fs-2"
+                />
+              )}
             </div>
-
 
             <div className="d-flex justify-content-center flex-column personal-information">
               <div>
-                <div className="p-2 w-75 mb-4">
-                  <div className="mb-2">Fullname</div>
+                <div className="w-75 mb-4">
+                  <div className="mb-2 SFU-bold">Fullname:</div>
                   <input
                     type="text"
                     className=" infor-group w-100"
@@ -213,87 +234,99 @@ function Profile({ handleChangeImg }) {
                     onChange={handleChange}
                   />
                 </div>
-                <div className="p-2 w-50 mb-4 d-flex ">
-                  <p className="me-4">Gender: </p>
-                  {!isEdit ?
-                    user.IsMale ? <p >Male</p> : <p>FeMale</p> : (<>
-                      <label>
-                        <input
-                          type="checkbox"
-                          checked={inputs.isMale}
-                          name="isMale"
-                          onChange={() =>
-                            handleChange({ target: { name: "isMale", value: true } })}
-                        />
-                        Male
-                      </label>
+                <div className="d-flex align-items-center">
+                  <div className="w-50 mb-4">
+                    <div className="mb-2 SFU-bold">Birthday:</div>
 
-                      <label>
-                        <input
-                          type="checkbox"
-                          checked={!inputs.isMale}
-                          name="isMale"
-                          onChange={() =>
-                            handleChange({ target: { name: "isMale", value: false } })}
-                        />
-                        Female
-                      </label></>)}
+                    <input
+                      type="date"
+                      name="date"
+                      value={inputs.date}
+                      disabled={!isEdit}
+                      onChange={handleChange}
+                      className=" infor-group  w-100"
+                    />
+                  </div>
+                  <div className="w-50 ms-4 d-flex ">
+                    <p className="me-4 SFU-bold">Gender:</p>
+                    {!isEdit ? (
+                      user.IsMale ? (
+                        <p>Male</p>
+                      ) : (
+                        <p>FeMale</p>
+                      )
+                    ) : (
+                      <>
+                        <label>
+                          <input
+                            type="checkbox"
+                            checked={inputs.isMale}
+                            name="isMale"
+                            onChange={() =>
+                              handleChange({
+                                target: { name: "isMale", value: true },
+                              })
+                            }
+                          />
+                          Male
+                        </label>
 
-
-                </div>
-              </div>
-              <div className="d-flex">
-                <div className="w-50 p-2 mb-4">
-                  <div className="mb-2">Username</div>
-                  <input
-                    type="text"
-                    name="userName"
-                    value={inputs.userName}
-                    disabled={!isEdit}
-                    onChange={handleChange}
-                    className=" infor-group  w-100"
-                  />
-                </div>
-                <div className="w-50 p-2 mb-4">
-                  <div className="mb-2">Birthday</div>
-
-                  <input
-                    type="date"
-                    name="date"
-                    value={inputs.date}
-                    disabled={!isEdit}
-                    onChange={handleChange}
-                    className=" infor-group  w-100"
-                  />
-                </div>
-              </div>
-              <div className="d-flex">
-                <div className="w-50 mb-4 p-2">
-                  <div className="mb-2">Tax</div>
-                  <input
-                    type="number"
-                    name="tax"
-                    value={inputs.tax}
-                    disabled={!isEdit}
-                    onChange={handleChange}
-                    className=" infor-group  w-100"
-                  />
-                </div>
-                <div className="w-50 mb-4 p-2">
-                  <div className="mb-2">Phone</div>
-                  <input
-                    type="text"
-                    name="phoneNumber"
-                    value={inputs.phoneNumber}
-                    disabled={!isEdit}
-                    onChange={handleChange}
-                    className=" infor-group  w-100"
-                  />
+                        <label>
+                          <input
+                            type="checkbox"
+                            checked={!inputs.isMale}
+                            name="isMale"
+                            onChange={() =>
+                              handleChange({
+                                target: { name: "isMale", value: false },
+                              })
+                            }
+                          />
+                          Female
+                        </label>
+                      </>
+                    )}
+                  </div>
                 </div>
               </div>
 
-              <div className="w-75 m-auto  mb-4">
-                <div className="mb-2">Address</div>
+              <div className="w-100 mb-4">
+                <div className="mb-2 SFU-bold">Username:</div>
+                <input
+                  type="text"
+                  name="userName"
+                  value={inputs.userName}
+                  disabled={!isEdit}
+                  onChange={handleChange}
+                  className=" infor-group  w-100"
+                />
+              </div>
+
+              <div className="w-100 mb-4">
+                <div className="mb-2 SFU-bold">Tax:</div>
+                <input
+                  type="number"
+                  name="tax"
+                  value={inputs.tax}
+                  disabled={!isEdit}
+                  onChange={handleChange}
+                  className=" infor-group  w-100"
+                />
+              </div>
+              <div className="w-100 mb-4">
+                <div className="mb-2 SFU-bold">Phone:</div>
+                <input
+                  type="text"
+                  name="phoneNumber"
+                  value={inputs.phoneNumber}
+                  disabled={!isEdit}
+                  onChange={handleChange}
+                  className=" infor-group  w-100"
+                />
+              </div>
+
+              <div className="w-100 mb-4">
+                <div className="mb-2 SFU-bold">Address:</div>
                 <input
                   type="text"
                   name="address"
@@ -305,7 +338,7 @@ function Profile({ handleChangeImg }) {
               </div>
 
               <div className="w-100 m-auto mb-4">
-                <div className="mb-2">Description</div>
+                <div className="mb-2 SFU-bold">Description:</div>
                 <textarea
                   className="w-100 infor-group"
                   type="text"
@@ -418,7 +451,7 @@ function Profile({ handleChangeImg }) {
         <Col md={3}>
           <Follow />
         </Col>
-      </Row >
+      </Row>
     </>
   );
 }

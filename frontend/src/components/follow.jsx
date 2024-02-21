@@ -8,37 +8,39 @@ function Follow() {
     <div className="follow position-relative">
       <div>
         <p className="text">You are following</p>
-        <div className="follow-user d-flex align-items-center">
+        <div className="follow-user d-flex align-items-center mb-2">
           <div className="follow-avata-box">
             <img src={avatar} alt="user" className="user-image" />
-            <img src={tick} alt="tick" className="user-tick"/>
+            <img src={tick} alt="tick" className="user-tick" />
           </div>
-          <div className="follow-user-info">
+          <div className="follow-user-info ms-2">
             <p className="follow-user-name fw-bold">Luna Verse</p>
             <p className="follow-user-email">Lorem ipsum dolor sit amet</p>
           </div>
         </div>
-        <div className="follow-user d-flex align-items-center mt-2">
-          <div>
+        <div className="follow-user d-flex align-items-center mb-2">
+          <div className="follow-avata-box">
             <img src={avatar} alt="user" className="user-image" />
+            <img src={tick} alt="tick" className="user-tick" />
           </div>
-          <div className="follow-user-info">
+          <div className="follow-user-info ms-2">
             <p className="follow-user-name fw-bold">Luna Verse</p>
             <p className="follow-user-email">Lorem ipsum dolor sit amet</p>
           </div>
         </div>
-        <div className="follow-user d-flex align-items-center mt-2">
-          <div>
+        <div className="follow-user d-flex align-items-center mb-2">
+          <div className="follow-avata-box">
             <img src={avatar} alt="user" className="user-image" />
+            <img src={tick} alt="tick" className="user-tick" />
           </div>
-          <div className="follow-user-info">
+          <div className="follow-user-info ms-2">
             <p className="follow-user-name fw-bold">Luna Verse</p>
             <p className="follow-user-email">Lorem ipsum dolor sit amet</p>
           </div>
         </div>
       </div>
 
-      <button className="btn border mt-3 fw-bold position-absolute ">
+      <button className="btn border mt-3 fw-bold">
         <LuDot className="me-1 dot fs-3" />
         View all
       </button>
