@@ -4,7 +4,7 @@ import avatarDefault from "../../images/common/default.png";
 import { IoFlagOutline } from "react-icons/io5";
 import { FiEye } from "react-icons/fi";
 import { VscSend } from "react-icons/vsc";
-import { blogInstance } from "../../axios/axiosConfig";
+import { blogInstance, userInstance } from "../../axios/axiosConfig";
 import { FaHeart } from "react-icons/fa";
 import Cookies from "js-cookie";
 import Dropdown from 'react-bootstrap/Dropdown';
@@ -35,11 +35,10 @@ function calculateTimeDifference(targetDate) {
 }
 function BlogDetail(id) {
 
-  //__________________________________________________________________//
-
   const userId = JSON.parse(Cookies.get("userId"));
   const idBlog = id.id;
 
+  const [user, setUser] = useState({});
   const [data, setData] = useState({});
   const [content, setContent] = useState('');
   const [commentList, setCommentList] = useState([]);
@@ -47,22 +46,25 @@ function BlogDetail(id) {
   const [state, setState] = useState(true)
   const [updateCommentShow, setUpdateCommentShow] = useState(null);
   const [originalContent, setOriginalContent] = useState('');
+  const [updateReply, setUpdateReply] = useState(true);
+  const [replyComment, setReplyComment] = useState(false);
+  const [inputReply, setInputReply] = useState({});
   //__________________________________________________________________//
 
-  const handleLikeOrUnlikeBlog = () => {
-    blogInstance.post(`LikeOrUnlikeBlog/${userId}/${idBlog}`)
-      .then((res) => {
-        
-      })
-      .catch((error) => {
-        console.error(error)
-      })
-  }
   const handleUpdateCommentAppear = (blogId, originalContent) => {
     setUpdateCommentShow((prev) => (prev === blogId ? null : blogId));
     // If the original content is not set (i.e., it's an empty string), set it with the current content
     setOriginalContent(originalContent || '');
   };
+
+  const handleViewReply = (blogId) => {
+    setViewReply((prev) => (prev === blogId ? null : blogId));
+  };
+  const handleShowReplyComment = (blogId) => {
+    setViewReply((prev) => (prev === blogId ? null : blogId));
+    setReplyComment(!replyComment);
+  }
+  //Hanlde comment for the blog
   const handleUpdateCommentCancel = () => {
     setUpdateCommentShow(null);
     setState(!state);
@@ -77,9 +79,6 @@ function BlogDetail(id) {
       .catch((error) => {
         console.error(error);
       })
-  };
-  const handleViewReply = (blogId) => {
-    setViewReply((prev) => (prev === blogId ? null : blogId));
   };
   const handleInputComment = (event) => {
     setContent(event.target.value);
@@ -105,11 +104,60 @@ function BlogDetail(id) {
       })
       .catch((error) => { console.error(error) });
   }
+  const handleCreateReplyComment = (commentId) => {
+    const replyContent = inputReply[commentId];
+
+    // Perform the reply submission logic with replyContent
+    // ...
+    blogInstance.post(`CreateBlogReply/${userId}/${commentId}/${replyContent}`)
+      .then((res) => {
+        setState(!state)
+        console.log(res?.data?.result) })
+      .catch((error) => { console.error(error) });
+    // After successful submission, clear the input field for that commentId
+    setInputReply(prevReplyInputs => ({
+      ...prevReplyInputs,
+      [commentId]: '' // This will clear the input field after submitting
+    }));
+  }
+
+  const handleInputReplyComment = (commentId, content) => {
+    setInputReply(prevReplyInputs => ({
+      ...prevReplyInputs,
+      [commentId]: content
+    }));
+  }
+  //Hanlde like or unlike the the blog
+  const handleLikeOrUnlikeBlog = () => {
+    setData((prevData) => {
+      // Determine the new like state and count
+      const isLiked = !prevData.isLike;
+      const newLikeCount = isLiked ? prevData.like + 1 : prevData.like - 1;
+
+      return { ...prevData, isLike: isLiked, like: newLikeCount };
+    });
+    blogInstance.post(`LikeOrUnlikeBlog/${userId}/${idBlog}`)
+      .then(() => {
+        // No need to update the state here if you're doing optimistic updates
+      })
+      .catch((error) => {
+        // Revert the like state and count in case of an error
+        console.error(error);
+        setData((prevData) => {
+          // Revert to the previous like state and count
+          const revertedIsLiked = !prevData.isLike;
+          const revertedLikeCount = revertedIsLiked ? prevData.like + 1 : prevData.like - 1;
+
+          return { ...prevData, isLike: revertedIsLiked, like: revertedLikeCount };
+        });
+      });
+  }
+  //Fetch data
   const memoizedBlogInstance = useMemo(() => {
     return blogInstance; // hoặc tạo một instance mới nếu cần
   }, []);
   useEffect(() => {
-    blogInstance.get(`GetAllCommentByBlog/${idBlog}`)
+    blogInstance.get(`GetAllCommentByBlog/${idBlog}/${userId}`)
       .then(
         (res) => {
           setCommentList(res?.data?.result);
@@ -141,9 +189,22 @@ function BlogDetail(id) {
         console.error(error);
       })
   }
+  //Fetch data the user to display in the comment and reply
+  useEffect(() => {
+    userInstance.get(`/GetUserById/${userId}`)
+      .then((res) => {
+        setUser(res?.data?.result)
+        // console.log(res?.data?.result.imageSrc);
+      })
+      .catch((err) => {
+        console.log(err.response.data);
+      })
+  }, []);
+  //Translate time from SQL to normal 
   const dateTime = calculateTimeDifference(data.createdDate);
-  const [like, setLike] = useState(data.isLike);
 
+  //Palce to log data to debug
+  console.log(commentList)
   return (
     <div id="BlogDetail" className="p-3">
       <div className="d-flex align-items-center mb-2">
@@ -176,7 +237,7 @@ function BlogDetail(id) {
         <div className="d-flex align-items-center me-3"
           onClick={() => handleLikeOrUnlikeBlog()}
         >
-          <FaHeart className={`me-2 ${like === true ? 'red' : ''}`} /> {data.like}
+          <FaHeart className={`me-2 ${data.isLike ? 'red' : ''}`} /> {data.like}
         </div>
         <div
           className="d-flex align-items-center me-3"
@@ -187,7 +248,7 @@ function BlogDetail(id) {
       </div>
       <p className="cmt fw-bold my-3">COMMENT</p>
       <div className="cmt-input d-flex align-items-center">
-        <img src={data.avatar} alt="" className="profile" />
+        <img src={user?.imageSrc === 'https://localhost:7006/Images/' ? avatarDefault : user?.imageSrc} alt="" className="profile" />
         <input
           type="text"
           className="w-100 ps-3"
@@ -200,11 +261,11 @@ function BlogDetail(id) {
       <div className="cmt-block">
         {commentList.map((item) => (
           <div
-            key={item.id}
+            key={item?.id}
             className={`d-flex pb-3 mt-2 cmt-item ${item.type === "reply-comment" ? "ms-5" : ""
               }`}
           >
-            <img src={item.avatar === 'https://localhost:7006/Images/' ? avatarDefault : item.avatar} alt="" className="profile" />
+            <img src={item?.avatar === 'https://localhost:7006/Images/' ? avatarDefault : item?.avatar} alt="" className="profile" />
             <div className="ms-3  w-100 ">
               <div className="d-flex  justify-content-between">
                 <h6 className="mb-2 d-flex align-items-center h-40">
@@ -239,32 +300,62 @@ function BlogDetail(id) {
               <div className="rep d-flex w-100" >
                 <div className={`d-flex justify-content-between w-100 align-items-center ${viewReply !== item.idBlogComment ? 'justify-content-end' : "justify-content-between"}`}>
                   {viewReply !== item.idBlogComment ?
-                    <div className="d-flex justify-content-between align-items-center w-100 py-2">
-                      <p onClick={() => handleViewReply(item.idBlogComment)}>View Reply</p>
-                      <p onClick={() => handleViewReply(item.idBlogComment)}>Reply</p>
+                    <div className="d-flex justify-content-start align-items-center w-100 py-2">
+                      {item.viewBlogReplies && (
+                        item.viewBlogReplies.length === 0 ?
+                          ''
+                          :
+                          <p onClick={() => handleViewReply(item.idBlogComment)}>View Reply</p>
+                      )}
                     </div> :
-                    <div className="d-flex justify-content-end align-items-center w-100">
+                    <div className="d-flex justify-content-end align-items-center w-100  py-2">
                       <p onClick={() => handleViewReply(item.idBlogComment)}>Close</p>
                     </div>
                   }
                 </div>
               </div>
               <div>
-                {viewReply === item.id ? (
+                <div className="d-flex justify-content-end w-100 align-items-center" >
+                  {!replyComment === item.idBlogComment ?
+                    <p onClick={() => handleShowReplyComment(item.idBlogComment)}>Reply</p> :
+                    <div className="cmt-input d-flex align-items-center mt-2">
+                      <img src={user?.imageSrc === 'https://localhost:7006/Images/' ? avatarDefault : user?.imageSrc} alt="" className="profile" />
+                      <input
+                        type="text"
+                        className="w-100 ps-3"
+                        placeholder="Type your Reply"
+                        value={inputReply[item.idBlogComment] || ''}
+                        onChange={(e) => handleInputReplyComment(item.idBlogComment, e.target.value)}
+
+                      />
+                      <VscSend style={{ fontSize: "30px" }}
+                      onClick={() => handleCreateReplyComment(item.idBlogComment)}
+                      />
+                    </div>
+                  }
+                </div>
+                {viewReply === item.idBlogComment ? (
                   item.viewBlogReplies.map((reply) => (
                     <>
                       <div className="d-flex">
-                        <img src={reply.avatar === 'https://localhost:7006/Images/' ? avatarDefault : item.avatar} alt="" className="profile" />
-                        <div className="ms-3">
-                          <h6 className="mb-2 d-flex align-items-center h-40">
+                        <img src={reply.avatar === 'https://localhost:7006/Images/' ? avatarDefault : reply.avatar} alt="" className="profile reply-cmt" />
+                        <div className="ms-3 w-100">
+                          <h6 className="mb-2 d-flex align-items-center h-40 ms">
                             {reply.fullName}
                           </h6>
-                          <p className="mb-0">{reply.content}</p>
+                          {updateReply === true ?
+                            <p className="mb-0">{reply.content}</p> :
+                            <input
+                              type="text"
+                              className="form-control"
+                              value={originalContent || reply.content}
+                            // onChange={(e) => handleUpdateInputReplyComment(item.idBlogComment, e.target.value)}
+                            />
+                          }
                         </div>
                       </div>
-                      <div className="d-flex justify-content-end w-100 align-items-center" >
-                        <p>Reply</p>
-                      </div>
+
+
                     </>
                   ))
                 ) : null}
