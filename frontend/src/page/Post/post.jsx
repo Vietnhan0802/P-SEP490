@@ -1,16 +1,16 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import "../Post/post.scss";
 import { CiCircleChevRight } from "react-icons/ci";
-import { LuImagePlus } from "react-icons/lu";
+import { BsChat } from "react-icons/bs";
 import avatar from "../../images/common/Avatar.png";
 import { IoFlagOutline } from "react-icons/io5";
-import { BsChat } from "react-icons/bs";
 import { FiEye } from "react-icons/fi";
 import ReportPopup from "../../components/Popup/reportPopup";
 import Img1 from "../../images/common/post-img-1.png";
 import Img2 from "../../images/common/post-img-2.png";
 import Cookies from "js-cookie";
+import { postInstance, projectInstance } from "../../axios/axiosConfig"
 function Post({ postId, onPostClick, activeItem, onItemClick }) {
   const postContent = [
     {
@@ -65,12 +65,54 @@ function Post({ postId, onPostClick, activeItem, onItemClick }) {
     },
   ];
   const role = JSON.parse(Cookies.get("role"));
-  const [inputs, setInputs] = useState();
+  const userId = JSON.parse(Cookies.get("userId"));
+  const [inputs, setInputs] = useState({
+    title: '',
+    content: '',
+    CreateUpdatePostImages: [], // new state for managing multiple images
+    project: ''
+  });
+  const [project, setProject] = useState();
   const [inputValue, setInputValue] = useState("");
   const [blogPopups, setBlogPopups] = useState({});
-  const handleCreatePost = () => {
+  const [selectedOption, setSelectedOption] = useState('');
 
-  }
+
+  //______________________________//
+  useEffect(() => {
+    projectInstance.get('GetAllProjects')
+      .then((res) => {
+        setProject(res?.data?.result);
+      })
+      .catch((error) => {
+        console.error(error);
+      })
+  }, []);
+
+  const handleCreatePost = () => {
+    const formData = new FormData();
+    formData.append('title', inputs.title);
+    formData.append('content', inputs.content);
+
+    inputs.CreateUpdateBlogImages.forEach((imageInfo, index) => {
+      formData.append(`CreateUpdatePostImages[${index}].image`, imageInfo.image);
+      formData.append(`CreateUpdatePostImages[${index}].imageFile`, imageInfo.imageFile);
+      formData.append(`CreateUpdatePostImages[${index}].imageSrc`, imageInfo.imageSrc);
+    });
+
+    postInstance.post(`/CreateBlog/${userId}`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        accept: 'application/json',
+      },
+    })
+      .then((res) => {
+        console.log(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   const hanldeViewDetail = (postId) => {
     onPostClick(postId);
@@ -79,23 +121,57 @@ function Post({ postId, onPostClick, activeItem, onItemClick }) {
   const handleReportClick = (postId) => {
     setBlogPopups((prev) => ({ ...prev, [postId]: true }));
   };
+  const readFileAsDataURL = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        resolve(event.target.result);
+      };
+      reader.onerror = (error) => {
+        reject(error);
+      };
+      reader.readAsDataURL(file);
+    });
+  };
   // Handler function to update the state when the input changes
   const handleInputChange = (event) => {
-    setInputValue(event.target.value);
+    const { name, value, type } = event.target;
+    if (type === 'file') {
+      const files = Array.from(event.target.files);
+
+      // Use FileReader to convert each file to base64
+      const newImages = files.map(async (element) => {
+        const base64String = await readFileAsDataURL(element);
+        return {
+          image: element.name,
+          imageFile: element,
+          imageSrc: base64String,
+        };
+      });
+      Promise.all(newImages).then((convertedImages) => {
+        setInputs((values) => ({
+          ...values,
+          CreateUpdatePostImages: [...values.CreateUpdatePostImages, ...convertedImages],
+        }));
+      });
+    } else {
+      setInputs((values) => ({ ...values, [name]: value }));
+    }
   };
+  console.log(inputs)
   return (
     <div id="post">
       {role === 'Business' ? <div className="post-form p-2">
-        <div className="d-flex align-items-center flex-column">
+        <div className=" flex-column">
           <input type="text" name="title"
-            // value={inputs.title}
+            value={inputs.title}
             onChange={handleInputChange}
             className="input-text"
             placeholder="Enter the title"
           />
           <textarea
             type="text"
-            // value={inputs.content}
+            value={inputs.content}
             name="content"
             onChange={handleInputChange}
             className="input-text"
@@ -108,6 +184,12 @@ function Post({ postId, onPostClick, activeItem, onItemClick }) {
             className="form-control"
             multiple
           />
+          <label>Select a project(optional):</label>
+          <select id="dropdown" name="project" value={inputs.project} onChange={handleInputChange}>
+            {project.map((item) =>
+              (<option key={item.idProject} value={item.idProject}>{item.name}</option>)
+            )}
+          </select>
         </div>
 
         <div className="d-flex  justify-content-end mt-2">

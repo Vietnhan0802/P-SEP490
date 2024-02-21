@@ -141,13 +141,15 @@ function Blog({ blogId, onBlogClick, activeItem, onItemClick }) {
       })
       .catch((error) => { console.error(error) });
   }, []);
-  console.log(data);
   return (
     <div>
       <div id="blog">
         {role === 'Admin' ? <div className="blog-form p-2">
           <div className="d-flex align-items-center flex-column">
-            <input type="text" name="title" value={inputs.title}
+            <input
+              type="text"
+              name="title"
+              value={inputs.title}
               onChange={handleInputChange}
               className="input-text"
               placeholder="Enter the title"
