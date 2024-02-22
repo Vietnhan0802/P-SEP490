@@ -102,7 +102,7 @@ namespace Post.Controllers
             return new Response(HttpStatusCode.OK, "Get post list is success!", result);
         }
 
-        [HttpGet("GetPostById/{idPost}")]
+        [HttpGet("GetPostById/{idPost}/{idUser}")]
         public async Task<Response> GetPostById(Guid idPost, string idUser)
         {
             var post = await _context.Postts.FirstOrDefaultAsync(x => x.idPost == idPost);
