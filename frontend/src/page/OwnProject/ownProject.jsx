@@ -87,6 +87,7 @@ function OwnProject() {
             alt="Laptop with developer items spread around"
           />
         </div>
+        
 
         <div className="mt-2 ">
           <h2 className="text-xl SFU-bold">BigData Insights</h2>

@@ -2,6 +2,7 @@
   .post-report {
     border-radius: 8px;
     padding: 16px;
+
     textarea {
       height: 150px;
 
@@ -12,10 +13,13 @@
       }
     }
   }
+
   width: 100%;
+
   .post-form {
     background-color: #fff;
     border-radius: 8px;
+
     .input-text {
       border: 1px solid #d0d5dd;
       width: 100%;
@@ -27,11 +31,13 @@
       border-radius: 8px;
       padding: 16px;
       margin: 5px 0px;
+
       &:focus {
         outline: none;
       }
     }
   }
+
   .post-item {
     background-color: #fff;
     border-radius: 8px;
@@ -40,6 +46,7 @@
       width: 28px;
       height: 28px;
     }
+
     .view-btn {
       background-color: #20becb;
       border-radius: 8px;
@@ -47,6 +54,7 @@
       color: #fff;
     }
   }
+
   .input-text {
     border: 1px solid #d0d5dd;
     width: 100%;
@@ -54,12 +62,69 @@
     font-weight: 500;
     color: #2f45ad;
     border-radius: 8px;
+
     &:focus {
       outline: none;
     }
   }
+
   .image {
     background-color: #20becb;
     color: #fff;
   }
+}
+
+.post-imgs {
+  display: grid;
+  grid-gap: 8px;
+  /* Khoảng cách giữa các ảnh */
+}
+
+/* Trường hợp chỉ có 1 ảnh */
+.post-imgs img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Trường hợp có 2 ảnh */
+.post-imgs img:nth-child(1):nth-last-child(2),
+.post-imgs img:nth-child(2):nth-last-child(1) {
+  grid-column: span 6;
+}
+
+/* Trường hợp có 3 ảnh */
+.post-imgs img:nth-child(1):nth-last-child(3),
+.post-imgs img:nth-child(3):nth-last-child(1) {
+  grid-column: span 4;
+}
+
+.post-imgs img:nth-child(2):nth-last-child(2) {
+  grid-column: span 12;
+}
+
+.avata-s {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+}
+
+.pos-rel {
+  position: relative;
+}
+
+.pos-abs {
+  position: absolute;
+}
+
+.flag-icon {
+  right: 5px;
+  top: 10px;
+  width: 15px;
+  height: 15px;
+}
+
+.full-div {
+  width: 100%;
+  height: 100%;
 }

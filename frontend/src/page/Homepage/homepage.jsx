@@ -13,7 +13,7 @@ import OwnPost from "../OwnPost/ownPost";
 import OwnProject from "../OwnProject/ownProject";
 import ProjectApplication from "../ProjectApplication/projectApplication";
 function Homepage() {
-  const [activeComponent, setActiveComponent] = useState("post");
+  const [activeComponent, setActiveComponent] = useState("projectDetail");
   const [postId, setPostId] = useState(null);
   const [blogId, setBlogId] = useState(null);
   const handleSidebarItemClick = (itemId) => {

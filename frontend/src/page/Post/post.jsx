@@ -5,10 +5,14 @@ import { CiCircleChevRight } from "react-icons/ci";
 import { BsChat } from "react-icons/bs";
 import { IoFlagOutline } from "react-icons/io5";
 import { FiEye } from "react-icons/fi";
-import defaultAvatar from "../../images/common/default.png"
+import defaultAvatar from "../../images/common/default.png";
 import ReportPopup from "../../components/Popup/reportPopup";
 import Cookies from "js-cookie";
-import { postInstance, projectInstance, reportInstance } from "../../axios/axiosConfig"
+import {
+  postInstance,
+  projectInstance,
+  reportInstance,
+} from "../../axios/axiosConfig";
 function calculateTimeDifference(targetDate) {
   // Convert the target date string to a Date object
   const targetTime = new Date(targetDate).getTime();
@@ -36,46 +40,69 @@ function calculateTimeDifference(targetDate) {
 }
 
 function Post({ postId, onPostClick, activeItem, onItemClick }) {
-
   const role = JSON.parse(Cookies.get("role"));
   const userId = JSON.parse(Cookies.get("userId"));
   const [inputs, setInputs] = useState({
-    title: '',
-    content: '',
+    title: "",
+    content: "",
     CreateUpdatePostImages: [], // new state for managing multiple images
-    project: ''
+    project: "",
   });
-  const [popupContent, setPopupContent] = useState('');
+  const [popupContent, setPopupContent] = useState("");
   const [project, setProject] = useState();
   const [blogPopups, setBlogPopups] = useState({});
-  const [postList, setPostList] = useState([])
+  const [postList, setPostList] = useState([]);
   const [resetPage, setResetPage] = useState(false);
   //______________________________//
 
-  const createData = (id, createdDate, avatar, title, content, view, like, viewPostImages, fullName) => {
+  const createData = (
+    id,
+    createdDate,
+    avatar,
+    title,
+    content,
+    view,
+    like,
+    viewPostImages,
+    fullName
+  ) => {
     return {
-      id, createdDate, avatar, title, content, view, like, viewPostImages, fullName
-    }
-  }
+      id,
+      createdDate,
+      avatar,
+      title,
+      content,
+      view,
+      like,
+      viewPostImages,
+      fullName,
+    };
+  };
 
   const handlePopupContent = (event, postId) => {
     setPopupContent((prev) => ({ ...prev, [postId]: event.target.value }));
-    console.log(popupContent)
-  }
+    console.log(popupContent);
+  };
   const handleCreateReport = (userId, postId, content) => {
-    reportInstance.post(`/CreatePostReport/${userId}/${postId}/${content}`)
-      .then((res) => { console.log(res?.data?.result) })
-      .catch((error) => { console.error(error) });
-  }
+    reportInstance
+      .post(`/CreatePostReport/${userId}/${postId}/${content}`)
+      .then((res) => {
+        console.log(res?.data?.result);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
 
   useEffect(() => {
-    postInstance.get('GetAllPosts')
+    postInstance
+      .get("GetAllPosts")
       .then((res) => {
         const postList = res?.data?.result;
         setPostList([]);
         postList.map((element) => {
           const time = calculateTimeDifference(element.createdDate);
-          setPostList((prevData) => ([
+          setPostList((prevData) => [
             ...prevData,
             createData(
               element.idPost,
@@ -86,51 +113,65 @@ function Post({ postId, onPostClick, activeItem, onItemClick }) {
               element.view,
               element.like,
               element.viewPostImages,
-              element.fullName)
-          ]));
-        })
+              element.fullName
+            ),
+          ]);
+        });
       })
-      .catch((error) => { console.error(error) });
+      .catch((error) => {
+        console.error(error);
+      });
   }, [resetPage]);
 
   useEffect(() => {
-    projectInstance.get('GetAllProjects')
+    projectInstance
+      .get("GetAllProjects")
       .then((res) => {
         // setProject(res?.data?.result);
       })
       .catch((error) => {
         console.error(error);
-      })
+      });
   }, []);
   const handleCreatePost = () => {
-    if (inputs.project === '') {
-      alert('Plase choose a project');
+    if (inputs.project === "") {
+      alert("Plase choose a project");
     }
     const formData = new FormData();
-    formData.append('title', inputs.title);
-    formData.append('content', inputs.content);
+    formData.append("title", inputs.title);
+    formData.append("content", inputs.content);
 
     inputs.CreateUpdatePostImages.forEach((imageInfo, index) => {
-      formData.append(`CreateUpdatePostImages[${index}].image`, imageInfo.image);
-      formData.append(`CreateUpdatePostImages[${index}].imageFile`, imageInfo.imageFile);
-      formData.append(`CreateUpdatePostImages[${index}].imageSrc`, imageInfo.imageSrc);
+      formData.append(
+        `CreateUpdatePostImages[${index}].image`,
+        imageInfo.image
+      );
+      formData.append(
+        `CreateUpdatePostImages[${index}].imageFile`,
+        imageInfo.imageFile
+      );
+      formData.append(
+        `CreateUpdatePostImages[${index}].imageSrc`,
+        imageInfo.imageSrc
+      );
     });
 
-    postInstance.post(`/CreatePost/${userId}/${inputs.project}`, formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-        accept: 'application/json',
-      },
-    })
+    postInstance
+      .post(`/CreatePost/${userId}/${inputs.project}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          accept: "application/json",
+        },
+      })
       .then((res) => {
         // console.log(res.data);
         setResetPage(!resetPage);
         setInputs({
-          title: '',
-          content: '',
+          title: "",
+          content: "",
           CreateUpdatePostImages: [], // new state for managing multiple images
-          project: ''
-        })
+          project: "",
+        });
       })
       .catch((err) => {
         console.log(err);
@@ -140,7 +181,7 @@ function Post({ postId, onPostClick, activeItem, onItemClick }) {
   const hanldeViewDetail = (postId) => {
     onPostClick(postId);
     onItemClick("post_detail");
-  }
+  };
   const handleReportClick = (postId) => {
     setBlogPopups((prev) => ({ ...prev, [postId]: true }));
   };
@@ -159,7 +200,7 @@ function Post({ postId, onPostClick, activeItem, onItemClick }) {
   // Handler function to update the state when the input changes
   const handleInputChange = (event) => {
     const { name, value, type } = event.target;
-    if (type === 'file') {
+    if (type === "file") {
       const files = Array.from(event.target.files);
 
       // Use FileReader to convert each file to base64
@@ -174,7 +215,10 @@ function Post({ postId, onPostClick, activeItem, onItemClick }) {
       Promise.all(newImages).then((convertedImages) => {
         setInputs((values) => ({
           ...values,
-          CreateUpdatePostImages: [...values.CreateUpdatePostImages, ...convertedImages],
+          CreateUpdatePostImages: [
+            ...values.CreateUpdatePostImages,
+            ...convertedImages,
+          ],
         }));
       });
     } else {
@@ -183,65 +227,86 @@ function Post({ postId, onPostClick, activeItem, onItemClick }) {
   };
   return (
     <div id="post">
-      {role === 'Business' ? <div className="post-form p-2">
-        <div className=" flex-column">
-          <input type="text" name="title"
-            value={inputs.title}
-            onChange={handleInputChange}
-            className="input-text"
-            placeholder="Enter the title"
-          />
-          <textarea
-            type="text"
-            value={inputs.content}
-            name="content"
-            onChange={handleInputChange}
-            className="input-text"
-            placeholder="Enter your content..."
-          />
-          <input
-            type="file"
-            name="images"
-            onChange={handleInputChange}
-            className="form-control"
-            multiple
-          />
-          <label>Select a project(optional):</label>
-          <select id="dropdown" name="project" value={inputs.project} onChange={handleInputChange}>
-            <option value=''>Select a project</option>
-            {project?.map((item) =>
-              (<option key={item.idProject} value={item.idProject}>{item.name}</option>)
-            )}
-          </select>
-        </div>
+      {role === "Business" ? (
+        <div className="post-form p-2">
+          <div className=" flex-column">
+            <input
+              type="text"
+              name="title"
+              value={inputs.title}
+              onChange={handleInputChange}
+              className="input-text"
+              placeholder="Enter the title"
+            />
+            <textarea
+              type="text"
+              value={inputs.content}
+              name="content"
+              onChange={handleInputChange}
+              className="input-text"
+              placeholder="Enter your content..."
+            />
+            <input
+              type="file"
+              name="images"
+              onChange={handleInputChange}
+              className="form-control"
+              multiple
+            />
+            <label>Select a project(optional):</label>
+            <select
+              id="dropdown"
+              name="project"
+              value={inputs.project}
+              onChange={handleInputChange}
+            >
+              <option value="">Select a project</option>
+              {project?.map((item) => (
+                <option key={item.idProject} value={item.idProject}>
+                  {item.name}
+                </option>
+              ))}
+            </select>
+          </div>
 
-        <div className="d-flex  justify-content-end mt-2">
-          <button className="btn" onClick={handleCreatePost} >
-            <CiCircleChevRight className=" fs-3" />
-          </button>
+          <div className="d-flex  justify-content-end mt-2">
+            <button className="btn" onClick={handleCreatePost}>
+              <CiCircleChevRight className=" fs-3" />
+            </button>
+          </div>
         </div>
-
-      </div> : ''}
+      ) : (
+        ""
+      )}
 
       {postList.map((item) => (
         <div
           key={item.id}
-          className={`post-item mt-2 p-2 ${blogPopups[item.id] ? "position-relative" : ""
-            }`}
+          className={`pos-rel post-item mt-2 p-2 ${
+            blogPopups[item.id] ? "position-relative" : ""
+          }`}
         >
           <div className="d-flex align-items-center">
-            <img src={item.avatar === 'https://localhost:7006/Images/' ? defaultAvatar : item.avatar} alt="profile" className="profile" />
-            <div className="ms-2">
-              <h6 className="mb-0">{item.fullName}</h6>
-              <p className="mb-0">{item.createdDate}</p>
+            <img
+              className="avata-s mr-4"
+              src={item.avatar}
+              alt="Instructor Cooper Bator"
+            />
+            <div className="left-30 d-flex flex-column justify-content-center">
+              <div className="size-20 SFU-heavy d-flex">{item.fullName}</div>
+              <div className="size-14 SFU-reg text-gray-600 d-flex">
+                {item.createdDate}
+              </div>
             </div>
           </div>
           <h4 className="mt-2">{item.title}</h4>
 
-          <p className="mt-2" style={{ whiteSpace: 'pre-wrap' }}>{item.content}</p>
+          <p className="mt-2" style={{ whiteSpace: "pre-wrap" }}>
+            {item.content}
+          </p>
 
-          <div className="d-flex ">
-            {item.viewPostImages?.map(items => (
+          <div className="d-flex post-imgs">
+            {item.viewPostImages?.map((items) => (
               <img src={items.imageSrc} alt="" className="w-50 p-2" />
             ))}
           </div>
@@ -254,13 +319,18 @@ function Post({ postId, onPostClick, activeItem, onItemClick }) {
                 <BsChat className="me-2" /> {item.comment}
               </div>
               <div
-                className="d-flex align-items-center me-3"
+                className="d-flex align-items-center me-3 pos-abs flag-icon"
                 onClick={() => handleReportClick(item.id)}
               >
-                <IoFlagOutline />{" "}
+                <IoFlagOutline className="full-div" />{" "}
               </div>
             </div>
-            <button className="view-btn btn" onClick={() => hanldeViewDetail(item.id)}>View Detail</button>
+            <button
+              className="view-btn btn"
+              onClick={() => hanldeViewDetail(item.id)}
+            >
+              View Detail
+            </button>
           </div>
           {blogPopups[item.id] && (
             <ReportPopup
@@ -282,8 +352,14 @@ function Post({ postId, onPostClick, activeItem, onItemClick }) {
                   onChange={(event) => handlePopupContent(event, item.id)}
                 />
                 <div className="d-flex justify-content-end mt-2">
-                  <button className="btn btn-secondary "
-                    onClick={() => handleCreateReport(userId, item.id, popupContent[item.id])}>Submit</button>
+                  <button
+                    className="btn btn-secondary "
+                    onClick={() =>
+                      handleCreateReport(userId, item.id, popupContent[item.id])
+                    }
+                  >
+                    Submit
+                  </button>
                 </div>
               </div>
             </ReportPopup>
