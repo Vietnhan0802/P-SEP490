@@ -148,7 +148,7 @@ function Blog({ blogId, onBlogClick, activeItem, onItemClick }) {
   return (
     <div>
       <div id="blog">
-        {role === 'Admin' ? <div className="blog-form p-2">
+      {role === 'Admin' ? <div className="blog-form p-2">
           <div className="d-flex align-items-center flex-column">
             <input
               type="text"
