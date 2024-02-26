@@ -7,10 +7,8 @@ import { IoFlagOutline } from "react-icons/io5";
 import { FiEye } from "react-icons/fi";
 import defaultAvatar from "../../images/common/default.png"
 import ReportPopup from "../../components/Popup/reportPopup";
-import Img1 from "../../images/common/post-img-1.png";
-import Img2 from "../../images/common/post-img-2.png";
 import Cookies from "js-cookie";
-import { postInstance, projectInstance } from "../../axios/axiosConfig"
+import { postInstance, projectInstance, reportInstance } from "../../axios/axiosConfig"
 function calculateTimeDifference(targetDate) {
   // Convert the target date string to a Date object
   const targetTime = new Date(targetDate).getTime();
@@ -47,16 +45,27 @@ function Post({ postId, onPostClick, activeItem, onItemClick }) {
     CreateUpdatePostImages: [], // new state for managing multiple images
     project: ''
   });
+  const [popupContent, setPopupContent] = useState('');
   const [project, setProject] = useState();
   const [blogPopups, setBlogPopups] = useState({});
   const [postList, setPostList] = useState([])
-
+  const [resetPage, setResetPage] = useState(false);
   //______________________________//
 
   const createData = (id, createdDate, avatar, title, content, view, like, viewPostImages, fullName) => {
     return {
       id, createdDate, avatar, title, content, view, like, viewPostImages, fullName
     }
+  }
+
+  const handlePopupContent = (event, postId) => {
+    setPopupContent((prev) => ({ ...prev, [postId]: event.target.value }));
+    console.log(popupContent)
+  }
+  const handleCreateReport = (userId, postId, content) => {
+    reportInstance.post(`/CreatePostReport/${userId}/${postId}/${content}`)
+      .then((res) => { console.log(res?.data?.result) })
+      .catch((error) => { console.error(error) });
   }
 
   useEffect(() => {
@@ -82,12 +91,12 @@ function Post({ postId, onPostClick, activeItem, onItemClick }) {
         })
       })
       .catch((error) => { console.error(error) });
-  }, []);
+  }, [resetPage]);
 
   useEffect(() => {
     projectInstance.get('GetAllProjects')
       .then((res) => {
-        setProject(res?.data?.result);
+        // setProject(res?.data?.result);
       })
       .catch((error) => {
         console.error(error);
@@ -114,7 +123,8 @@ function Post({ postId, onPostClick, activeItem, onItemClick }) {
       },
     })
       .then((res) => {
-        console.log(res.data);
+        // console.log(res.data);
+        setResetPage(!resetPage);
         setInputs({
           title: '',
           content: '',
@@ -267,10 +277,13 @@ function Post({ postId, onPostClick, activeItem, onItemClick }) {
                 <textarea
                   type="text"
                   placeholder="What's wrong with this post"
+                  value={popupContent[item.id]}
                   className="w-100 p-3"
+                  onChange={(event) => handlePopupContent(event, item.id)}
                 />
                 <div className="d-flex justify-content-end mt-2">
-                  <button className="btn btn-secondary ">Submit</button>
+                  <button className="btn btn-secondary "
+                    onClick={() => handleCreateReport(userId, item.id, popupContent[item.id])}>Submit</button>
                 </div>
               </div>
             </ReportPopup>

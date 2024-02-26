@@ -57,7 +57,10 @@ function Homepage() {
             {activeComponent === "blog_detail" && <BlogDetail id={blogId} />}
             {activeComponent === "dashboard" && <DashBoard />}
             {activeComponent === "projectDetail" && <ProjectDetail />}
-            {activeComponent === "own_post" && <OwnPost />}
+            {activeComponent === "own_post" && <OwnPost  activePost={postId}
+                onPostClick={handlePostClick}
+                activeItem={activeComponent}
+                onItemClick={handleSidebarItemClick}/>}
             {activeComponent === "own_project" && <OwnProject />}
             {activeComponent === "project_application" && <ProjectApplication />}
           </Col>
