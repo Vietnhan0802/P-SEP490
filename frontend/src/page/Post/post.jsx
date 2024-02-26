@@ -93,8 +93,10 @@ function Post({ postId, onPostClick, activeItem, onItemClick }) {
         console.error(error);
       })
   }, []);
-  console.log(postList)
   const handleCreatePost = () => {
+    if (inputs.project === '') {
+      alert('Plase choose a project');
+    }
     const formData = new FormData();
     formData.append('title', inputs.title);
     formData.append('content', inputs.content);
@@ -196,6 +198,7 @@ function Post({ postId, onPostClick, activeItem, onItemClick }) {
           />
           <label>Select a project(optional):</label>
           <select id="dropdown" name="project" value={inputs.project} onChange={handleInputChange}>
+            <option value=''>Select a project</option>
             {project?.map((item) =>
               (<option key={item.idProject} value={item.idProject}>{item.name}</option>)
             )}
@@ -225,7 +228,7 @@ function Post({ postId, onPostClick, activeItem, onItemClick }) {
           </div>
           <h4 className="mt-2">{item.title}</h4>
 
-          <p className="mt-2" style={{whiteSpace:'pre-wrap'}}>{item.content}</p>
+          <p className="mt-2" style={{ whiteSpace: 'pre-wrap' }}>{item.content}</p>
 
           <div className="d-flex ">
             {item.viewPostImages?.map(items => (
