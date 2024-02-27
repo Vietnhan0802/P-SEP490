@@ -39,7 +39,7 @@ Lên git tạo pull requests.
 
 ## Code "Vui Vẻ Hòa Đồng"
 
-![aaa](https://github.com/Vietnhan0802/P-SEP490/assets/93634229/ebb98f5c-1970-424e-8dfb-57b989c22642)
+
 
 
 1. Each member should have their own branch to work on. Avoid working directly on the main branch (master/main).
