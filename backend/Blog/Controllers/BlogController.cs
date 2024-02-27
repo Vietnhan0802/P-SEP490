@@ -51,8 +51,8 @@ namespace Blog.Controllers
 
         /*------------------------------------------------------------Blog------------------------------------------------------------*/
 
-        [HttpGet("GetAllBlogs")]
-        public async Task<Response> GetAllBlogs()
+        [HttpGet("GetAllBlogs/{idUser}")]
+        public async Task<Response> GetAllBlogs(string idUser)
         {
             var blogs = await _context.Blogs.Where(x => x.isDeleted == false).OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
             if (blogs == null)
@@ -63,6 +63,11 @@ namespace Blog.Controllers
             foreach (var blog in result)
             {
                 blog.like = await _context.BlogLikes.Where(x => x.idBlog == blog.idBlog).CountAsync();
+                var isLike = await _context.BlogLikes.FirstOrDefaultAsync(x => x.idAccount == idUser);
+                if (isLike != null)
+                {
+                    blog.isLike = true;
+                }
                 var infoUser = await GetNameUserCurrent(blog.idAccount!);
                 blog.fullName = infoUser.fullName;
                 blog.avatar = infoUser.avatar;
@@ -89,6 +94,11 @@ namespace Blog.Controllers
             foreach (var blog in result)
             {
                 blog.like = await _context.BlogLikes.Where(x => x.idBlog == blog.idBlog).CountAsync();
+                var isLike = await _context.BlogLikes.FirstOrDefaultAsync(x => x.idAccount == idUser);
+                if (isLike != null)
+                {
+                    blog.isLike = true;
+                }
                 var infoUser = await GetNameUserCurrent(blog.idAccount!);
                 blog.fullName = infoUser.fullName;
                 blog.avatar = infoUser.avatar;

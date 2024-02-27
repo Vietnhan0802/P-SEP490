@@ -50,8 +50,8 @@ namespace Post.Controllers
             return user!;
         }
 
-        [HttpGet("GetAllPosts")]
-        public async Task<Response> GetAllPosts()
+        [HttpGet("GetAllPosts/{idUser}")]
+        public async Task<Response> GetAllPosts(string idUser)
         {
             var posts = await _context.Postts.Where(x => x.isDeleted == false).OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
             if (posts == null)
@@ -62,6 +62,11 @@ namespace Post.Controllers
             foreach (var post in result)
             {
                 post.like = await _context.PosttLikes.Where(x => x.idPost == post.idPost).CountAsync();
+                var isLike = await _context.PosttLikes.FirstOrDefaultAsync(x => x.idAccount == idUser);
+                if (isLike != null)
+                {
+                    post.isLike = true;
+                }
                 var infoUser = await GetNameUserCurrent(post.idAccount!);
                 post.fullName = infoUser.fullName;
                 post.avatar = infoUser.avatar;
@@ -88,6 +93,11 @@ namespace Post.Controllers
             foreach (var post in result)
             {
                 post.like = await _context.PosttLikes.Where(x => x.idPost == post.idPost).CountAsync();
+                var isLike = await _context.PosttLikes.FirstOrDefaultAsync(x => x.idAccount == idUser);
+                if (isLike != null)
+                {
+                    post.isLike = true;
+                }
                 var infoUser = await GetNameUserCurrent(post.idAccount!);
                 post.fullName = infoUser.fullName;
                 post.avatar = infoUser.avatar;
