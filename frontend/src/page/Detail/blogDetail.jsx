@@ -6,6 +6,8 @@ import { FiEye } from "react-icons/fi";
 import { VscSend } from "react-icons/vsc";
 import { blogInstance, userInstance } from "../../axios/axiosConfig";
 import { FaHeart } from "react-icons/fa";
+import { GrUpdate } from "react-icons/gr";
+import { MdDelete } from "react-icons/md";
 import Cookies from "js-cookie";
 import Dropdown from 'react-bootstrap/Dropdown';
 function calculateTimeDifference(targetDate) {
@@ -44,17 +46,22 @@ function BlogDetail(id) {
   const [commentList, setCommentList] = useState([]);
   const [viewReply, setViewReply] = useState(null);
   const [state, setState] = useState(true)
-  const [updateCommentShow, setUpdateCommentShow] = useState(null);
+  const [updateShow, setUpdateShow] = useState(null);
   const [originalContent, setOriginalContent] = useState('');
-  const [updateReply, setUpdateReply] = useState(true);
+  const [updateReplyShow, setUpdateReplyShow] = useState(null);
   const [replyComment, setReplyComment] = useState(false);
   const [inputReply, setInputReply] = useState({});
   //__________________________________________________________________//
 
-  const handleUpdateCommentAppear = (blogId, originalContent) => {
-    setUpdateCommentShow((prev) => (prev === blogId ? null : blogId));
+  const handleUpdateCommentAppear = (updateId, originalContent) => {
+    setUpdateShow((prev) => (prev === updateId ? null : updateId));
     // If the original content is not set (i.e., it's an empty string), set it with the current content
     setOriginalContent(originalContent || '');
+  };
+  const handleUpdateReplyCommentAppear = (replyId) => {
+    setUpdateReplyShow((prev) => (prev === replyId ? null : replyId));
+    // If the original content is not set (i.e., it's an empty string), set it with the current content
+    // setOriginalContent(originalContent || '');
   };
 
   const handleViewReply = (blogId) => {
@@ -66,13 +73,17 @@ function BlogDetail(id) {
   }
   //Hanlde comment for the blog
   const handleUpdateCommentCancel = () => {
-    setUpdateCommentShow(null);
+    setUpdateShow(null);
+    setState(!state);
+  };
+  const handleUpdateReplyCancel = () => {
+    setUpdateReplyShow(null);
     setState(!state);
   };
   const handleUpdateComment = (idBlogComment, content) => {
     blogInstance.put(`UpdateBlogComment/${idBlogComment}/${content}`)
       .then(() => {
-        setUpdateCommentShow(null);
+        setUpdateShow(null);
         setState(!state);
       }
       )
@@ -80,6 +91,28 @@ function BlogDetail(id) {
         console.error(error);
       })
   };
+  const handleDeleteComment = (id) => {
+    blogInstance.delete(`RemoveBlogComment/${id}`)
+      .then(
+        (res) => {
+          console.log(res.data.result);
+          setState(!state);
+        }
+      ).catch((error) => {
+        console.error(error);
+      })
+  }
+  const handleDeleteReplyComment = (id) => {
+    blogInstance.delete(`RemoveBlogReply/${id}`)
+      .then(
+        (res) => {
+          console.log(res.data.result);
+          setState(!state);
+        }
+      ).catch((error) => {
+        console.error(error);
+      })
+  }
   const handleInputComment = (event) => {
     setContent(event.target.value);
   }
@@ -112,7 +145,8 @@ function BlogDetail(id) {
     blogInstance.post(`CreateBlogReply/${userId}/${commentId}/${replyContent}`)
       .then((res) => {
         setState(!state)
-        console.log(res?.data?.result) })
+        console.log(res?.data?.result)
+      })
       .catch((error) => { console.error(error) });
     // After successful submission, clear the input field for that commentId
     setInputReply(prevReplyInputs => ({
@@ -126,6 +160,35 @@ function BlogDetail(id) {
       ...prevReplyInputs,
       [commentId]: content
     }));
+  }
+  const handleUpdateInputReplyComment = (replyId, newContent) => {
+    setCommentList((prevComments) => prevComments.map((comment) => {
+      // Check if this is the comment containing the reply we updated
+      if (comment.viewBlogReplies) {
+        // Map through the replies to find and update the correct one
+        const updatedReplies = comment.viewBlogReplies.map((reply) => {
+          if (reply.idBlogReply === replyId) {
+            // Found the reply we want to update
+            return { ...reply, content: newContent };
+          }
+          return reply;
+        });
+        // Return the comment with the updated replies
+        return { ...comment, viewBlogReplies: updatedReplies };
+      }
+      return comment;
+    }));
+  }
+  const handleUpdateReply = (idBlogReply, content) => {
+    blogInstance.put(`UpdateBlogReply/${idBlogReply}/${content}`)
+      .then(() => {
+        setUpdateReplyShow(null);
+        setState(!state);
+      }
+      )
+      .catch((error) => {
+        console.error(error);
+      })
   }
   //Hanlde like or unlike the the blog
   const handleLikeOrUnlikeBlog = () => {
@@ -177,18 +240,7 @@ function BlogDetail(id) {
         console.error(error);
       });
   }, [memoizedBlogInstance, idBlog]);
-  const handleDeleteComment = (id) => {
-    console.log(id);
-    blogInstance.delete(`RemoveBlogComment/${id}`)
-      .then(
-        (res) => {
-          console.log(res.data.result);
-          setState(!state);
-        }
-      ).catch((error) => {
-        console.error(error);
-      })
-  }
+
   //Fetch data the user to display in the comment and reply
   useEffect(() => {
     userInstance.get(`/GetUserById/${userId}`)
@@ -206,7 +258,7 @@ function BlogDetail(id) {
   //Palce to log data to debug
   console.log(commentList)
   return (
-    <div id="BlogDetail" className="p-3">
+    <div id="BlogDetail" className="p-3 mb-4">
       <div className="d-flex align-items-center mb-2">
         <img src={data.avatar} alt="profile" className="profile" />
         <div className="ms-2">
@@ -273,17 +325,17 @@ function BlogDetail(id) {
                 </h6>
                 {item.idAccount === userId ?
                   <Dropdown>
-                    <Dropdown.Toggle id="dropdown-basic" className="bg-white border-none text-body">
+                    <Dropdown.Toggle id="dropdown-basic" style={{ border: 'none' }} className="bg-white border-none text-body">
                     </Dropdown.Toggle>
 
-                    <Dropdown.Menu>
-                      <Dropdown.Item onClick={() => handleUpdateCommentAppear(item.idBlogComment)}>Update</Dropdown.Item>
-                      <Dropdown.Item onClick={() => handleDeleteComment(item.idBlogComment)}>Delete</Dropdown.Item>
+                    <Dropdown.Menu style={{ minWidth: 'auto' }}>
+                      <Dropdown.Item onClick={() => handleUpdateCommentAppear(item.idBlogComment)}><GrUpdate /></Dropdown.Item>
+                      <Dropdown.Item onClick={() => handleDeleteComment(item.idBlogComment)}><MdDelete /></Dropdown.Item>
                     </Dropdown.Menu>
                   </Dropdown> : ""
                 }
               </div>
-              {updateCommentShow !== item.idBlogComment ? (
+              {updateShow !== item.idBlogComment ? (
                 <p className="mb-0">{item.content}</p>
               ) : (
                 <>
@@ -316,7 +368,7 @@ function BlogDetail(id) {
               </div>
               <div>
                 <div className="d-flex justify-content-end w-100 align-items-center" >
-                  {!replyComment === item.idBlogComment ?
+                  {replyComment === item.idBlogComment ?
                     <p onClick={() => handleShowReplyComment(item.idBlogComment)}>Reply</p> :
                     <div className="cmt-input d-flex align-items-center mt-2">
                       <img src={user?.imageSrc === 'https://localhost:7006/Images/' ? avatarDefault : user?.imageSrc} alt="" className="profile" />
@@ -329,7 +381,7 @@ function BlogDetail(id) {
 
                       />
                       <VscSend style={{ fontSize: "30px" }}
-                      onClick={() => handleCreateReplyComment(item.idBlogComment)}
+                        onClick={() => handleCreateReplyComment(item.idBlogComment)}
                       />
                     </div>
                   }
@@ -343,16 +395,31 @@ function BlogDetail(id) {
                           <h6 className="mb-2 d-flex align-items-center h-40 ms">
                             {reply.fullName}
                           </h6>
-                          {updateReply === true ?
+                          {updateReplyShow !== reply.idBlogReply ?
                             <p className="mb-0">{reply.content}</p> :
-                            <input
-                              type="text"
-                              className="form-control"
-                              value={originalContent || reply.content}
-                            // onChange={(e) => handleUpdateInputReplyComment(item.idBlogComment, e.target.value)}
-                            />
+                            <div>
+                              <input
+                                type="text"
+                                className="form-control"
+                                value={reply.content}
+                                onChange={(e) => handleUpdateInputReplyComment(reply.idBlogReply, e.target.value)}
+                              />
+                              <button onClick={() => handleUpdateReplyCancel(reply.idBlogReply)}>Cancel</button>
+                              <button onClick={() => handleUpdateReply(reply.idBlogReply, reply.content)}>Save</button>
+                            </div>
                           }
                         </div>
+                        {reply.idAccount === userId ?
+                          <Dropdown style={{ width: 'auto' }}>
+                            <Dropdown.Toggle id="dropdown-basic" style={{ border: 'none' }} className="bg-white border-none text-body">
+                            </Dropdown.Toggle>
+
+                            <Dropdown.Menu style={{ minWidth: 'auto' }}>
+                              <Dropdown.Item onClick={() => handleUpdateReplyCommentAppear(reply.idBlogReply)}><GrUpdate /></Dropdown.Item>
+                              <Dropdown.Item onClick={() => handleDeleteReplyComment(reply.idBlogReply)}><MdDelete /></Dropdown.Item>
+                            </Dropdown.Menu>
+                          </Dropdown> : ""
+                        }
                       </div>
 
 

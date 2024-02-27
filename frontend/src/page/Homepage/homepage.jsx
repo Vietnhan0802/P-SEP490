@@ -13,7 +13,7 @@ import OwnPost from "../OwnPost/ownPost";
 import OwnProject from "../OwnProject/ownProject";
 import ProjectApplication from "../ProjectApplication/projectApplication";
 function Homepage() {
-  const [activeComponent, setActiveComponent] = useState("post");
+  const [activeComponent, setActiveComponent] = useState("projectDetail");
   const [postId, setPostId] = useState(null);
   const [blogId, setBlogId] = useState(null);
   const handleSidebarItemClick = (itemId) => {
@@ -57,7 +57,10 @@ function Homepage() {
             {activeComponent === "blog_detail" && <BlogDetail id={blogId} />}
             {activeComponent === "dashboard" && <DashBoard />}
             {activeComponent === "projectDetail" && <ProjectDetail />}
-            {activeComponent === "own_post" && <OwnPost />}
+            {activeComponent === "own_post" && <OwnPost  activePost={postId}
+                onPostClick={handlePostClick}
+                activeItem={activeComponent}
+                onItemClick={handleSidebarItemClick}/>}
             {activeComponent === "own_project" && <OwnProject />}
             {activeComponent === "project_application" && <ProjectApplication />}
           </Col>

@@ -11,79 +11,86 @@ import TableRow from "@mui/material/TableRow";
 import TableSortLabel from "@mui/material/TableSortLabel";
 import Paper from "@mui/material/Paper";
 import { visuallyHidden } from "@mui/utils";
-import avatar from "../../../images/common/Avatar.png";
 import { IoSearchOutline } from "react-icons/io5";
 import "../DashboardTable/table.scss";
 import { GoDotFill } from "react-icons/go";
 import { blogInstance } from "../../../axios/axiosConfig";
-function createData(id, name, email, date, title, description, report, status) {
+function createData(id, avatar, fullName, title, content, date, report, status) {
+  console.log(date);
+  const time = formatDate(date);
   return {
-    id,
-    name,
-    email,
-    date,
-    title,
-    description,
-    report,
-    status,
+    id, avatar, fullName, title, content, time, report, status
   };
 }
 
-const rows = [
-  createData(
-    1,
-    "Olivia Rhye",
-    "example@gmail,com",
-    "21 Jan 2024",
-    "Content curating app",
-    "Description of the current content",
-    0,
-    "Block"
-  ),
-  createData(
-    2,
-    "Adison Schleifer",
-    "example@gmail,com",
+// const rows = [
+//   createData(
+//     1,
+//     "Olivia Rhye",
+//     "example@gmail,com",
+//     "21 Jan 2024",
+//     "Content curating app",
+//     "Description of the current content",
+//     0,
+//     "Block"
+//   ),
+//   createData(
+//     2,
+//     "Adison Schleifer",
+//     "example@gmail,com",
 
-    "21 Jan 2024",
-    "Design software",
-    "Description of the current content",
+//     "21 Jan 2024",
+//     "Design software",
+//     "Description of the current content",
 
-    2,
-    "Block"
-  ),
-  createData(
-    3,
-    "Martin George",
-    "example@gmail,com",
-    "21 Jan 2024",
-    "Data prediction",
-    "Description of the current content",
+//     2,
+//     "Block"
+//   ),
+//   createData(
+//     3,
+//     "Martin George",
+//     "example@gmail,com",
+//     "21 Jan 2024",
+//     "Data prediction",
+//     "Description of the current content",
 
-    3,
-    "Block"
-  ),
-  createData(
-    4,
-    "Zaire Herwitz",
-    "example@gmail,com",
-    "21 Jan 2024",
-    "Productivity app",
-    "Description of the current content",
+//     3,
+//     "Block"
+//   ),
+//   createData(
+//     4,
+//     "Zaire Herwitz",
+//     "example@gmail,com",
+//     "21 Jan 2024",
+//     "Productivity app",
+//     "Description of the current content",
 
-    3,
-    "Block"
-  ),
-  //   createData(5, "Gingerbread", 356, 16.0, 49, 3.9),
-  //   createData(6, "Honeycomb", 408, 3.2, 87, 6.5),
-  //   createData(7, "Ice cream sandwich", 237, 9.0, 37, 4.3),
-  //   createData(8, "Jelly Bean", 375, 0.0, 94, 0.0),
-  //   createData(9, "KitKat", 518, 26.0, 65, 7.0),
-  //   createData(10, "Lollipop", 392, 0.2, 98, 0.0),
-  //   createData(11, "Marshmallow", 318, 0, 81, 2.0),
-  //   createData(12, "Nougat", 360, 19.0, 9, 37.0),
-  //   createData(13, "Oreo", 437, 18.0, 63, 4.0),
-];
+//     3,
+//     "Block"
+//   ),
+//   //   createData(5, "Gingerbread", 356, 16.0, 49, 3.9),
+//   //   createData(6, "Honeycomb", 408, 3.2, 87, 6.5),
+//   //   createData(7, "Ice cream sandwich", 237, 9.0, 37, 4.3),
+//   //   createData(8, "Jelly Bean", 375, 0.0, 94, 0.0),
+//   //   createData(9, "KitKat", 518, 26.0, 65, 7.0),
+//   //   createData(10, "Lollipop", 392, 0.2, 98, 0.0),
+//   //   createData(11, "Marshmallow", 318, 0, 81, 2.0),
+//   //   createData(12, "Nougat", 360, 19.0, 9, 37.0),
+//   //   createData(13, "Oreo", 437, 18.0, 63, 4.0),
+// ];
+
+
+// Function to format the timestamp
+const formatDate = (timestamp) => {
+  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const date = new Date(timestamp);
+  const day = date.getDate();
+  const month = months[date.getMonth()];
+  const year = date.getFullYear();
+
+  return `${day} ${month} ${year}`;
+}
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -214,7 +221,7 @@ export default function BlogTable() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelected = rows.map((n) => n.id);
+      const newSelected = blogRows.map((n) => n.id);
       setSelected(newSelected);
       return;
     }
@@ -241,14 +248,21 @@ export default function BlogTable() {
         const fetchedBlogRows = res.data.result.map(element => (
           createData(
             element.idBlog,
+            element.avatar,
+            element.fullName,
             element.title,
             element.content,
+            element.createdDate,
             element.role,
             element.description,
-            element.isBlock
           )
-        ));
+        )
+        );
+
         setUserRows(fetchedBlogRows);
+        console.log(res.data.result);
+
+        console.log(blogRows)
       })
       .catch((err) => { console.log(err) })
   }, []);
@@ -280,7 +294,7 @@ export default function BlogTable() {
               orderBy={orderBy}
               onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
-              rowCount={rows.length}
+              rowCount={blogRows.length}
             />
             <TableBody>
               {visibleRows.map((row, index) => {
@@ -306,7 +320,7 @@ export default function BlogTable() {
                       <div className="ms-2 my-2 d-flex align-items-center">
                         <img
                           className="me-2"
-                          src={avatar}
+                          src={row.avatar}
                           alt=""
                           style={{
                             width: "40px",
@@ -315,16 +329,16 @@ export default function BlogTable() {
                           }}
                         />
                         <div>
-                          {row.name}
+                          {row.fullName}
                           <br></br>
                           {row.email}
                         </div>
                       </div>
                     </TableCell>
-                    <TableCell align="left" className="blur">{row.date}</TableCell>
+                    <TableCell align="left" className="blur">{row.time}</TableCell>
                     <TableCell align="left">
                       <p style={{ fontSize: "16px", fontWeight: "500" }}>{row.title}</p>
-                      <p className="blur">{row.description}</p>
+                      <p className="blur">{row.content}</p>
                     </TableCell>
                     <TableCell align="right">{row.report}</TableCell>
                     <TableCell align="right">
@@ -348,7 +362,7 @@ export default function BlogTable() {
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={rows.length}
+          count={blogRows.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}
