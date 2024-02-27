@@ -152,6 +152,7 @@ namespace Project.Controllers
             }
             var project = _mapper.Map<ProjectInfo>(projectInfoCreate);
             project.idAccount = idUser;
+            project.process = Process.Preparing;
             project.isDeleted = false;
             project.createdDate = DateTime.Now;
             await _context.ProjectInfos.AddAsync(project);

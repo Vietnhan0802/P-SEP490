@@ -128,7 +128,7 @@ namespace Interaction.Controllers
             }
         }
 
-        /*------------------------------------------------------------Verification------------------------------------------------------------*/
+        /*------------------------------------------------------------AccountReport------------------------------------------------------------*/
 
         [HttpGet("GetAllAccountReportsWaiting")]
         public async Task<Response> GetAllAccountReportsWaiting()
