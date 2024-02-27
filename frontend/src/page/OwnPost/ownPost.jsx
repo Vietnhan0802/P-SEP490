@@ -1,9 +1,7 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
 import "../OwnPost/ownpost.scss";
-import { CiCircleChevRight } from "react-icons/ci";
 import { BsChat } from "react-icons/bs";
-import avatar from "../../images/common/Avatar.png";
 import { IoFlagOutline } from "react-icons/io5";
 import { FiEye } from "react-icons/fi";
 import ReportPopup from "../../components/Popup/reportPopup";
@@ -111,7 +109,7 @@ function OwnPost({ postId, onPostClick, activeItem, onItemClick }) {
   }
 
   useEffect(() => {
-    postInstance.get('GetAllPosts')
+    postInstance.get(`GetPostByUser/${userId}`)
       .then((res) => {
         const postList = res?.data?.result;
         setPostList([]);
