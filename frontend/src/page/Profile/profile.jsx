@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
 import "../Profile/profile.scss";
+import "../Profile/check-box.scss";
 import { RiHome3Line } from "react-icons/ri";
 import { FaChevronRight } from "react-icons/fa6";
 import degree from "../../images/common/degree.png";
@@ -226,7 +227,7 @@ function Profile({ handleChangeImg }) {
                 <h4 class="mb-4 mt-0">Contact detail</h4>
 
                 <div class="col-md-6">
-                  <label class="form-label">Full Name</label>
+                  <label class="form-label">Full Name:</label>
                   <input
                     type="text"
                     class="form-control"
@@ -265,8 +266,8 @@ function Profile({ handleChangeImg }) {
                 </div>
 
                 <div class="col-md-6">
-                  <label class="form-label">Gender</label>
-                  <div class="form-control">
+                  <label class="form-label">Gender:</label>
+                  <div class="check-control">
                     {!isEdit ? (
                       user.IsMale ? (
                         <p>Male</p>
@@ -274,9 +275,11 @@ function Profile({ handleChangeImg }) {
                         <p>FeMale</p>
                       )
                     ) : (
-                      <div>
+                      <div className="checkbox-wrapper-13"> 
                         <label>
                           <input
+                            id="c1-13"
+                            className="me-1"
                             type="checkbox"
                             checked={inputs.isMale}
                             name="isMale"
@@ -289,8 +292,10 @@ function Profile({ handleChangeImg }) {
                           Male
                         </label>
 
-                        <label>
+                        <label className="ps-4">
                           <input
+                            id="c1-13"
+                            className="me-1"
                             type="checkbox"
                             checked={!inputs.isMale}
                             name="isMale"
