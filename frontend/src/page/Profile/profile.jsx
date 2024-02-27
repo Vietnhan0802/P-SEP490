@@ -332,7 +332,7 @@ function Profile({ handleChangeImg }) {
                   />
                 </div>
 
-                <div class="col-md-12">
+                <div class="col-md-12 ">
                   <label class="form-label">Description:</label>
                   <input
                     type="text"
