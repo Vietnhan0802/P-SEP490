@@ -96,7 +96,7 @@ function Post({ postId, onPostClick, activeItem, onItemClick }) {
 
   useEffect(() => {
     postInstance
-      .get("GetAllPosts")
+      .get(`GetAllPosts/${userId}`)
       .then((res) => {
         const postList = res?.data?.result;
         setPostList([]);
@@ -127,7 +127,7 @@ function Post({ postId, onPostClick, activeItem, onItemClick }) {
     projectInstance
       .get("GetAllProjects")
       .then((res) => {
-        // setProject(res?.data?.result);
+        setProject(res?.data?.result);
       })
       .catch((error) => {
         console.error(error);
@@ -156,8 +156,7 @@ function Post({ postId, onPostClick, activeItem, onItemClick }) {
       );
     });
 
-    postInstance
-      .post(`/CreatePost/${userId}/${inputs.project}`, formData, {
+    postInstance.post(`/CreatePost/${userId}/${inputs.project}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
           accept: "application/json",
@@ -289,7 +288,7 @@ function Post({ postId, onPostClick, activeItem, onItemClick }) {
           <div className="d-flex align-items-center">
             <img
               className="avata-s mr-4"
-              src={item.avatar}
+              src={item.avatar === 'https://localhost:7006/Images/' ? defaultAvatar : item.avatar}
               alt="Instructor Cooper Bator"
             />
             <div className="left-30 d-flex flex-column justify-content-center">
