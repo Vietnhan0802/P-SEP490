@@ -109,7 +109,7 @@ function OwnPost({ postId, onPostClick, activeItem, onItemClick }) {
   }
 
   useEffect(() => {
-    postInstance.get('GetAllPosts')
+    postInstance.get(`GetPostByUser/${userId}`)
       .then((res) => {
         const postList = res?.data?.result;
         setPostList([]);
