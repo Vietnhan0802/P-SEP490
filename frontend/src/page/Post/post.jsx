@@ -96,7 +96,7 @@ function Post({ postId, onPostClick, activeItem, onItemClick }) {
 
   useEffect(() => {
     postInstance
-      .get("GetAllPosts")
+      .get(`GetAllPosts/${userId}`)
       .then((res) => {
         const postList = res?.data?.result;
         setPostList([]);

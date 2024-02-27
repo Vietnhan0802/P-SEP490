@@ -8,7 +8,7 @@ import Cookies from "js-cookie";
 import { useState } from "react";
 import { projectInstance } from "../../axios/axiosConfig";
 
-function OwnProject() {
+function OwnProject({ projetcId, onProjectClick, activeItem, onItemClick }) {
   const role = JSON.parse(Cookies.get("role"));
   const userId = JSON.parse(Cookies.get("userId"));
 
@@ -74,6 +74,10 @@ function OwnProject() {
         ImageSrc: '',
       });
     }
+  };
+  const hanldeViewDetail = (projectId) => {
+    onProjectClick(projectId);
+    onItemClick("projectDetail");
   };
   const handleCreateProject = () => {
     const formData = new FormData();
@@ -202,7 +206,9 @@ function OwnProject() {
                 </div>
               </div>
               <div className="d-flex flex-row gap-2">
-                <button className="d-flex flex-row align-items-center btn bg-white text-dark px-4 py-2 rounded btn-light border border-dark">
+                <button className="d-flex flex-row align-items-center btn bg-white text-dark px-4 py-2 rounded btn-light border border-dark"
+                onClick={()=>hanldeViewDetail(item.idProject)}
+                >
                   Detail
                 </button>
                 <button className="d-flex flex-row align-items-center btn bg-white text-dark px-4 py-2 rounded btn-light border border-dark">

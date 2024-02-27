@@ -16,6 +16,7 @@ function Homepage() {
   const [activeComponent, setActiveComponent] = useState("post");
   const [postId, setPostId] = useState(null);
   const [blogId, setBlogId] = useState(null);
+  const [projectId, setProjectId] = useState(null);
   const handleSidebarItemClick = (itemId) => {
     setActiveComponent(itemId);
   };
@@ -25,6 +26,9 @@ function Homepage() {
   const handleBlogClick = (blogId) => {
     setBlogId(blogId);
   };
+  const hanldeProjectClick = (projectId) => {
+    setProjectId(projectId)
+  }
   return (
     <div className="bg m-0">
 
@@ -56,12 +60,18 @@ function Homepage() {
             {activeComponent === "post_detail" && <PostDetail id={postId} />}
             {activeComponent === "blog_detail" && <BlogDetail id={blogId} />}
             {activeComponent === "dashboard" && <DashBoard />}
-            {activeComponent === "projectDetail" && <ProjectDetail />}
-            {activeComponent === "own_post" && <OwnPost  activePost={postId}
-                onPostClick={handlePostClick}
-                activeItem={activeComponent}
-                onItemClick={handleSidebarItemClick}/>}
-            {activeComponent === "own_project" && <OwnProject />}
+            {activeComponent === "projectDetail" && <ProjectDetail id={projectId} />}
+            {activeComponent === "own_post" && <OwnPost activePost={postId}
+              onPostClick={handlePostClick}
+              activeItem={activeComponent}
+              onItemClick={handleSidebarItemClick} />}
+            {activeComponent === "own_project" && <OwnProject
+
+              activeProject={projectId}
+              onProjectClick={hanldeProjectClick}
+              activeItem={activeComponent}
+              onItemClick={handleSidebarItemClick}
+            />}
             {activeComponent === "project_application" && <ProjectApplication />}
           </Col>
           {(activeComponent !== "dashboard" && activeComponent !== "projectDetail"
