@@ -221,34 +221,52 @@ function Profile({ handleChangeImg }) {
               )}
             </div>
 
-            <div className="d-flex justify-content-center flex-column personal-information">
-              <div>
-                <div className="w-75 mb-4">
-                  <div className="mb-2 SFU-bold">Fullname:</div>
+            <div class="bg-secondary-soft px-4 py-5 rounded">
+              <div class="row g-3">
+                <h4 class="mb-4 mt-0">Contact detail</h4>
+
+                <div class="col-md-6">
+                  <label class="form-label">Full Name</label>
                   <input
                     type="text"
-                    className=" infor-group w-100"
+                    class="form-control"
                     name="fullName"
                     value={inputs.fullName}
                     disabled={!isEdit}
                     onChange={handleChange}
+                    aria-label="Full name"
                   />
                 </div>
-                <div className="d-flex align-items-center">
-                  <div className="w-50 mb-4">
-                    <div className="mb-2 SFU-bold">Birthday:</div>
 
-                    <input
-                      type="date"
-                      name="date"
-                      value={inputs.date}
-                      disabled={!isEdit}
-                      onChange={handleChange}
-                      className=" infor-group  w-100"
-                    />
-                  </div>
-                  <div className="w-50 ms-4 d-flex ">
-                    <p className="me-4 SFU-bold">Gender:</p>
+                <div class="col-md-6">
+                  <label class="form-label">Birthday</label>
+                  <input
+                    type="date"
+                    name="date"
+                    value={inputs.date}
+                    disabled={!isEdit}
+                    onChange={handleChange}
+                    class="form-control"
+                    aria-label="Birthday"
+                  />
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label">Phone number</label>
+                  <input
+                    type="text"
+                    name="phoneNumber"
+                    value={inputs.phoneNumber}
+                    disabled={!isEdit}
+                    onChange={handleChange}
+                    class="form-control"
+                    aria-label="Phone number"
+                  />
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label">Gender</label>
+                  <div class="form-control">
                     {!isEdit ? (
                       user.IsMale ? (
                         <p>Male</p>
@@ -256,7 +274,7 @@ function Profile({ handleChangeImg }) {
                         <p>FeMale</p>
                       )
                     ) : (
-                      <>
+                      <div>
                         <label>
                           <input
                             type="checkbox"
@@ -284,72 +302,51 @@ function Profile({ handleChangeImg }) {
                           />
                           Female
                         </label>
-                      </>
+                      </div>
                     )}
                   </div>
                 </div>
-              </div>
 
-              <div className="w-100 mb-4">
-                <div className="mb-2 SFU-bold">Username:</div>
-                <input
-                  type="text"
-                  name="userName"
-                  value={inputs.userName}
-                  disabled={!isEdit}
-                  onChange={handleChange}
-                  className=" infor-group  w-100"
-                />
-              </div>
+                <div class="col-md-6">
+                  <label class="form-label">Address:</label>
+                  <input
+                    type="text"
+                    name="address"
+                    class="form-control"
+                    value={inputs.address}
+                    disabled={!isEdit}
+                    onChange={handleChange}
+                  />
+                </div>
 
-              <div className="w-100 mb-4">
-                <div className="mb-2 SFU-bold">Tax:</div>
-                <input
-                  type="number"
-                  name="tax"
-                  value={inputs.tax}
-                  disabled={!isEdit}
-                  onChange={handleChange}
-                  className=" infor-group  w-100"
-                />
-              </div>
-              <div className="w-100 mb-4">
-                <div className="mb-2 SFU-bold">Phone:</div>
-                <input
-                  type="text"
-                  name="phoneNumber"
-                  value={inputs.phoneNumber}
-                  disabled={!isEdit}
-                  onChange={handleChange}
-                  className=" infor-group  w-100"
-                />
-              </div>
+                <div class="col-md-6">
+                  <label class="form-label">Tax:</label>
+                  <input
+                    type="number"
+                    name="tax"
+                    value={inputs.tax}
+                    disabled={!isEdit}
+                    onChange={handleChange}
+                    class="form-control"
+                    aria-label="Tax"
+                  />
+                </div>
 
-              <div className="w-100 mb-4">
-                <div className="mb-2 SFU-bold">Address:</div>
-                <input
-                  type="text"
-                  name="address"
-                  value={inputs.address}
-                  disabled={!isEdit}
-                  onChange={handleChange}
-                  className=" infor-group  w-100"
-                />
-              </div>
-
-              <div className="w-100 m-auto mb-4">
-                <div className="mb-2 SFU-bold">Description:</div>
-                <textarea
-                  className="w-100 infor-group"
-                  type="text"
-                  disabled={!isEdit}
-                  name="description"
-                  placeholder="I'm a Product Designer based in Melbourne, Australia. I specialise in UX/UI design, brand strategy, and Webflow development."
-                  value={inputs.description}
-                  onChange={handleChange}
-                ></textarea>
+                <div class="col-md-12">
+                  <label class="form-label">Description:</label>
+                  <input
+                    type="text"
+                    name="description"
+                    value={inputs.description}
+                    disabled={!isEdit}
+                    onChange={handleChange}
+                    class="form-control"
+                    aria-label="Description"
+                  />
+                </div>
               </div>
             </div>
+
             <div className="degree">
               <p>Person’s Degree</p>
               <p>Share your reward.</p>
