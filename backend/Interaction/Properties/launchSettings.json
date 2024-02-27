@@ -20,7 +20,6 @@
       "dotnetRunMessages": true,
       "applicationUrl": "http://localhost:5132"
     },
-    
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
@@ -45,8 +44,8 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "http://localhost:9022",
-      "sslPort": 44358
+      "applicationUrl": "http://localhost:63742/",
+      "sslPort": 44351
     }
   }
 }
