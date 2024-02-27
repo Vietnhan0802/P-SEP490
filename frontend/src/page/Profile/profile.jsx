@@ -2,10 +2,14 @@ import React, { useEffect } from "react";
 import { useState } from "react";
 import "../Profile/profile.scss";
 import "../Profile/check-box.scss";
+import "../Profile/switch-btn.scss";
 import { RiHome3Line } from "react-icons/ri";
 import { FaChevronRight } from "react-icons/fa6";
 import degree from "../../images/common/degree.png";
-import project from "../../images/common/project.png";
+import project1 from "../../images/project/Pro-1.png";
+import project2 from "../../images/project/Pro-2.png";
+import project3 from "../../images/project/Pro-3.png";
+import avatar from "../../images/common/Avatar.png";
 import { FaArrowDownLong } from "react-icons/fa6";
 import Follow from "../../components/follow";
 import { Col, Row } from "react-bootstrap";
@@ -267,7 +271,7 @@ function Profile({ handleChangeImg }) {
 
                 <div class="col-md-6">
                   <label class="form-label">Gender:</label>
-                  <div class="check-control">
+                  <div class="form-control">
                     {!isEdit ? (
                       user.IsMale ? (
                         <p>Male</p>
@@ -275,7 +279,7 @@ function Profile({ handleChangeImg }) {
                         <p>FeMale</p>
                       )
                     ) : (
-                      <div className="checkbox-wrapper-13"> 
+                      <div className="checkbox-wrapper-13">
                         <label>
                           <input
                             id="c1-13"
@@ -351,103 +355,161 @@ function Profile({ handleChangeImg }) {
                 </div>
               </div>
             </div>
+            <section id="switch">
+              <div className="btn-swtich row pb-4">
+                <button class="s-btn col height-50 active"> Degree</button>
+                <button class="s-btn col height-50"> Blog</button>
+                <button class="s-btn col height-50"> Post</button>
+                <button class="s-btn col height-50"> Project</button>
+              </div>
 
-            <div className="degree">
-              <p>Person’s Degree</p>
-              <p>Share your reward.</p>
-              <div>
-                <p className="degree-header">Name</p>
+              {/* DegreeTab */}
+              <div className="degree">
+                {/* start degree1 */}
                 <div className="row">
-                  <div className="col-3">
+                  <div className="col-2 d-flex justify-content-center img-contain">
                     <img src={degree} alt="" className="image" />
                   </div>
-                  <div className="col-6 d-flex flex-column justify-content-center">
+                  <div className="col-7 d-flex flex-column justify-content-center">
                     <p className="degree-title">Lorem ipsum dolor sit amet </p>
                     <p className="degree-description">Lorem ipsum </p>
                   </div>
-                  <div className="col-3 d-flex align-items-center">
+                  <div className="col-3 d-flex justify-content-center align-items-center">
                     <button className="btn degree-detail">View Detail</button>
                   </div>
                 </div>
+                {/* end degree1 */}
+
+                {/* start degree2 */}
                 <div className="row">
-                  <div className="col-3">
+                  <div className="col-2 d-flex justify-content-center img-contain">
                     <img src={degree} alt="" className="image" />
                   </div>
-                  <div className="col-6 d-flex flex-column justify-content-center">
+                  <div className="col-7 d-flex flex-column justify-content-center">
                     <p className="degree-title">Lorem ipsum dolor sit amet </p>
                     <p className="degree-description">Lorem ipsum </p>
                   </div>
-                  <div className="col-3 d-flex align-items-center">
+                  <div className="col-3 d-flex justify-content-center align-items-center">
                     <button className="btn degree-detail">View Detail</button>
                   </div>
-                </div>{" "}
+                </div>
+                {/* end degree2 */}
+
+                {/* start degree3 */}
                 <div className="row">
-                  <div className="col-3">
+                  <div className="col-2 d-flex justify-content-center img-contain">
                     <img src={degree} alt="" className="image" />
                   </div>
-                  <div className="col-6 d-flex flex-column justify-content-center">
+                  <div className="col-7 d-flex flex-column justify-content-center">
                     <p className="degree-title">Lorem ipsum dolor sit amet </p>
                     <p className="degree-description">Lorem ipsum </p>
                   </div>
-                  <div className="col-3 d-flex align-items-center">
+                  <div className="col-3 d-flex justify-content-center align-items-center">
                     <button className="btn degree-detail">View Detail</button>
                   </div>
                 </div>
+                {/* end degree3 */}
               </div>
-              <div className="d-flex justify-content-center border view-more">
-                <p>
-                  View all degree <FaArrowDownLong className="ms-2" />
-                </p>
+
+              {/* ProjectTab of business profile*/}
+              <div className="project">
+                {/* start Project */}
+                <div className="row">
+                  <div className="col-3 d-flex justify-content-center img-contain">
+                    <img src={project1} alt="" className="image" />
+                  </div>
+                  <div className="col-7 d-flex flex-column justify-content-start">
+                    <div className="d-flex items-center">
+                      <img
+                        className="avata-s mr-4"
+                        src={avatar}
+                        alt="Instructor Cooper Bator"
+                      />
+                      <div className="left-30 d-flex flex-column justify-content-center">
+                        <div className="size-20 SFU-heavy d-flex">
+                          Project Name
+                        </div>
+                        <div className="size-14 SFU-reg text-gray-600 d-flex">
+                          Business Name
+                        </div>
+                      </div>
+                    </div>
+                    <p className="degree-description">
+                      BigData Insights là một hệ thống phân tích dữ liệu lớn
+                      được thiết k ...
+                    </p>
+                  </div>
+                  <div className="col-2 d-flex justify-content-center align-items-center">
+                    <button className="btn degree-detail">View Detail</button>
+                  </div>
+                </div>
+                {/* end Project 1*/}
+
+                {/* start Project 2*/}
+                <div className="row">
+                  <div className="col-3 d-flex justify-content-center img-contain">
+                    <img src={project2} alt="" className="image" />
+                  </div>
+                  <div className="col-7 d-flex flex-column justify-content-start">
+                    <div className="d-flex items-center">
+                      <img
+                        className="avata-s mr-4"
+                        src={avatar}
+                        alt="Instructor Cooper Bator"
+                      />
+                      <div className="left-30 d-flex flex-column justify-content-center">
+                        <div className="size-20 SFU-heavy d-flex">
+                          Project Name
+                        </div>
+                        <div className="size-14 SFU-reg text-gray-600 d-flex">
+                          Business Name
+                        </div>
+                      </div>
+                    </div>
+                    <p className="degree-description">
+                      BigData Insights là một hệ thống phân tích dữ liệu lớn
+                      được thiết k ...
+                    </p>
+                  </div>
+                  <div className="col-2 d-flex justify-content-center align-items-center">
+                    <button className="btn degree-detail">View Detail</button>
+                  </div>
+                </div>
+                {/* end Project 2*/}
+
+                {/* start Project3 */}
+                <div className="row">
+                  <div className="col-3 d-flex justify-content-center img-contain">
+                    <img src={project3} alt="" className="image" />
+                  </div>
+                  <div className="col-7 d-flex flex-column justify-content-start">
+                    <div className="d-flex items-center">
+                      <img
+                        className="avata-s mr-4"
+                        src={avatar}
+                        alt="Instructor Cooper Bator"
+                      />
+                      <div className="left-30 d-flex flex-column justify-content-center">
+                        <div className="size-20 SFU-heavy d-flex">
+                          Project Name
+                        </div>
+                        <div className="size-14 SFU-reg text-gray-600 d-flex">
+                          Business Name
+                        </div>
+                      </div>
+                    </div>
+                    <p className="degree-description">
+                      BigData Insights là một hệ thống phân tích dữ liệu lớn
+                      được thiết k ...
+                    </p>
+                  </div>
+                  <div className="col-2 d-flex justify-content-center align-items-center">
+                    <button className="btn degree-detail">View Detail</button>
+                  </div>
+                </div>
+                {/* end Project3 */}
               </div>
-            </div>
-            <div className="project mt-3">
-              <p className="project-header">Name</p>
-              <div className="row m-2">
-                <div className="d-flex align-items-center col-3">
-                  <img src={project} alt="" className="project-icon" />
-                  <p className="ms-2">File #007</p>
-                </div>
-                <div className="col-4 d-flex align-items-center">
-                  TNHH xây dựng Quang Dũng
-                </div>
-                <div className="col-3 d-flex align-items-center">
-                  Dec 1, 2022
-                </div>
-                <div className="col-2 d-flex align-items-center download-text">
-                  Download
-                </div>
-              </div>
-              <div className="row m-2">
-                <div className="d-flex align-items-center col-3">
-                  <img src={project} alt="" className="project-icon" />
-                  <p className="ms-2">File #006</p>
-                </div>
-                <div className="col-4 d-flex align-items-center">
-                  Công ty TNHH nội thất Phạm Gia
-                </div>
-                <div className="col-3 d-flex align-items-center">
-                  Nov 1, 2022
-                </div>
-                <div className="col-2 d-flex align-items-center download-text">
-                  Download
-                </div>
-              </div>
-              <div className="row m-2">
-                <div className="d-flex align-items-center col-3">
-                  <img src={project} alt="" className="project-icon" />
-                  <p className="ms-2">File #005</p>
-                </div>
-                <div className="col-4 d-flex align-items-center">
-                  Công ty cổ phần nhựa Ngọc Nghĩa
-                </div>
-                <div className="col-3 d-flex align-items-center">
-                  Oct 1, 2022
-                </div>
-                <div className="col-2 d-flex align-items-center download-text">
-                  Download
-                </div>
-              </div>
-            </div>
+            </section>
           </div>
         </Col>
         <Col md={3}>
