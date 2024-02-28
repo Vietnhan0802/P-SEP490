@@ -371,8 +371,8 @@ function Profile({ handleChangeImg }) {
                     <img src={degree} alt="" className="image" />
                   </div>
                   <div className="col-7 d-flex flex-column justify-content-center">
-                    <p className="degree-title">Lorem ipsum dolor sit amet </p>
-                    <p className="degree-description">Lorem ipsum </p>
+                    <p className="degree-title ellipsis">Lorem ipsum dolor sit amet </p>
+                    <p className="degree-description ellipsis">Lorem ipsum </p>
                   </div>
                   <div className="col-3 d-flex justify-content-center align-items-center">
                     <button className="btn degree-detail">View Detail</button>
@@ -386,8 +386,8 @@ function Profile({ handleChangeImg }) {
                     <img src={degree} alt="" className="image" />
                   </div>
                   <div className="col-7 d-flex flex-column justify-content-center">
-                    <p className="degree-title">Lorem ipsum dolor sit amet </p>
-                    <p className="degree-description">Lorem ipsum </p>
+                    <p className="degree-title ellipsis">Lorem ipsum dolor sit amet </p>
+                    <p className="degree-description ellipsis">Lorem ipsum </p>
                   </div>
                   <div className="col-3 d-flex justify-content-center align-items-center">
                     <button className="btn degree-detail">View Detail</button>
@@ -401,8 +401,8 @@ function Profile({ handleChangeImg }) {
                     <img src={degree} alt="" className="image" />
                   </div>
                   <div className="col-7 d-flex flex-column justify-content-center">
-                    <p className="degree-title">Lorem ipsum dolor sit amet </p>
-                    <p className="degree-description">Lorem ipsum </p>
+                    <p className="degree-title ellipsis">Lorem ipsum dolor sit amet </p>
+                    <p className="degree-description ellipsis">Lorem ipsum </p>
                   </div>
                   <div className="col-3 d-flex justify-content-center align-items-center">
                     <button className="btn degree-detail">View Detail</button>
@@ -413,7 +413,7 @@ function Profile({ handleChangeImg }) {
 
               {/* ProjectTab of business profile*/}
               <div className="project">
-                {/* start Project */}
+                {/* start Post */}
                 <div className="row">
                   <div className="col-3 d-flex justify-content-center img-contain">
                     <img src={project1} alt="" className="image" />
@@ -426,88 +426,32 @@ function Profile({ handleChangeImg }) {
                         alt="Instructor Cooper Bator"
                       />
                       <div className="left-30 d-flex flex-column justify-content-center">
-                        <div className="size-20 SFU-heavy d-flex">
+                        <div className="size-20 SFU-heavy d-flex ellipsis">
                           Project Name
                         </div>
-                        <div className="size-14 SFU-reg text-gray-600 d-flex">
+                        <div className="size-14 SFU-reg text-gray-600 d-flex ellipsis">
                           Business Name
                         </div>
                       </div>
                     </div>
-                    <p className="degree-description">
-                      BigData Insights là một hệ thống phân tích dữ liệu lớn
-                      được thiết k ...
+                    <p className="degree-description ellipsis">
+                      BigData Insights là một hệ thống phân tích dữ liệu lớn được thiết k ...BigData Insights là một hệ thống phân tích dữ liệu lớn được thiết k ...BigData Insights là một hệ thống phân tích dữ liệu lớn
+                      được thiết k ...BigData Insights là một hệ thống phân tích dữ liệu lớn được thiết k ...
                     </p>
                   </div>
                   <div className="col-2 d-flex justify-content-center align-items-center">
                     <button className="btn degree-detail">View Detail</button>
                   </div>
                 </div>
-                {/* end Project 1*/}
+                {/* end Post 1*/}
 
-                {/* start Project 2*/}
-                <div className="row">
-                  <div className="col-3 d-flex justify-content-center img-contain">
-                    <img src={project2} alt="" className="image" />
-                  </div>
-                  <div className="col-7 d-flex flex-column justify-content-start">
-                    <div className="d-flex items-center">
-                      <img
-                        className="avata-s mr-4"
-                        src={avatar}
-                        alt="Instructor Cooper Bator"
-                      />
-                      <div className="left-30 d-flex flex-column justify-content-center">
-                        <div className="size-20 SFU-heavy d-flex">
-                          Project Name
-                        </div>
-                        <div className="size-14 SFU-reg text-gray-600 d-flex">
-                          Business Name
-                        </div>
-                      </div>
-                    </div>
-                    <p className="degree-description">
-                      BigData Insights là một hệ thống phân tích dữ liệu lớn
-                      được thiết k ...
-                    </p>
-                  </div>
-                  <div className="col-2 d-flex justify-content-center align-items-center">
-                    <button className="btn degree-detail">View Detail</button>
-                  </div>
-                </div>
-                {/* end Project 2*/}
+                {/* start Post 2*/}
+              
+                {/* end Post 2*/}
 
-                {/* start Project3 */}
-                <div className="row">
-                  <div className="col-3 d-flex justify-content-center img-contain">
-                    <img src={project3} alt="" className="image" />
-                  </div>
-                  <div className="col-7 d-flex flex-column justify-content-start">
-                    <div className="d-flex items-center">
-                      <img
-                        className="avata-s mr-4"
-                        src={avatar}
-                        alt="Instructor Cooper Bator"
-                      />
-                      <div className="left-30 d-flex flex-column justify-content-center">
-                        <div className="size-20 SFU-heavy d-flex">
-                          Project Name
-                        </div>
-                        <div className="size-14 SFU-reg text-gray-600 d-flex">
-                          Business Name
-                        </div>
-                      </div>
-                    </div>
-                    <p className="degree-description">
-                      BigData Insights là một hệ thống phân tích dữ liệu lớn
-                      được thiết k ...
-                    </p>
-                  </div>
-                  <div className="col-2 d-flex justify-content-center align-items-center">
-                    <button className="btn degree-detail">View Detail</button>
-                  </div>
-                </div>
-                {/* end Project3 */}
+                {/* start Post */}
+                
+                {/* end Post */}
               </div>
             </section>
           </div>

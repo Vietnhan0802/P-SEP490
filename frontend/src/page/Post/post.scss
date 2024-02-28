@@ -13,7 +13,9 @@
       }
     }
   }
-
+  .red {
+    color: red;
+  }
   width: 100%;
 
   .post-form {
@@ -118,10 +120,7 @@
 }
 
 .flag-icon {
-  right: 5px;
-  top: 10px;
-  width: 15px;
-  height: 15px;
+font-size: 20px;
 }
 
 .full-div {

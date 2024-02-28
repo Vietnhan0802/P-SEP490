@@ -258,6 +258,7 @@ function PostDetail(id) {
         console.log(err.response.data);
       })
   }, []);
+  console.log(data)
   return (
     <div id="postDetail" className="p-3">
       <div className="d-flex align-items-center mb-2">
@@ -271,6 +272,11 @@ function PostDetail(id) {
       <p style={{ whiteSpace: 'pre-wrap' }}>
         {data?.content}
       </p>
+      <div>
+        {data?.viewPostImages?.map((image)=>(
+          <img src={image.imageSrc} alt="" className="w-100" />
+        ))}
+      </div>
       <div className="d-flex align-items-center border-bottom pb-3 mt-2 border-dark">
         <div className="d-flex align-items-center me-3">
           <FiEye className="me-2" /> {data?.view + 1}

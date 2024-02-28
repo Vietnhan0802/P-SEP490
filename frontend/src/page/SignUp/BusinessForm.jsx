@@ -7,12 +7,12 @@ import Notification, { notifySuccess, notifyError } from "../../components/notif
 
 export default function BusinessForm() {
   const [inputs, setInputs] = useState({});
+  const navigate = useNavigate();
   const handleChange = (event) => {
     const name = event.target.name;
     const value = event.target.value;
     setInputs((values) => ({ ...values, [name]: value }));
   };
-  const navigate = useNavigate();
   const handleSubmit = async (event) => {
     event.preventDefault();
     console.log(inputs);
