@@ -3,8 +3,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {userInstance} from "../../axios/axiosConfig";
 
-import { toast } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
+import Notification, { notifySuccess, notifyError } from "../../components/notification";
 
 export default function BusinessForm() {
   const [inputs, setInputs] = useState({});
@@ -13,42 +12,18 @@ export default function BusinessForm() {
     const value = event.target.value;
     setInputs((values) => ({ ...values, [name]: value }));
   };
+  const navigate = useNavigate();
   const handleSubmit = async (event) => {
-    const notifysuccess = (noti) => {
-      toast.success(noti, {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "colored"
-      });
-    }
-    const notifyerror = (noti) => {
-      toast.error(noti, {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "colored"
-      });
-    }
-    
     event.preventDefault();
     console.log(inputs);
     try {
       const response = await userInstance.post("/SignUpBusiness", inputs);
       console.log("Sign up successful", response.data);
-      notifysuccess("Sign up for business successfully!");
+      notifySuccess("Sign up for business successfully!");
       navigate("/");
     } catch (error) {
       console.error("Sign up failed", error.response.data);
-      notifyerror("Sign up for business failed!");
+      notifyError("Sign up for business failed!");
     }
   };
   return (

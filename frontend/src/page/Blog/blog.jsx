@@ -11,8 +11,7 @@ import ReportPopup from "../../components/Popup/reportPopup";
 import { blogInstance } from "../../axios/axiosConfig";
 import Cookies from "js-cookie";
 
-import { toast } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
+import Notification, { notifySuccess, notifyError } from "../../components/notification";
 function calculateTimeDifference(targetDate) {
   // Convert the target date string to a Date object
   const targetTime = new Date(targetDate).getTime();
@@ -66,30 +65,6 @@ function Blog({ blogId, onBlogClick, activeItem, onItemClick }) {
     setBlogPopups((prev) => ({ ...prev, [blogId]: true }));
   };
   const handleCreateBlog = () => {
-    const notifysuccess = (noti) => {
-      toast.success(noti, {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "colored"
-      });
-    }
-    const notifyerror = (noti) => {
-      toast.error(noti, {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "colored"
-      });
-    }
     const formData = new FormData();
     formData.append('title', inputs.title);
     formData.append('content', inputs.content);
@@ -108,11 +83,11 @@ function Blog({ blogId, onBlogClick, activeItem, onItemClick }) {
     })
       .then((res) => {
         console.log(res.data);
-        notifysuccess("Create blog successfully!");
+        notifySuccess("Create blog successfully!");
       })
       .catch((err) => {
         console.log(err);
-        notifyerror("Create blog failed!")
+        notifyError("Create blog failed!")
       });
   };
   const readFileAsDataURL = (file) => {
