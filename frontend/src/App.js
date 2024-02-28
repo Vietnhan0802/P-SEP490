@@ -13,6 +13,7 @@ import Profile from "./page/Profile/profile";
 import Notify from "./page/Notify/notify";
 import ForgetPassword from "./page/Password/forgetPassword";
 import ResetPassword from "./page/Password/resetPassword";
+import { ToastContainer } from "react-toastify";
 function App() {
   const location = useLocation();
   const appRef = useRef(null);
@@ -82,6 +83,18 @@ function App() {
         <Route path="/forgetpassword" element={<ForgetPassword />} />
         <Route path="/resetpassword" element={<ResetPassword />} />
       </Routes>
+      <ToastContainer 
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
     </div>
   );
 }
