@@ -261,7 +261,7 @@ function Blog({ blogId, onBlogClick, activeItem, onItemClick }) {
             </div>
             <h3 className="mt-2">{item.title}</h3>
 
-            <p className="mt-2">{item.content}</p>
+            <p className="mt-2" style={{ whiteSpace: 'pre-wrap' }}>{item.content}</p>
             <div className="d-flex">
               {item.viewBlogImages.map(items => (
                 <img src={items.imageSrc} alt="" className="w-50 p-2" />

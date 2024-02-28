@@ -2,8 +2,9 @@ import React, { useEffect } from "react";
 import { useState } from "react";
 import "../Post/post.scss";
 import { CiCircleChevRight } from "react-icons/ci";
-import { BsChat } from "react-icons/bs";
 import { IoFlagOutline } from "react-icons/io5";
+import { FaHeart } from "react-icons/fa";
+
 import { FiEye } from "react-icons/fi";
 import defaultAvatar from "../../images/common/default.png";
 import ReportPopup from "../../components/Popup/reportPopup";
@@ -81,7 +82,35 @@ function Post({ postId, onPostClick, activeItem, onItemClick }) {
       fullName,
     };
   };
+  const handleLikeOrUnlikeBlog = (idBlog) => {
+    // Find the index of the blog item to update
+    const index = postList.findIndex(item => item.id === idBlog);
+    if (index !== -1) {
+      // Toggle the like state and update the like count for the specific blog item
+      const newData = [...postList]; // Copy the current state
+      const isLiked = !newData[index].isLike; // Toggle the current like state
+      newData[index].isLike = isLiked; // Update the like state
+      // Update the like count based on the new like state
+      newData[index].like = isLiked ? newData[index].like + 1 : newData[index].like - 1;
 
+      setPostList(newData); // Update the state with the new array
+
+      // Make the API call to update the like state in the backend
+      postInstance.post(`LikeOrUnlikePost/${userId}/${idBlog}`)
+        .then(() => {
+          // If the API call is successful, you can optionally refresh the data from the server
+          // to ensure the UI is in sync with the backend state
+        })
+        .catch((error) => {
+          console.error(error);
+          // Revert the like state and count in case of an error
+          const revertData = [...postList];
+          revertData[index].isLike = !isLiked; // Revert the like state
+          revertData[index].like = revertData[index].isLike ? revertData[index].like + 1 : revertData[index].like - 1;
+          setPostList(revertData);
+        });
+    }
+  };
   const handlePopupContent = (event, postId) => {
     setPopupContent((prev) => ({ ...prev, [postId]: event.target.value }));
     console.log(popupContent);
@@ -184,11 +213,11 @@ function Post({ postId, onPostClick, activeItem, onItemClick }) {
     });
 
     postInstance.post(`/CreatePost/${userId}/${inputs.project}`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          accept: "application/json",
-        },
-      })
+      headers: {
+        "Content-Type": "multipart/form-data",
+        accept: "application/json",
+      },
+    })
       .then((res) => {
         // console.log(res.data);
         setResetPage(!resetPage);
@@ -310,21 +339,29 @@ function Post({ postId, onPostClick, activeItem, onItemClick }) {
       {postList.map((item) => (
         <div
           key={item.id}
-          className={`pos-rel post-item mt-2 p-2 ${
-            blogPopups[item.id] ? "position-relative" : ""
-          }`}
+          className={`pos-rel post-item mt-2 p-2 ${blogPopups[item.id] ? "position-relative" : ""
+            }`}
         >
-          <div className="d-flex align-items-center">
-            <img
-              className="avata-s mr-4"
-              src={item.avatar === 'https://localhost:7006/Images/' ? defaultAvatar : item.avatar}
-              alt="Instructor Cooper Bator"
-            />
-            <div className="left-30 d-flex flex-column justify-content-center">
-              <div className="size-20 SFU-heavy d-flex">{item.fullName}</div>
-              <div className="size-14 SFU-reg text-gray-600 d-flex">
-                {item.createdDate}
+          <div className="d-flex justify-content-between">
+            <div className="d-flex align-items-center">
+              <img
+                className="avata-s mr-4"
+                src={item.avatar === 'https://localhost:7006/Images/' ? defaultAvatar : item.avatar}
+                alt="Instructor Cooper Bator"
+              />
+              <div className="left-30 d-flex flex-column justify-content-center">
+                <div className="size-20 SFU-heavy d-flex">{item.fullName}</div>
+                <div className="size-14 SFU-reg text-gray-600 d-flex">
+                  {item.createdDate}
+                </div>
               </div>
+            </div>
+
+            <div
+              className="d-flex align-items-center me-3 flag-icon"
+              onClick={() => handleReportClick(item.id)}
+            >
+              <IoFlagOutline className="full-div" />{" "}
             </div>
           </div>
           <h4 className="mt-2">{item.title}</h4>
@@ -343,15 +380,12 @@ function Post({ postId, onPostClick, activeItem, onItemClick }) {
               <div className="d-flex align-items-center me-3">
                 <FiEye className="me-2" /> {item.view}
               </div>
-              <div className="d-flex align-items-center me-3">
-                <BsChat className="me-2" /> {item.comment}
-              </div>
-              <div
-                className="d-flex align-items-center me-3 pos-abs flag-icon"
-                onClick={() => handleReportClick(item.id)}
+              <div className="d-flex align-items-center me-3"
+                onClick={() => handleLikeOrUnlikeBlog(item.id)}
               >
-                <IoFlagOutline className="full-div" />{" "}
+                <FaHeart className={`me-2 ${item.isLike ? 'red' : ''}`} /> {item.like}
               </div>
+
             </div>
             <button
               className="view-btn btn"
