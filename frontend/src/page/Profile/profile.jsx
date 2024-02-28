@@ -3,6 +3,7 @@ import { useState } from "react";
 import "../Profile/profile.scss";
 import "../Profile/check-box.scss";
 import "../Profile/switch-btn.scss";
+import "../Profile/project.scss";
 import { RiHome3Line } from "react-icons/ri";
 import { FaChevronRight } from "react-icons/fa6";
 import degree from "../../images/common/degree.png";
@@ -355,7 +356,7 @@ function Profile({ handleChangeImg }) {
                 </div>
               </div>
             </div>
-            <section id="switch">
+            <section id="switch" className="bg-secondary-soft px-4 rounded">
               <div className="btn-swtich row pb-4">
                 <button class="s-btn col height-50 active"> Degree</button>
                 <button class="s-btn col height-50"> Blog</button>
@@ -371,8 +372,14 @@ function Profile({ handleChangeImg }) {
                     <img src={degree} alt="" className="image" />
                   </div>
                   <div className="col-7 d-flex flex-column justify-content-center">
-                    <p className="degree-title ellipsis">Lorem ipsum dolor sit amet </p>
-                    <p className="degree-description ellipsis">Lorem ipsum </p>
+                    <p className="degree-title ellipsis">
+                      Degree title:
+                      aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa{" "}
+                    </p>
+                    <p className="degree-description ellipsis">
+                      Degree information:
+                      aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa{" "}
+                    </p>
                   </div>
                   <div className="col-3 d-flex justify-content-center align-items-center">
                     <button className="btn degree-detail">View Detail</button>
@@ -386,7 +393,9 @@ function Profile({ handleChangeImg }) {
                     <img src={degree} alt="" className="image" />
                   </div>
                   <div className="col-7 d-flex flex-column justify-content-center">
-                    <p className="degree-title ellipsis">Lorem ipsum dolor sit amet </p>
+                    <p className="degree-title ellipsis">
+                      Lorem ipsum dolor sit amet{" "}
+                    </p>
                     <p className="degree-description ellipsis">Lorem ipsum </p>
                   </div>
                   <div className="col-3 d-flex justify-content-center align-items-center">
@@ -401,7 +410,9 @@ function Profile({ handleChangeImg }) {
                     <img src={degree} alt="" className="image" />
                   </div>
                   <div className="col-7 d-flex flex-column justify-content-center">
-                    <p className="degree-title ellipsis">Lorem ipsum dolor sit amet </p>
+                    <p className="degree-title ellipsis">
+                      Lorem ipsum dolor sit amet{" "}
+                    </p>
                     <p className="degree-description ellipsis">Lorem ipsum </p>
                   </div>
                   <div className="col-3 d-flex justify-content-center align-items-center">
@@ -411,8 +422,8 @@ function Profile({ handleChangeImg }) {
                 {/* end degree3 */}
               </div>
 
-              {/* ProjectTab of business profile*/}
-              <div className="project">
+              {/* Posttab of business profile*/}
+              <div className="post">
                 {/* start Post */}
                 <div className="row">
                   <div className="col-3 d-flex justify-content-center img-contain">
@@ -427,16 +438,20 @@ function Profile({ handleChangeImg }) {
                       />
                       <div className="left-30 d-flex flex-column justify-content-center">
                         <div className="size-20 SFU-heavy d-flex ellipsis">
-                          Project Name
+                          Blog Name
                         </div>
                         <div className="size-14 SFU-reg text-gray-600 d-flex ellipsis">
-                          Business Name
+                          Account Name
                         </div>
                       </div>
                     </div>
                     <p className="degree-description ellipsis">
-                      BigData Insights là một hệ thống phân tích dữ liệu lớn được thiết k ...BigData Insights là một hệ thống phân tích dữ liệu lớn được thiết k ...BigData Insights là một hệ thống phân tích dữ liệu lớn
-                      được thiết k ...BigData Insights là một hệ thống phân tích dữ liệu lớn được thiết k ...
+                      Post Title: BigData Insights là một hệ thống phân tích dữ
+                      liệu lớn được thiết k ...BigData Insights là một hệ thống
+                      phân tích dữ liệu lớn được thiết k ...BigData Insights là
+                      một hệ thống phân tích dữ liệu lớn được thiết k ...BigData
+                      Insights là một hệ thống phân tích dữ liệu lớn được thiết
+                      k ...
                     </p>
                   </div>
                   <div className="col-2 d-flex justify-content-center align-items-center">
@@ -446,12 +461,354 @@ function Profile({ handleChangeImg }) {
                 {/* end Post 1*/}
 
                 {/* start Post 2*/}
-              
+                <div className="row">
+                  <div className="col-3 d-flex justify-content-center img-contain">
+                    <img src={project1} alt="" className="image" />
+                  </div>
+                  <div className="col-7 d-flex flex-column justify-content-start">
+                    <div className="d-flex items-center">
+                      <img
+                        className="avata-s mr-4"
+                        src={avatar}
+                        alt="Instructor Cooper Bator"
+                      />
+                      <div className="left-30 d-flex flex-column justify-content-center">
+                        <div className="size-20 SFU-heavy d-flex ellipsis">
+                          Blog Name
+                        </div>
+                        <div className="size-14 SFU-reg text-gray-600 d-flex ellipsis">
+                          Business Name
+                        </div>
+                      </div>
+                    </div>
+                    <p className="degree-description ellipsis">
+                      Post Title: BigData Insights là một hệ thống phân tích dữ
+                      liệu lớn được thiết k ...BigData Insights là một hệ thống
+                      phân tích dữ liệu lớn được thiết k ...BigData Insights là
+                      một hệ thống phân tích dữ liệu lớn được thiết k ...BigData
+                      Insights là một hệ thống phân tích dữ liệu lớn được thiết
+                      k ...
+                    </p>
+                  </div>
+                  <div className="col-2 d-flex justify-content-center align-items-center">
+                    <button className="btn degree-detail">View Detail</button>
+                  </div>
+                </div>
                 {/* end Post 2*/}
 
                 {/* start Post */}
-                
+                <div className="row">
+                  <div className="col-3 d-flex justify-content-center img-contain">
+                    <img src={project1} alt="" className="image" />
+                  </div>
+                  <div className="col-7 d-flex flex-column justify-content-start">
+                    <div className="d-flex items-center">
+                      <img
+                        className="avata-s mr-4"
+                        src={avatar}
+                        alt="Instructor Cooper Bator"
+                      />
+                      <div className="left-30 d-flex flex-column justify-content-center">
+                        <div className="size-20 SFU-heavy d-flex ellipsis">
+                          Blog Name
+                        </div>
+                        <div className="size-14 SFU-reg text-gray-600 d-flex ellipsis">
+                          Business Name
+                        </div>
+                      </div>
+                    </div>
+                    <p className="degree-description ellipsis">
+                      Post Title: BigData Insights là một hệ thống phân tích dữ
+                      liệu lớn được thiết k ...BigData Insights là một hệ thống
+                      phân tích dữ liệu lớn được thiết k ...BigData Insights là
+                      một hệ thống phân tích dữ liệu lớn được thiết k ...BigData
+                      Insights là một hệ thống phân tích dữ liệu lớn được thiết
+                      k ...
+                    </p>
+                  </div>
+                  <div className="col-2 d-flex justify-content-center align-items-center">
+                    <button className="btn degree-detail">View Detail</button>
+                  </div>
+                </div>
                 {/* end Post */}
+              </div>
+
+              <div className="blog">
+                {/* start Post */}
+                <div className="row">
+                  <div className="col-3 d-flex justify-content-center img-contain">
+                    <img src={project1} alt="" className="image" />
+                  </div>
+                  <div className="col-7 d-flex flex-column justify-content-start">
+                    <div className="d-flex items-center">
+                      <img
+                        className="avata-s mr-4"
+                        src={avatar}
+                        alt="Instructor Cooper Bator"
+                      />
+                      <div className="left-30 d-flex flex-column justify-content-center">
+                        <div className="size-20 SFU-heavy d-flex ellipsis">
+                          Post Name
+                        </div>
+                        <div className="size-14 SFU-reg text-gray-600 d-flex ellipsis">
+                          Business Name
+                        </div>
+                      </div>
+                    </div>
+                    <p className="degree-description ellipsis">
+                      Post Title: BigData Insights là một hệ thống phân tích dữ
+                      liệu lớn được thiết k ...BigData Insights là một hệ thống
+                      phân tích dữ liệu lớn được thiết k ...BigData Insights là
+                      một hệ thống phân tích dữ liệu lớn được thiết k ...BigData
+                      Insights là một hệ thống phân tích dữ liệu lớn được thiết
+                      k ...
+                    </p>
+                  </div>
+                  <div className="col-2 d-flex justify-content-center align-items-center">
+                    <button className="btn degree-detail">View Detail</button>
+                  </div>
+                </div>
+                {/* end Post 1*/}
+
+                {/* start Post 2*/}
+                <div className="row">
+                  <div className="col-3 d-flex justify-content-center img-contain">
+                    <img src={project1} alt="" className="image" />
+                  </div>
+                  <div className="col-7 d-flex flex-column justify-content-start">
+                    <div className="d-flex items-center">
+                      <img
+                        className="avata-s mr-4"
+                        src={avatar}
+                        alt="Instructor Cooper Bator"
+                      />
+                      <div className="left-30 d-flex flex-column justify-content-center">
+                        <div className="size-20 SFU-heavy d-flex ellipsis">
+                          Post Name
+                        </div>
+                        <div className="size-14 SFU-reg text-gray-600 d-flex ellipsis">
+                          Business Name
+                        </div>
+                      </div>
+                    </div>
+                    <p className="degree-description ellipsis">
+                      Post Title: BigData Insights là một hệ thống phân tích dữ
+                      liệu lớn được thiết k ...BigData Insights là một hệ thống
+                      phân tích dữ liệu lớn được thiết k ...BigData Insights là
+                      một hệ thống phân tích dữ liệu lớn được thiết k ...BigData
+                      Insights là một hệ thống phân tích dữ liệu lớn được thiết
+                      k ...
+                    </p>
+                  </div>
+                  <div className="col-2 d-flex justify-content-center align-items-center">
+                    <button className="btn degree-detail">View Detail</button>
+                  </div>
+                </div>
+                {/* end Post 2*/}
+
+                {/* start Post */}
+                <div className="row">
+                  <div className="col-3 d-flex justify-content-center img-contain">
+                    <img src={project1} alt="" className="image" />
+                  </div>
+                  <div className="col-7 d-flex flex-column justify-content-start">
+                    <div className="d-flex items-center">
+                      <img
+                        className="avata-s mr-4"
+                        src={avatar}
+                        alt="Instructor Cooper Bator"
+                      />
+                      <div className="left-30 d-flex flex-column justify-content-center">
+                        <div className="size-20 SFU-heavy d-flex ellipsis">
+                          Post Name
+                        </div>
+                        <div className="size-14 SFU-reg text-gray-600 d-flex ellipsis">
+                          Business Name
+                        </div>
+                      </div>
+                    </div>
+                    <p className="degree-description ellipsis">
+                      Post Title: BigData Insights là một hệ thống phân tích dữ
+                      liệu lớn được thiết k ...BigData Insights là một hệ thống
+                      phân tích dữ liệu lớn được thiết k ...BigData Insights là
+                      một hệ thống phân tích dữ liệu lớn được thiết k ...BigData
+                      Insights là một hệ thống phân tích dữ liệu lớn được thiết
+                      k ...
+                    </p>
+                  </div>
+                  <div className="col-2 d-flex justify-content-center align-items-center">
+                    <button className="btn degree-detail">View Detail</button>
+                  </div>
+                </div>
+                {/* end Post */}
+              </div>
+
+              {/* PrijectTab of business profile */}
+              <div className="project">
+                <div class="row" id="all-projects">
+                  <div class="col-md-6" id="project-items-1">
+                    <div class="card">
+                      <div class="card-body">
+                        <div class="d-flex mb-3">
+                          <div class="flex-grow-1 align-items-start">
+                            <div>
+                              <h6 class="mb-0 text-muted">
+                                <i class="mdi mdi-circle-medium text-danger fs-3 align-middle"></i>
+                                <span class="team-date">21 Jun, 2021</span>
+                              </h6>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="mb-4">
+                          <h5 class="mb-1 font-size-17 team-title ellipsis">
+                            Marketing
+                          </h5>
+                          <p class="text-muted mb-0 team-description ellipsis">
+                            Every Marketing Plan Needs
+                          </p>
+                        </div>
+                        <div class="d-flex">
+                          <div class="avatar-group float-start flex-grow-1 task-assigne">
+                            {/* Clone from */}
+                            <div class="avatar-group-item">
+                              <img
+                                src="https://bootdey.com/img/Content/avatar/avatar1.png"
+                                alt=""
+                                class="rounded-circle avatar-sm"
+                              />
+                            </div>
+                            {/* to THis */}
+                            <div class="avatar-group-item">
+                              <img
+                                src="https://bootdey.com/img/Content/avatar/avatar1.png"
+                                alt=""
+                                class="rounded-circle avatar-sm"
+                              />
+                            </div>
+                            <div class="avatar-group-item">
+                              <img
+                                src="https://bootdey.com/img/Content/avatar/avatar1.png"
+                                alt=""
+                                class="rounded-circle avatar-sm"
+                              />
+                            </div>
+                          </div>
+                          <div class="align-self-end">
+                            <span class="badge badge-soft-danger p-2 team-status">
+                              Pending
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col-md-6" id="project-items-2">
+                    <div class="card">
+                      <div class="card-body">
+                        <div class="d-flex mb-3">
+                          <div class="flex-grow-1 align-items-start">
+                            <div>
+                              <h6 class="mb-0 text-muted">
+                                <i class="mdi mdi-circle-medium text-success fs-3 align-middle"></i>
+                                <span class="team-date">13 Aug, 2021</span>
+                              </h6>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="mb-4">
+                          <h5 class="mb-1 font-size-17 team-title ellipsis">
+                            Website Design
+                          </h5>
+                          <p class="text-muted mb-0 team-description ellipsis">
+                            Creating the design and layout of a website.
+                          </p>
+                        </div>
+                        <div class="d-flex">
+                          <div class="avatar-group float-start flex-grow-1 task-assigne">
+                            <div class="avatar-group-item">
+                              <img
+                                src="https://bootdey.com/img/Content/avatar/avatar1.png"
+                                alt=""
+                                class="rounded-circle avatar-sm"
+                              />
+                            </div>
+                            <div class="avatar-group-item">
+                              <img
+                                src="https://bootdey.com/img/Content/avatar/avatar1.png"
+                                alt=""
+                                class="rounded-circle avatar-sm"
+                              />
+                            </div>
+                          </div>
+                          <div class="align-self-end">
+                            <span class="badge badge-soft-success p-2 team-status">
+                              Completed
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col-md-6" id="project-items-3">
+                    <div class="card">
+                      <div class="card-body">
+                        <div class="d-flex mb-3">
+                          <div class="flex-grow-1 align-items-start">
+                            <div>
+                              <h6 class="mb-0 text-muted">
+                                <i class="mdi mdi-circle-medium text-warning fs-3 align-middle"></i>
+                                <span class="team-date">08 Sep, 2021</span>
+                              </h6>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="mb-4">
+                          <h5 class="mb-1 font-size-17 team-title">
+                            UI / UX Design
+                          </h5>
+                          <p class="text-muted mb-0 team-description">
+                            Plan and onduct user research and analysis
+                          </p>
+                        </div>
+                        <div class="d-flex">
+                          <div class="avatar-group float-start flex-grow-1 task-assigne">
+                            <div class="avatar-group-item">
+                              <img
+                                src="https://bootdey.com/img/Content/avatar/avatar1.png"
+                                alt=""
+                                class="rounded-circle avatar-sm"
+                              />
+                            </div>
+                            <div class="avatar-group-item">
+                              <img
+                                src="https://bootdey.com/img/Content/avatar/avatar1.png"
+                                alt=""
+                                class="rounded-circle avatar-sm"
+                              />
+                            </div>
+                            <div class="avatar-group-item">
+                              <img
+                                src="https://bootdey.com/img/Content/avatar/avatar1.png"
+                                alt=""
+                                class="rounded-circle avatar-sm"
+                              />
+                            </div>
+                          </div>
+                          <div class="align-self-end">
+                            <span class="badge badge-soft-warning p-2 team-status">
+                              Progress
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </section>
           </div>

@@ -103,9 +103,10 @@
   }
 
   .degree,
-  .project {
+  .post,
+  .blog {
     .row {
-      margin: 5px 5px 15px 5px;
+      margin-bottom: 15px;
       border: solid 0.5px gray;
       cursor: pointer;
       transition: transform 0.3s ease
@@ -131,7 +132,8 @@
   }
 }
 
-.project {
+.post,
+.blog {
   .image {
     max-height: 300px;
   }
@@ -223,4 +225,9 @@
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
+}
+
+.height-50 {
+  height: 50px;
+  margin: 0 10px;
 }
