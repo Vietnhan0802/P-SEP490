@@ -12,6 +12,7 @@ namespace BusinessObjects.ViewModels.Post
         public string? title { get; set; }
         public string? content { get; set; }
         public int view { get; set; }
+        public int report { get; set; }
         public int like { get; set; }
         public bool isLike { get; set; }
         public bool isBlock { get; set; }

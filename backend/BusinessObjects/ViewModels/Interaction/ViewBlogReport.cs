@@ -1,14 +1,14 @@
 ﻿using BusinessObjects.Enums.Interaction.Verification;
-using System.ComponentModel.DataAnnotations;
 
-namespace BusinessObjects.Entities.Interaction
+namespace BusinessObjects.ViewModels.Interaction
 {
-    public class PostReport
+    public class ViewBlogReport
     {
-        [Key]
-        public Guid idPostReport { get; set; }
+        public Guid idBlogtReport { get; set; }
         public string? idReporter { get; set; }
-        public Guid? idPosted { get; set; }
+        public string? nameReporter { get; set; }
+        public Guid? idBloged { get; set; }
+        public string? title { get; set; }
         public Status? status { get; set; }
         public string? content { get; set; }
         public DateTime? createdDate { get; set; }

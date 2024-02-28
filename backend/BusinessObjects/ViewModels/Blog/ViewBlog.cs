@@ -9,6 +9,7 @@
         public string? title { get; set; }
         public string? content { get; set; }
         public int view { get; set; }
+        public int report { get; set; }
         public int like { get; set; }
         public bool isLike { get; set; }
         public bool isDeleted { get; set; }

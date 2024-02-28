@@ -24,6 +24,7 @@ namespace Post.Controllers
         private readonly HttpClient client;
 
         public string UserApiUrl { get; }
+        public string InteractionApiUrl { get; }
 
         public PostController(AppDBContext context, IMapper mapper, SaveImageService saveImageService)
         {
@@ -34,6 +35,7 @@ namespace Post.Controllers
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
             client.DefaultRequestHeaders.Accept.Add(contentType);
             UserApiUrl = "https://localhost:7006/api/User";
+            InteractionApiUrl = "https://localhost:7004/api/Interaction";
         }
 
         [HttpGet("GetNameUserCurrent/{idUser}")]
@@ -50,6 +52,21 @@ namespace Post.Controllers
             return user!;
         }
 
+        [HttpGet("GetAllReportPost")]
+        private async Task<int> GetAllReportPost()
+        {
+            HttpResponseMessage response = await client.GetAsync($"{InteractionApiUrl}/GetAllPostReportsAccept");
+            string strData = await response.Content.ReadAsStringAsync();
+            var option = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true,
+            };
+            var postReport = JsonSerializer.Deserialize<int>(strData, option);
+            return postReport;
+        }
+
+        /*------------------------------------------------------------Post------------------------------------------------------------*/
+
         [HttpGet("GetAllPosts/{idUser}")]
         public async Task<Response> GetAllPosts(string idUser)
         {
@@ -61,6 +78,7 @@ namespace Post.Controllers
             var result = _mapper.Map<List<ViewPost>>(posts);
             foreach (var post in result)
             {
+                post.report = await GetAllReportPost();
                 post.like = await _context.PosttLikes.Where(x => x.idPost == post.idPost).CountAsync();
                 var isLike = await _context.PosttLikes.FirstOrDefaultAsync(x => x.idAccount == idUser);
                 if (isLike != null)
