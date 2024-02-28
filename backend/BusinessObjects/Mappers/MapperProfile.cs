@@ -41,6 +41,9 @@ namespace BusinessObjects.Mappers
 
             CreateMap<Follower, FollowingView>().ReverseMap();
 
+            CreateMap<AccountReport, ViewAccountReport>().ReverseMap();
+            CreateMap<BlogReport, ViewBlogReport>().ReverseMap();
+            CreateMap<PostReport, ViewPostReport>().ReverseMap();
             CreateMap<Verification, ViewVerification>().ReverseMap();
 
             CreateMap<Notificationn, ViewNotification>().ReverseMap();

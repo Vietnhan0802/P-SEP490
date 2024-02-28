@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Interaction.Data.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20240129080037_Once")]
+    [Migration("20240228095225_Once")]
     partial class Once
     {
         /// <inheritdoc />
@@ -54,6 +54,35 @@ namespace Interaction.Data.Migrations
                     b.ToTable("AccountReports");
                 });
 
+            modelBuilder.Entity("BusinessObjects.Entities.Interaction.BlogReport", b =>
+                {
+                    b.Property<Guid>("idBlogReport")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("confirmedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("content")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("createdDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("idBloged")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("idReporter")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("status")
+                        .HasColumnType("int");
+
+                    b.HasKey("idBlogReport");
+
+                    b.ToTable("BlogReports");
+                });
+
             modelBuilder.Entity("BusinessObjects.Entities.Interaction.PostReport", b =>
                 {
                     b.Property<Guid>("idPostReport")
@@ -73,9 +102,6 @@ namespace Interaction.Data.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("idReporter")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("nameReporter")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("status")

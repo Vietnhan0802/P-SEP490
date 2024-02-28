@@ -23,6 +23,7 @@ namespace Blog.Controllers
         private readonly HttpClient client;
 
         public string UserApiUrl { get; }
+        public string InteractionApiUrl { get; }
 
         public BlogController(AppDBContext context, IMapper mapper, SaveImageService saveImageService)
         {
@@ -33,6 +34,7 @@ namespace Blog.Controllers
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
             client.DefaultRequestHeaders.Accept.Add(contentType);
             UserApiUrl = "https://localhost:7006/api/User";
+            InteractionApiUrl = "https://localhost:7004/api/Interaction";
         }
 
         [HttpGet("GetNameUserCurrent/{idUser}")]
@@ -49,6 +51,19 @@ namespace Blog.Controllers
             return user!;
         }
 
+        [HttpGet("GetAllReportBlog")]
+        private async Task<int> GetAllReportBlog()
+        {
+            HttpResponseMessage response = await client.GetAsync($"{InteractionApiUrl}/GetAllBlogReportsAccept");
+            string strData = await response.Content.ReadAsStringAsync();
+            var option = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true,
+            };
+            var blogReport = JsonSerializer.Deserialize<int>(strData, option);
+            return blogReport;
+        }
+
         /*------------------------------------------------------------Blog------------------------------------------------------------*/
 
         [HttpGet("GetAllBlogs/{idUser}")]
@@ -62,6 +77,7 @@ namespace Blog.Controllers
             var result = _mapper.Map<List<ViewBlog>>(blogs);
             foreach (var blog in result)
             {
+                blog.report = await GetAllReportBlog();
                 blog.like = await _context.BlogLikes.Where(x => x.idBlog == blog.idBlog).CountAsync();
                 var isLike = await _context.BlogLikes.FirstOrDefaultAsync(x => x.idAccount == idUser);
                 if (isLike != null)

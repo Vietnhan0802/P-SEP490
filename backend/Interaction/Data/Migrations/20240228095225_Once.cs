@@ -29,12 +29,28 @@ namespace Interaction.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "BlogReports",
+                columns: table => new
+                {
+                    idBlogReport = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    idReporter = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    idBloged = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    status = table.Column<int>(type: "int", nullable: true),
+                    content = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    createdDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    confirmedDate = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BlogReports", x => x.idBlogReport);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "PostReports",
                 columns: table => new
                 {
                     idPostReport = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     idReporter = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    nameReporter = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     idPosted = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     status = table.Column<int>(type: "int", nullable: true),
                     content = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -67,6 +83,9 @@ namespace Interaction.Data.Migrations
         {
             migrationBuilder.DropTable(
                 name: "AccountReports");
+
+            migrationBuilder.DropTable(
+                name: "BlogReports");
 
             migrationBuilder.DropTable(
                 name: "PostReports");
