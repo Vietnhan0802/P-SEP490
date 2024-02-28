@@ -9,9 +9,8 @@ import { useNavigate } from "react-router-dom";
 import { userInstance } from "../../axios/axiosConfig";
 import { jwtDecode } from "jwt-decode";
 import Cookies from 'js-cookie';
+import Notification, { notifySuccess, notifyError } from "../../components/notification";
 
-import { toast } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
 export default function SignIn() {
   Cookies.remove('user');
 
@@ -24,30 +23,6 @@ export default function SignIn() {
   };
 
   const handleSubmit = async (event) => {
-    const notifysuccess = (noti) => {
-      toast.success(noti, {
-        position: "bottom-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "colored"
-      });
-    }
-    const notifyerror = (noti) => {
-      toast.error(noti, {
-        position: "bottom-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "colored"
-      });
-    }
     event.preventDefault();
     console.log(inputs);
     try {
@@ -58,7 +33,7 @@ export default function SignIn() {
 
       if (response?.data?.status === "OK") {
         console.log("Sign in successful", response?.data?.result.role);
-        notifysuccess('Sign in successfully!');
+        notifySuccess('Sign in successfully!');
         const decode = jwtDecode(response?.data?.result.token);
 
         console.log(decode);
@@ -71,7 +46,7 @@ export default function SignIn() {
         console.log(response.data);
         console.log(response?.data?.status);
         console.log("Sign in failed", response?.data?.status);
-        notifyerror('Sign in failed!');
+        notifyError('Sign in failed!');
       }
     } catch (error) {
       // Check if it's an Axios error

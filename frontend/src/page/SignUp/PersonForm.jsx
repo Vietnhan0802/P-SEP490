@@ -4,8 +4,7 @@ import { useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import {userInstance} from "../../axios/axiosConfig";
 
-import { toast } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
+import Notification, { notifySuccess, notifyError } from "../../components/notification";
 
 export default function PersonForm() {
   const [inputs, setInputs] = useState({
@@ -20,39 +19,15 @@ export default function PersonForm() {
   });
   const navigate = useNavigate();
   const handleSubmit = (event) => {
-    const notifysuccess = (noti) => {
-      toast.success(noti, {
-        position: "bottom-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "colored"
-      });
-    }
-    const notifyerror = (noti) => {
-      toast.error(noti, {
-        position: "bottom-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "colored"
-      });
-    }
     event.preventDefault();
     try {
       userInstance.post("/SignUpMember", inputs);
       console.log("Sign up successful");
-      notifysuccess("Sign up for member successfully!");
+      notifySuccess("Sign up for member successfully!");
       navigate("/");
     } catch (error) {
       console.error("Sign up failed", error.response.data);
-      notifyerror("Sign up for member failed!");
+      notifyError("Sign up for member failed!");
     }
   };
 

@@ -15,8 +15,7 @@ import {
   reportInstance,
 } from "../../axios/axiosConfig";
 
-import { toast } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
+import Notification, { notifySuccess, notifyError } from "../../components/notification";
 function calculateTimeDifference(targetDate) {
   // Convert the target date string to a Date object
   const targetTime = new Date(targetDate).getTime();
@@ -166,30 +165,6 @@ function Post({ postId, onPostClick, activeItem, onItemClick }) {
       });
   }, []);
   const handleCreatePost = () => {
-    const notifysuccess = (noti) => {
-      toast.success(noti, {
-        position: "bottom-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "colored"
-      });
-    }
-    const notifyerror = (noti) => {
-      toast.error(noti, {
-        position: "bottom-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "colored"
-      });
-    }
     if (inputs.project === "") {
       alert("Plase choose a project");
     }
@@ -227,11 +202,11 @@ function Post({ postId, onPostClick, activeItem, onItemClick }) {
           CreateUpdatePostImages: [], // new state for managing multiple images
           project: "",
         });
-        notifysuccess("Create post successfully!");
+        notifySuccess("Create post successfully!");
       })
       .catch((err) => {
         console.log(err);
-        notifyerror("Create post failed!");
+        notifyError("Create post failed!");
       });
   };
 
