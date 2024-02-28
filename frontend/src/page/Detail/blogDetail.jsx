@@ -267,7 +267,7 @@ function BlogDetail(id) {
         </div>
       </div>
       <h3 className="fw-bold">{data.title}</h3>
-      <p>
+      <p style={{ whiteSpace: 'pre-wrap' }}>
         {data.content}
       </p>
       <div>

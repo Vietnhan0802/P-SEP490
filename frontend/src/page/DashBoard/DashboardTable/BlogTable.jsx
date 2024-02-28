@@ -15,6 +15,7 @@ import { IoSearchOutline } from "react-icons/io5";
 import "../DashboardTable/table.scss";
 import { GoDotFill } from "react-icons/go";
 import { blogInstance } from "../../../axios/axiosConfig";
+import Cookies from "js-cookie";
 function createData(id, avatar, fullName, title, content, date, report, status) {
   console.log(date);
   const time = formatDate(date);
@@ -207,6 +208,9 @@ EnhancedTableHead.propTypes = {
 };
 
 export default function BlogTable() {
+
+  
+  const userId = JSON.parse(Cookies.get("userId"));
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("calories");
   const [selected, setSelected] = React.useState([]);
@@ -242,7 +246,7 @@ export default function BlogTable() {
   // Avoid a layout jump when reaching the last page with empty rows.
   const [blogRows, setUserRows] = React.useState([]);
   React.useEffect(() => {
-    blogInstance.get('GetAllBlogs')
+    blogInstance.get(`GetAllBlogs/${userId}`)
       .then((res) => {
         // id, name, email, date, title, description, report, status
         const fetchedBlogRows = res.data.result.map(element => (
@@ -331,7 +335,7 @@ export default function BlogTable() {
                         <div>
                           {row.fullName}
                           <br></br>
-                          {row.email}
+                          admin@gmail.com
                         </div>
                       </div>
                     </TableCell>
