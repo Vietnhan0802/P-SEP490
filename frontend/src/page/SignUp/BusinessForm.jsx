@@ -16,7 +16,7 @@ export default function BusinessForm() {
   const handleSubmit = async (event) => {
     const notifysuccess = (noti) => {
       toast.success(noti, {
-        position: "top-right",
+        position: "bottom-right",
         autoClose: 5000,
         hideProgressBar: false,
         closeOnClick: true,
@@ -28,7 +28,7 @@ export default function BusinessForm() {
     }
     const notifyerror = (noti) => {
       toast.error(noti, {
-        position: "top-right",
+        position: "bottom-right",
         autoClose: 5000,
         hideProgressBar: false,
         closeOnClick: true,
@@ -45,7 +45,7 @@ export default function BusinessForm() {
       const response = await userInstance.post("/SignUpBusiness", inputs);
       console.log("Sign up successful", response.data);
       notifysuccess("Sign up for business successfully!");
-      navigate("/");
+      // navigate("/");
     } catch (error) {
       console.error("Sign up failed", error.response.data);
       notifyerror("Sign up for business failed!");

@@ -68,7 +68,7 @@ function Blog({ blogId, onBlogClick, activeItem, onItemClick }) {
   const handleCreateBlog = () => {
     const notifysuccess = (noti) => {
       toast.success(noti, {
-        position: "top-right",
+        position: "bottom-right",
         autoClose: 5000,
         hideProgressBar: false,
         closeOnClick: true,
@@ -80,7 +80,7 @@ function Blog({ blogId, onBlogClick, activeItem, onItemClick }) {
     }
     const notifyerror = (noti) => {
       toast.error(noti, {
-        position: "top-right",
+        position: "bottom-right",
         autoClose: 5000,
         hideProgressBar: false,
         closeOnClick: true,

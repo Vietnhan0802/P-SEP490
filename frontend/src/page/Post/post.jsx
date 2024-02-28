@@ -139,7 +139,7 @@ function Post({ postId, onPostClick, activeItem, onItemClick }) {
   const handleCreatePost = () => {
     const notifysuccess = (noti) => {
       toast.success(noti, {
-        position: "top-right",
+        position: "bottom-right",
         autoClose: 5000,
         hideProgressBar: false,
         closeOnClick: true,
@@ -151,7 +151,7 @@ function Post({ postId, onPostClick, activeItem, onItemClick }) {
     }
     const notifyerror = (noti) => {
       toast.error(noti, {
-        position: "top-right",
+        position: "bottom-right",
         autoClose: 5000,
         hideProgressBar: false,
         closeOnClick: true,

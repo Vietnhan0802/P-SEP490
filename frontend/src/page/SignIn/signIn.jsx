@@ -26,7 +26,7 @@ export default function SignIn() {
   const handleSubmit = async (event) => {
     const notifysuccess = (noti) => {
       toast.success(noti, {
-        position: "top-right",
+        position: "bottom-right",
         autoClose: 5000,
         hideProgressBar: false,
         closeOnClick: true,
@@ -38,7 +38,7 @@ export default function SignIn() {
     }
     const notifyerror = (noti) => {
       toast.error(noti, {
-        position: "top-right",
+        position: "bottom-right",
         autoClose: 5000,
         hideProgressBar: false,
         closeOnClick: true,

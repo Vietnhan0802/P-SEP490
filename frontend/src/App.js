@@ -84,8 +84,8 @@ function App() {
         <Route path="/resetpassword" element={<ResetPassword />} />
       </Routes>
       <ToastContainer 
-        position="top-right"
-        autoClose={5000}
+        position="bottom-right"
+        autoClose={3000}
         hideProgressBar={false}
         newestOnTop={false}
         closeOnClick

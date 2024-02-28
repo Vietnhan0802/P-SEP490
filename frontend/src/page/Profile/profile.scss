@@ -218,3 +218,9 @@
   height: 50px;
   border-radius: 50%;
 }
+
+.ellipsis {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}

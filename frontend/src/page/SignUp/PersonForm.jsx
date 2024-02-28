@@ -22,7 +22,7 @@ export default function PersonForm() {
   const handleSubmit = (event) => {
     const notifysuccess = (noti) => {
       toast.success(noti, {
-        position: "top-right",
+        position: "bottom-right",
         autoClose: 5000,
         hideProgressBar: false,
         closeOnClick: true,
@@ -34,7 +34,7 @@ export default function PersonForm() {
     }
     const notifyerror = (noti) => {
       toast.error(noti, {
-        position: "top-right",
+        position: "bottom-right",
         autoClose: 5000,
         hideProgressBar: false,
         closeOnClick: true,
