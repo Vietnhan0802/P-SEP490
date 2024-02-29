@@ -13,14 +13,18 @@ import defaultImage from "../images/common/default.png"
 import Popup from "./Popup/Popup";
 import Notify from "../page/Notify/notify";
 import { userInstance } from "../axios/axiosConfig";
+import { useNavigate } from "react-router-dom";
 export default function Header({ activeComponent, onItemClick, changeImage }) {
-  const user = JSON.parse(Cookies.get("user"));
+  const sessionData = JSON.parse(sessionStorage.getItem('userSession')) || {};
+  const { role, userId, userName, userEmail } = sessionData;
+
+  const navigate = useNavigate();
   const [activeItem, setActiveItem] = useState("home");
   const [activePopup, setActivePopup] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
   const [value, setValue] = useState({ imageSrc: '' });
   useEffect(() => {
-    userInstance.get(`/GetUserById/${user.Id}`)
+    userInstance.get(`/GetUserById/${userId}`)
       .then((res) => {
         if (res?.data?.result.imageSrc === 'https://localhost:7006/Images/') {
           setValue(defaultImage)
@@ -43,7 +47,8 @@ export default function Header({ activeComponent, onItemClick, changeImage }) {
   };
   const handleAvatarClick = () => {
     // Set activeItem to "profile" when the avatar is clicked
-    onItemClick("profile");
+    // onItemClick("profile");
+    navigate('/profile', { state: { userId: userId } });
   };
   return (
     <Row id="header" className="m-0">
@@ -81,8 +86,8 @@ export default function Header({ activeComponent, onItemClick, changeImage }) {
         <div className=" d-flex align-items-center" onClick={handleAvatarClick}>
           <img src={value} alt="" className="avatar" />
           <div className="ms-2">
-            <p>{user.FullName}</p>
-            <p>{user.Email}</p>
+            <p>{userName}</p>
+            <p>{userEmail}</p>
           </div>
         </div>
       </Col>

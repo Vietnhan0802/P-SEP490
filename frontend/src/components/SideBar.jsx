@@ -66,12 +66,13 @@ function SideBar({ activeItem, onItemClick }) {
   const handleItemClick = (itemId) => {
     onItemClick(itemId);
   };
-  const userRole = JSON.parse(Cookies.get("role")); // Assuming 'role' is a property in your user object
+  const sessionData = JSON.parse(sessionStorage.getItem('userSession')) || {};
+  const { role} = sessionData
   // Filter sidebar items based on user's role
   const filteredSidebarItems = sidebarItems.filter((item) => {
     // Customize this condition based on your role logic
     return (
-      item.userRole.toLowerCase() === userRole.toLowerCase() ||
+      item.userRole.toLowerCase() === role.toLowerCase() ||
       item.userRole.toLowerCase() === "all"
     );
   });

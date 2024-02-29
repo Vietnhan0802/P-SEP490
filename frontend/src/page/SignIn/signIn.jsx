@@ -24,48 +24,27 @@ export default function SignIn() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log(inputs);
     try {
-      const response = await userInstance.post(
-        "/SignIn",
-        JSON.stringify(inputs)
-      );
-
+      const response = await userInstance.post("/SignIn", JSON.stringify(inputs));
       if (response?.data?.status === "OK") {
-        console.log("Sign in successful", response?.data?.result.role);
         notifySuccess('Sign in successfully!');
         const decode = jwtDecode(response?.data?.result.token);
-
-        console.log(decode);
-        Cookies.set('userId', JSON.stringify(decode.Id), { expires: 1 })
-        // console.log(response?.data?.result?.role)
-        Cookies.set('user', JSON.stringify(decode), { expires: 1 });
-        Cookies.set('role', JSON.stringify(response?.data?.result.role), { expires: 1 });
+        sessionStorage.setItem('userSession', JSON.stringify({
+          userId: decode.Id,
+          userName: decode.FullName,
+          userEmail: decode.Email,
+          token: response?.data?.result.token,
+          role: response?.data?.result.role,
+        }));
+        // Broadcast the login event to other tabs
+        const loginChannel = new BroadcastChannel('login_channel');
+        loginChannel.postMessage({ action: 'login', userSession: { userId: decode.Id, role: response?.data?.result.role } });
         navigate("/home");
       } else {
-        console.log(response.data);
-        console.log(response?.data?.status);
-        console.log("Sign in failed", response?.data?.status);
         notifyError('Sign in failed!');
       }
     } catch (error) {
-      // Check if it's an Axios error
-      if (error.response) {
-        // The request was made and the server responded with a status code
-        // that falls out of the range of 2xx
-        console.log(error.response.data);
-        console.log(error.response.status);
-        console.log(error.response.headers);
-      } else if (error.request) {
-        // The request was made but no response was received
-        // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-        // http.ClientRequest in node.js
-        console.log(error.request);
-      } else {
-        // Something happened in setting up the request that triggered an Error
-        console.log("Error", error.message);
-      }
-      console.log(error.config);
+      console.error("Error during sign in:", error);
     }
   };
 

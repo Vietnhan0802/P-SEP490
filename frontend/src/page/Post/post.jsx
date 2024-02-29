@@ -43,8 +43,8 @@ function calculateTimeDifference(targetDate) {
 }
 
 function Post({ postId, onPostClick, activeItem, onItemClick }) {
-  const role = JSON.parse(Cookies.get("role"));
-  const userId = JSON.parse(Cookies.get("userId"));
+  const sessionData = JSON.parse(sessionStorage.getItem('userSession')) || {};
+  const { role, userId } = sessionData;
   const [inputs, setInputs] = useState({
     title: "",
     content: "",
