@@ -52,8 +52,8 @@ function Blog({ blogId, onBlogClick, activeItem, onItemClick }) {
   });
   const [blogPopups, setBlogPopups] = useState({});
   const [data, setData] = useState([]);
-  const userId = JSON.parse(Cookies.get("userId"));
-  const role = JSON.parse(Cookies.get("role"));
+  const sessionData = JSON.parse(sessionStorage.getItem('userSession')) || {};
+  const { role, userId } = sessionData;
 
   //_________________________________________________________//
 
