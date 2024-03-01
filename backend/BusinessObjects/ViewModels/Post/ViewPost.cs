@@ -14,7 +14,7 @@ namespace BusinessObjects.ViewModels.Post
         public int view { get; set; }
         public int viewInDate { get; set; }
         public int viewHistory { get; set; }
-        public int report { get; set; }
+        public int? report { get; set; }
         public int like { get; set; }
         public bool isLike { get; set; }
         public bool isBlock { get; set; }

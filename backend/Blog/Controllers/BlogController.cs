@@ -61,7 +61,7 @@ namespace Blog.Controllers
                 PropertyNameCaseInsensitive = true,
             };
             var blogReport = JsonSerializer.Deserialize<int>(strData, option);
-            return blogReport!;
+            return blogReport;
         }
 
         /*------------------------------------------------------------Blog------------------------------------------------------------*/
