@@ -4,59 +4,87 @@ import "../Profile/profile.scss";
 import "../Profile/check-box.scss";
 import "../Profile/switch-btn.scss";
 import "../Profile/project.scss";
-import { RiHome3Line } from "react-icons/ri";
-import { FaChevronRight } from "react-icons/fa6";
 import degree from "../../images/common/degree.png";
 import project1 from "../../images/project/Pro-1.png";
-import project2 from "../../images/project/Pro-2.png";
-import project3 from "../../images/project/Pro-3.png";
 import avatar from "../../images/common/Avatar.png";
-import { FaArrowDownLong } from "react-icons/fa6";
 import Follow from "../../components/follow";
 import { Col, Row } from "react-bootstrap";
 import ProfileReport from "../../components/Popup/ProfileReport";
-import Cookies from "js-cookie";
 import defaultImage from "../../images/common/default.png";
 import { userInstance } from "../../axios/axiosConfig";
 import { FiEdit } from "react-icons/fi";
 import { CgProfile } from "react-icons/cg";
 import { MdOutlineFileDownloadDone } from "react-icons/md";
 import { FiFlag } from "react-icons/fi";
+import { useLocation } from "react-router-dom";
+function formatDateString(dateString) {
+  // Check if the dateString is not empty
+  if (dateString) {
+    // Split the date string to separate date and time parts
+    const [datePart] = dateString.split('T');
+    // Return the formatted date string in yyyy-mm-dd format
+    return datePart;
+  }
+  // If dateString is empty, return an empty string
+  return '';
+}
 function Profile({ handleChangeImg }) {
   const initialValue = {
     avatar: "default",
     imageSrc: defaultImage,
     imageFile: null,
   };
-
+  const location = useLocation();
   // ````````````````````````````
   const [value, setValue] = useState(initialValue);
-  const user = JSON.parse(Cookies.get("user"));
+  const [user, setUser] = useState({});
+  const [tab, setTab] = useState('degree');
+  const sessionData = JSON.parse(sessionStorage.getItem('userSession')) || {};
+  const { role } = sessionData;
+  const { userId } = location.state || {};
 
+  console.log(user)
   const [activePopup, setActivePopup] = useState(false);
   const [display, setDisplay] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
-  const parsedDate = new Date(user.Date);
-  const formattedDate = parsedDate.toISOString().split("T")[0];
   const [inputs, setInputs] = useState({
-    userName: user.Username,
-    fullName: user.FullName,
-    date: formattedDate,
-    isMale: user.IsMale === "True",
-    phoneNumber: user.Phone,
-    tax: user.Tax,
-    address: user.Address,
+    userName: '',
+    fullName: '',
+    isMale: true,
+    phoneNumber: '',
+    tax: '',
+    address: '',
     description: "Hello",
   });
+  useEffect(() => {
+    userInstance.get(`GetUserById/${userId}`)
+      .then((res) => {
+        // console.log(res?.data?.result)
+        setUser(res?.data?.result);
+        const user = res?.data?.result;
+        // Update inputs here after user is fetched
+        setInputs({
+          userName: user?.username || '',
+          fullName: user?.fullName || '',
+          date: formatDateString(user?.date) || '',
+          isMale: user?.isMale, // Assuming isMale is returned as "True" or "False" string
+          phoneNumber: user?.phoneNumber || '',
+          tax: user?.tax || '',
+          address: user?.address || '',
+          description: user?.description || "Hello",
+        });
+      })
+  }, [])
+  console.log(inputs)
+
   // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   const handleUpdateUser = () => {
     setIsEdit(!isEdit);
-    userInstance
-      .put(`/UpdateUser/${user.Id}`, inputs, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
+    userInstance.put(`/UpdateUser/${userId}`, inputs, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
       .then((res) => {
         console.log(res?.data);
       })
@@ -98,7 +126,7 @@ function Profile({ handleChangeImg }) {
         console.log(res?.data?.status);
       })
       .catch((err) => {
-        console.log(err.response.data);
+        console.log(err?.response?.data);
       });
   };
   const showPreview = (e) => {
@@ -121,7 +149,9 @@ function Profile({ handleChangeImg }) {
       });
     }
   };
-
+  const hanldeSetTab = (tab) => {
+    setTab(tab);
+  }
   const handleReportPopup = () => {
     setActivePopup(!activePopup);
   };
@@ -139,7 +169,7 @@ function Profile({ handleChangeImg }) {
         // console.log(res?.data?.result.imageSrc);
       })
       .catch((err) => {
-        console.log(err.response.data);
+        console.log(err?.response?.data);
       });
   }, []);
   return (
@@ -274,10 +304,10 @@ function Profile({ handleChangeImg }) {
                   <label class="form-label">Gender:</label>
                   <div class="form-control">
                     {!isEdit ? (
-                      user.IsMale ? (
+                      user.IsMale==='true' ? (
                         <p>Male</p>
                       ) : (
-                        <p>FeMale</p>
+                        <p>Female</p>
                       )
                     ) : (
                       <div className="checkbox-wrapper-13">
@@ -358,14 +388,14 @@ function Profile({ handleChangeImg }) {
             </div>
             <section id="switch" className="bg-secondary-soft px-4 rounded">
               <div className="btn-swtich row pb-4">
-                <button class="s-btn col height-50 active"> Degree</button>
-                <button class="s-btn col height-50"> Blog</button>
-                <button class="s-btn col height-50"> Post</button>
-                <button class="s-btn col height-50"> Project</button>
+                <button class={`s-btn col height-50 ${tab === 'degree' ? 'active' : ''}`} onClick={() => hanldeSetTab('degree')}> Degree</button>
+                <button class={`s-btn col height-50 ${tab === 'blog' ? 'active' : ''}`} onClick={() => hanldeSetTab('blog')}> Blog</button>
+                <button class={`s-btn col height-50 ${tab === 'post' ? 'active' : ''}`} onClick={() => hanldeSetTab('post')}> Post</button>
+                <button class={`s-btn col height-50 ${tab === 'project' ? 'active' : ''}`} onClick={() => hanldeSetTab('project')}> Project</button>
               </div>
 
               {/* DegreeTab */}
-              <div className="degree">
+              {tab === 'degree' && <div className="degree">
                 {/* start degree1 */}
                 <div className="row">
                   <div className="col-2 d-flex justify-content-center img-contain">
@@ -420,10 +450,9 @@ function Profile({ handleChangeImg }) {
                   </div>
                 </div>
                 {/* end degree3 */}
-              </div>
+              </div>}
 
-              {/* Posttab of business profile*/}
-              <div className="post">
+              {tab === 'post' && <div className="post">
                 {/* start Post */}
                 <div className="row">
                   <div className="col-3 d-flex justify-content-center img-contain">
@@ -531,9 +560,10 @@ function Profile({ handleChangeImg }) {
                   </div>
                 </div>
                 {/* end Post */}
-              </div>
+              </div>}
+              {/* Posttab of business profile*/}
 
-              <div className="blog">
+              {tab === 'blog' && <div className="blog">
                 {/* start Post */}
                 <div className="row">
                   <div className="col-3 d-flex justify-content-center img-contain">
@@ -641,10 +671,9 @@ function Profile({ handleChangeImg }) {
                   </div>
                 </div>
                 {/* end Post */}
-              </div>
+              </div>}
 
-              {/* PrijectTab of business profile */}
-              <div className="project">
+              {tab === 'project' && <div className="project">
                 <div class="row" id="all-projects">
                   <div class="col-md-6" id="project-items-1">
                     <div class="card">
@@ -809,14 +838,16 @@ function Profile({ handleChangeImg }) {
                     </div>
                   </div>
                 </div>
-              </div>
+              </div>}
+              {/* PrijectTab of business profile */}
+
             </section>
           </div>
-        </Col>
+        </Col >
         <Col md={3}>
           <Follow />
         </Col>
-      </Row>
+      </Row >
     </>
   );
 }
