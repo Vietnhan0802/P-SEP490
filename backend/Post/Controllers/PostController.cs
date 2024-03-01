@@ -184,6 +184,7 @@ namespace Post.Controllers
             }
             result.ViewPostImages = viewImages;
             post.view++;
+            post.viewInDate++;
             await _context.SaveChangesAsync();
             return new Response(HttpStatusCode.OK, "Get post is success!", result);
         }
