@@ -67,6 +67,34 @@ namespace Post.Controllers
 
         /*------------------------------------------------------------Post------------------------------------------------------------*/
 
+        [HttpGet("GetAllPostsTrend/{idUser}")]
+        public async Task<Response> GetAllPostsTrend(string idUser)
+        {
+            var top10Posts = await _context.Postts.OrderByDescending(x => x.viewHistory).Take(10).ToListAsync();
+            var result = _mapper.Map<List<ViewPost>>(top10Posts);
+            foreach (var post in result)
+            {
+                post.report = await GetAllReportPost();
+                post.like = await _context.PosttLikes.Where(x => x.idPost == post.idPost).CountAsync();
+                var isLike = await _context.PosttLikes.FirstOrDefaultAsync(x => x.idAccount == idUser);
+                if (isLike != null)
+                {
+                    post.isLike = true;
+                }
+                var infoUser = await GetNameUserCurrent(post.idAccount!);
+                post.fullName = infoUser.fullName;
+                post.avatar = infoUser.avatar;
+                var postImages = await _context.PosttImages.Where(x => x.idPost == post.idPost).ToListAsync();
+                var viewImages = _mapper.Map<List<ViewPostImage>>(postImages);
+                foreach (var image in viewImages)
+                {
+                    image.ImageSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, image.image);
+                }
+                post.ViewPostImages = viewImages;
+            }
+            return new Response(HttpStatusCode.OK, "Get top 10 blog is success!", result);
+        }
+
         [HttpGet("GetAllPosts/{idUser}")]
         public async Task<Response> GetAllPosts(string idUser)
         {
@@ -156,6 +184,7 @@ namespace Post.Controllers
             }
             result.ViewPostImages = viewImages;
             post.view++;
+            post.viewInDate++;
             await _context.SaveChangesAsync();
             return new Response(HttpStatusCode.OK, "Get post is success!", result);
         }

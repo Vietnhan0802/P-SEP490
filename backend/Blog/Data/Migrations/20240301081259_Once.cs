@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Post.Data.Migrations
+namespace Blog.Data.Migrations
 {
     /// <inheritdoc />
     public partial class Once : Migration
@@ -12,204 +12,202 @@ namespace Post.Data.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Postts",
+                name: "Blogs",
                 columns: table => new
                 {
-                    idPost = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    idBlog = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     idAccount = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    idProject = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     title = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     content = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    major = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    exp = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     view = table.Column<int>(type: "int", nullable: false),
-                    isBlock = table.Column<bool>(type: "bit", nullable: false),
+                    viewInDate = table.Column<int>(type: "int", nullable: false),
+                    viewHistory = table.Column<int>(type: "int", nullable: false),
                     isDeleted = table.Column<bool>(type: "bit", nullable: false),
                     createdDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Postts", x => x.idPost);
+                    table.PrimaryKey("PK_Blogs", x => x.idBlog);
                 });
 
             migrationBuilder.CreateTable(
-                name: "PosttComments",
+                name: "BlogComments",
                 columns: table => new
                 {
-                    idPostComment = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    idBlogComment = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     idAccount = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    idPost = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    idBlog = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     content = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     isDeleted = table.Column<bool>(type: "bit", nullable: false),
                     createdDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PosttComments", x => x.idPostComment);
+                    table.PrimaryKey("PK_BlogComments", x => x.idBlogComment);
                     table.ForeignKey(
-                        name: "FK_PosttComments_Postts_idPost",
-                        column: x => x.idPost,
-                        principalTable: "Postts",
-                        principalColumn: "idPost",
+                        name: "FK_BlogComments_Blogs_idBlog",
+                        column: x => x.idBlog,
+                        principalTable: "Blogs",
+                        principalColumn: "idBlog",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "PosttImages",
+                name: "BlogImages",
                 columns: table => new
                 {
-                    idPostImage = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    idPost = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    idBlogImage = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    idBlog = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     image = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     createdDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PosttImages", x => x.idPostImage);
+                    table.PrimaryKey("PK_BlogImages", x => x.idBlogImage);
                     table.ForeignKey(
-                        name: "FK_PosttImages_Postts_idPost",
-                        column: x => x.idPost,
-                        principalTable: "Postts",
-                        principalColumn: "idPost",
+                        name: "FK_BlogImages_Blogs_idBlog",
+                        column: x => x.idBlog,
+                        principalTable: "Blogs",
+                        principalColumn: "idBlog",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "PosttLikes",
+                name: "BlogLikes",
                 columns: table => new
                 {
-                    idPostLike = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    idBlogLike = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     idAccount = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    idPost = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    idBlog = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     createdDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PosttLikes", x => x.idPostLike);
+                    table.PrimaryKey("PK_BlogLikes", x => x.idBlogLike);
                     table.ForeignKey(
-                        name: "FK_PosttLikes_Postts_idPost",
-                        column: x => x.idPost,
-                        principalTable: "Postts",
-                        principalColumn: "idPost",
+                        name: "FK_BlogLikes_Blogs_idBlog",
+                        column: x => x.idBlog,
+                        principalTable: "Blogs",
+                        principalColumn: "idBlog",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "PosttCommentLikes",
+                name: "BlogCommentLikes",
                 columns: table => new
                 {
-                    idPostCommentLike = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    idBlogCommentLike = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     idAccount = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    idPostComment = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    idBlogComment = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     createdDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PosttCommentLikes", x => x.idPostCommentLike);
+                    table.PrimaryKey("PK_BlogCommentLikes", x => x.idBlogCommentLike);
                     table.ForeignKey(
-                        name: "FK_PosttCommentLikes_PosttComments_idPostComment",
-                        column: x => x.idPostComment,
-                        principalTable: "PosttComments",
-                        principalColumn: "idPostComment",
+                        name: "FK_BlogCommentLikes_BlogComments_idBlogComment",
+                        column: x => x.idBlogComment,
+                        principalTable: "BlogComments",
+                        principalColumn: "idBlogComment",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "PosttReplies",
+                name: "BlogReplies",
                 columns: table => new
                 {
-                    idPostReply = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    idBlogReply = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     idAccount = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    idPostComment = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    idBlogComment = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     content = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     isDeleted = table.Column<bool>(type: "bit", nullable: false),
                     createdDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PosttReplies", x => x.idPostReply);
+                    table.PrimaryKey("PK_BlogReplies", x => x.idBlogReply);
                     table.ForeignKey(
-                        name: "FK_PosttReplies_PosttComments_idPostComment",
-                        column: x => x.idPostComment,
-                        principalTable: "PosttComments",
-                        principalColumn: "idPostComment",
+                        name: "FK_BlogReplies_BlogComments_idBlogComment",
+                        column: x => x.idBlogComment,
+                        principalTable: "BlogComments",
+                        principalColumn: "idBlogComment",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "PosttReplyLikes",
+                name: "BlogReplyLikes",
                 columns: table => new
                 {
-                    idPostReplyLike = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    idBlogReplyLike = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     idAccount = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    idPostReply = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    idBlogReply = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     createdDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PosttReplyLikes", x => x.idPostReplyLike);
+                    table.PrimaryKey("PK_BlogReplyLikes", x => x.idBlogReplyLike);
                     table.ForeignKey(
-                        name: "FK_PosttReplyLikes_PosttReplies_idPostReply",
-                        column: x => x.idPostReply,
-                        principalTable: "PosttReplies",
-                        principalColumn: "idPostReply",
+                        name: "FK_BlogReplyLikes_BlogReplies_idBlogReply",
+                        column: x => x.idBlogReply,
+                        principalTable: "BlogReplies",
+                        principalColumn: "idBlogReply",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_PosttCommentLikes_idPostComment",
-                table: "PosttCommentLikes",
-                column: "idPostComment");
+                name: "IX_BlogCommentLikes_idBlogComment",
+                table: "BlogCommentLikes",
+                column: "idBlogComment");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PosttComments_idPost",
-                table: "PosttComments",
-                column: "idPost");
+                name: "IX_BlogComments_idBlog",
+                table: "BlogComments",
+                column: "idBlog");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PosttImages_idPost",
-                table: "PosttImages",
-                column: "idPost");
+                name: "IX_BlogImages_idBlog",
+                table: "BlogImages",
+                column: "idBlog");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PosttLikes_idPost",
-                table: "PosttLikes",
-                column: "idPost");
+                name: "IX_BlogLikes_idBlog",
+                table: "BlogLikes",
+                column: "idBlog");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PosttReplies_idPostComment",
-                table: "PosttReplies",
-                column: "idPostComment");
+                name: "IX_BlogReplies_idBlogComment",
+                table: "BlogReplies",
+                column: "idBlogComment");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PosttReplyLikes_idPostReply",
-                table: "PosttReplyLikes",
-                column: "idPostReply");
+                name: "IX_BlogReplyLikes_idBlogReply",
+                table: "BlogReplyLikes",
+                column: "idBlogReply");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "PosttCommentLikes");
+                name: "BlogCommentLikes");
 
             migrationBuilder.DropTable(
-                name: "PosttImages");
+                name: "BlogImages");
 
             migrationBuilder.DropTable(
-                name: "PosttLikes");
+                name: "BlogLikes");
 
             migrationBuilder.DropTable(
-                name: "PosttReplyLikes");
+                name: "BlogReplyLikes");
 
             migrationBuilder.DropTable(
-                name: "PosttReplies");
+                name: "BlogReplies");
 
             migrationBuilder.DropTable(
-                name: "PosttComments");
+                name: "BlogComments");
 
             migrationBuilder.DropTable(
-                name: "Postts");
+                name: "Blogs");
         }
     }
 }
