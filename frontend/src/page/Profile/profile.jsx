@@ -17,6 +17,17 @@ import { CgProfile } from "react-icons/cg";
 import { MdOutlineFileDownloadDone } from "react-icons/md";
 import { FiFlag } from "react-icons/fi";
 import { useLocation } from "react-router-dom";
+function formatDateString(dateString) {
+  // Check if the dateString is not empty
+  if (dateString) {
+    // Split the date string to separate date and time parts
+    const [datePart] = dateString.split('T');
+    // Return the formatted date string in yyyy-mm-dd format
+    return datePart;
+  }
+  // If dateString is empty, return an empty string
+  return '';
+}
 function Profile({ handleChangeImg }) {
   const initialValue = {
     avatar: "default",
@@ -36,8 +47,6 @@ function Profile({ handleChangeImg }) {
   const [activePopup, setActivePopup] = useState(false);
   const [display, setDisplay] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
-  // const parsedDate = new Date(user?.date);
-  // const formattedDate = parsedDate.toISOString().split("T")[0];
   const [inputs, setInputs] = useState({
     userName: '',
     fullName: '',
@@ -50,14 +59,15 @@ function Profile({ handleChangeImg }) {
   useEffect(() => {
     userInstance.get(`GetUserById/${userId}`)
       .then((res) => {
-        console.log(res?.data?.result)
+        // console.log(res?.data?.result)
         setUser(res?.data?.result);
         const user = res?.data?.result;
         // Update inputs here after user is fetched
         setInputs({
           userName: user?.username || '',
           fullName: user?.fullName || '',
-          isMale: user?.isMale === "True", // Assuming isMale is returned as "True" or "False" string
+          date: formatDateString(user?.date) || '',
+          isMale: user?.isMale, // Assuming isMale is returned as "True" or "False" string
           phoneNumber: user?.phoneNumber || '',
           tax: user?.tax || '',
           address: user?.address || '',
@@ -294,7 +304,7 @@ function Profile({ handleChangeImg }) {
                   <label class="form-label">Gender:</label>
                   <div class="form-control">
                     {!isEdit ? (
-                      user.IsMale ? (
+                      user.IsMale==='true' ? (
                         <p>Male</p>
                       ) : (
                         <p>Female</p>
