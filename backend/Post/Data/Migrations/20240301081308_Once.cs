@@ -24,6 +24,7 @@ namespace Post.Data.Migrations
                     exp = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     view = table.Column<int>(type: "int", nullable: false),
                     viewInDate = table.Column<int>(type: "int", nullable: false),
+                    viewHistory = table.Column<int>(type: "int", nullable: false),
                     isBlock = table.Column<bool>(type: "bit", nullable: false),
                     isDeleted = table.Column<bool>(type: "bit", nullable: false),
                     createdDate = table.Column<DateTime>(type: "datetime2", nullable: false)
