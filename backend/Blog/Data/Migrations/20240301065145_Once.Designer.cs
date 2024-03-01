@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Blog.Data.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20240126090019_Once")]
+    [Migration("20240301065145_Once")]
     partial class Once
     {
         /// <inheritdoc />
@@ -47,6 +47,9 @@ namespace Blog.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("view")
+                        .HasColumnType("int");
+
+                    b.Property<int>("viewInDate")
                         .HasColumnType("int");
 
                     b.HasKey("idBlog");

@@ -46,6 +46,9 @@ namespace Blog.Data.Migrations
                     b.Property<int>("view")
                         .HasColumnType("int");
 
+                    b.Property<int>("viewInDate")
+                        .HasColumnType("int");
+
                     b.HasKey("idBlog");
 
                     b.ToTable("Blogs");

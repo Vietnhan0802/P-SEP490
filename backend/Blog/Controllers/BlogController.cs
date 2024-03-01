@@ -61,10 +61,38 @@ namespace Blog.Controllers
                 PropertyNameCaseInsensitive = true,
             };
             var blogReport = JsonSerializer.Deserialize<int>(strData, option);
-            return blogReport;
+            return blogReport!;
         }
 
         /*------------------------------------------------------------Blog------------------------------------------------------------*/
+
+        [HttpGet("GetAllBlogsTrend/{idUser}")]
+        public async Task<Response> GetAllBlogsTrend(string idUser)
+        {
+            var top10Blogs = await _context.Blogs.OrderByDescending(x => x.viewHistory).Take(10).ToListAsync();
+            var result = _mapper.Map<List<ViewBlog>>(top10Blogs);
+            foreach ( var blog in result )
+            {
+                blog.report = await GetAllReportBlog();
+                blog.like = await _context.BlogLikes.Where(x => x.idBlog == blog.idBlog).CountAsync();
+                var isLike = await _context.BlogLikes.FirstOrDefaultAsync(x => x.idAccount == idUser);
+                if (isLike != null)
+                {
+                    blog.isLike = true;
+                }
+                var infoUser = await GetNameUserCurrent(blog.idAccount!);
+                blog.fullName = infoUser.fullName;
+                blog.avatar = infoUser.avatar;
+                var blogImages = await _context.BlogImages.Where(x => x.idBlog == blog.idBlog).ToListAsync();
+                var viewImages = _mapper.Map<List<ViewBlogImage>>(blogImages);
+                foreach (var image in viewImages)
+                {
+                    image.ImageSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, image.image);
+                }
+                blog.ViewBlogImages = viewImages;
+            }
+            return new Response(HttpStatusCode.OK, "Get top 10 blog is success!", result);
+        }
 
         [HttpGet("GetAllBlogs/{idUser}")]
         public async Task<Response> GetAllBlogs(string idUser)
@@ -155,6 +183,7 @@ namespace Blog.Controllers
             }
             result.ViewBlogImages = viewImages;
             blog.view++;
+            blog.viewInDate++;
             await _context.SaveChangesAsync();
             return new Response(HttpStatusCode.OK, "Get blog is success!", result);
         }
