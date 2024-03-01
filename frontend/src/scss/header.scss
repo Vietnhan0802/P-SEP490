@@ -34,6 +34,16 @@
         font-size: 16px;
     }
 }
+.hidden-box{
+    display: none;
+}
+.user-box{
+    top: 50px;
+    border: 1px solid black;
+    background: white;
+    padding: 16px;
+    border-radius: 16px;
+}
 .home-icon , .chat-icon,.notify-icon{
     width: 28px;
     height: 28px;
