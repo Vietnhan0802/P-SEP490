@@ -5,6 +5,7 @@
   "dependencies": {
     "@emotion/react": "^11.11.3",
     "@emotion/styled": "^11.11.0",
+    "@heroicons/react": "^2.1.1",
     "@mui/icons-material": "^5.15.4",
     "@mui/material": "^5.15.4",
     "@mui/styled-engine-sc": "^6.0.0-alpha.12",
@@ -28,6 +29,7 @@
     "react-router-dom": "^6.21.1",
     "react-scripts": "5.0.1",
     "react-step-progress-bar": "^1.0.3",
+    "react-table": "^7.8.0",
     "react-toastify": "^10.0.4",
     "reactjs-popup": "^2.0.6",
     "sass": "^1.69.7",
