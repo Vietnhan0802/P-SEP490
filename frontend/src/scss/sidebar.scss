@@ -1,5 +1,5 @@
 #sidebar {
-  background-color: #fff;
+  background-color: var(--sidebar_background);
   border-radius: 9px;
   padding: 13px;
   height: 800px;
@@ -9,10 +9,14 @@
   .upper-section div {
     padding: 8px 14px;
     border-radius: 8px;
+    color: var(--sidebar_icon);
+    &.active-sidebar-item {
+      background-color: #175CD3;
+      color: #FFFFFF;
+    }
   }
-  .active-sidebar-item {
-    background-color: #2f45ad;
-    color: #ffffff;
+  .lower-section {
+    color: var(--sidebar_icon);
   }
   .logout {
     color: #79d8e0;
