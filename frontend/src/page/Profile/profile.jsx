@@ -38,12 +38,12 @@ function Profile({ handleChangeImg }) {
   // ````````````````````````````
   const [value, setValue] = useState(initialValue);
   const [user, setUser] = useState({});
-  const [tab, setTab] = useState('degree');
+  const [tab, setTab] = useState('');
+
+
   const sessionData = JSON.parse(sessionStorage.getItem('userSession')) || {};
   const { role } = sessionData;
   const { userId } = location.state || {};
-
-  console.log(user)
   const [activePopup, setActivePopup] = useState(false);
   const [display, setDisplay] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
@@ -59,9 +59,16 @@ function Profile({ handleChangeImg }) {
   useEffect(() => {
     userInstance.get(`GetUserById/${userId}`)
       .then((res) => {
-        // console.log(res?.data?.result)
+        console.log(res?.data?.result)
         setUser(res?.data?.result);
         const user = res?.data?.result;
+        if (user.role === 'Admin') {
+          setTab('Blog');
+        } else if (user.role === 'Business') {
+          setTab('post');
+        } else {
+          setTab('degree')
+        }
         // Update inputs here after user is fetched
         setInputs({
           userName: user?.username || '',
@@ -73,10 +80,15 @@ function Profile({ handleChangeImg }) {
           address: user?.address || '',
           description: user?.description || "Hello",
         });
+        if (res?.data?.result.imageSrc === "https://localhost:7006/Images/")
+          return;
+        setValue({
+          ...value,
+          imageSrc: res?.data?.result.imageSrc,
+        });
       })
-  }, [])
-  console.log(inputs)
-
+  }, [userId])
+  useEffect(() => { }, [])
   // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   const handleUpdateUser = () => {
     setIsEdit(!isEdit);
@@ -155,23 +167,7 @@ function Profile({ handleChangeImg }) {
   const handleReportPopup = () => {
     setActivePopup(!activePopup);
   };
-  // console.log(inputs);
-  useEffect(() => {
-    userInstance
-      .get(`/GetUserById/${user.Id}`)
-      .then((res) => {
-        if (res?.data?.result.imageSrc === "https://localhost:7006/Images/")
-          return;
-        setValue({
-          ...value,
-          imageSrc: res?.data?.result.imageSrc,
-        });
-        // console.log(res?.data?.result.imageSrc);
-      })
-      .catch((err) => {
-        console.log(err?.response?.data);
-      });
-  }, []);
+
   return (
     <>
       <Row className="mx-0 mt-3">
@@ -304,7 +300,7 @@ function Profile({ handleChangeImg }) {
                   <label class="form-label">Gender:</label>
                   <div class="form-control">
                     {!isEdit ? (
-                      user.IsMale==='true' ? (
+                      user.isMale ? (
                         <p>Male</p>
                       ) : (
                         <p>Female</p>
@@ -388,15 +384,12 @@ function Profile({ handleChangeImg }) {
             </div>
             <section id="switch" className="bg-secondary-soft px-4 rounded">
               <div className="btn-swtich row pb-4">
-                <button class={`s-btn col height-50 ${tab === 'degree' ? 'active' : ''}`} onClick={() => hanldeSetTab('degree')}> Degree</button>
-                <button class={`s-btn col height-50 ${tab === 'blog' ? 'active' : ''}`} onClick={() => hanldeSetTab('blog')}> Blog</button>
-                <button class={`s-btn col height-50 ${tab === 'post' ? 'active' : ''}`} onClick={() => hanldeSetTab('post')}> Post</button>
-                <button class={`s-btn col height-50 ${tab === 'project' ? 'active' : ''}`} onClick={() => hanldeSetTab('project')}> Project</button>
+                {user.role == 'Member' && <button class={`s-btn col height-50 ${tab === 'degree' ? 'active' : ''}`} onClick={() => hanldeSetTab('degree')}> Degree</button>}
+                {user.role === 'Admin' && <button class={`s-btn col height-50 ${tab === 'blog' ? 'active' : ''}`} onClick={() => hanldeSetTab('blog')}> Blog</button>}
+                {user.role === 'Business' && <button class={`s-btn col height-50 ${tab === 'post' ? 'active' : ''}`} onClick={() => hanldeSetTab('post')}> Post</button>}
+                {user.role !== 'Admin ' && <button class={`s-btn col height-50 ${tab === 'project' ? 'active' : ''}`} onClick={() => hanldeSetTab('project')}> Project</button>}
               </div>
-
-              {/* DegreeTab */}
-              {tab === 'degree' && <div className="degree">
-                {/* start degree1 */}
+              {user.role === 'Member' && tab === 'degree' && <div className="degree">
                 <div className="row">
                   <div className="col-2 d-flex justify-content-center img-contain">
                     <img src={degree} alt="" className="image" />
@@ -451,8 +444,10 @@ function Profile({ handleChangeImg }) {
                 </div>
                 {/* end degree3 */}
               </div>}
+              {/* DegreeTab */}
 
-              {tab === 'post' && <div className="post">
+
+              {user.role === 'Business' && tab === 'post' && <div className="post">
                 {/* start Post */}
                 <div className="row">
                   <div className="col-3 d-flex justify-content-center img-contain">
@@ -563,7 +558,7 @@ function Profile({ handleChangeImg }) {
               </div>}
               {/* Posttab of business profile*/}
 
-              {tab === 'blog' && <div className="blog">
+              {user.role === 'Admin' && tab === 'blog' && <div className="blog">
                 {/* start Post */}
                 <div className="row">
                   <div className="col-3 d-flex justify-content-center img-contain">
@@ -673,7 +668,7 @@ function Profile({ handleChangeImg }) {
                 {/* end Post */}
               </div>}
 
-              {tab === 'project' && <div className="project">
+              {user.role !== 'Admin' && tab === 'project' && <div className="project">
                 <div class="row" id="all-projects">
                   <div class="col-md-6" id="project-items-1">
                     <div class="card">
