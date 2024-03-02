@@ -36,6 +36,7 @@ namespace Post.Controllers
             client.DefaultRequestHeaders.Accept.Add(contentType);
             UserApiUrl = "https://localhost:7006/api/User";
             InteractionApiUrl = "https://localhost:7004/api/Interaction";
+
         }
 
         [HttpGet("GetNameUserCurrent/{idUser}")]
