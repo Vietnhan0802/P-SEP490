@@ -362,7 +362,7 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 
-/Blog/Images/
-/Post/Images/
-/Project/Images/
-/User/Images/
+D:/Code/9/Project/P-SEP490/backend/Blog/Images/
+D:/Code/9/Project/P-SEP490/backend/Post/Images/
+D:/Code/9/Project/P-SEP490/backend/Project/Images/
+D:/Code/9/Project/P-SEP490/backend/User/Images/
