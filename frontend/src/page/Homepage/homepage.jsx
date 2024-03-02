@@ -34,7 +34,7 @@ function Homepage() {
     <div className="bg m-0 ">
 
       <>
-        <Row className="mt-3 ms-0 me-0 bg-sidebar">
+        <Row className="pt-3 ms-0 me-0 bg-sidebar">
           <Col md={3}>
             <SideBar
               activeItem={activeComponent}

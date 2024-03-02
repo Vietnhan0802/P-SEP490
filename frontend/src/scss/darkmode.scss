@@ -1,18 +1,22 @@
 :root {
     --header_background: #FFFFFF;
-    --sidebar_background: #F0F2F5;
-    --sidebar_item: #E0E5F5;
     --header_mid_icon: #606266;
-    --header_background_search_box: #F0F2F5;
+    --header_background_search_box: #D8DADF;
     --header_search_box: #65676B;
+    --body_background: #D8DADF;
+    --sidebar_background: #FFFFFF;
+    --sidebar_icon: #606266;
+    --sidebar_item: #FFFFFF;
 }
 
 [data-theme="dark"] {
     --header_background: #242526;
-    --sidebar_background: #18191A;
     --header_mid_icon: #B8BBBF;
     --header_background_search_box: #3A3B3C;
     --header_search_box: #B3B0B8;
+    --body_background: #18191A;
+    --sidebar_background: #242526;
+    --sidebar_icon: #B8BBBF;
 }
 
 .dark_mode {
