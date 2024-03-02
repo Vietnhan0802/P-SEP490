@@ -113,7 +113,7 @@ function Profile({ handleChangeImg }) {
     formData.append("ImageFile", value.imageFile);
     formData.append("ImageSrc", value.imageSrc);
     userInstance
-      .put(`/UpdateAvatar/${user.Id}`, formData, {
+      .put(`/UpdateAvatar/${userId}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data", // Ensure Content-Type is set to multipart/form-data
         },

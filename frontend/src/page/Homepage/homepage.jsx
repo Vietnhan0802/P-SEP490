@@ -1,6 +1,7 @@
 import React from "react";
 import { useState } from "react";
 import { Col, Row } from "react-bootstrap";
+import "./homepage.scss";
 import SideBar from "../../components/sidebar";
 import Follow from "../../components/follow";
 import Post from "../Post/post";
@@ -30,10 +31,10 @@ function Homepage() {
     setProjectId(projectId)
   }
   return (
-    <div className="bg m-0">
+    <div className="bg m-0 ">
 
       <>
-        <Row className="mt-3 ms-0 me-0">
+        <Row className="mt-3 ms-0 me-0 bg-sidebar">
           <Col md={3}>
             <SideBar
               activeItem={activeComponent}
