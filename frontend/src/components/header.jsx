@@ -11,6 +11,7 @@ import { IoIosNotificationsOutline } from "react-icons/io";
 import defaultImage from "../images/common/default.png"
 import Popup from "./Popup/Popup";
 import Notify from "../page/Notify/notify";
+import DarkMode from "./darkmode";
 import { userInstance } from "../axios/axiosConfig";
 import { useNavigate } from "react-router-dom";
 export default function Header({ activeComponent, onItemClick, changeImage }) {
@@ -123,9 +124,10 @@ export default function Header({ activeComponent, onItemClick, changeImage }) {
         </div>
       </Col>
       <Col className="d-flex justify-content-end align-items-center" sm={4}>
+        <DarkMode />
         <div className=" d-flex align-items-center" onClick={() => handleAvatarClick(userId)}>
           <img src={value} alt="" className="avatar" />
-          <div className="ms-2">
+          <div className="ms-2 t-black">
             <p>{userName}</p>
             <p>{userEmail}</p>
           </div>
