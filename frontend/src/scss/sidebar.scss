@@ -9,14 +9,15 @@
   .upper-section div {
     padding: 8px 14px;
     border-radius: 8px;
-    color: var(--sidebar_icon);
+    color: var(--header_search_text);
+    font-size: 20px;
     &.active-sidebar-item {
       background-color: #175CD3;
       color: #FFFFFF;
     }
   }
   .lower-section {
-    color: var(--sidebar_icon);
+    color: var(--header_search_text);
   }
   .logout {
     color: #79d8e0;
@@ -24,6 +25,6 @@
     padding: 8px 14px;
   }
   .fs-10 {
-    font-size: 10px;
+    font-size: 12px;
   }
 }
