@@ -11,12 +11,13 @@ import Follow from "../../components/follow";
 import { Col, Row } from "react-bootstrap";
 import ProfileReport from "../../components/Popup/ProfileReport";
 import defaultImage from "../../images/common/default.png";
-import { userInstance } from "../../axios/axiosConfig";
+import { blogInstance, postInstance, projectInstance, userInstance } from "../../axios/axiosConfig";
 import { FiEdit } from "react-icons/fi";
 import { CgProfile } from "react-icons/cg";
 import { MdOutlineFileDownloadDone } from "react-icons/md";
 import { FiFlag } from "react-icons/fi";
 import { useLocation } from "react-router-dom";
+import defaultProject from '../../images/common/default_project.webp'
 function formatDateString(dateString) {
   // Check if the dateString is not empty
   if (dateString) {
@@ -55,7 +56,11 @@ function Profile({ handleChangeImg }) {
     tax: '',
     address: '',
     description: "Hello",
+    imageSrc: "",
   });
+  const [userPost, setUserPost] = useState([]);
+  const [userProject, setUserProject] = useState([]);
+  const [userBlog, setUserBlog] = useState([]);
   useEffect(() => {
     userInstance.get(`GetUserById/${userId}`)
       .then((res) => {
@@ -63,7 +68,7 @@ function Profile({ handleChangeImg }) {
         setUser(res?.data?.result);
         const user = res?.data?.result;
         if (user.role === 'Admin') {
-          setTab('Blog');
+          setTab('blog');
         } else if (user.role === 'Business') {
           setTab('post');
         } else {
@@ -78,7 +83,8 @@ function Profile({ handleChangeImg }) {
           phoneNumber: user?.phoneNumber || '',
           tax: user?.tax || '',
           address: user?.address || '',
-          description: user?.description || "Hello",
+          description: user?.description || "Hope you will give us some description about yourselves",
+          imageSrc: user?.imageSrc
         });
         if (res?.data?.result.imageSrc === "https://localhost:7006/Images/")
           return;
@@ -86,9 +92,51 @@ function Profile({ handleChangeImg }) {
           ...value,
           imageSrc: res?.data?.result.imageSrc,
         });
+        if (user.role === 'Business') {
+          postInstance.get(`GetPostByUser/${userId}`)
+            .then((res) => {
+              setUserPost(res?.data?.result);
+              console.log(userPost)
+            })
+            .catch((error) => {
+              console.error(error);
+            });
+          projectInstance.get(`GetProjectByUser/${userId}`)
+            .then((res) => {
+              setUserProject(res?.data?.result);
+              console.log(userProject);
+            })
+            .catch((error) => {
+              console.error(error)
+            })
+        }
+        if (user.role === 'Admin') {
+          blogInstance.get(`GetBlogByUser/${userId}`)
+            .then((res) => {
+              setUserBlog(res?.data?.result);
+            })
+            .catch((error) => {
+              console.log(error)
+            })
+        }
+        console.log(userBlog);
       })
   }, [userId])
+
   // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  const projectStatus = process => {
+    switch (process) {
+      case 0:
+        return <p>Preparing</p>
+      case 1:
+        return <p>Processing</p>
+      case 2:
+        return <p>Pending</p>
+      case 3:
+        return <p>Done</p>
+      default: return ''
+    }
+  }
   const handleUpdateUser = () => {
     setIsEdit(!isEdit);
     userInstance.put(`/UpdateUser/${userId}`, inputs, {
@@ -123,12 +171,11 @@ function Profile({ handleChangeImg }) {
     formData.append("avatar", value.avatar);
     formData.append("ImageFile", value.imageFile);
     formData.append("ImageSrc", value.imageSrc);
-    userInstance
-      .put(`/UpdateAvatar/${userId}`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data", // Ensure Content-Type is set to multipart/form-data
-        },
-      })
+    userInstance.put(`/UpdateAvatar/${userId}`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data", // Ensure Content-Type is set to multipart/form-data
+      },
+    })
       .then((res) => {
         setDisplay(false);
         if (res?.data?.status === "OK") {
@@ -178,7 +225,7 @@ function Profile({ handleChangeImg }) {
             </div>
             <div className="information position-relative d-flex flex-column justify-content-center">
               <img
-                src={value.imageSrc === "https://localhost:7006/Images/" ? defaultImage : value.imageSrc}
+                src={inputs.imageSrc === "https://localhost:7006/Images/" ? defaultImage : inputs.imageSrc}
                 alt=""
                 className="w-100 rounded avatar m-auto"
               />
@@ -386,7 +433,7 @@ function Profile({ handleChangeImg }) {
                 {user.role == 'Member' && <button class={`s-btn col height-50 ${tab === 'degree' ? 'active' : ''}`} onClick={() => hanldeSetTab('degree')}> Degree</button>}
                 {user.role === 'Admin' && <button class={`s-btn col height-50 ${tab === 'blog' ? 'active' : ''}`} onClick={() => hanldeSetTab('blog')}> Blog</button>}
                 {user.role === 'Business' && <button class={`s-btn col height-50 ${tab === 'post' ? 'active' : ''}`} onClick={() => hanldeSetTab('post')}> Post</button>}
-                {user.role !== 'Admin ' && <button class={`s-btn col height-50 ${tab === 'project' ? 'active' : ''}`} onClick={() => hanldeSetTab('project')}> Project</button>}
+                {user.role !== 'Admin' && <button class={`s-btn col height-50 ${tab === 'project' ? 'active' : ''}`} onClick={() => hanldeSetTab('project')}> Project</button>}
               </div>
               {user.role === 'Member' && tab === 'degree' && <div className="degree">
                 <div className="row">
@@ -448,389 +495,134 @@ function Profile({ handleChangeImg }) {
 
               {user.role === 'Business' && tab === 'post' && <div className="post">
                 {/* start Post */}
-                <div className="row">
-                  <div className="col-3 d-flex justify-content-center img-contain">
-                    <img src={project1} alt="" className="image" />
-                  </div>
-                  <div className="col-7 d-flex flex-column justify-content-start">
-                    <div className="d-flex items-center">
-                      <img
-                        className="avata-s mr-4"
-                        src={avatar}
-                        alt="Instructor Cooper Bator"
-                      />
-                      <div className="left-30 d-flex flex-column justify-content-center">
-                        <div className="size-20 SFU-heavy d-flex ellipsis">
-                          Blog Name
-                        </div>
-                        <div className="size-14 SFU-reg text-gray-600 d-flex ellipsis">
-                          Account Name
+                {userPost.map((post) => (
+                  <div className="row">
+                    <div className="col-3 d-flex justify-content-center img-contain">
+                      <img src={post.viewPostImages.length > 0 ? post.viewPostImages[0].imageSrc : defaultProject} alt="" className="image" />
+                    </div>
+                    <div className="col-7 d-flex flex-column justify-content-start">
+                      <div className="d-flex items-center">
+                        <img
+                          className="avata-s mr-4"
+                          src={post.avatar}
+                          alt="Instructor Cooper Bator"
+                        />
+                        <div className="left-30 d-flex flex-column justify-content-center">
+                          <div className="size-20 SFU-heavy d-flex ellipsis">
+                            {post.fullName}
+                          </div>
+                          <div className="size-14 SFU-reg text-gray-600 d-flex ellipsis">
+                            {formatDateString(post.createdDate)}
+                          </div>
                         </div>
                       </div>
+                      <p className="degree-description ellipsis">
+                        Post Title: {post.title}
+                      </p>
                     </div>
-                    <p className="degree-description ellipsis">
-                      Post Title: BigData Insights là một hệ thống phân tích dữ
-                      liệu lớn được thiết k ...BigData Insights là một hệ thống
-                      phân tích dữ liệu lớn được thiết k ...BigData Insights là
-                      một hệ thống phân tích dữ liệu lớn được thiết k ...BigData
-                      Insights là một hệ thống phân tích dữ liệu lớn được thiết
-                      k ...
-                    </p>
-                  </div>
-                  <div className="col-2 d-flex justify-content-center align-items-center">
-                    <button className="btn degree-detail">View Detail</button>
-                  </div>
-                </div>
-                {/* end Post 1*/}
-
-                {/* start Post 2*/}
-                <div className="row">
-                  <div className="col-3 d-flex justify-content-center img-contain">
-                    <img src={project1} alt="" className="image" />
-                  </div>
-                  <div className="col-7 d-flex flex-column justify-content-start">
-                    <div className="d-flex items-center">
-                      <img
-                        className="avata-s mr-4"
-                        src={avatar}
-                        alt="Instructor Cooper Bator"
-                      />
-                      <div className="left-30 d-flex flex-column justify-content-center">
-                        <div className="size-20 SFU-heavy d-flex ellipsis">
-                          Blog Name
-                        </div>
-                        <div className="size-14 SFU-reg text-gray-600 d-flex ellipsis">
-                          Business Name
-                        </div>
-                      </div>
+                    <div className="col-2 d-flex justify-content-center align-items-center">
+                      <button className="btn degree-detail">View Detail</button>
                     </div>
-                    <p className="degree-description ellipsis">
-                      Post Title: BigData Insights là một hệ thống phân tích dữ
-                      liệu lớn được thiết k ...BigData Insights là một hệ thống
-                      phân tích dữ liệu lớn được thiết k ...BigData Insights là
-                      một hệ thống phân tích dữ liệu lớn được thiết k ...BigData
-                      Insights là một hệ thống phân tích dữ liệu lớn được thiết
-                      k ...
-                    </p>
                   </div>
-                  <div className="col-2 d-flex justify-content-center align-items-center">
-                    <button className="btn degree-detail">View Detail</button>
-                  </div>
-                </div>
-                {/* end Post 2*/}
-
-                {/* start Post */}
-                <div className="row">
-                  <div className="col-3 d-flex justify-content-center img-contain">
-                    <img src={project1} alt="" className="image" />
-                  </div>
-                  <div className="col-7 d-flex flex-column justify-content-start">
-                    <div className="d-flex items-center">
-                      <img
-                        className="avata-s mr-4"
-                        src={avatar}
-                        alt="Instructor Cooper Bator"
-                      />
-                      <div className="left-30 d-flex flex-column justify-content-center">
-                        <div className="size-20 SFU-heavy d-flex ellipsis">
-                          Blog Name
-                        </div>
-                        <div className="size-14 SFU-reg text-gray-600 d-flex ellipsis">
-                          Business Name
-                        </div>
-                      </div>
-                    </div>
-                    <p className="degree-description ellipsis">
-                      Post Title: BigData Insights là một hệ thống phân tích dữ
-                      liệu lớn được thiết k ...BigData Insights là một hệ thống
-                      phân tích dữ liệu lớn được thiết k ...BigData Insights là
-                      một hệ thống phân tích dữ liệu lớn được thiết k ...BigData
-                      Insights là một hệ thống phân tích dữ liệu lớn được thiết
-                      k ...
-                    </p>
-                  </div>
-                  <div className="col-2 d-flex justify-content-center align-items-center">
-                    <button className="btn degree-detail">View Detail</button>
-                  </div>
-                </div>
-                {/* end Post */}
+                ))}
               </div>}
               {/* Posttab of business profile*/}
 
               {user.role === 'Admin' && tab === 'blog' && <div className="blog">
                 {/* start Post */}
-                <div className="row">
-                  <div className="col-3 d-flex justify-content-center img-contain">
-                    <img src={project1} alt="" className="image" />
-                  </div>
-                  <div className="col-7 d-flex flex-column justify-content-start">
-                    <div className="d-flex items-center">
-                      <img
-                        className="avata-s mr-4"
-                        src={avatar}
-                        alt="Instructor Cooper Bator"
-                      />
-                      <div className="left-30 d-flex flex-column justify-content-center">
-                        <div className="size-20 SFU-heavy d-flex ellipsis">
-                          Post Name
-                        </div>
-                        <div className="size-14 SFU-reg text-gray-600 d-flex ellipsis">
-                          Business Name
+                {userBlog.map((blog) => (
+                  <div className="row" key={blog.idBlog}>
+                    <div className="col-3 d-flex justify-content-center img-contain">
+                      <img src={blog.viewBlogImages.length > 0 ? blog.viewBlogImages[0].imageSrc : defaultProject} alt="" className="image" />
+                    </div>
+                    <div className="col-7 d-flex flex-column justify-content-start">
+                      <div className="d-flex items-center">
+                        <img
+                          className="avata-s mr-4"
+                          src={blog.avatar}
+                          alt="Instructor Cooper Bator"
+                        />
+                        <div className="left-30 d-flex flex-column justify-content-center">
+                          <div className="size-20 SFU-heavy d-flex ellipsis">
+                            {blog.fullName}
+                          </div>
+                          <div className="size-14 SFU-reg text-gray-600 d-flex ellipsis">
+                            {formatDateString(blog.createdDate)}
+                          </div>
                         </div>
                       </div>
+                      <p className="degree-description ellipsis">
+                        Post Title:{blog.title}
+                      </p>
                     </div>
-                    <p className="degree-description ellipsis">
-                      Post Title: BigData Insights là một hệ thống phân tích dữ
-                      liệu lớn được thiết k ...BigData Insights là một hệ thống
-                      phân tích dữ liệu lớn được thiết k ...BigData Insights là
-                      một hệ thống phân tích dữ liệu lớn được thiết k ...BigData
-                      Insights là một hệ thống phân tích dữ liệu lớn được thiết
-                      k ...
-                    </p>
-                  </div>
-                  <div className="col-2 d-flex justify-content-center align-items-center">
-                    <button className="btn degree-detail">View Detail</button>
-                  </div>
-                </div>
-                {/* end Post 1*/}
-
-                {/* start Post 2*/}
-                <div className="row">
-                  <div className="col-3 d-flex justify-content-center img-contain">
-                    <img src={project1} alt="" className="image" />
-                  </div>
-                  <div className="col-7 d-flex flex-column justify-content-start">
-                    <div className="d-flex items-center">
-                      <img
-                        className="avata-s mr-4"
-                        src={avatar}
-                        alt="Instructor Cooper Bator"
-                      />
-                      <div className="left-30 d-flex flex-column justify-content-center">
-                        <div className="size-20 SFU-heavy d-flex ellipsis">
-                          Post Name
-                        </div>
-                        <div className="size-14 SFU-reg text-gray-600 d-flex ellipsis">
-                          Business Name
-                        </div>
-                      </div>
+                    <div className="col-2 d-flex justify-content-center align-items-center">
+                      <button className="btn degree-detail">View Detail</button>
                     </div>
-                    <p className="degree-description ellipsis">
-                      Post Title: BigData Insights là một hệ thống phân tích dữ
-                      liệu lớn được thiết k ...BigData Insights là một hệ thống
-                      phân tích dữ liệu lớn được thiết k ...BigData Insights là
-                      một hệ thống phân tích dữ liệu lớn được thiết k ...BigData
-                      Insights là một hệ thống phân tích dữ liệu lớn được thiết
-                      k ...
-                    </p>
                   </div>
-                  <div className="col-2 d-flex justify-content-center align-items-center">
-                    <button className="btn degree-detail">View Detail</button>
-                  </div>
-                </div>
-                {/* end Post 2*/}
-
-                {/* start Post */}
-                <div className="row">
-                  <div className="col-3 d-flex justify-content-center img-contain">
-                    <img src={project1} alt="" className="image" />
-                  </div>
-                  <div className="col-7 d-flex flex-column justify-content-start">
-                    <div className="d-flex items-center">
-                      <img
-                        className="avata-s mr-4"
-                        src={avatar}
-                        alt="Instructor Cooper Bator"
-                      />
-                      <div className="left-30 d-flex flex-column justify-content-center">
-                        <div className="size-20 SFU-heavy d-flex ellipsis">
-                          Post Name
-                        </div>
-                        <div className="size-14 SFU-reg text-gray-600 d-flex ellipsis">
-                          Business Name
-                        </div>
-                      </div>
-                    </div>
-                    <p className="degree-description ellipsis">
-                      Post Title: BigData Insights là một hệ thống phân tích dữ
-                      liệu lớn được thiết k ...BigData Insights là một hệ thống
-                      phân tích dữ liệu lớn được thiết k ...BigData Insights là
-                      một hệ thống phân tích dữ liệu lớn được thiết k ...BigData
-                      Insights là một hệ thống phân tích dữ liệu lớn được thiết
-                      k ...
-                    </p>
-                  </div>
-                  <div className="col-2 d-flex justify-content-center align-items-center">
-                    <button className="btn degree-detail">View Detail</button>
-                  </div>
-                </div>
-                {/* end Post */}
+                ))}
               </div>}
 
               {user.role !== 'Admin' && tab === 'project' && <div className="project">
                 <div class="row" id="all-projects">
-                  <div class="col-md-6" id="project-items-1">
-                    <div class="card">
-                      <div class="card-body">
-                        <div class="d-flex mb-3">
-                          <div class="flex-grow-1 align-items-start">
-                            <div>
-                              <h6 class="mb-0 text-muted">
-                                <i class="mdi mdi-circle-medium text-danger fs-3 align-middle"></i>
-                                <span class="team-date">21 Jun, 2021</span>
-                              </h6>
+                  {userProject.map((project) => (
+                    <div class="col-md-6" id="project-items-1">
+                      <div class="card">
+                        <div class="card-body">
+                          <div class="d-flex mb-3">
+                            <div class="flex-grow-1 align-items-start">
+                              <div>
+                                <h6 class="mb-0 text-muted">
+                                  <i class="mdi mdi-circle-medium text-danger fs-3 align-middle"></i>
+                                  <span class="team-date">{formatDateString(project.createdDate)}</span>
+                                </h6>
+                              </div>
                             </div>
                           </div>
-                        </div>
 
-                        <div class="mb-4">
-                          <h5 class="mb-1 font-size-17 team-title ellipsis">
-                            Marketing
-                          </h5>
-                          <p class="text-muted mb-0 team-description ellipsis">
-                            Every Marketing Plan Needs
-                          </p>
-                        </div>
-                        <div class="d-flex">
-                          <div class="avatar-group float-start flex-grow-1 task-assigne">
-                            {/* Clone from */}
-                            <div class="avatar-group-item">
-                              <img
-                                src="https://bootdey.com/img/Content/avatar/avatar1.png"
-                                alt=""
-                                class="rounded-circle avatar-sm"
-                              />
-                            </div>
-                            {/* to THis */}
-                            <div class="avatar-group-item">
-                              <img
-                                src="https://bootdey.com/img/Content/avatar/avatar1.png"
-                                alt=""
-                                class="rounded-circle avatar-sm"
-                              />
-                            </div>
-                            <div class="avatar-group-item">
-                              <img
-                                src="https://bootdey.com/img/Content/avatar/avatar1.png"
-                                alt=""
-                                class="rounded-circle avatar-sm"
-                              />
-                            </div>
+                          <div class="mb-4">
+                            <h5 class="mb-1 font-size-17 team-title ellipsis">
+                              {project.name}
+                            </h5>
+                            <p class="text-muted mb-0 team-description ellipsis">
+                              {project.description}
+                            </p>
                           </div>
-                          <div class="align-self-end">
-                            <span class="badge badge-soft-danger p-2 team-status">
-                              Pending
-                            </span>
+                          <div class="d-flex">
+                            <div class="avatar-group float-start flex-grow-1 task-assigne">
+                              {/* Clone from */}
+                              <div class="avatar-group-item">
+                                <img
+                                  src="https://bootdey.com/img/Content/avatar/avatar1.png"
+                                  alt=""
+                                  class="rounded-circle avatar-sm"
+                                />
+                              </div>
+                              {/* to THis */}
+                              <div class="avatar-group-item">
+                                <img
+                                  src="https://bootdey.com/img/Content/avatar/avatar1.png"
+                                  alt=""
+                                  class="rounded-circle avatar-sm"
+                                />
+                              </div>
+                              <div class="avatar-group-item">
+                                <img
+                                  src="https://bootdey.com/img/Content/avatar/avatar1.png"
+                                  alt=""
+                                  class="rounded-circle avatar-sm"
+                                />
+                              </div>
+                            </div>
+                            <div class="align-self-end">
+                              <span class="badge badge-soft-danger p-2 team-status">
+                                {projectStatus(project.process)}
+                              </span>
+                            </div>
                           </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-
-                  <div class="col-md-6" id="project-items-2">
-                    <div class="card">
-                      <div class="card-body">
-                        <div class="d-flex mb-3">
-                          <div class="flex-grow-1 align-items-start">
-                            <div>
-                              <h6 class="mb-0 text-muted">
-                                <i class="mdi mdi-circle-medium text-success fs-3 align-middle"></i>
-                                <span class="team-date">13 Aug, 2021</span>
-                              </h6>
-                            </div>
-                          </div>
-                        </div>
-
-                        <div class="mb-4">
-                          <h5 class="mb-1 font-size-17 team-title ellipsis">
-                            Website Design
-                          </h5>
-                          <p class="text-muted mb-0 team-description ellipsis">
-                            Creating the design and layout of a website.
-                          </p>
-                        </div>
-                        <div class="d-flex">
-                          <div class="avatar-group float-start flex-grow-1 task-assigne">
-                            <div class="avatar-group-item">
-                              <img
-                                src="https://bootdey.com/img/Content/avatar/avatar1.png"
-                                alt=""
-                                class="rounded-circle avatar-sm"
-                              />
-                            </div>
-                            <div class="avatar-group-item">
-                              <img
-                                src="https://bootdey.com/img/Content/avatar/avatar1.png"
-                                alt=""
-                                class="rounded-circle avatar-sm"
-                              />
-                            </div>
-                          </div>
-                          <div class="align-self-end">
-                            <span class="badge badge-soft-success p-2 team-status">
-                              Completed
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="col-md-6" id="project-items-3">
-                    <div class="card">
-                      <div class="card-body">
-                        <div class="d-flex mb-3">
-                          <div class="flex-grow-1 align-items-start">
-                            <div>
-                              <h6 class="mb-0 text-muted">
-                                <i class="mdi mdi-circle-medium text-warning fs-3 align-middle"></i>
-                                <span class="team-date">08 Sep, 2021</span>
-                              </h6>
-                            </div>
-                          </div>
-                        </div>
-
-                        <div class="mb-4">
-                          <h5 class="mb-1 font-size-17 team-title">
-                            UI / UX Design
-                          </h5>
-                          <p class="text-muted mb-0 team-description">
-                            Plan and onduct user research and analysis
-                          </p>
-                        </div>
-                        <div class="d-flex">
-                          <div class="avatar-group float-start flex-grow-1 task-assigne">
-                            <div class="avatar-group-item">
-                              <img
-                                src="https://bootdey.com/img/Content/avatar/avatar1.png"
-                                alt=""
-                                class="rounded-circle avatar-sm"
-                              />
-                            </div>
-                            <div class="avatar-group-item">
-                              <img
-                                src="https://bootdey.com/img/Content/avatar/avatar1.png"
-                                alt=""
-                                class="rounded-circle avatar-sm"
-                              />
-                            </div>
-                            <div class="avatar-group-item">
-                              <img
-                                src="https://bootdey.com/img/Content/avatar/avatar1.png"
-                                alt=""
-                                class="rounded-circle avatar-sm"
-                              />
-                            </div>
-                          </div>
-                          <div class="align-self-end">
-                            <span class="badge badge-soft-warning p-2 team-status">
-                              Progress
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                  ))}
                 </div>
               </div>}
               {/* PrijectTab of business profile */}
