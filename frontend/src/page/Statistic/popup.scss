@@ -1,0 +1,11 @@
+.popup-body {
+    .start::before {
+        content: "Start-Date";
+        padding-left: 10px;
+    }
+
+    .end::before {
+        content: "End-Date";
+        padding-left: 10px;
+    }
+}
