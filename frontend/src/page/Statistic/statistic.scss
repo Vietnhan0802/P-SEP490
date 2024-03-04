@@ -1,0 +1,44 @@
+// #sta-page div {
+//     gap: 10px;
+//     min-height: 20px;
+//     min-width: 20px;
+// }
+
+.auto-scale {
+    height: 50%;
+}
+
+
+#sta-page {
+    border-radius: 8px;
+
+    .card-section {
+        border-radius: 8px;
+        background-color: white;
+
+    }
+
+
+    .card {
+        border-radius: 8px;
+        background-color: white;
+        padding: 12px;
+        border: 2px solid var(--m-4, #a4aab0);
+        margin: 0px 5px 5px 5px;
+
+    }
+
+    .content {
+        border-bottom: solid 2px rgb(112, 112, 112, 0.4);
+    }
+
+    .action {
+        padding-top: 10px;
+        padding-right: 13px;
+
+        button {
+            background-color: white;
+        }
+    }
+
+}
