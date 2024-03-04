@@ -60,13 +60,13 @@ function Chat() {
   return (
 
       <Row className="m-3"  style={{ height: "calc(100vh - 97px)",paddingBottom:"16px" }}>
-        <Col md={2} className="bg-white p-3 h-100">
+        <Col md={2} className="bg-custom bg-white p-3 h-100">
           <div id="chat">
             <h1>Chat</h1>
             <div className="chat-search ">
               <div className="d-flex align-items-center">
-                <IoSearchSharp className="me-2" />
-                <input type="text" />
+                <IoSearchSharp className="me-2 icon-search" />
+                <input className="bg-search" type="text" placeholder="Search"/>
               </div>
             </div>
             <div className="chat-list">
@@ -136,7 +136,7 @@ function Chat() {
             </div>
             <div className="chat-box-input position-absolute bottom-0 w-100">
               <div className="w-100 d-flex justify-content-center icon-chat">
-                <div className="w-auto fw-bold fs-3">
+                <div className="w-auto fw-bold fs-3 icon-item">
                   <FaRegFolder className="mx-3" />
                   <FaRegImage className="mx-3" />
                   <FaLink className="mx-3"/>

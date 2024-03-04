@@ -53,7 +53,7 @@ function DashBoard() {
                 </div>
                 <hr style={{ margin: "0.5rem 0" }} />
                 <p
-                  className="d-flex justify-content-end mt-2 detail"
+                  className="d-flex justify-content-end mt-2 detail" style={{color: "#175CD3"}}
                   onClick={() => handleTabClick("post")}
                 >
                   {
@@ -74,7 +74,7 @@ function DashBoard() {
                 </div>
                 <hr style={{ margin: "0.5rem 0" }} />
                 <p
-                  className="d-flex justify-content-end mt-2 detail"
+                  className="d-flex justify-content-end mt-2 detail" style={{color: "#175CD3"}}
                   onClick={() => handleTabClick("access")}
                 >
                                    {
@@ -96,7 +96,7 @@ function DashBoard() {
                 </div>
                 <hr style={{ margin: "0.5rem 0" }} />
                 <p
-                  className="d-flex justify-content-end mt-2 detail"
+                  className="d-flex justify-content-end mt-2 detail" style={{color: "#175CD3"}}
                   onClick={() => handleTabClick("blog")}
                 >
                                    {
@@ -118,7 +118,7 @@ function DashBoard() {
                 </div>
                 <hr style={{ margin: "0.5rem 0" }} />
                 <p
-                  className="d-flex justify-content-end mt-2 detail"
+                  className="d-flex justify-content-end mt-2 detail" style={{color: "#175CD3"}}
                   onClick={() => handleTabClick("report")}
                 >
                                    {
@@ -160,21 +160,20 @@ function DashBoard() {
 
                     // Colors
                     pathColor: `#2F45ADCC`,
-                    textColor: "#000",
+                    textColor: "var(--header_search_text)",
                     trailColor: "#BBC7F6",
                     backgroundColor: "#3e98c7",
                   })}
                 />
-                ;
               </div>
             </div>
 
             <p className="text-center my-2  ">Not processed yet</p>
             <div className="verification  d-flex justify-content-center">
-              <div className="mt-2 d-flex align-items-center justify-content-center detail"
+              <div className="mt-2 d-flex align-items-center justify-content-center detail" style={{color: "#175CD3"}}
               onClick={() => handleTabClick("verify")}
               >
-                <MdFullscreen className="me-2 fs-30" /> <p>View Detail</p>
+                <MdFullscreen className="me-2 fs-30"  /> <p>View Detail</p>
               </div>
             </div>
           </div>

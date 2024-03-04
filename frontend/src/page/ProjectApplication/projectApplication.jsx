@@ -111,7 +111,7 @@ function ProjectApplication() {
 
   const data = React.useMemo(() => getData(), []);
   return (
-    <div className="min-vh-100 bg-light text-dark border-8 py-2">
+    <div id="projectApplication" className="min-vh-100 bg-light text-dark border-8 py-2">
       <main className="container ">
         <div className="">
           <Table columns={columns} data={data} />

@@ -1,3 +1,8 @@
+.bg-custom {
+  border-radius: 9px;
+  background-color: var(--header_background) !important;
+  color: var(--header_search_text);
+}
 #chat {
   height: 100%;
   overflow-y: auto;
@@ -5,9 +10,17 @@
     outline: none;
   }
   .chat-search {
+    background-color: var(--header_background_search_box);
     border-radius: 8px;
-    border: 1px solid #d0d5dd;
+    //border: 1px solid #d0d5dd;
     padding: 8px 12px;
+  }
+  .icon-search {
+    color: var(--header_search_box);
+  }
+  .bg-search {
+    background-color: var(--header_background_search_box);
+    color: var(--header_search_text);
   }
   .chat-list {
     margin-top: 16px;
@@ -25,17 +38,21 @@
     border-radius: 50%;
   }
   .name {
-    color: var(--Gray-700, #344054);
+    //color: var(--Gray-700, #344054);
+    color: var(--Gray-700, var(--header_search_text));
     font-size: 18px;
     font-weight: 700;
   }
   .text {
-    color: var(--Gray-700, #344054);
+    //color: var(--Gray-700, #344054);
+    color: var(--Gray-700, var(--header_search_text));
     font-size: 16px;
     font-weight: 400;
   }
 }
 #chat-box {
+  border-radius: 9px;
+  background-color: var(--header_background) !important;
   input:focus {
     outline: none;
   }
@@ -46,12 +63,14 @@
     border-radius: 50%;
   }
   .name {
-    color: var(--Gray-700, #344054);
+    //color: var(--Gray-700, #344054);
+    color: var(--Gray-700, var(--header_search_text));
     font-size: 18px;
     font-weight: 700;
   }
   .text {
-    color: var(--Gray-700, #344054);
+    //color: var(--Gray-700, #344054);
+    color: var(--Gray-700, var(--header_search_text));
     font-size: 16px;
     font-weight: 400;
   }
@@ -60,27 +79,36 @@
   }
   .chat-box-body {
     .content {
-      border-radius: 0px 8px 8px 8px;
-      background: var(--Gray-100, #f2f4f7);
+      border-radius: 8px 8px 8px 8px;
+      //background: var(--Gray-100, #f2f4f7);
+      background: var(--Gray-100, var(--header_background_search_box));
+      color: var(--header_search_text);
       padding: 10px 14px;
     }
     .self-content {
-      border-radius: 8px 0px 8px 8px;
+      border-radius: 8px 8px 8px 8px;
+      //background: var(--blue-va-1, #2f45ad);
       background: var(--blue-va-1, #2f45ad);
+      color: #FFFFFF;
       padding: 10px 14px;
-      color: #fff;
     }
   }
   .cover {
+    background-color: var(--header_background_search_box);
     width: 100%;
-    border: 1px solid var(--Gray-300, #d0d5dd);
-    border-radius: 8px;
+    //border: 1px solid var(--Gray-300, #d0d5dd);
+    border-radius: 9px;
     padding: 16px;
     .input-chat {
+      background-color: var(--header_background_search_box);
+      color: var(--header_search_text);
       border-radius: 8px;
     }
   }
   .icon-chat{
     border-top: 1px solid var(--Gray-300, #d0d5dd);
+  }
+  .icon-item {
+    color: var(--header_search_text);
   }
 }

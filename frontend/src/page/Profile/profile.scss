@@ -1,11 +1,13 @@
 #sidebar-profile {
-  border-radius: 8px;
+  background-color: var(--header_background) !important;
+  color: var(--header_search_text);
+  border-radius: 9px;
 
   .edit-btn {
     padding: 10px 20px;
     background: var(--button-1, #20becb);
     border: 1px solid var(--button-1, #20becb);
-    border-radius: 8px;
+    border-radius: 9px;
     color: #fff;
     font-weight: medium;
   }
@@ -16,21 +18,26 @@
 }
 
 #profile {
+  background-color: var(--header_background) !important;
+  color: var(--header_search_text);
+  .bg-text  {
+    background-color: var(--header_background_search_box);
+  }
   .profile-feedback {
-    border-radius: 8px;
+    border-radius: 9px;
     padding: 16px;
 
     textarea:focus {
       border: 1px solid #20becb;
       padding: 10px;
-      border-radius: 8px;
+      border-radius: 9px;
       outline: none;
       background-color: gainsboro;
     }
   }
 
   background-color: #fff;
-  border-radius: 8px;
+  border-radius: 9px;
   padding: 16px;
 
   input:focus {

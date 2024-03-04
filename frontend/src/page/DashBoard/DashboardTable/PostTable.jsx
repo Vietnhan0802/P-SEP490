@@ -61,7 +61,7 @@ const rows = [
     "Description of the current content",
 
     3,
-    "Block"
+    "UnBlock"
   ),
   createData(
     4,
@@ -72,7 +72,7 @@ const rows = [
     "Description of the current content",
 
     3,
-    "Block"
+    "UnBlock"
   ),
   //   createData(5, "Gingerbread", 356, 16.0, 49, 3.9),
   //   createData(6, "Honeycomb", 408, 3.2, 87, 6.5),
@@ -251,14 +251,14 @@ export default function PostTable() {
       id="postTable"
       sx={{ width: "100%", paddingLeft: "0px", marginTop: "16px" }}
     >
-      <Paper sx={{ width: "100%", mb: 2 }} style={{ paddingTop: "10px" }}>
+      <Paper className="form-table" sx={{ width: "100%", mb: 2 }} style={{ paddingTop: "10px" }}>
         <div className="ms-2 search-box">
-          <IoSearchOutline className="search-icon me-1" style={{fontSize:"30px"}} />
+          <IoSearchOutline className="search-icon me-1 fs-4" />
           <input type="text" name="" className="search" id="" />
         </div>
         <div className="line"></div>
         <TableContainer>
-          <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
+          <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle" className="form-table" >
             <EnhancedTableHead
               numSelected={selected.length}
               order={order}
@@ -323,7 +323,7 @@ export default function PostTable() {
                             row.report === 3 ? "active-block" : ""
                           }`}
                         >
-                          <GoDotFill className="me-1" />
+                          <GoDotFill className="me-1 dot" />
                           {row.status}
                         </div>
                       </div>
