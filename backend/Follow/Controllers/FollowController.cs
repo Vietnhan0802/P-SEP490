@@ -32,7 +32,7 @@ namespace Follow.Controllers
         }
 
         [HttpGet("GetNameUserCurrent/{idUser}")]
-        private async Task<string> GetNameUserCurrent(string idUser)
+        private async Task<ViewUser> GetNameUserCurrent(string idUser)
         {
             HttpResponseMessage response = await client.GetAsync($"{UserApiUrl}/GetNameUser/{idUser}");
             string strData = await response.Content.ReadAsStringAsync();
@@ -40,8 +40,9 @@ namespace Follow.Controllers
             {
                 PropertyNameCaseInsensitive = true,
             };
-            var user = JsonSerializer.Deserialize<string>(strData, option);
-            return user;
+            var user = JsonSerializer.Deserialize<ViewUser>(strData, option);
+
+            return user!;
         }
 
         [HttpGet("GetAllFollowings/{idOwner}")]
@@ -62,7 +63,9 @@ namespace Follow.Controllers
             }
             foreach (var following in followings)
             {
-                following.fullName = await GetNameUserCurrent(following.idAccount);
+                var infoUser = await GetNameUserCurrent(following.idAccount!);
+                following.fullName = infoUser.fullName;
+                following.avatar = infoUser.avatar;
             }
             return new Response(HttpStatusCode.OK, "Get all followings is success!", followings);            
         }
@@ -92,7 +95,9 @@ namespace Follow.Controllers
             }
             foreach (var follower in followers)
             {
-                follower.fullName = await GetNameUserCurrent(follower.idAccount);
+                var infoUser = await GetNameUserCurrent(follower.idAccount!);
+                follower.fullName = infoUser.fullName;
+                follower.avatar = infoUser.avatar;
             }
             return new Response(HttpStatusCode.OK, "Get followers is success!", followers);
         }
