@@ -262,11 +262,7 @@ export default function BlogTable() {
           )
         )
         );
-
         setUserRows(fetchedBlogRows);
-        console.log(res.data.result);
-
-        console.log(blogRows)
       })
       .catch((err) => { console.log(err) })
   }, []);

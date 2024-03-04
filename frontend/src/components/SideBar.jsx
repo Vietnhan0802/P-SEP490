@@ -15,7 +15,7 @@ import { IoLogoInstagram } from "react-icons/io5";
 import { FaLinkedin } from "react-icons/fa";
 import { MdOutlineSimCardDownload } from "react-icons/md";
 import { MdOutlineSpaceDashboard } from "react-icons/md";
-
+import { FaChartLine } from "react-icons/fa6";
 function SideBar({ activeItem, onItemClick }) {
   const sidebarItems = [
     { id: "post", icon: <GoPencil />, text: "Post", userRole: "all" },
@@ -54,6 +54,12 @@ function SideBar({ activeItem, onItemClick }) {
       id: "dashboard",
       icon: <MdOutlineSpaceDashboard />,
       text: "Dashboard",
+      userRole: "admin",
+    },
+    {
+      id: "statistic",
+      icon: <FaChartLine />,
+      text: "Statistic",
       userRole: "admin",
     },
     // Add other sidebar items similarly

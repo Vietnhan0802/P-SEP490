@@ -88,7 +88,6 @@ function Profile({ handleChangeImg }) {
         });
       })
   }, [userId])
-  useEffect(() => { }, [])
   // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   const handleUpdateUser = () => {
     setIsEdit(!isEdit);
@@ -174,12 +173,12 @@ function Profile({ handleChangeImg }) {
         <Col md={3}>
           <div id="sidebar-profile" className="bg-white p-5 position-relative ">
             <div className="text-center mb-3">
-              <div className="person-name fs-3 fw-bold">{user.FullName}</div>
-              <div className="account">{user.Username}</div>
+              <div className="person-name fs-3 fw-bold">{inputs.fullName}</div>
+              <div className="account">{inputs.userName}</div>
             </div>
             <div className="information position-relative d-flex flex-column justify-content-center">
               <img
-                src={value.imageSrc}
+                src={value.imageSrc === "https://localhost:7006/Images/" ? defaultImage : value.imageSrc}
                 alt=""
                 className="w-100 rounded avatar m-auto"
               />
