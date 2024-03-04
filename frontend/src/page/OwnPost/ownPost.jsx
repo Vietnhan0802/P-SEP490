@@ -35,7 +35,9 @@ function calculateTimeDifference(targetDate) {
   }
 }
 function OwnPost({ postId, onPostClick, activeItem, onItemClick }) {
-  const userId = JSON.parse(Cookies.get("userId"));
+  const sessionData = JSON.parse(sessionStorage.getItem('userSession')) || {};
+  const { userId } = sessionData;
+
   const [blogPopups, setBlogPopups] = useState({});
   const [postList, setPostList] = useState([])
   const [resetPage, setResetPage] = useState(false);

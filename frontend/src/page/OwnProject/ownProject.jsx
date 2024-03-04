@@ -9,8 +9,8 @@ import { useState } from "react";
 import { projectInstance } from "../../axios/axiosConfig";
 
 function OwnProject({ projetcId, onProjectClick, activeItem, onItemClick }) {
-  const role = JSON.parse(Cookies.get("role"));
-  const userId = JSON.parse(Cookies.get("userId"));
+  const sessionData = JSON.parse(sessionStorage.getItem('userSession')) || {};
+  const { role ,userId} = sessionData;
 
   const [value, setValue] = useState({
     name: '',
