@@ -54,6 +54,7 @@ function Blog({ blogId, onBlogClick, activeItem, onItemClick }) {
   const [data, setData] = useState([]);
   const sessionData = JSON.parse(sessionStorage.getItem('userSession')) || {};
   const { role, userId } = sessionData;
+  const [reset, setReset] = useState(true);
 
   //_________________________________________________________//
 
@@ -84,6 +85,7 @@ function Blog({ blogId, onBlogClick, activeItem, onItemClick }) {
       .then((res) => {
         console.log(res.data);
         notifySuccess("Create blog successfully!");
+        setReset(!reset);
       })
       .catch((err) => {
         console.log(err);
@@ -102,36 +104,36 @@ function Blog({ blogId, onBlogClick, activeItem, onItemClick }) {
       reader.readAsDataURL(file);
     });
   };
-    //Hanlde like or unlike the the blog
-    const handleLikeOrUnlikeBlog = (idBlog) => {
-      // Find the index of the blog item to update
-      const index = data.findIndex(item => item.id === idBlog);
-      if (index !== -1) {
-        // Toggle the like state and update the like count for the specific blog item
-        const newData = [...data]; // Copy the current state
-        const isLiked = !newData[index].isLike; // Toggle the current like state
-        newData[index].isLike = isLiked; // Update the like state
-        // Update the like count based on the new like state
-        newData[index].like = isLiked ? newData[index].like + 1 : newData[index].like - 1;
-    
-        setData(newData); // Update the state with the new array
-    
-        // Make the API call to update the like state in the backend
-        blogInstance.post(`LikeOrUnlikeBlog/${userId}/${idBlog}`)
-          .then(() => {
-            // If the API call is successful, you can optionally refresh the data from the server
-            // to ensure the UI is in sync with the backend state
-          })
-          .catch((error) => {
-            console.error(error);
-            // Revert the like state and count in case of an error
-            const revertData = [...data];
-            revertData[index].isLike = !isLiked; // Revert the like state
-            revertData[index].like = revertData[index].isLike ? revertData[index].like + 1 : revertData[index].like - 1;
-            setData(revertData);
-          });
-      }
-    };
+  //Hanlde like or unlike the the blog
+  const handleLikeOrUnlikeBlog = (idBlog) => {
+    // Find the index of the blog item to update
+    const index = data.findIndex(item => item.id === idBlog);
+    if (index !== -1) {
+      // Toggle the like state and update the like count for the specific blog item
+      const newData = [...data]; // Copy the current state
+      const isLiked = !newData[index].isLike; // Toggle the current like state
+      newData[index].isLike = isLiked; // Update the like state
+      // Update the like count based on the new like state
+      newData[index].like = isLiked ? newData[index].like + 1 : newData[index].like - 1;
+
+      setData(newData); // Update the state with the new array
+
+      // Make the API call to update the like state in the backend
+      blogInstance.post(`LikeOrUnlikeBlog/${userId}/${idBlog}`)
+        .then(() => {
+          // If the API call is successful, you can optionally refresh the data from the server
+          // to ensure the UI is in sync with the backend state
+        })
+        .catch((error) => {
+          console.error(error);
+          // Revert the like state and count in case of an error
+          const revertData = [...data];
+          revertData[index].isLike = !isLiked; // Revert the like state
+          revertData[index].like = revertData[index].isLike ? revertData[index].like + 1 : revertData[index].like - 1;
+          setData(revertData);
+        });
+    }
+  };
   // Handler function to update the state when the input changes
   const handleInputChange = (event) => {
     const { name, value, type } = event.target;
@@ -179,7 +181,7 @@ function Blog({ blogId, onBlogClick, activeItem, onItemClick }) {
         })
       })
       .catch((error) => { console.error(error) });
-  }, []);
+  }, [reset]);
   return (
     <div>
       <div id="blog">
