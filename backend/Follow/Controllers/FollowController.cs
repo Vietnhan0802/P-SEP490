@@ -95,7 +95,9 @@ namespace Follow.Controllers
             }
             foreach (var follower in followers)
             {
-                follower.fullName = await GetNameUserCurrent(follower.idAccount);
+                var infoUser = await GetNameUserCurrent(follower.idAccount!);
+                follower.fullName = infoUser.fullName;
+                follower.avatar = infoUser.avatar;
             }
             return new Response(HttpStatusCode.OK, "Get followers is success!", followers);
         }
