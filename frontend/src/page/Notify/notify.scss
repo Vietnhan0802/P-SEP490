@@ -1,5 +1,7 @@
 .notify-cover{
-    border-radius: 8px;
+    background-color: var(--header_background) !important;
+    color: var(--header_search_text);
+    border-radius: 9px;
     position: absolute;
     z-index: 999;
     border: 1px solid var(--Gray-300, #d0d5dd);
@@ -7,5 +9,6 @@
 }
 .chat-item.active{
     border-radius: 8px;
-    background: var(--blue-va-5, rgba(47, 69, 173, 0.20));
+    background: var(--header_background_search_box);
+    //background: var(--blue-va-5, rgba(47, 69, 173, 0.20));
 }

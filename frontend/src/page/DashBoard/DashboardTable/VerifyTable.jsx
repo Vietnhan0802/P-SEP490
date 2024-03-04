@@ -231,9 +231,9 @@ export default function VerifyTable() {
             id="verifyTable"
             sx={{ width: "100%", paddingLeft: "0px", marginTop: "16px" }}
         >
-            <Paper sx={{ width: "100%", mb: 2 }} style={{ paddingTop: "10px" }}>
+            <Paper sx={{ width: "100%", mb: 2 }} style={{ paddingTop: "10px" }} className="form-table">
                 <div className="ms-2 search-box">
-                    <IoSearchOutline className="search-icon me-1" />
+                    <IoSearchOutline className="search-icon me-1 fs-4" />
                     <input type="text" name="" className="search" id="" />
                 </div>
                 <div className="line"></div>

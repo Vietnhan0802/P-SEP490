@@ -93,7 +93,7 @@ function Notify() {
       <div className="mt-3">
         {chatList.map((item) => (
           <div
-            className={`d-flex align-items-center justify-content-between py-3 border-bottom chat-item ${
+            className={`d-flex align-items-center justify-content-between py-3 chat-item ${
               item.status === "unseen" ? "active" : ""
             }`}
           >

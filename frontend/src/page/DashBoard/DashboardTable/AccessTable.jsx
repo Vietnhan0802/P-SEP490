@@ -198,7 +198,7 @@ export default function AccessTable() {
       id="accessTable"
       sx={{ width: "100%", paddingLeft: "0px", marginTop: "16px" }}
     >
-      <Paper sx={{ width: "100%", mb: 2 }} style={{ paddingTop: "10px" }}>
+      <Paper sx={{ width: "100%", mb: 2 }} style={{ paddingTop: "10px" }} className="form-table">
         <div className="ms-2 search-box">
           <IoSearchOutline
             className="search-icon me-1 fs-4"
@@ -207,7 +207,7 @@ export default function AccessTable() {
         </div>
         <div className="line"></div>
         <TableContainer>
-          <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
+          <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle" >
             <EnhancedTableHead
               numSelected={selected.length}
               order={order}
