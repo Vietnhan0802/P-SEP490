@@ -362,12 +362,22 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 
-*.jpg
-*.jpeg
-*.png
-*.gif
-*.bmp
-*.tiff
-*.tif
-*.webp
-*.svg
+backend/Blog/Images/*.jpg
+backend/Blog/Images/*.jpeg
+backend/Blog/Images/*.png
+backend/Blog/Images/*.gif
+backend/Blog/Images/*.bmp
+backend/Blog/Images/*.tiff
+backend/Blog/Images/*.tif
+backend/Blog/Images/*.webp
+backend/Blog/Images/*.svg
+
+/backend/User/Images/*.jpg
+/backend/User/Images/*.jpeg
+/backend/User/Images/*.png
+/backend/User/Images/*.gif
+/backend/User/Images/*.bmp
+/backend/User/Images/*.tiff
+/backend/User/Images/*.tif
+/backend/User/Images/*.webp
+/backend/User/Images/*.svg
