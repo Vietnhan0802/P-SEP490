@@ -75,6 +75,21 @@ function ProjectApplication() {
       {
         Header: "Name",
         accessor: "name",
+        Cell: ({ row }) => (
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <img
+              src={row.original.avatar}
+              alt="Avatar"
+              style={{
+                width: "30px",
+                height: "30px",
+                borderRadius: "50%",
+                marginRight: "10px",
+              }}
+            />
+            {row.original.name}
+          </div>
+        ),
       },
       {
         Header: "Title",
@@ -96,12 +111,9 @@ function ProjectApplication() {
 
   const data = React.useMemo(() => getData(), []);
   return (
-    <div className="min-vh-100 bg-light text-dark">
-      <main className="container py-4">
+    <div className="min-vh-100 bg-light text-dark border-8 py-2">
+      <main className="container ">
         <div className="">
-          <h1 className="h2 fw-semibold">React Table + Bootstrap 5 = ❤</h1>
-        </div>
-        <div className="mt-4">
           <Table columns={columns} data={data} />
         </div>
       </main>

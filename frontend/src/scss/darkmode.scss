@@ -3,10 +3,11 @@
     --header_mid_icon: #606266;
     --header_background_search_box: #D8DADF;
     --header_search_box: #65676B;
+    --header_search_text: #050505;
     --body_background: #D8DADF;
     --sidebar_background: #FFFFFF;
-    --sidebar_icon: #606266;
     --sidebar_item: #FFFFFF;
+    --body_mid_background: #FFFFFF;
 }
 
 [data-theme="dark"] {
@@ -14,9 +15,10 @@
     --header_mid_icon: #B8BBBF;
     --header_background_search_box: #3A3B3C;
     --header_search_box: #B3B0B8;
+    --header_search_text: #E6E4EB;
     --body_background: #18191A;
     --sidebar_background: #242526;
-    --sidebar_icon: #B8BBBF;
+    --body_mid_background: #242526;
 }
 
 .dark_mode {
