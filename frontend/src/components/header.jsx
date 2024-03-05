@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../scss/header.scss";
-import { Row, Col, Image } from "react-bootstrap";
+import { Row, Col, Image, Popover } from "react-bootstrap";
 import { CiSearch } from "react-icons/ci";
 import { LuHome } from "react-icons/lu";
 import logoImg from "../images/common/logo.png";
@@ -12,11 +12,12 @@ import defaultImage from "../images/common/default.png"
 import Popup from "./Popup/Popup";
 import Notify from "../page/Notify/notify";
 import DarkMode from "./darkmode";
+import Translate from "./translate";
 import { userInstance } from "../axios/axiosConfig";
 import { useNavigate } from "react-router-dom";
 export default function Header({ activeComponent, onItemClick, changeImage }) {
   const sessionData = JSON.parse(sessionStorage.getItem('userSession')) || {};
-  const { role, userId, userName, userEmail } = sessionData;
+  const { role, currentUserId, userName, userEmail } = sessionData;
 
   const navigate = useNavigate();
   const [activeItem, setActiveItem] = useState("home");
@@ -37,7 +38,7 @@ export default function Header({ activeComponent, onItemClick, changeImage }) {
       })
   }, [])
   useEffect(() => {
-    userInstance.get(`/GetUserById/${userId}`)
+    userInstance.get(`/GetUserById/${currentUserId}`)
       .then((res) => {
         if (res?.data?.result.imageSrc === 'https://localhost:7006/Images/') {
           setValue(defaultImage)
@@ -49,6 +50,7 @@ export default function Header({ activeComponent, onItemClick, changeImage }) {
         console.log(err.response.data);
       })
   }, [changeImage]);
+  console.log(currentUserId)
   const handlePopup = () => {
     setShowPopup(!showPopup);
     setActivePopup(!activePopup);
@@ -124,8 +126,9 @@ export default function Header({ activeComponent, onItemClick, changeImage }) {
         </div>
       </Col>
       <Col className="d-flex justify-content-end align-items-center" sm={4}>
+        <Translate />
         <DarkMode />
-        <div className=" d-flex align-items-center" onClick={() => handleAvatarClick(userId)}>
+        <div className=" d-flex align-items-center" onClick={() => handleAvatarClick(currentUserId)}>
           <img src={value} alt="" className="avatar" />
           <div className="ms-2 t-black">
             <p>{userName}</p>
