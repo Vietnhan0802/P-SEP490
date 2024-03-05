@@ -139,6 +139,10 @@ namespace Follow.Controllers
         public async Task<ActionResult<FollowingView>> CheckFollower(string idOwner, string idAccount)
         {
             var follow = await _context.Followers.FirstOrDefaultAsync(x => x.idOwner == idOwner && x.idAccount == idAccount);
+            if (follow == null)
+            {
+                return NotFound("Follow or unfollow is success!");
+            }
             return Ok(follow);
         }
     }
