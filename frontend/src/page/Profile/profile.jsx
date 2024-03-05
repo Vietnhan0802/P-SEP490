@@ -63,11 +63,7 @@ function Profile({ handleChangeImg }) {
   const [userBlog, setUserBlog] = useState([]);
   
   useEffect(() => {
-    userInstance.get(`GetUserById/${currentUserId}`, {
-      params: {
-        idAccount: userId
-      }
-    })
+    userInstance.get(`GetUserById/${currentUserId}?idAccount=${userId}`)
       .then((res) => {
         console.log(res?.data?.result)
         setUser(res?.data?.result);

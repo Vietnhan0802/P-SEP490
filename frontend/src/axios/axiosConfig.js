@@ -9,7 +9,7 @@ const createAxiosInstance = (baseURL) => {
   // Thêm interceptor cho request
   instance.interceptors.request.use(
     (config) => {
-      console.log(`Sending request to ${config.url}`);
+      // console.log(`Sending request to ${config.url}`);
       // Có thể thêm logic xử lý request ở đây
       return config;
     },
@@ -21,7 +21,7 @@ const createAxiosInstance = (baseURL) => {
   // Thêm interceptor cho response
   instance.interceptors.response.use(
     (response) => {
-      console.log(`Received response from ${response.config.url}`);
+      // console.log(`Received response from ${response.config.url}`);
       return response;
     },
     (error) => {
