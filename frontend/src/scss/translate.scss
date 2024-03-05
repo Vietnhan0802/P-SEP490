@@ -1,0 +1,18 @@
+.content {
+    display: flex;
+    margin-top: 4px;
+    margin-right: 10px;
+}
+.language-vi {
+    margin-right: 10px;
+    cursor: pointer;
+    &.active {
+        color: red;
+    }
+}
+.language-en {
+    cursor: pointer;
+    &.active {
+        color: blue;
+    }
+}
