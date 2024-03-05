@@ -13,6 +13,17 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowReactFrontend",
+        builder =>
+        {
+            builder.WithOrigins("http://localhost:3000/")
+                   .AllowAnyMethod()
+                   .AllowAnyHeader();
+        });
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -26,10 +37,12 @@ app.UseHttpsRedirection();
 
 app.UseRouting();
 
-app.UseCors(options =>
+app.UseCors("AllowReactFrontend");
+
+/*app.UseCors(options =>
 {
     options.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin();
-});
+});*/
 
 app.UseAuthorization();
 
