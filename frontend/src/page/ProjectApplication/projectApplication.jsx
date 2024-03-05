@@ -66,7 +66,7 @@ const getData = () => {
         "https://images.unsplash.com/photo-1566492031773-4f4e44671857?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
     },
   ];
-  return [...data,];
+  return [...data, ...data, ...data, ...data];
 };
 
 function ProjectApplication() {

@@ -16,11 +16,9 @@ import { FaLinkedin } from "react-icons/fa";
 import { MdOutlineSimCardDownload } from "react-icons/md";
 import { MdOutlineSpaceDashboard } from "react-icons/md";
 import { FaChartLine } from "react-icons/fa6";
-import { useTranslation } from 'react-i18next';
 function SideBar({ activeItem, onItemClick }) {
-  const {t} = useTranslation()
   const sidebarItems = [
-    { id: "post", icon: <GoPencil />, text: t('post'), userRole: "all" },
+    { id: "post", icon: <GoPencil />, text: "Post", userRole: "all" },
     { id: "blog", icon: <FiBookOpen />, text: "Blog", userRole: "all" },
     {
       id: "own_post",

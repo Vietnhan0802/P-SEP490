@@ -30,7 +30,7 @@ export default function SignIn() {
         notifySuccess('Sign in successfully!');
         const decode = jwtDecode(response?.data?.result.token);
         sessionStorage.setItem('userSession', JSON.stringify({
-          currentUserId: decode.Id,
+          userId: decode.Id,
           userName: decode.FullName,
           userEmail: decode.Email,
           token: response?.data?.result.token,
