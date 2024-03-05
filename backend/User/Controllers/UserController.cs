@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BusinessObjects.Entities.User;
 using BusinessObjects.Enums.User;
+using BusinessObjects.ViewModels.Follow;
 using BusinessObjects.ViewModels.User;
 using Commons.Helpers;
 using Microsoft.AspNetCore.Authentication;
@@ -11,8 +12,10 @@ using Microsoft.IdentityModel.Tokens;
 using System.Data;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net;
+using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Text;
+using System.Text.Json;
 using User.Services;
 
 namespace User.Controllers
@@ -28,6 +31,9 @@ namespace User.Controllers
         private readonly IMapper _mapper;
         private readonly IConfiguration _configuration;
         private readonly SaveImageService _saveImageService;
+        private readonly HttpClient client;
+
+        public string FollowApiUrl { get; }
 
         public UserController(UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager, SignInManager<AppUser> signInManager, IEmailService emailService, IMapper mapper, IConfiguration configuration, SaveImageService saveImageService)
         {
@@ -38,7 +44,55 @@ namespace User.Controllers
             _mapper = mapper;
             _configuration = configuration;
             _saveImageService = saveImageService;
+            client = new HttpClient();
+            var contentType = new MediaTypeWithQualityHeaderValue("application/json");
+            client.DefaultRequestHeaders.Accept.Add(contentType);
+            FollowApiUrl = "https://localhost:7002/api/Follow";
         }
+
+        [HttpGet("GetTotalFollowings/{idOwner}")]
+        private async Task<int> GetTotalFollowings(string idOwner)
+        {
+            HttpResponseMessage response = await client.GetAsync($"{FollowApiUrl}/GetTotalFollowings/{idOwner}");
+            string strData = await response.Content.ReadAsStringAsync();
+            var option = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true,
+            };
+            var followings = JsonSerializer.Deserialize<int>(strData, option);
+
+            return followings!;
+        }
+
+        [HttpGet("GetTotalFollowers/{idOwner}")]
+        private async Task<int> GetTotalFollowers(string idOwner)
+        {
+            HttpResponseMessage response = await client.GetAsync($"{FollowApiUrl}/GetTotalFollowers/{idOwner}");
+            string strData = await response.Content.ReadAsStringAsync();
+            var option = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true,
+            };
+            var followers = JsonSerializer.Deserialize<int>(strData, option);
+
+            return followers!;
+        }
+
+        [HttpGet("GetFollow/{idOwner}/{idAccount}")]
+        private async Task<FollowingView> GetFollow(string idOwner, string idAccount)
+        {
+            HttpResponseMessage response = await client.GetAsync($"{FollowApiUrl}/GetFollow/{idOwner}/{idAccount}");
+            string strData = await response.Content.ReadAsStringAsync();
+            var option = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true,
+            };
+            var follow = JsonSerializer.Deserialize<FollowingView>(strData, option);
+
+            return follow!;
+        }
+
+        /*------------------------------------------------------------User------------------------------------------------------------*/
 
         [HttpGet("GetTotalUsersRegister/{startDate}/{endDate}")]
         public async Task<Response> GetTotalUsersRegister(DateTime startDate, DateTime endDate)
@@ -102,7 +156,7 @@ namespace User.Controllers
         }
 
         [HttpGet("GetUserById/{idUser}")]
-        public async Task<Response> GetUserById(string idUser)
+        public async Task<Response> GetUserById(string idUser, InfoUserId infoUserId)
         {
             var user = await _userManager.FindByIdAsync(idUser);
             if (user == null)
@@ -110,6 +164,13 @@ namespace User.Controllers
                 return new Response(HttpStatusCode.NotFound, "User doesn't exist!");
             }
             var result = _mapper.Map<ViewUser>(user);
+            var isFollow = await GetFollow(result.Id, infoUserId.idAccount);
+            if (isFollow != null)
+            {
+                result.isFollow = true;
+            }
+            result.follower = await GetTotalFollowers(result.Id);
+            result.following = await GetTotalFollowings(result.Id);
             result.ImageSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, result.avatar);
             var userRoles = await _userManager.GetRolesAsync(user);
             result.role = userRoles.FirstOrDefault()!;
