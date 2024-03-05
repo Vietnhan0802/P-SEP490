@@ -11,7 +11,7 @@ import Follow from "../../components/follow";
 import { Col, Row } from "react-bootstrap";
 import ProfileReport from "../../components/Popup/ProfileReport";
 import defaultImage from "../../images/common/default.png";
-import { blogInstance, postInstance, projectInstance, userInstance } from "../../axios/axiosConfig";
+import { blogInstance, followInstance, postInstance, projectInstance, userInstance } from "../../axios/axiosConfig";
 import { FiEdit } from "react-icons/fi";
 import { CgProfile } from "react-icons/cg";
 import { MdOutlineFileDownloadDone } from "react-icons/md";
@@ -43,7 +43,7 @@ function Profile({ handleChangeImg }) {
 
 
   const sessionData = JSON.parse(sessionStorage.getItem('userSession')) || {};
-  const { role } = sessionData;
+  const { role, currentUserId } = sessionData;
   const { userId } = location.state || {};
   const [activePopup, setActivePopup] = useState(false);
   const [display, setDisplay] = useState(false);
@@ -259,12 +259,19 @@ function Profile({ handleChangeImg }) {
                   </button>
                 </div>
               ) : (
-                <button
-                  className="btn edit-btn mt-3 w-75 m-auto"
-                  onClick={handleUpdateAppear}
-                >
-                  Edit Avatar
-                </button>
+                currentUserId !== userId ?
+                  <button
+                    className="btn edit-btn mt-3 w-75 m-auto"
+                    onClick={() => handleFollow()}
+                  >
+                    Follow
+                  </button> :
+                  <button
+                    className="btn edit-btn mt-3 w-75 m-auto"
+                    onClick={handleUpdateAppear}
+                  >
+                    Edit Avatar
+                  </button>
               )}
               <div className="w-100 text-center">
                 <div className="personal-information-text mt-4"></div>
@@ -297,7 +304,7 @@ function Profile({ handleChangeImg }) {
         </Col>
         <Col md={6}>
           <div id="profile">
-            <div className="edit-btn-infor">
+            {currentUserId === userId ? <div className="edit-btn-infor">
               {!isEdit && (
                 <FiEdit
                   onClick={() => hanldeEdit()}
@@ -310,7 +317,8 @@ function Profile({ handleChangeImg }) {
                   className="edit-icon mb-2 fs-2"
                 />
               )}
-            </div>
+            </div> : ''}
+
 
             <div class="bg-secondary-soft px-4 py-5 rounded">
               <div class="row g-3">
@@ -320,7 +328,7 @@ function Profile({ handleChangeImg }) {
                   <label class="form-label">Full Name:</label>
                   <input
                     type="text"
-                    class="form-control"
+                    class="form-control bg-text"
                     name="fullName"
                     value={inputs.fullName}
                     disabled={!isEdit}
@@ -337,7 +345,7 @@ function Profile({ handleChangeImg }) {
                     value={inputs.date}
                     disabled={!isEdit}
                     onChange={handleChange}
-                    class="form-control"
+                    class="form-control bg-text"
                     aria-label="Birthday"
                   />
                 </div>
@@ -350,14 +358,14 @@ function Profile({ handleChangeImg }) {
                     value={inputs.phoneNumber}
                     disabled={!isEdit}
                     onChange={handleChange}
-                    class="form-control"
+                    class="form-control bg-text"
                     aria-label="Phone number"
                   />
                 </div>
 
                 <div class="col-md-6">
                   <label class="form-label">Gender:</label>
-                  <div class="form-control">
+                  <div class="form-control bg-text">
                     {!isEdit ? (
                       user.isMale ? (
                         <p>Male</p>
@@ -365,7 +373,7 @@ function Profile({ handleChangeImg }) {
                         <p>Female</p>
                       )
                     ) : (
-                      <div className="checkbox-wrapper-13">
+                      <div className="checkbox-wrapper-13 bg-text">
                         <label>
                           <input
                             id="c1-13"
@@ -407,7 +415,7 @@ function Profile({ handleChangeImg }) {
                   <input
                     type="text"
                     name="address"
-                    class="form-control"
+                    class="form-control bg-text"
                     value={inputs.address}
                     disabled={!isEdit}
                     onChange={handleChange}
@@ -415,14 +423,14 @@ function Profile({ handleChangeImg }) {
                 </div>
 
                 <div class="col-md-6">
-                  <label class="form-label">Tax:</label>
+                  <label class="form-label ">Tax:</label>
                   <input
                     type="number"
                     name="tax"
                     value={inputs.tax}
                     disabled={!isEdit}
                     onChange={handleChange}
-                    class="form-control"
+                    class="form-control bg-text"
                     aria-label="Tax"
                   />
                 </div>
@@ -435,7 +443,7 @@ function Profile({ handleChangeImg }) {
                     value={inputs.description}
                     disabled={!isEdit}
                     onChange={handleChange}
-                    class="form-control"
+                    class="form-control bg-text"
                     aria-label="Description"
                   />
                 </div>
@@ -467,41 +475,6 @@ function Profile({ handleChangeImg }) {
                     <button className="btn degree-detail">View Detail</button>
                   </div>
                 </div>
-                {/* end degree1 */}
-
-                {/* start degree2 */}
-                <div className="row">
-                  <div className="col-2 d-flex justify-content-center img-contain">
-                    <img src={degree} alt="" className="image" />
-                  </div>
-                  <div className="col-7 d-flex flex-column justify-content-center">
-                    <p className="degree-title ellipsis">
-                      Lorem ipsum dolor sit amet{" "}
-                    </p>
-                    <p className="degree-description ellipsis">Lorem ipsum </p>
-                  </div>
-                  <div className="col-3 d-flex justify-content-center align-items-center">
-                    <button className="btn degree-detail">View Detail</button>
-                  </div>
-                </div>
-                {/* end degree2 */}
-
-                {/* start degree3 */}
-                <div className="row">
-                  <div className="col-2 d-flex justify-content-center img-contain">
-                    <img src={degree} alt="" className="image" />
-                  </div>
-                  <div className="col-7 d-flex flex-column justify-content-center">
-                    <p className="degree-title ellipsis">
-                      Lorem ipsum dolor sit amet{" "}
-                    </p>
-                    <p className="degree-description ellipsis">Lorem ipsum </p>
-                  </div>
-                  <div className="col-3 d-flex justify-content-center align-items-center">
-                    <button className="btn degree-detail">View Detail</button>
-                  </div>
-                </div>
-                {/* end degree3 */}
               </div>}
               {/* DegreeTab */}
 

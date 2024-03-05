@@ -14,6 +14,7 @@ import Notify from "./page/Notify/notify";
 import ForgetPassword from "./page/Password/forgetPassword";
 import ResetPassword from "./page/Password/resetPassword";
 import { ToastContainer } from "react-toastify";
+import '../src/i18n/i18n';
 function App() {
   const location = useLocation();
   const appRef = useRef(null);
