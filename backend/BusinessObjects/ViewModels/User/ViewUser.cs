@@ -18,6 +18,9 @@ namespace BusinessObjects.ViewModels.User
         public string description { get; set; }
         public Guid idVerification { get; set; }
         public bool isBlock { get; set; }
+        public int follower { get; set; }
+        public int following { get; set; }
+        public bool isFollow { get; set; }
         public string role { get; set; }
         public DateTime createdDate { get; set; }
 
