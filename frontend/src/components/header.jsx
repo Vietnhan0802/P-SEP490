@@ -50,7 +50,6 @@ export default function Header({ activeComponent, onItemClick, changeImage }) {
         console.log(err.response.data);
       })
   }, [changeImage]);
-  console.log(currentUserId)
   const handlePopup = () => {
     setShowPopup(!showPopup);
     setActivePopup(!activePopup);
