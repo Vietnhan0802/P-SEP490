@@ -9,8 +9,8 @@ function FormDate() {
   const modalShow = () => setShow(true);
   const modelSubmit = () => setShow(false);
   return (
-    <div className="p-1">
-      <Button variant="warning" onClick={modalShow}>
+    <div className="p-1 btn-scale">
+      <Button variant="warning btn-scale" onClick={modalShow}>
         Select Date
       </Button>
       <Modal show={show} onHide={modalClose}>
