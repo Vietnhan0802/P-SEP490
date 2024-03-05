@@ -3,6 +3,7 @@ using BusinessObjects.Entities.Follow;
 using BusinessObjects.ViewModels.Follow;
 using BusinessObjects.ViewModels.User;
 using Follow.Data;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
@@ -13,6 +14,7 @@ namespace Follow.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [EnableCors("AllowOrigin")]
     public class FollowController : ControllerBase
     {
         private readonly AppDBContext _context;
