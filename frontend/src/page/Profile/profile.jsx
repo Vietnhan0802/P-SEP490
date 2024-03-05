@@ -57,6 +57,8 @@ function Profile({ handleChangeImg }) {
     address: '',
     description: "Hello",
     imageSrc: "",
+    follower:0,
+    following:0
   });
   const [userPost, setUserPost] = useState([]);
   const [userProject, setUserProject] = useState([]);
@@ -87,7 +89,9 @@ function Profile({ handleChangeImg }) {
           tax: user?.tax || '',
           address: user?.address || '',
           description: user?.description || "Hope you will give us some description about yourselves",
-          imageSrc: user?.imageSrc
+          imageSrc: user?.imageSrc,
+          follower:user?.follower,
+          following: user?.following
         });
         if (res?.data?.result.imageSrc === "https://localhost:7006/Images/")
           return;
@@ -125,7 +129,7 @@ function Profile({ handleChangeImg }) {
         console.log(userBlog);
       })
   }, [userId])
-
+  console.log(user)
   // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   const projectStatus = process => {
     switch (process) {
@@ -271,12 +275,12 @@ function Profile({ handleChangeImg }) {
                     onClick={handleUpdateAppear}
                   >
                     Edit Avatar
-                  </button>
+                  </button> 
               )}
               <div className="w-100 text-center">
                 <div className="personal-information-text mt-4"></div>
                 <div className="d-flex align-items-center justify-content-center mt-3">
-                  <CgProfile className="me-3" /> 0 followers · 1 following
+                  <CgProfile className="me-3" /> {inputs.follower} followers · {inputs.following} following
                 </div>
               </div>
             </div>
