@@ -14,7 +14,7 @@ namespace Follow.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [EnableCors("AllowOrigin")]
+    [EnableCors("AllowSpecificOrigins")]
     public class FollowController : ControllerBase
     {
         private readonly AppDBContext _context;
