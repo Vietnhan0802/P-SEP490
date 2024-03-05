@@ -18,14 +18,26 @@
 
     }
 
+    #content-for-post {
+        .avata {
+            max-width: 50px;
+            max-height: 50px;
+            height: 100%;
+            width: auto;
+            border-radius: 50%;
+            background-size: cover;
+            padding: 0px;
+        }
+        .avata-contain{
+            height: 100%;
+        }
+    }
 
     .card {
         border-radius: 8px;
         background-color: white;
         padding: 12px;
         border: 2px solid var(--m-4, #a4aab0);
-        margin: 0px 5px 5px 5px;
-
     }
 
     .content {

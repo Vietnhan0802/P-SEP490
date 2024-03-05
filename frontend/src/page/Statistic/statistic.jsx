@@ -8,12 +8,15 @@ import FormDate from "./formDate";
 import BarChart from "./barChart";
 import { ProjectData } from "./ProjectData";
 import { PostData } from "./PostData";
+import { BlogData } from "./BlogData";
 import { ReportData } from "./ReportData";
 import { AccountData } from "./AccountData";
 import { AccessData } from "./AccessData";
 import LineChart from "./lineChart";
 import { Bar } from "react-chartjs-2";
 import PieChart from "./PpeChart";
+
+import TempAvatar from "../../images/common/Avatar.png";
 
 function handleDateSort() {}
 
@@ -42,6 +45,24 @@ function Statistic() {
       {
         label: "Number Of Post",
         data: PostData.map((data) => data.count),
+        backgroundColor: [
+          "rgba(75,192,192,1)",
+          "#ecf0f1",
+          "#50AF95",
+          "#f3ba2f",
+          "#2a71d0",
+        ],
+        borderColor: "black",
+        borderWidth: 1,
+      },
+    ],
+  });
+  const [blogData, setBlogData] = useState({
+    labels: BlogData.map((data) => data.date),
+    datasets: [
+      {
+        label: "Number Of Blog",
+        data: BlogData.map((data) => data.count),
         backgroundColor: [
           "rgba(75,192,192,1)",
           "#ecf0f1",
@@ -118,7 +139,31 @@ function Statistic() {
       <div className="row">
         <div className="main-content col-9">
           <div className="card-section row p-2">
-            <FormDate />
+            <div className="col-3">
+              <FormDate />
+            </div>
+            <div className="col-9" id="content-for-post">
+              <div className="card h-100 w-100">
+                <div className="mb-1 fs-12">Most popular POST </div>
+                <div className="row align-items-center">
+                  <div className="avata-contain col-2 d-flex align-items-center justify-content-center">
+                    <img
+                      src={TempAvatar}
+                      className="avata"
+                      alt="Avatar"
+                    />
+                  </div>
+                  <div className="descript p-0 row flex-column col-10">
+                    <p className="title ellipsis fw-bold ">
+                      Post Title aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+                    </p>
+                    <p className="account ellipsis">
+                      ACcount Name aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa{" "}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
           <div className="chart row">
             <div style={{ width: "100%" }}>
@@ -126,6 +171,9 @@ function Statistic() {
             </div>
             <div style={{ width: "100%" }}>
               <BarChart chartData={postData} />
+            </div>
+            <div style={{ width: "100%" }}>
+              <BarChart chartData={blogData} />
             </div>
             <div style={{ width: "100%" }}>
               <PieChart chartData={reportData} />
@@ -142,7 +190,7 @@ function Statistic() {
           <div className="row">
             <Col md={12} className="px-0">
               <div
-                className={`card  bg-white p-2 ${
+                className={`card  bg-white p-2 m-2 mt-0 ${
                   activeTab === "post" ? "active-tab" : ""
                 }`}
               >
@@ -164,7 +212,7 @@ function Statistic() {
             </Col>
             <Col md={12} className="px-0">
               <div
-                className={`card  bg-white p-2 ${
+                className={`card  bg-white p-2 m-2 mt-0 ${
                   activeTab === "access" ? "active-tab" : ""
                 }`}
               >
@@ -186,7 +234,7 @@ function Statistic() {
             </Col>
             <Col md={12} className="px-0">
               <div
-                className={`card  bg-white p-2 ${
+                className={`card  bg-white p-2 m-2 mt-0 ${
                   activeTab === "blog" ? "active-tab" : ""
                 }`}
               >
@@ -208,7 +256,7 @@ function Statistic() {
             </Col>
             <Col md={12} className="px-0">
               <div
-                className={`card  bg-white p-2 ${
+                className={`card  bg-white p-2 m-2 mt-0 ${
                   activeTab === "report" ? "active-tab" : ""
                 }`}
               >
@@ -231,7 +279,7 @@ function Statistic() {
 
             <Col md={12} className="px-0">
               <div
-                className={`card  bg-white p-2 ${
+                className={`card  bg-white p-2 m-2 mt-0 ${
                   activeTab === "project" ? "active-tab" : ""
                 }`}
               >
@@ -248,6 +296,28 @@ function Statistic() {
                   onClick={() => handleTabClick("Project")}
                 >
                   {activeTab === "Project" ? "Viewing" : "View Detail"}
+                </p>
+              </div>
+            </Col>
+            <Col md={12} className="px-0">
+              <div
+                className={`card  bg-white p-2 m-2 mt-0 ${
+                  activeTab === "report" ? "active-tab" : ""
+                }`}
+              >
+                <div className="mb-1 fs-12">Manage Account</div>
+                <div className="d-flex justify-content-between">
+                  <p className="fs-24 fw-bold">63 Account in System</p>
+                  <p className="rounded-pill percent fw-bold d-flex justify-content-center align-items-center">
+                    12%
+                  </p>
+                </div>
+                <hr style={{ margin: "0.5rem 0" }} />
+                <p
+                  className="d-flex justify-content-end  detail"
+                  onClick={() => handleTabClick("report")}
+                >
+                  {activeTab === "report" ? "Viewing" : "View Detail"}
                 </p>
               </div>
             </Col>
