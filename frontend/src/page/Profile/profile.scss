@@ -20,11 +20,9 @@
 #profile {
   background-color: var(--header_background) !important;
   color: var(--header_search_text);
-
-  .bg-text {
+  .bg-text  {
     background-color: var(--header_background_search_box);
   }
-
   .profile-feedback {
     border-radius: 9px;
     padding: 16px;
@@ -167,7 +165,7 @@
 }
 
 .rounded {
-  border-radius: 8px !important;
+  border-radius: 5px !important;
 }
 
 .py-5 {
@@ -195,24 +193,9 @@
   color: rgba(208, 212, 217, 0.5) !important;
 }
 
-.btn-switch {
-  .tab button.height-50 {
-    background-color: var(--body_background);
-  }
-
-  .tab button.active {
-    background-color: white;
-  }
-
-}
-
 .btn-success-soft {
-  padding: 0px 20px;
-  background: var(--button-1, #20becb);
-  border: 1px solid var(--button-1, #20becb);
-  border-radius: 9px;
-  color: #fff;
-  height: 40px;
+  color: #28a745;
+  background-color: rgba(40, 167, 69, 0.1);
 }
 
 .btn-danger-soft {
