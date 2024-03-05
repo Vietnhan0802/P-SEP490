@@ -3,7 +3,6 @@ using BusinessObjects.Entities.Follow;
 using BusinessObjects.ViewModels.Follow;
 using BusinessObjects.ViewModels.User;
 using Follow.Data;
-using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
@@ -14,7 +13,6 @@ namespace Follow.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [EnableCors("AllowSpecificOrigins")]
     public class FollowController : ControllerBase
     {
         private readonly AppDBContext _context;
@@ -47,22 +45,6 @@ namespace Follow.Controllers
             return user!;
         }
 
-        //*------------------------------------------------------------Follow------------------------------------------------------------*//
-
-        [HttpGet("GetTotalFollowings/{idOwner}")]
-        public async Task<int> GetTotalFollowings(string idOwner)
-        {
-            var totalFollowing = await _context.Followers.CountAsync(x => x.idOwner == idOwner);
-            return totalFollowing;
-        }
-
-        [HttpGet("GetTotalFollowers/{idOwner}")]
-        public async Task<int> GetTotalFollowers(string idOwner)
-        {
-            var totalFollower = await _context.Followers.CountAsync(x => x.idAccount == idOwner);
-            return totalFollower;
-        }
-
         [HttpGet("GetAllFollowings/{idOwner}")]
         public async Task<Response> GetAllFollowings(string idOwner)
         {
@@ -86,6 +68,13 @@ namespace Follow.Controllers
                 following.avatar = infoUser.avatar;
             }
             return new Response(HttpStatusCode.OK, "Get all followings is success!", followings);            
+        }
+
+        [HttpGet("GetTotalFollowings/{idOwner}")]
+        public async Task<Response> GetTotalFollowings(string idOwner)
+        {
+            var totalFollowing = await _context.Followers.CountAsync(x => x.idOwner == idOwner);
+            return new Response(HttpStatusCode.OK, "Get total followings is success!", totalFollowing);
         }
 
         [HttpGet("GetAllFollowers/{idOwner}")]
@@ -113,33 +102,43 @@ namespace Follow.Controllers
             return new Response(HttpStatusCode.OK, "Get followers is success!", followers);
         }
 
-        [HttpPost("FollowOrUnfollow/{idOwner}/{idAccount}")]
-        public async Task<Response> FollowOrUnfollow(string idOwner, string idAccount)
+        [HttpGet("GetTotalFollowers/{idOwner}")]
+        public async Task<Response> GetTotalFollowers(string idOwner)
         {
-            var existFollow = await _context.Followers.FirstOrDefaultAsync(x => x.idAccount == idAccount && x.idOwner == idOwner);
-            if (existFollow == null)
-            {
-                Follower following = new Follower()
-                {
-                    idOwner = idOwner,
-                    idAccount = idAccount,
-                    createdDate = DateTime.Now,
-                };
-                await _context.Followers.AddAsync(following);
-            }
-            else
-            {
-                _context.Followers.Remove(existFollow);
-            }
-            await _context.SaveChangesAsync();
-            return new Response(HttpStatusCode.OK, "Follow or unfollow is success!");
+            var totalFollower = await _context.Followers.CountAsync(x => x.idAccount == idOwner);
+            return new Response(HttpStatusCode.OK, "Get total followings is success!", totalFollower);
         }
 
-        [HttpGet("GetFollow/{idOwner}/{idAccount}")]
-        public async Task<ActionResult<FollowingView>> CheckFollower(string idOwner, string idAccount)
+        [HttpPost("Following/{idOwner}/{idAccount}")]
+        public async Task<Response> Following(string idOwner, string idAccount)
         {
-            var follow = await _context.Followers.FirstOrDefaultAsync(x => x.idOwner == idOwner && x.idAccount == idAccount);
-            return Ok(follow);
+            Follower following = new Follower()
+            {
+                idOwner = idOwner,
+                idAccount = idAccount,
+                createdDate = DateTime.Now,
+            };
+            await _context.Followers.AddAsync(following);
+            await _context.SaveChangesAsync();
+            return new Response(HttpStatusCode.OK, "Follow is success!", following);
         }
+
+        [HttpDelete("UnFollow")]
+        public async Task<Response> UnFollowing(string idAccount, string idOwner)
+        {
+            var following = await _context.Followers.FirstOrDefaultAsync(x => x.idAccount == idAccount && x.idOwner == idOwner);
+            if (following == null)
+            {
+                return new Response(HttpStatusCode.NotFound, "Follow doesn't exists!");
+            }
+            _context.Followers.Remove(following);
+            await _context.SaveChangesAsync();
+            return new Response(HttpStatusCode.NoContent, "Remove Follow is success!");
+        }
+
+        /*public bool CheckFollower()
+        {
+            return _context.Followers.Any();
+        }*/
     }
 }
