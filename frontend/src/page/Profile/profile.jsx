@@ -61,8 +61,9 @@ function Profile({ handleChangeImg }) {
   const [userPost, setUserPost] = useState([]);
   const [userProject, setUserProject] = useState([]);
   const [userBlog, setUserBlog] = useState([]);
+  
   useEffect(() => {
-    userInstance.get(`GetUserById/${userId}`)
+    userInstance.get(`GetUserById/${currentUserId}?idAccount=${userId}`)
       .then((res) => {
         console.log(res?.data?.result)
         setUser(res?.data?.result);
@@ -74,6 +75,8 @@ function Profile({ handleChangeImg }) {
         } else {
           setTab('degree')
         }
+        console.log("User1: "+currentUserId)
+        console.log("User2: "+userId)
         // Update inputs here after user is fetched
         setInputs({
           userName: user?.username || '',
@@ -213,7 +216,17 @@ function Profile({ handleChangeImg }) {
   const handleReportPopup = () => {
     setActivePopup(!activePopup);
   };
-
+  const handleFollow = () => {
+    followInstance.post(`/FollowOrUnfollow/${currentUserId}/${userId}`,{},{
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((res) => {
+        console.log(res?.data?.result);
+      })
+      .catch((error) => { console.error(error); })
+  }
   return (
     <>
       <Row className="mx-0 mt-3">
@@ -629,6 +642,7 @@ function Profile({ handleChangeImg }) {
 
             </section>
           </div>
+                    
         </Col >
         <Col md={3}>
           <Follow />
