@@ -82,14 +82,21 @@ namespace User.Controllers
         private async Task<FollowingView> GetFollow(string idOwner, string idAccount)
         {
             HttpResponseMessage response = await client.GetAsync($"{FollowApiUrl}/GetFollow/{idOwner}/{idAccount}");
-            string strData = await response.Content.ReadAsStringAsync();
-            var option = new JsonSerializerOptions
+            if (response.IsSuccessStatusCode)
             {
-                PropertyNameCaseInsensitive = true,
-            };
-            var follow = JsonSerializer.Deserialize<FollowingView>(strData, option);
+                string strData = await response.Content.ReadAsStringAsync();
+                var option = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true,
+                };
+                var follow = JsonSerializer.Deserialize<FollowingView>(strData, option);
 
-            return follow!;
+                return follow;
+            }
+            else
+            {
+                return null;
+            }
         }
 
         /*------------------------------------------------------------User------------------------------------------------------------*/
