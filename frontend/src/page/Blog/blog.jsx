@@ -223,7 +223,7 @@ function Blog({ blogId, onBlogClick, activeItem, onItemClick }) {
 
         {data.map((item) => (
           <div
-            key={item.idBlog}
+            key={item.id}
             className={`blog-item p-2 ${blogPopups[item.id] ? "position-relative" : ""
               }`}
           >
