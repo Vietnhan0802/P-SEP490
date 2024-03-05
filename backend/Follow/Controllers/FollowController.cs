@@ -47,6 +47,22 @@ namespace Follow.Controllers
             return user!;
         }
 
+        //*------------------------------------------------------------Follow------------------------------------------------------------*//
+
+        [HttpGet("GetTotalFollowings/{idOwner}")]
+        public async Task<Response> GetTotalFollowings(string idOwner)
+        {
+            var totalFollowing = await _context.Followers.CountAsync(x => x.idOwner == idOwner);
+            return new Response(HttpStatusCode.OK, "Get total followings is success!", totalFollowing);
+        }
+
+        [HttpGet("GetTotalFollowers/{idOwner}")]
+        public async Task<Response> GetTotalFollowers(string idOwner)
+        {
+            var totalFollower = await _context.Followers.CountAsync(x => x.idAccount == idOwner);
+            return new Response(HttpStatusCode.OK, "Get total followings is success!", totalFollower);
+        }
+
         [HttpGet("GetAllFollowings/{idOwner}")]
         public async Task<Response> GetAllFollowings(string idOwner)
         {
@@ -70,13 +86,6 @@ namespace Follow.Controllers
                 following.avatar = infoUser.avatar;
             }
             return new Response(HttpStatusCode.OK, "Get all followings is success!", followings);            
-        }
-
-        [HttpGet("GetTotalFollowings/{idOwner}")]
-        public async Task<Response> GetTotalFollowings(string idOwner)
-        {
-            var totalFollowing = await _context.Followers.CountAsync(x => x.idOwner == idOwner);
-            return new Response(HttpStatusCode.OK, "Get total followings is success!", totalFollowing);
         }
 
         [HttpGet("GetAllFollowers/{idOwner}")]
@@ -104,38 +113,26 @@ namespace Follow.Controllers
             return new Response(HttpStatusCode.OK, "Get followers is success!", followers);
         }
 
-        [HttpGet("GetTotalFollowers/{idOwner}")]
-        public async Task<Response> GetTotalFollowers(string idOwner)
+        [HttpPost("FollowOrUnfollow/{idOwner}/{idAccount}")]
+        public async Task<Response> FollowOrUnfollow(string idOwner, string idAccount)
         {
-            var totalFollower = await _context.Followers.CountAsync(x => x.idAccount == idOwner);
-            return new Response(HttpStatusCode.OK, "Get total followings is success!", totalFollower);
-        }
-
-        [HttpPost("Following/{idOwner}/{idAccount}")]
-        public async Task<Response> Following(string idOwner, string idAccount)
-        {
-            Follower following = new Follower()
+            var existFollow = await _context.Followers.FirstOrDefaultAsync(x => x.idAccount == idAccount && x.idOwner == idOwner);
+            if (existFollow == null)
             {
-                idOwner = idOwner,
-                idAccount = idAccount,
-                createdDate = DateTime.Now,
-            };
-            await _context.Followers.AddAsync(following);
-            await _context.SaveChangesAsync();
-            return new Response(HttpStatusCode.OK, "Follow is success!", following);
-        }
-
-        [HttpDelete("UnFollow")]
-        public async Task<Response> UnFollowing(string idAccount, string idOwner)
-        {
-            var following = await _context.Followers.FirstOrDefaultAsync(x => x.idAccount == idAccount && x.idOwner == idOwner);
-            if (following == null)
-            {
-                return new Response(HttpStatusCode.NotFound, "Follow doesn't exists!");
+                Follower following = new Follower()
+                {
+                    idOwner = idOwner,
+                    idAccount = idAccount,
+                    createdDate = DateTime.Now,
+                };
+                await _context.Followers.AddAsync(following);
             }
-            _context.Followers.Remove(following);
+            else
+            {
+                _context.Followers.Remove(existFollow);
+            }
             await _context.SaveChangesAsync();
-            return new Response(HttpStatusCode.NoContent, "Remove Follow is success!");
+            return new Response(HttpStatusCode.OK, "Follow or unfollow is success!");
         }
 
         /*public bool CheckFollower()
