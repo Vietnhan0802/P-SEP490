@@ -56,7 +56,8 @@ function Profile({ handleChangeImg }) {
     description: "Hello",
     imageSrc: "",
     follower: 0,
-    following: 0
+    following: 0,
+    isFollow: true
   });
   const [userPost, setUserPost] = useState([]);
   const [userProject, setUserProject] = useState([]);
@@ -65,39 +66,19 @@ function Profile({ handleChangeImg }) {
   useEffect(() => {
     userInstance.get(`GetUserById/${currentUserId}?idAccount=${userId}`)
       .then((res) => {
-        console.log(res?.data?.result)
         setUser(res?.data?.result);
         const user = res?.data?.result;
         if (user.role === 'Admin') {
           setTab('blog');
+          blogInstance.get(`GetBlogByUser/${userId}`)
+            .then((res) => {
+              setUserBlog(res?.data?.result);
+            })
+            .catch((error) => {
+              console.log(error)
+            })
         } else if (user.role === 'Business') {
           setTab('post');
-        } else {
-          setTab('degree')
-        }
-        console.log("User1: " + currentUserId)
-        console.log("User2: " + userId)
-        // Update inputs here after user is fetched
-        setInputs({
-          userName: user?.username || '',
-          fullName: user?.fullName || '',
-          date: formatDateString(user?.date) || '',
-          isMale: user?.isMale, // Assuming isMale is returned as "True" or "False" string
-          phoneNumber: user?.phoneNumber || '',
-          tax: user?.tax || '',
-          address: user?.address || '',
-          description: user?.description || "Hope you will give us some description about yourselves",
-          imageSrc: user?.imageSrc,
-          follower: user?.follower,
-          following: user?.following
-        });
-        if (res?.data?.result.imageSrc === "https://localhost:7006/Images/")
-          return;
-        setValue({
-          ...value,
-          imageSrc: res?.data?.result.imageSrc,
-        });
-        if (user.role === 'Business') {
           postInstance.get(`GetPostByUser/${userId}`)
             .then((res) => {
               setUserPost(res?.data?.result);
@@ -114,20 +95,32 @@ function Profile({ handleChangeImg }) {
             .catch((error) => {
               console.error(error)
             })
+        } else {
+          setTab('degree')
         }
-        if (user.role === 'Admin') {
-          blogInstance.get(`GetBlogByUser/${userId}`)
-            .then((res) => {
-              setUserBlog(res?.data?.result);
-            })
-            .catch((error) => {
-              console.log(error)
-            })
-        }
-        console.log(userBlog);
+        // Update inputs here after user is fetched
+        setInputs({
+          userName: user?.username || '',
+          fullName: user?.fullName || '',
+          date: formatDateString(user?.date) || '',
+          isMale: user?.isMale, // Assuming isMale is returned as "True" or "False" string
+          phoneNumber: user?.phoneNumber || '',
+          tax: user?.tax || '',
+          address: user?.address || '',
+          description: user?.description || "Hope you will give us some description about yourselves",
+          imageSrc: user?.imageSrc,
+          follower: user?.follower,
+          following: user?.following,
+          isFollow:user?.isFollow
+        });
+        if (res?.data?.result.imageSrc === "https://localhost:7006/Images/")
+          return;
+        setValue({
+          ...value,
+          imageSrc: res?.data?.result.imageSrc,
+        });
       })
   }, [userId])
-  console.log(user)
   // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   const projectStatus = process => {
     switch (process) {
@@ -226,6 +219,10 @@ function Profile({ handleChangeImg }) {
     })
       .then((res) => {
         console.log(res?.data?.result);
+        setInputs((prevInputs) => ({
+          ...prevInputs,
+          isFollow: !prevInputs.isFollow,
+        }));
       })
       .catch((error) => { console.error(error); })
   }
@@ -266,7 +263,7 @@ function Profile({ handleChangeImg }) {
                     className="btn edit-btn mt-3 w-75 m-auto"
                     onClick={() => handleFollow()}
                   >
-                    Follow
+                    {inputs.isFollow ? 'Unfollow':'Follow'}
                   </button> :
                   <button
                     className="btn edit-btn mt-3 w-75 m-auto"
@@ -370,52 +367,52 @@ function Profile({ handleChangeImg }) {
 
                 <div class="col-md-6">
                   <label class="form-label">Gender:</label>
-                    <div class="form-control bg-text">
-                      {!isEdit ? (
-                        user.isMale ? (
-                          <p>Male</p>
-                        ) : (
-                          <p>Female</p>
-                        )
+                  <div class="form-control bg-text">
+                    {!isEdit ? (
+                      user.isMale ? (
+                        <p>Male</p>
                       ) : (
+                        <p>Female</p>
+                      )
+                    ) : (
+                      <div className="checkbox-wrapper-13 bg-text">
                         <div className="checkbox-wrapper-13 bg-text">
-                          <div className="checkbox-wrapper-13 bg-text">
-                            <label>
-                              <input
-                                id="c1-13"
-                                className="me-1"
-                                type="checkbox"
-                                checked={inputs.isMale}
-                                name="isMale"
-                                onChange={() =>
-                                  handleChange({
-                                    target: { name: "isMale", value: true },
-                                  })
-                                }
-                              />
-                              Male
-                            </label>
+                          <label>
+                            <input
+                              id="c1-13"
+                              className="me-1"
+                              type="checkbox"
+                              checked={inputs.isMale}
+                              name="isMale"
+                              onChange={() =>
+                                handleChange({
+                                  target: { name: "isMale", value: true },
+                                })
+                              }
+                            />
+                            Male
+                          </label>
 
-                            <label className="ps-4">
-                              <input
-                                id="c1-13"
-                                className="me-1"
-                                type="checkbox"
-                                checked={!inputs.isMale}
-                                name="isMale"
-                                onChange={() =>
-                                  handleChange({
-                                    target: { name: "isMale", value: false },
-                                  })
-                                }
-                              />
-                              Female
-                            </label>
-                          </div>
+                          <label className="ps-4">
+                            <input
+                              id="c1-13"
+                              className="me-1"
+                              type="checkbox"
+                              checked={!inputs.isMale}
+                              name="isMale"
+                              onChange={() =>
+                                handleChange({
+                                  target: { name: "isMale", value: false },
+                                })
+                              }
+                            />
+                            Female
+                          </label>
                         </div>
+                      </div>
 
-                      )}
-                    </div>
+                    )}
+                  </div>
                 </div>
                 <div class="col-md-6">
                   <label class="form-label">Address:</label>
@@ -622,11 +619,11 @@ function Profile({ handleChangeImg }) {
 
             </section>
           </div>
-    </Col >
-      <Col md={3}>
-        <Follow />
-      </Col>
-    </Row >
+        </Col >
+        <Col md={3}>
+          <Follow />
+        </Col>
+      </Row >
     </>
   );
 }
