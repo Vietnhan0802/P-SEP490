@@ -29,11 +29,10 @@ function Homepage() {
     setBlogId(blogId);
   };
   const hanldeProjectClick = (projectId) => {
-    setProjectId(projectId)
-  }
+    setProjectId(projectId);
+  };
   return (
     <div className="bg m-0 ">
-
       <>
         <Row className="pt-3 ms-0 me-0 bg-sidebar">
           <Col md={3}>
@@ -42,7 +41,15 @@ function Homepage() {
               onItemClick={handleSidebarItemClick}
             />
           </Col>
-          <Col md={`${activeComponent === 'dashboard' || activeComponent === 'projectDetail' ? 9 : 6}`}>
+          <Col
+            md={`${
+              activeComponent === "dashboard" ||
+              activeComponent === "projectDetail"||
+              activeComponent === "statistic"
+                ? 9
+                : 6
+            }`}
+          >
             {activeComponent === "post" && (
               <Post
                 activePost={postId}
@@ -63,29 +70,38 @@ function Homepage() {
             {activeComponent === "blog_detail" && <BlogDetail id={blogId} />}
             {activeComponent === "dashboard" && <DashBoard />}
             {activeComponent === "statistic" && <Statistic />}
-            {activeComponent === "projectDetail" && <ProjectDetail id={projectId} />}
-            {activeComponent === "own_post" && <OwnPost activePost={postId}
-              onPostClick={handlePostClick}
-              activeItem={activeComponent}
-              onItemClick={handleSidebarItemClick} />}
-            {activeComponent === "own_project" && <OwnProject
-
-              activeProject={projectId}
-              onProjectClick={hanldeProjectClick}
-              activeItem={activeComponent}
-              onItemClick={handleSidebarItemClick}
-            />}
-            {activeComponent === "project_application" && <ProjectApplication />}
+            {activeComponent === "projectDetail" && (
+              <ProjectDetail id={projectId} />
+            )}
+            {activeComponent === "own_post" && (
+              <OwnPost
+                activePost={postId}
+                onPostClick={handlePostClick}
+                activeItem={activeComponent}
+                onItemClick={handleSidebarItemClick}
+              />
+            )}
+            {activeComponent === "own_project" && (
+              <OwnProject
+                activeProject={projectId}
+                onProjectClick={hanldeProjectClick}
+                activeItem={activeComponent}
+                onItemClick={handleSidebarItemClick}
+              />
+            )}
+            {activeComponent === "project_application" && (
+              <ProjectApplication />
+            )}
           </Col>
-          {(activeComponent !== "dashboard" && activeComponent !== "projectDetail"
-          ) && (
+          {activeComponent !== "dashboard" &&
+            activeComponent !== "projectDetail" &&
+            activeComponent !== "statistic" && (
               <Col md={3}>
                 <Follow />
               </Col>
             )}
         </Row>
       </>
-
     </div>
   );
 }

@@ -325,7 +325,7 @@ function Profile({ handleChangeImg }) {
                   <label class="form-label">Full Name:</label>
                   <input
                     type="text"
-                    class="form-control"
+                    class="form-control bg-text"
                     name="fullName"
                     value={inputs.fullName}
                     disabled={!isEdit}
@@ -342,7 +342,7 @@ function Profile({ handleChangeImg }) {
                     value={inputs.date}
                     disabled={!isEdit}
                     onChange={handleChange}
-                    class="form-control"
+                    class="form-control bg-text"
                     aria-label="Birthday"
                   />
                 </div>
@@ -355,14 +355,14 @@ function Profile({ handleChangeImg }) {
                     value={inputs.phoneNumber}
                     disabled={!isEdit}
                     onChange={handleChange}
-                    class="form-control"
+                    class="form-control bg-text"
                     aria-label="Phone number"
                   />
                 </div>
 
                 <div class="col-md-6">
                   <label class="form-label">Gender:</label>
-                  <div class="form-control">
+                  <div class="form-control bg-text">
                     {!isEdit ? (
                       user.isMale ? (
                         <p>Male</p>
@@ -370,7 +370,7 @@ function Profile({ handleChangeImg }) {
                         <p>Female</p>
                       )
                     ) : (
-                      <div className="checkbox-wrapper-13">
+                      <div className="checkbox-wrapper-13 bg-text">
                         <label>
                           <input
                             id="c1-13"
@@ -412,7 +412,7 @@ function Profile({ handleChangeImg }) {
                   <input
                     type="text"
                     name="address"
-                    class="form-control"
+                    class="form-control bg-text"
                     value={inputs.address}
                     disabled={!isEdit}
                     onChange={handleChange}
@@ -420,14 +420,14 @@ function Profile({ handleChangeImg }) {
                 </div>
 
                 <div class="col-md-6">
-                  <label class="form-label">Tax:</label>
+                  <label class="form-label ">Tax:</label>
                   <input
                     type="number"
                     name="tax"
                     value={inputs.tax}
                     disabled={!isEdit}
                     onChange={handleChange}
-                    class="form-control"
+                    class="form-control bg-text"
                     aria-label="Tax"
                   />
                 </div>
@@ -440,7 +440,7 @@ function Profile({ handleChangeImg }) {
                     value={inputs.description}
                     disabled={!isEdit}
                     onChange={handleChange}
-                    class="form-control"
+                    class="form-control bg-text"
                     aria-label="Description"
                   />
                 </div>
