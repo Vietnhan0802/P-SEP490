@@ -225,7 +225,17 @@ function Profile({ handleChangeImg }) {
   const handleReportPopup = () => {
     setActivePopup(!activePopup);
   };
-
+  const handleFollow = () => {
+    followInstance.post(`/Following/${currentUserId}/${userId}`,{},{
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((res) => {
+        console.log(res?.data?.result);
+      })
+      .catch((error) => { console.error(error); })
+  }
   return (
     <>
       <Row className="mx-0 mt-3">
@@ -262,12 +272,19 @@ function Profile({ handleChangeImg }) {
                   </button>
                 </div>
               ) : (
-                <button
-                  className="btn edit-btn mt-3 w-75 m-auto"
-                  onClick={handleUpdateAppear}
-                >
-                  Edit Avatar
-                </button>
+                currentUserId !== userId ?
+                  <button
+                    className="btn edit-btn mt-3 w-75 m-auto"
+                    onClick={() => handleFollow()}
+                  >
+                    Follow
+                  </button> :
+                  <button
+                    className="btn edit-btn mt-3 w-75 m-auto"
+                    onClick={handleUpdateAppear}
+                  >
+                    Edit Avatar
+                  </button>
               )}
               <div className="w-100 text-center">
                 <div className="personal-information-text mt-4"></div>
@@ -300,7 +317,7 @@ function Profile({ handleChangeImg }) {
         </Col>
         <Col md={6}>
           <div id="profile">
-            <div className="edit-btn-infor">
+            {currentUserId === userId ? <div className="edit-btn-infor">
               {!isEdit && (
                 <FiEdit
                   onClick={() => hanldeEdit()}
@@ -313,7 +330,8 @@ function Profile({ handleChangeImg }) {
                   className="edit-icon mb-2 fs-2"
                 />
               )}
-            </div>
+            </div> : ''}
+
 
             <div class="bg-secondary-soft px-4 py-3 rounded">
               <div class="row g-3">
@@ -323,7 +341,7 @@ function Profile({ handleChangeImg }) {
                   <label class="form-label">Full Name:</label>
                   <input
                     type="text"
-                    class="form-control"
+                    class="form-control bg-text"
                     name="fullName"
                     value={inputs.fullName}
                     disabled={!isEdit}
@@ -340,7 +358,7 @@ function Profile({ handleChangeImg }) {
                     value={inputs.date}
                     disabled={!isEdit}
                     onChange={handleChange}
-                    class="form-control"
+                    class="form-control bg-text"
                     aria-label="Birthday"
                   />
                 </div>
@@ -353,14 +371,14 @@ function Profile({ handleChangeImg }) {
                     value={inputs.phoneNumber}
                     disabled={!isEdit}
                     onChange={handleChange}
-                    class="form-control"
+                    class="form-control bg-text"
                     aria-label="Phone number"
                   />
                 </div>
 
                 <div class="col-md-6">
                   <label class="form-label">Gender:</label>
-                  <div class="form-control">
+                  <div class="form-control bg-text">
                     {!isEdit ? (
                       user.isMale ? (
                         <p>Male</p>
@@ -368,7 +386,7 @@ function Profile({ handleChangeImg }) {
                         <p>Female</p>
                       )
                     ) : (
-                      <div className="checkbox-wrapper-13">
+                      <div className="checkbox-wrapper-13 bg-text">
                         <label>
                           <input
                             id="c1-13"
@@ -410,7 +428,7 @@ function Profile({ handleChangeImg }) {
                   <input
                     type="text"
                     name="address"
-                    class="form-control"
+                    class="form-control bg-text"
                     value={inputs.address}
                     disabled={!isEdit}
                     onChange={handleChange}
@@ -418,14 +436,14 @@ function Profile({ handleChangeImg }) {
                 </div>
 
                 <div class="col-md-6">
-                  <label class="form-label">Tax:</label>
+                  <label class="form-label ">Tax:</label>
                   <input
                     type="number"
                     name="tax"
                     value={inputs.tax}
                     disabled={!isEdit}
                     onChange={handleChange}
-                    class="form-control"
+                    class="form-control bg-text"
                     aria-label="Tax"
                   />
                 </div>
@@ -438,7 +456,7 @@ function Profile({ handleChangeImg }) {
                     value={inputs.description}
                     disabled={!isEdit}
                     onChange={handleChange}
-                    class="form-control"
+                    class="form-control bg-text"
                     aria-label="Description"
                   />
                 </div>
