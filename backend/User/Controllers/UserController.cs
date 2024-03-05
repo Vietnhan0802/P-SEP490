@@ -156,15 +156,51 @@ namespace User.Controllers
         }
 
         [HttpGet("GetUserById/{idUser}")]
-        public async Task<Response> GetUserById(string idUser, InfoUserId infoUserId)
+        public async Task<Response> GetUserById(string idUser, string? idAccount = null)
         {
-            var user = await _userManager.FindByIdAsync(idUser);
+            if (idUser == idAccount || idAccount == null)
+            {
+                var user = await _userManager.FindByIdAsync(idUser);
+                if (user == null)
+                {
+                    return new Response(HttpStatusCode.NotFound, "User doesn't exist!");
+                }
+                var result = _mapper.Map<ViewUser>(user);
+                result.follower = await GetTotalFollowers(result.Id);
+                result.following = await GetTotalFollowings(result.Id);
+                result.ImageSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, result.avatar);
+                var userRoles = await _userManager.GetRolesAsync(user);
+                result.role = userRoles.FirstOrDefault()!;
+                return new Response(HttpStatusCode.OK, "Get user is success!", result);
+            }
+            else if (idUser != idAccount) {
+                var user = await _userManager.FindByIdAsync(idAccount);
+                if (user == null)
+                {
+                    return new Response(HttpStatusCode.NotFound, "User doesn't exist!");
+                }
+                var result = _mapper.Map<ViewUser>(user);
+                var isFollow = await GetFollow(idUser, result.Id);
+                if (isFollow != null)
+                {
+                    result.isFollow = true;
+                }
+                result.follower = await GetTotalFollowers(result.Id);
+                result.following = await GetTotalFollowings(result.Id);
+                result.ImageSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, result.avatar);
+                var userRoles = await _userManager.GetRolesAsync(user);
+                result.role = userRoles.FirstOrDefault()!;
+                return new Response(HttpStatusCode.OK, "Get user is success!", result);
+            }
+            return new Response(HttpStatusCode.BadRequest, "Get user is fail!");
+
+            /*var user = await _userManager.FindByIdAsync(idUser);
             if (user == null)
             {
                 return new Response(HttpStatusCode.NotFound, "User doesn't exist!");
             }
-            var result = _mapper.Map<ViewUser>(user);
-            var isFollow = await GetFollow(result.Id, infoUserId.idAccount);
+            var result = _mapper.Map<ViewUser>(user);*/
+            /*var isFollow = await GetFollow(result.Id, idAccount);
             if (isFollow != null)
             {
                 result.isFollow = true;
@@ -174,7 +210,7 @@ namespace User.Controllers
             result.ImageSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, result.avatar);
             var userRoles = await _userManager.GetRolesAsync(user);
             result.role = userRoles.FirstOrDefault()!;
-            return new Response(HttpStatusCode.OK, "Get user is success!", result);
+            return new Response(HttpStatusCode.OK, "Get user is success!", result);*/
         }
 
         [HttpGet("GetNameUser/{idUser}")]
