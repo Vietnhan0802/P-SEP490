@@ -32,7 +32,7 @@ const DarkMode = () => {
                 onChange={toggleTheme}
                 defaultChecked={selectedTheme === "dark"}
             />
-            <label className='dark_mode_label' htmlFor='darkmode-toggle'>
+            <label className='dark_mode_label' for='darkmode-toggle'>
                 <Sun />
                 <Moon />
             </label>
