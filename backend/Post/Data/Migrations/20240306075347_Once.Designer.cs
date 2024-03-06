@@ -12,7 +12,7 @@ using Post.Data;
 namespace Post.Data.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20240301081308_Once")]
+    [Migration("20240306075347_Once")]
     partial class Once
     {
         /// <inheritdoc />
@@ -59,9 +59,6 @@ namespace Post.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("view")
-                        .HasColumnType("int");
-
-                    b.Property<int>("viewHistory")
                         .HasColumnType("int");
 
                     b.Property<int>("viewInDate")

@@ -10,10 +10,10 @@
         public string? content { get; set; }
         public int view { get; set; }
         public int viewInDate { get; set; }
-        public int viewHistory { get; set; }
         public int? report { get; set; }
         public int like { get; set; }
         public bool isLike { get; set; }
+        public bool isBlock { get; set; }
         public bool isDeleted { get; set; }
         public DateTime createdDate { get; set; }
         public ICollection<ViewBlogImage>? ViewBlogImages { get; set; }

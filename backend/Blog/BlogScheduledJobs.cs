@@ -16,7 +16,6 @@ namespace Blog
             var blogs = _context.Blogs.ToList();
             foreach (var blog in blogs)
             {
-                blog.viewHistory = blog.viewInDate;
                 blog.viewInDate = 0;
             }
             _context.SaveChanges();
