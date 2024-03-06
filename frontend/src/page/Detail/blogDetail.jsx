@@ -37,8 +37,7 @@ function calculateTimeDifference(targetDate) {
 }
 function BlogDetail(id) {
 
-  const sessionData = JSON.parse(sessionStorage.getItem('userSession')) || {};
-  const { role, currentUserId } = sessionData;
+  const userId = JSON.parse(Cookies.get("userId"));
   const idBlog = id.id;
 
   const [user, setUser] = useState({});
@@ -127,7 +126,7 @@ function BlogDetail(id) {
     );
   };
   const handleCreateComment = () => {
-    blogInstance.post(`CreateBlogComment/${currentUserId}/${idBlog}/${content}`, {
+    blogInstance.post(`CreateBlogComment/${userId}/${idBlog}/${content}`, {
       headers: {
         accept: 'application/json'
       }
@@ -143,7 +142,7 @@ function BlogDetail(id) {
 
     // Perform the reply submission logic with replyContent
     // ...
-    blogInstance.post(`CreateBlogReply/${currentUserId}/${commentId}/${replyContent}`)
+    blogInstance.post(`CreateBlogReply/${userId}/${commentId}/${replyContent}`)
       .then((res) => {
         setState(!state)
         console.log(res?.data?.result)
@@ -200,7 +199,7 @@ function BlogDetail(id) {
 
       return { ...prevData, isLike: isLiked, like: newLikeCount };
     });
-    blogInstance.post(`LikeOrUnlikeBlog/${currentUserId}/${idBlog}`)
+    blogInstance.post(`LikeOrUnlikeBlog/${userId}/${idBlog}`)
       .then(() => {
         // No need to update the state here if you're doing optimistic updates
       })
@@ -221,7 +220,7 @@ function BlogDetail(id) {
     return blogInstance; // hoặc tạo một instance mới nếu cần
   }, []);
   useEffect(() => {
-    blogInstance.get(`GetAllCommentByBlog/${idBlog}/${currentUserId}`)
+    blogInstance.get(`GetAllCommentByBlog/${idBlog}/${userId}`)
       .then(
         (res) => {
           setCommentList(res?.data?.result);
@@ -233,7 +232,7 @@ function BlogDetail(id) {
   }, [state]);
 
   useEffect(() => {
-    memoizedBlogInstance.get(`GetBlogById/${idBlog}/${currentUserId}`)
+    memoizedBlogInstance.get(`GetBlogById/${idBlog}/${userId}`)
       .then((res) => {
         setData(res?.data?.result);
       })
@@ -244,7 +243,7 @@ function BlogDetail(id) {
 
   //Fetch data the user to display in the comment and reply
   useEffect(() => {
-    userInstance.get(`/GetUserById/${currentUserId}`)
+    userInstance.get(`/GetUserById/${userId}`)
       .then((res) => {
         setUser(res?.data?.result)
         // console.log(res?.data?.result.imageSrc);
@@ -324,7 +323,7 @@ function BlogDetail(id) {
                 <h6 className="mb-2 d-flex align-items-center h-40">
                   {item.fullName}
                 </h6>
-                {item.idAccount === currentUserId ?
+                {item.idAccount === userId ?
                   <Dropdown>
                     <Dropdown.Toggle id="dropdown-basic" style={{ border: 'none' }} className="bg-white border-none text-body">
                     </Dropdown.Toggle>
@@ -410,7 +409,7 @@ function BlogDetail(id) {
                             </div>
                           }
                         </div>
-                        {reply.idAccount === currentUserId ?
+                        {reply.idAccount === userId ?
                           <Dropdown style={{ width: 'auto' }}>
                             <Dropdown.Toggle id="dropdown-basic" style={{ border: 'none' }} className="bg-white border-none text-body">
                             </Dropdown.Toggle>

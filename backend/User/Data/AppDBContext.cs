@@ -35,7 +35,7 @@ namespace User.Data
                     Email = "admin@gmail.com",
                     NormalizedEmail = "ADMIN@GMAIL.COM",
                     EmailConfirmed = true,
-                    fullName = "Admin",
+                    fullName = "Đầu bự vô địch",
                     isMale = true,
                     PhoneNumber = "0949180802",
                     tax = "1234567890",
