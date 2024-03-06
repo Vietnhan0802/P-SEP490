@@ -135,6 +135,11 @@
     width: 300px;
     margin-left: 0px;
   }
+  .ellipsis {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
   .line {
     margin-top: 10px;
     margin-left: 10px;
