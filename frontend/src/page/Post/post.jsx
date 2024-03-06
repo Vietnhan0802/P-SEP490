@@ -19,6 +19,7 @@ import Notification, {
   notifySuccess,
   notifyError,
 } from "../../components/notification";
+import PostPu from "./postPu";
 function calculateTimeDifference(targetDate) {
   // Convert the target date string to a Date object
   const targetTime = new Date(targetDate).getTime();
@@ -269,11 +270,21 @@ function Post({ postId, onPostClick, activeItem, onItemClick }) {
   return (
     <div id="post">
       {role === "Business" ? (
-        <div className="post-form p-2">
-          <div className="d-flex post-search align-items-center position-relative ">
+        <div className="post-form p-2 d-flex flex-grid align-items-center justify-content-between row m-0">
+          <div className="d-flex post-search align-items-center position-relative col me-2">
             <CiSearch className="" />
-            <input type="text" placeholder={"Search"} className="search-box size-20" />
+            <input
+              type="text"
+              placeholder={"Search"}
+              className="search-box size-20"
+            />
           </div>
+          <div className="d-flex flex-row align-items-center col-auto m-md-0-cus mt-2 p-0">
+            <PostPu />
+            <button type="button" class="btn btn-info text-white">Trend</button>
+          </div>
+
+          
           <div className=" flex-column">
             <input
               type="text"
