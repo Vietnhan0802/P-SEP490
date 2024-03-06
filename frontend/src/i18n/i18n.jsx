@@ -12,7 +12,10 @@ const resources = {
             'logout': 'Log Out',
             'logout_bottom': '© Copyright © 2024 | All Rights Reversed',
 
+            /**Translate haeder */
             'search': 'Search',
+
+            /**Translate follow */
             'following': 'Following',
             'viewfollow': 'View All'
         }
@@ -27,7 +30,10 @@ const resources = {
             'logout': 'Đăng xuất',
             'logout_bottom': '© Bản quyền © 2024 | Mọi quyền đã bị đảo ngược',
 
+            /**Translate haeder */
             'search': 'Tìm kiếm',
+
+            /**Translate follow */
             'following': 'Đang Follow',
             'viewfollow': 'Xem tất cả'
         }

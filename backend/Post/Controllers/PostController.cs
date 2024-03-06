@@ -71,7 +71,7 @@ namespace Post.Controllers
         [HttpGet("GetAllPostsTrend/{idUser}")]
         public async Task<Response> GetAllPostsTrend(string idUser)
         {
-            var top10Posts = await _context.Postts.OrderByDescending(x => x.viewHistory).Take(10).ToListAsync();
+            var top10Posts = await _context.Postts.OrderByDescending(x => x.viewInDate).Take(10).ToListAsync();
             var result = _mapper.Map<List<ViewPost>>(top10Posts);
             foreach (var post in result)
             {
@@ -113,6 +113,10 @@ namespace Post.Controllers
                 if (isLike != null)
                 {
                     post.isLike = true;
+                }
+                if (post.report >= 3)
+                {
+                    post.isBlock = true;
                 }
                 var infoUser = await GetNameUserCurrent(post.idAccount!);
                 post.fullName = infoUser.fullName;

@@ -11,7 +11,6 @@ namespace BusinessObjects.Entities.Blog
         public string? content { get; set; }
         public int view { get; set; }
         public int viewInDate { get; set; }
-        public int viewHistory { get; set; }
         public bool isDeleted { get; set; }
         public DateTime createdDate { get; set; }
         public ICollection<BloggImage>? BloggImages { get; set; }

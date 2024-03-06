@@ -69,7 +69,7 @@ namespace Blog.Controllers
         [HttpGet("GetAllBlogsTrend/{idUser}")]
         public async Task<Response> GetAllBlogsTrend(string idUser)
         {
-            var top10Blogs = await _context.Blogs.OrderByDescending(x => x.viewHistory).Take(10).ToListAsync();
+            var top10Blogs = await _context.Blogs.OrderByDescending(x => x.viewInDate).Take(10).ToListAsync();
             var result = _mapper.Map<List<ViewBlog>>(top10Blogs);
             foreach ( var blog in result )
             {
@@ -79,6 +79,10 @@ namespace Blog.Controllers
                 if (isLike != null)
                 {
                     blog.isLike = true;
+                }
+                if (blog.report >= 3)
+                {
+                    blog.isBlock = true;
                 }
                 var infoUser = await GetNameUserCurrent(blog.idAccount!);
                 blog.fullName = infoUser.fullName;
