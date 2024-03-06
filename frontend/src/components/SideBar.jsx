@@ -21,7 +21,7 @@ function SideBar({ activeItem, onItemClick }) {
   const {t} = useTranslation()
   const sidebarItems = [
     { id: "post", icon: <GoPencil />, text: t('post'), userRole: "all" },
-    { id: "blog", icon: <FiBookOpen />, text: "Blog", userRole: "all" },
+    { id: "blog", icon: <FiBookOpen />, text: t('blog'), userRole: "all" },
     {
       id: "own_post",
       icon: <TbFloatLeft />,
@@ -55,13 +55,13 @@ function SideBar({ activeItem, onItemClick }) {
     {
       id: "dashboard",
       icon: <MdOutlineSpaceDashboard />,
-      text: "Dashboard",
+      text: t('dashboard'),
       userRole: "admin",
     },
     {
       id: "statistic",
       icon: <FaChartLine />,
-      text: "Statistic",
+      text: t('statistic'),
       userRole: "admin",
     },
     // Add other sidebar items similarly
@@ -109,13 +109,13 @@ function SideBar({ activeItem, onItemClick }) {
           onClick={handleLogout}
         >
           <CiLogout className="logout-icon" />
-          <p className="text ms-2">Log Out</p>
+          <p className="text ms-2">{t('logout')}</p>
         </div>
         <p className="fw-bold fs-10 mt-2">
-          Lorem ipsum · dolor sit amet · consectetur · Id ut nullam in nec
-          ullamcorper
+          {/* Lorem ipsum · dolor sit amet · consectetur · Id ut nullam in nec
+          ullamcorper */}
         </p>
-        <p className="fs-10">© Copyright © 2024 | All Rights Reversed </p>
+        <p className="fw-bold fs-10">{t('logout_bottom')} </p>
         <div className="mt-2">
           <FaFacebook className="fs-4 ms-2" />
           <GrTwitter className="fs-4 ms-2" />

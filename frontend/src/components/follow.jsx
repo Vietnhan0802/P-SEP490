@@ -3,11 +3,13 @@ import "../scss/follow.scss";
 import avatar from "../images/common/Avatar.png";
 import tick from "../images/common/verifiedTick.png";
 import { LuDot } from "react-icons/lu";
+import { useTranslation } from 'react-i18next';
 function Follow() {
+  const {t} = useTranslation()
   return (
     <div className="follow position-relative">
       <div>
-        <p className="text">You are following</p>
+        <p className="text">{t('following')}</p>
         <div className="follow-user d-flex align-items-center mb-2">
           <div className="follow-avata-box">
             <img src={avatar} alt="user" className="user-image" />
@@ -42,7 +44,7 @@ function Follow() {
 
       <button className="btn border mt-3 fw-bold">
         <LuDot className="me-1 dot fs-3" />
-        View all
+        {t('viewfollow')}
       </button>
     </div>
   );
