@@ -20,13 +20,16 @@
 #profile {
   background-color: var(--header_background) !important;
   color: var(--header_search_text);
-  .bg-text  {
+
+  .bg-text {
     background-color: var(--header_background_search_box);
     color: var(--header_search_text);
   }
+
   .rounded {
     background-color: var(--header_background) !important;
   }
+
   .profile-feedback {
     border-radius: 9px;
     padding: 16px;
@@ -238,7 +241,9 @@
   overflow: hidden;
 }
 
-.height-50 {
-  height: 50px;
-  margin: 0 10px;
+.tab-content {
+  background-color: white;
+  border-end-end-radius: 8px;
+  border-end-start-radius: 8px;
+  padding: 12px;
 }
