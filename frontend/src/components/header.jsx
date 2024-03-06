@@ -15,7 +15,9 @@ import DarkMode from "./darkmode";
 import Translate from "./translate";
 import { userInstance } from "../axios/axiosConfig";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from 'react-i18next';
 export default function Header({ activeComponent, onItemClick, changeImage }) {
+  const {t} = useTranslation()
   const sessionData = JSON.parse(sessionStorage.getItem('userSession')) || {};
   const { role, currentUserId, userName, userEmail } = sessionData;
 
@@ -81,7 +83,7 @@ export default function Header({ activeComponent, onItemClick, changeImage }) {
         <Image src={logoImg} className="logo" onClick={() => hanldeReturnHome()} />
         <div className="d-flex search align-items-center position-relative">
           <CiSearch className="" />
-          <input type="text" placeholder="Search" value={searchName} className="search-box" onChange={searchUser} />
+          <input type="text" placeholder={t('search')} value={searchName} className="search-box" onChange={searchUser} />
 
           <div className={`position-absolute user-box ${searchName === '' ? 'hidden-box' : ''}`} >
             {filterListUser.length > 0 ? (
