@@ -4,7 +4,7 @@ import "../Post/post.scss";
 import { CiCircleChevRight } from "react-icons/ci";
 import { IoFlagOutline } from "react-icons/io5";
 import { FaHeart } from "react-icons/fa";
-
+import { CiSearch } from "react-icons/ci";
 import { FiEye } from "react-icons/fi";
 import defaultAvatar from "../../images/common/default.png";
 import ReportPopup from "../../components/Popup/reportPopup";
@@ -15,7 +15,10 @@ import {
   reportInstance,
 } from "../../axios/axiosConfig";
 
-import Notification, { notifySuccess, notifyError } from "../../components/notification";
+import Notification, {
+  notifySuccess,
+  notifyError,
+} from "../../components/notification";
 function calculateTimeDifference(targetDate) {
   // Convert the target date string to a Date object
   const targetTime = new Date(targetDate).getTime();
@@ -43,7 +46,7 @@ function calculateTimeDifference(targetDate) {
 }
 
 function Post({ postId, onPostClick, activeItem, onItemClick }) {
-  const sessionData = JSON.parse(sessionStorage.getItem('userSession')) || {};
+  const sessionData = JSON.parse(sessionStorage.getItem("userSession")) || {};
   const { role, userId } = sessionData;
   const [inputs, setInputs] = useState({
     title: "",
@@ -83,19 +86,22 @@ function Post({ postId, onPostClick, activeItem, onItemClick }) {
   };
   const handleLikeOrUnlikeBlog = (idBlog) => {
     // Find the index of the blog item to update
-    const index = postList.findIndex(item => item.id === idBlog);
+    const index = postList.findIndex((item) => item.id === idBlog);
     if (index !== -1) {
       // Toggle the like state and update the like count for the specific blog item
       const newData = [...postList]; // Copy the current state
       const isLiked = !newData[index].isLike; // Toggle the current like state
       newData[index].isLike = isLiked; // Update the like state
       // Update the like count based on the new like state
-      newData[index].like = isLiked ? newData[index].like + 1 : newData[index].like - 1;
+      newData[index].like = isLiked
+        ? newData[index].like + 1
+        : newData[index].like - 1;
 
       setPostList(newData); // Update the state with the new array
 
       // Make the API call to update the like state in the backend
-      postInstance.post(`LikeOrUnlikePost/${userId}/${idBlog}`)
+      postInstance
+        .post(`LikeOrUnlikePost/${userId}/${idBlog}`)
         .then(() => {
           // If the API call is successful, you can optionally refresh the data from the server
           // to ensure the UI is in sync with the backend state
@@ -105,7 +111,9 @@ function Post({ postId, onPostClick, activeItem, onItemClick }) {
           // Revert the like state and count in case of an error
           const revertData = [...postList];
           revertData[index].isLike = !isLiked; // Revert the like state
-          revertData[index].like = revertData[index].isLike ? revertData[index].like + 1 : revertData[index].like - 1;
+          revertData[index].like = revertData[index].isLike
+            ? revertData[index].like + 1
+            : revertData[index].like - 1;
           setPostList(revertData);
         });
     }
@@ -187,12 +195,13 @@ function Post({ postId, onPostClick, activeItem, onItemClick }) {
       );
     });
 
-    postInstance.post(`/CreatePost/${userId}/${inputs.project}`, formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-        accept: "application/json",
-      },
-    })
+    postInstance
+      .post(`/CreatePost/${userId}/${inputs.project}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          accept: "application/json",
+        },
+      })
       .then((res) => {
         // console.log(res.data);
         setResetPage(!resetPage);
@@ -261,6 +270,10 @@ function Post({ postId, onPostClick, activeItem, onItemClick }) {
     <div id="post">
       {role === "Business" ? (
         <div className="post-form p-2">
+          <div className="d-flex post-search align-items-center position-relative ">
+            <CiSearch className="" />
+            <input type="text" placeholder={"Search"} className="search-box size-20" />
+          </div>
           <div className=" flex-column">
             <input
               type="text"
@@ -314,14 +327,19 @@ function Post({ postId, onPostClick, activeItem, onItemClick }) {
       {postList.map((item) => (
         <div
           key={item.id}
-          className={`pos-rel post-item mt-2 p-2 ${blogPopups[item.id] ? "position-relative" : ""
-            }`}
+          className={`pos-rel post-item mt-2 p-2 ${
+            blogPopups[item.id] ? "position-relative" : ""
+          }`}
         >
           <div className="d-flex justify-content-between">
             <div className="d-flex align-items-center">
               <img
                 className="avata-s mr-4"
-                src={item.avatar === 'https://localhost:7006/Images/' ? defaultAvatar : item.avatar}
+                src={
+                  item.avatar === "https://localhost:7006/Images/"
+                    ? defaultAvatar
+                    : item.avatar
+                }
                 alt="Instructor Cooper Bator"
               />
               <div className="left-30 d-flex flex-column justify-content-center">
@@ -355,12 +373,13 @@ function Post({ postId, onPostClick, activeItem, onItemClick }) {
               <div className="d-flex align-items-center me-3">
                 <FiEye className="me-2" /> {item.view}
               </div>
-              <div className="d-flex align-items-center me-3"
+              <div
+                className="d-flex align-items-center me-3"
                 onClick={() => handleLikeOrUnlikeBlog(item.id)}
               >
-                <FaHeart className={`me-2 ${item.isLike ? 'red' : ''}`} /> {item.like}
+                <FaHeart className={`me-2 ${item.isLike ? "red" : ""}`} />{" "}
+                {item.like}
               </div>
-
             </div>
             <button
               className="view-btn btn"

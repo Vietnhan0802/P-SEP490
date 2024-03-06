@@ -13,9 +13,11 @@
       }
     }
   }
+
   .red {
     color: red;
   }
+
   width: 100%;
 
   .post-form {
@@ -120,10 +122,26 @@
 }
 
 .flag-icon {
-font-size: 20px;
+  font-size: 20px;
 }
 
 .full-div {
   width: 100%;
   height: 100%;
+}
+
+.post-search {
+  background-color: var(--header_background_search_box);
+  border-radius: 40px;
+  padding: 0px 12px;
+
+  .search-box {
+    background-color: var(--header_background_search_box);
+    color: var(--header_search_text);
+    border: none !important;
+    outline: none;
+    padding: 8px;
+    border-radius: 8px;
+    font-size: 18px;
+  }
 }
