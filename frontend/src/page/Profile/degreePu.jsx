@@ -61,12 +61,6 @@ function DegreePu() {
         <Modal.Header closeButton>
           <Modal.Title>Add Degree</Modal.Title>
         </Modal.Header>
-        {/* public string name { get; set; }
- public string institution { get; set; }
- public string country { get; set; }
- public string type { get; set; }
- public string major { get; set; }
- public string image { get; set; } */}
         <Modal.Body className="popup-body">
           <input
             type="text"

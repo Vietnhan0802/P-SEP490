@@ -1,8 +1,7 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { useState } from "react";
 import "../Profile/profile.scss";
 import "../Profile/check-box.scss";
-import "../Profile/switch-btn.scss";
 import "../Profile/project.scss";
 import "../Profile/switchbtn.scss";
 import degree from "../../images/common/degree.png";
@@ -24,6 +23,7 @@ import { FiFlag } from "react-icons/fi";
 import { useLocation } from "react-router-dom";
 import defaultProject from "../../images/common/default_project.webp";
 import DegreePu from "./degreePu";
+import UpdateAvatarPu from "./UpdateAvatarPu";
 function formatDateString(dateString) {
   // Check if the dateString is not empty
   if (dateString) {
@@ -35,39 +35,17 @@ function formatDateString(dateString) {
   // If dateString is empty, return an empty string
   return "";
 }
-function updateTabLabels() {
-  // Lấy tất cả các input và label trong container tabs
-  const tabsContainer = document.getElementById("tabs");
-  const inputs = tabsContainer.getElementsByTagName("input");
-  const labels = tabsContainer.getElementsByTagName("label");
-
-  // Duyệt qua từng input và cập nhật thuộc tính 'for' của label tương ứng
-  for (let i = 0; i < inputs.length; i++) {
-    const inputId = inputs[i].id;
-    const labelFor = "radio-" + (i + 1);
-
-    // Cập nhật id cho input và thuộc tính 'for' cho label
-    inputs[i].id = labelFor;
-    labels[i].setAttribute("for", labelFor);
-  }
-}
-
 function Profile({ handleChangeImg }) {
-  const initialValue = {
-    avatar: "default",
-    imageSrc: defaultImage,
-    imageFile: null,
-  };
+
   const location = useLocation();
   // ````````````````````````````
-  const [value, setValue] = useState(initialValue);
   const [user, setUser] = useState({});
   const [tab, setTab] = useState("");
-
   const sessionData = JSON.parse(sessionStorage.getItem("userSession")) || {};
-  const { role, currentUserId } = sessionData;
+  const { currentUserId } = sessionData;
   const { userId } = location.state || {};
   const [activePopup, setActivePopup] = useState(false);
+  const [resetAvatar, setResetAvatar] = useState(true);
   const [display, setDisplay] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [inputs, setInputs] = useState({
@@ -90,7 +68,6 @@ function Profile({ handleChangeImg }) {
     userInstance
       .get(`GetUserById/${currentUserId}?idAccount=${userId}`)
       .then((res) => {
-        console.log(res?.data?.result);
         setUser(res?.data?.result);
         const user = res?.data?.result;
         if (user.role === "Admin") {
@@ -100,8 +77,6 @@ function Profile({ handleChangeImg }) {
         } else {
           setTab("degree");
         }
-        console.log("User1: " + currentUserId);
-        console.log("User2: " + userId);
         // Update inputs here after user is fetched
         setInputs({
           userName: user?.username || "",
@@ -118,18 +93,12 @@ function Profile({ handleChangeImg }) {
           follower: user?.follower,
           following: user?.following,
         });
-        if (res?.data?.result.imageSrc === "https://localhost:7006/Images/")
-          return;
-        setValue({
-          ...value,
-          imageSrc: res?.data?.result.imageSrc,
-        });
+        console.log(inputs)
         if (user.role === "Business") {
           postInstance
             .get(`GetPostByUser/${userId}`)
             .then((res) => {
               setUserPost(res?.data?.result);
-              console.log(userPost);
             })
             .catch((error) => {
               console.error(error);
@@ -154,10 +123,8 @@ function Profile({ handleChangeImg }) {
               console.log(error);
             });
         }
-        console.log(userBlog);
       });
-  }, [userId]);
-  console.log(user);
+  }, [userId, resetAvatar]);
   // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   const projectStatus = (process) => {
     switch (process) {
@@ -202,49 +169,7 @@ function Profile({ handleChangeImg }) {
   const handleUpdateAppear = () => {
     setDisplay(true);
   };
-  const handleUpdateAvatar = (e) => {
-    e.preventDefault();
-    const formData = new FormData();
-    formData.append("avatar", value.avatar);
-    formData.append("ImageFile", value.imageFile);
-    formData.append("ImageSrc", value.imageSrc);
-    userInstance
-      .put(`/UpdateAvatar/${userId}`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data", // Ensure Content-Type is set to multipart/form-data
-        },
-      })
-      .then((res) => {
-        setDisplay(false);
-        if (res?.data?.status === "OK") {
-          handleChangeImg("ok");
-        }
-        console.log(res?.data?.status);
-      })
-      .catch((err) => {
-        console.log(err?.response?.data);
-      });
-  };
-  const showPreview = (e) => {
-    if (e.target.files && e.target.files[0]) {
-      let imageFile = e.target.files[0];
-      const reader = new FileReader();
-      reader.onload = (x) => {
-        setValue({
-          ...value,
-          imageFile,
-          imageSrc: x.target.result,
-        });
-      };
-      reader.readAsDataURL(imageFile);
-    } else {
-      setValue({
-        ...value,
-        imageFile: null,
-        imageSrc: defaultImage,
-      });
-    }
-  };
+
   const hanldeSetTab = (tab) => {
     setTab(tab);
   };
@@ -270,7 +195,12 @@ function Profile({ handleChangeImg }) {
       });
   };
   const [tabs, setTabs] = useState([]);
-
+  const changeImage = (value) => {
+    if (value === 'ok') {
+      setResetAvatar(!resetAvatar);
+      handleChangeImg('ok');
+    }
+  }
   useEffect(() => {
     // Xác định tabs dựa trên role của user
     let tabsBasedOnRole = [];
@@ -293,7 +223,6 @@ function Profile({ handleChangeImg }) {
 
     setTabs(tabsBasedOnRole);
   }, [user.role]); // Chỉ chạy lại khi user.role thay đổi
-
   // const handleSetTab = (action) => {
   //   console.log(action);
   // };
@@ -315,23 +244,16 @@ function Profile({ handleChangeImg }) {
                     : inputs.imageSrc
                 }
                 alt=""
-                className="w-100 rounded avatar m-auto"
+                style={{ borderRadius: "50%" }}
+                className="avatar m-auto"
               />
+              <UpdateAvatarPu show={display}
+                onClose={() => setDisplay(false)}
+                image={inputs.imageSrc}
+                currentUserId={currentUserId}
+                changeImage={changeImage} />
               {display ? (
-                <div className="d-flex flex-column ">
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={showPreview}
-                    className="my-2"
-                  />
-                  <button
-                    onClick={handleUpdateAvatar}
-                    className="btn btn-primary m-auto"
-                  >
-                    {" "}
-                    Submit
-                  </button>
+                <div className="d-flex flex-row my-3">
                 </div>
               ) : currentUserId !== userId ? (
                 <button
@@ -561,9 +483,8 @@ function Profile({ handleChangeImg }) {
                 {user.role === "Member" && tab === "degree" && <DegreePu />}
                 {user.role === "Member" && tab === "degree" && (
                   <button
-                    className={`height-50 btn-info btn ${
-                      tab === "degree" ? "active" : ""
-                    }`}
+                    className={`height-50 btn-info btn ${tab === "degree" ? "active" : ""
+                      }`}
                     onClick={() => hanldeSetTab("degree")}
                   >
                     View All
@@ -572,9 +493,8 @@ function Profile({ handleChangeImg }) {
 
                 {user.role === "Admin" && tab === "blog" && (
                   <button
-                    className={`height-50 btn-info btn ${
-                      tab === "blog" ? "active" : ""
-                    }`}
+                    className={`height-50 btn-info btn ${tab === "blog" ? "active" : ""
+                      }`}
                     onClick={() => hanldeSetTab("blog")}
                   >
                     {" "}
@@ -583,9 +503,8 @@ function Profile({ handleChangeImg }) {
                 )}
                 {user.role === "Business" && tab === "post" && (
                   <button
-                    className={`height-50 btn-info btn ${
-                      tab === "post" ? "active" : ""
-                    }`}
+                    className={`height-50 btn-info btn ${tab === "post" ? "active" : ""
+                      }`}
                     onClick={() => hanldeSetTab("post")}
                   >
                     {" "}
@@ -594,9 +513,8 @@ function Profile({ handleChangeImg }) {
                 )}
                 {user.role !== "Admin" && tab === "project" && (
                   <button
-                    className={`height-50 btn-info btn ${
-                      tab === "project" ? "active" : ""
-                    }`}
+                    className={`height-50 btn-info btn ${tab === "project" ? "active" : ""
+                      }`}
                     onClick={() => hanldeSetTab("project")}
                   >
                     {" "}
@@ -631,159 +549,163 @@ function Profile({ handleChangeImg }) {
               {/* DegreeTab */}
               {user.role === "Business" && tab === "post" && (
                 <div className="post tab-content">
-                  {/* start Post */}
-                  {userPost.map((post) => (
-                    <div className="row">
-                      <div className="col-3 d-flex justify-content-center img-contain">
-                        <img
-                          src={
-                            post.viewPostImages.length > 0
-                              ? post.viewPostImages[0].imageSrc
-                              : defaultProject
-                          }
-                          alt=""
-                          className="image"
-                        />
-                      </div>
-                      <div className="col-7 d-flex flex-column justify-content-start">
-                        <div className="d-flex items-center">
-                          <img
-                            className="avata-s mr-4"
-                            src={post.avatar}
-                            alt="Instructor Cooper Bator"
-                          />
-                          <div className="left-30 d-flex flex-column justify-content-center">
-                            <div className="size-20 SFU-heavy d-flex ellipsis">
-                              {post.fullName}
+                  {
+                    userPost.length > 0 ?
+                      userPost.map((post) => (
+                        <div className="row">
+                          <div className="col-3 d-flex justify-content-center img-contain">
+                            <img
+                              src={
+                                post.viewPostImages.length > 0
+                                  ? post.viewPostImages[0].imageSrc
+                                  : defaultProject
+                              }
+                              alt=""
+                              className="image"
+                            />
+                          </div>
+                          <div className="col-7 d-flex flex-column justify-content-start">
+                            <div className="d-flex items-center">
+                              <img
+                                className="avata-s mr-4"
+                                src={post.avatar}
+                                alt="Instructor Cooper Bator"
+                              />
+                              <div className="left-30 d-flex flex-column justify-content-center">
+                                <div className="size-20 SFU-heavy d-flex ellipsis">
+                                  {post.fullName}
+                                </div>
+                                <div className="size-14 SFU-reg text-gray-600 d-flex ellipsis">
+                                  {formatDateString(post.createdDate)}
+                                </div>
+                              </div>
                             </div>
-                            <div className="size-14 SFU-reg text-gray-600 d-flex ellipsis">
-                              {formatDateString(post.createdDate)}
-                            </div>
+                            <p className="degree-description ellipsis">
+                              Post Title: {post.title}
+                            </p>
+                          </div>
+                          <div className="col-2 d-flex justify-content-center align-items-center">
+                            <button className="btn degree-detail">
+                              View Detail
+                            </button>
                           </div>
                         </div>
-                        <p className="degree-description ellipsis">
-                          Post Title: {post.title}
-                        </p>
-                      </div>
-                      <div className="col-2 d-flex justify-content-center align-items-center">
-                        <button className="btn degree-detail">
-                          View Detail
-                        </button>
-                      </div>
-                    </div>
-                  ))}
+                      )) : <p>There is no post </p>}
                 </div>
               )}
               {/* Posttab of business profile*/}
               {user.role === "Admin" && tab === "blog" && (
                 <div className="blog tab-content">
-                  {/* start Post */}
-                  {userBlog.map((blog) => (
-                    <div className="row" key={blog.idBlog}>
-                      <div className="col-3 d-flex justify-content-center img-contain">
-                        <img
-                          src={
-                            blog.viewBlogImages.length > 0
-                              ? blog.viewBlogImages[0].imageSrc
-                              : defaultProject
-                          }
-                          alt=""
-                          className="image"
-                        />
-                      </div>
-                      <div className="col-7 d-flex flex-column justify-content-start">
-                        <div className="d-flex items-center">
-                          <img
-                            className="avata-s mr-4"
-                            src={blog.avatar}
-                            alt="Instructor Cooper Bator"
-                          />
-                          <div className="left-30 d-flex flex-column justify-content-center">
-                            <div className="size-20 SFU-heavy d-flex ellipsis">
-                              {blog.fullName}
+                  {
+                    userBlog.length > 0 ?
+                      userBlog.map((blog) => (
+                        <div className="row" key={blog.idBlog}>
+                          <div className="col-3 d-flex justify-content-center img-contain">
+                            <img
+                              src={
+                                blog.viewBlogImages.length > 0
+                                  ? blog.viewBlogImages[0].imageSrc
+                                  : defaultProject
+                              }
+                              alt=""
+                              className="image"
+                            />
+                          </div>
+                          <div className="col-7 d-flex flex-column justify-content-start">
+                            <div className="d-flex items-center">
+                              <img
+                                className="avata-s mr-4"
+                                src={blog.avatar}
+                                alt="Instructor Cooper Bator"
+                              />
+                              <div className="left-30 d-flex flex-column justify-content-center">
+                                <div className="size-20 SFU-heavy d-flex ellipsis">
+                                  {blog.fullName}
+                                </div>
+                                <div className="size-14 SFU-reg text-gray-600 d-flex ellipsis">
+                                  {formatDateString(blog.createdDate)}
+                                </div>
+                              </div>
                             </div>
-                            <div className="size-14 SFU-reg text-gray-600 d-flex ellipsis">
-                              {formatDateString(blog.createdDate)}
-                            </div>
+                            <p className="degree-description ellipsis">
+                              Post Title:{blog.title}
+                            </p>
+                          </div>
+                          <div className="col-2 d-flex justify-content-center align-items-center">
+                            <button className="btn degree-detail">
+                              View Detail
+                            </button>
                           </div>
                         </div>
-                        <p className="degree-description ellipsis">
-                          Post Title:{blog.title}
-                        </p>
-                      </div>
-                      <div className="col-2 d-flex justify-content-center align-items-center">
-                        <button className="btn degree-detail">
-                          View Detail
-                        </button>
-                      </div>
-                    </div>
-                  ))}
+                      )) : <p>There is no blog</p>}
                 </div>
               )}
               {user.role !== "Admin" && tab === "project" && (
                 <div className="project tab-content">
                   <div className="row" id="all-projects">
-                    {userProject.map((project) => (
-                      <div className="col-md-6" id="project-items-1">
-                        <div className="card">
-                          <div className="card-body">
-                            <div className="d-flex mb-3">
-                              <div className="flex-grow-1 align-items-start">
-                                <div>
-                                  <h6 className="mb-0 text-muted">
-                                    <i className="mdi mdi-circle-medium text-danger fs-3 align-middle"></i>
-                                    <span className="team-date">
-                                      {formatDateString(project.createdDate)}
-                                    </span>
-                                  </h6>
+                    {
+                      userProject.length > 0 ?
+                        userProject.map((project) => (
+                          <div className="col-md-6" id="project-items-1">
+                            <div className="card">
+                              <div className="card-body">
+                                <div className="d-flex mb-3">
+                                  <div className="flex-grow-1 align-items-start">
+                                    <div>
+                                      <h6 className="mb-0 text-muted">
+                                        <i className="mdi mdi-circle-medium text-danger fs-3 align-middle"></i>
+                                        <span className="team-date">
+                                          {formatDateString(project.createdDate)}
+                                        </span>
+                                      </h6>
+                                    </div>
+                                  </div>
                                 </div>
-                              </div>
-                            </div>
 
-                            <div className="mb-4">
-                              <h5 className="mb-1 font-size-17 team-title ellipsis">
-                                {project.name}
-                              </h5>
-                              <p className="text-muted mb-0 team-description ellipsis">
-                                {project.description}
-                              </p>
-                            </div>
-                            <div className="d-flex">
-                              <div className="avatar-group float-start flex-grow-1 task-assigne">
-                                {/* Clone from */}
-                                <div className="avatar-group-item">
-                                  <img
-                                    src="https://bootdey.com/img/Content/avatar/avatar1.png"
-                                    alt=""
-                                    className="rounded-circle avatar-sm"
-                                  />
+                                <div className="mb-4">
+                                  <h5 className="mb-1 font-size-17 team-title ellipsis">
+                                    {project.name}
+                                  </h5>
+                                  <p className="text-muted mb-0 team-description ellipsis">
+                                    {project.description}
+                                  </p>
                                 </div>
-                                {/* to THis */}
-                                <div className="avatar-group-item">
-                                  <img
-                                    src="https://bootdey.com/img/Content/avatar/avatar1.png"
-                                    alt=""
-                                    className="rounded-circle avatar-sm"
-                                  />
+                                <div className="d-flex">
+                                  <div className="avatar-group float-start flex-grow-1 task-assigne">
+                                    {/* Clone from */}
+                                    <div className="avatar-group-item">
+                                      <img
+                                        src="https://bootdey.com/img/Content/avatar/avatar1.png"
+                                        alt=""
+                                        className="rounded-circle avatar-sm"
+                                      />
+                                    </div>
+                                    {/* to THis */}
+                                    <div className="avatar-group-item">
+                                      <img
+                                        src="https://bootdey.com/img/Content/avatar/avatar1.png"
+                                        alt=""
+                                        className="rounded-circle avatar-sm"
+                                      />
+                                    </div>
+                                    <div className="avatar-group-item">
+                                      <img
+                                        src="https://bootdey.com/img/Content/avatar/avatar1.png"
+                                        alt=""
+                                        className="rounded-circle avatar-sm"
+                                      />
+                                    </div>
+                                  </div>
+                                  <div className="align-self-end">
+                                    <span className="badge badge-soft-danger p-2 team-status">
+                                      {projectStatus(project.process)}
+                                    </span>
+                                  </div>
                                 </div>
-                                <div className="avatar-group-item">
-                                  <img
-                                    src="https://bootdey.com/img/Content/avatar/avatar1.png"
-                                    alt=""
-                                    className="rounded-circle avatar-sm"
-                                  />
-                                </div>
-                              </div>
-                              <div className="align-self-end">
-                                <span className="badge badge-soft-danger p-2 team-status">
-                                  {projectStatus(project.process)}
-                                </span>
                               </div>
                             </div>
                           </div>
-                        </div>
-                      </div>
-                    ))}
+                        )) : <p>There is no project</p>}
                   </div>
                 </div>
               )}
