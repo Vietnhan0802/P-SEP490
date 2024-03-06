@@ -16,7 +16,6 @@ namespace Post
             var posts = _context.Postts.ToList();
             foreach (var post in posts)
             {
-                post.viewHistory = post.viewInDate;
                 post.viewInDate = 0;
             }
             _context.SaveChanges();
