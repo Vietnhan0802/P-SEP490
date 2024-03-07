@@ -9,7 +9,9 @@ import Roger from "../../images/chat/Roger.png";
 import Carla from "../../images/chat/Carla.png";
 import Brandon from "../../images/chat/Brandon.png";
 import "../Notify/notify.scss";
+import { useTranslation } from 'react-i18next';
 function Notify() {
+  const {t} = useTranslation()
   const chatList = [
     {
       id: 1,
@@ -85,9 +87,9 @@ function Notify() {
     >
       <div className="d-flex justify-content-between align-items-center">
         <div>
-          <h2 className="mb-2">Notification</h2>
-          <button className="btn btn-outline-secondary me-3">All</button>
-          <button className="btn btn-outline-secondary">Unseen</button>
+          <h2 className="mb-2">{t('title_noti')}</h2>
+          <button className="btn btn-outline-secondary me-3">{t('viewnoti')}</button>
+          <button className="btn btn-outline-secondary">{t('notread')}</button>
         </div>
       </div>
       <div className="mt-3">

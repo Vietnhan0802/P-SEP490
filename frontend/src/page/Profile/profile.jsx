@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 import { useState } from "react";
 import "../Profile/profile.scss";
 import "../Profile/check-box.scss";
-import "../Profile/switch-btn.scss";
 import "../Profile/project.scss";
 import "../Profile/switchbtn.scss";
 import degree from "../../images/common/degree.png";
