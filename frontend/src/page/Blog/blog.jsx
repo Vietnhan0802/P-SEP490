@@ -73,6 +73,7 @@ function Blog({ blogId, onBlogClick, activeItem, onItemClick }) {
   const [blogPopups, setBlogPopups] = useState({});
   const [data, setData] = useState([]);
   const sessionData = JSON.parse(sessionStorage.getItem("userSession")) || {};
+  const {currentUserId} =sessionData;
   const { role, userId } = sessionData;
   const [reset, setReset] = useState(true);
 
@@ -152,7 +153,7 @@ function Blog({ blogId, onBlogClick, activeItem, onItemClick }) {
 
       // Make the API call to update the like state in the backend
       blogInstance
-        .post(`LikeOrUnlikeBlog/${userId}/${idBlog}`)
+        .post(`LikeOrUnlikeBlog/${currentUserId}/${idBlog}`)
         .then(() => {
           // If the API call is successful, you can optionally refresh the data from the server
           // to ensure the UI is in sync with the backend state
@@ -199,7 +200,7 @@ function Blog({ blogId, onBlogClick, activeItem, onItemClick }) {
   };
   useEffect(() => {
     blogInstance
-      .get(`GetAllBlogs/${userId}`)
+      .get(`GetAllBlogs/${currentUserId}`)
       .then((res) => {
         const blogList = res?.data?.result;
         setData([]);
@@ -239,7 +240,7 @@ function Blog({ blogId, onBlogClick, activeItem, onItemClick }) {
             </div>
             <div className="d-flex flex-row align-items-center col-auto m-md-0-cus mt-2 p-0">
               <BlogPu />
-              <button type="button" class="btn btn-info text-white">
+              <button type="button" className="btn btn-info text-white">
                 Trend
               </button>
             </div>
