@@ -10,7 +10,9 @@ import BlogTable from "./DashboardTable/BlogTable";
 import AccessTable from "./DashboardTable/AccessTable";
 import ReportTable from "./DashboardTable/ReportTable";
 import VerifyTable from "./DashboardTable/VerifyTable";
+import { useTranslation } from 'react-i18next';
 function DashBoard() {
+  const {t} = useTranslation()
   const [activeTab, setActiveTab] = useState("post");
   const value = 13;
   const handleTabClick = (tab) => {
@@ -44,9 +46,9 @@ function DashBoard() {
                   activeTab === "post" ? "active-tab" : ""
                 }`}
               >
-                <div className="mb-1 fs-12">Manage Post</div>
+                <div className="mb-1 fs-12">{t('managepost')}</div>
                 <div className="d-flex justify-content-between">
-                  <p className="fs-24 fw-bold">63 New Post</p>
+                  <p className="fs-24 fw-bold">63 {t('newpost')}</p>
                   <p className="rounded-pill percent fw-bold d-flex justify-content-center align-items-center">
                     12%
                   </p>
@@ -57,7 +59,7 @@ function DashBoard() {
                   onClick={() => handleTabClick("post")}
                 >
                   {
-                    activeTab === "post" ? "Viewing" : "View Detail"
+                    activeTab === "post" ? t('viewing') : t('viewdetail')
                   }                </p>
               </div>
             </Col>
@@ -65,9 +67,9 @@ function DashBoard() {
               <div  className={`card m-1 bg-white p-2 ${
                   activeTab === "access" ? "active-tab" : ""
                 }`}>
-                <div className="mb-1 fs-12">Manage Access</div>
+                <div className="mb-1 fs-12">{t('manageaccess')}</div>
                 <div className="d-flex justify-content-between">
-                  <p className="fs-24 fw-bold">63 Accesses</p>
+                  <p className="fs-24 fw-bold">63 {t('newaccess')}</p>
                   <p className="rounded-pill percent fw-bold d-flex justify-content-center align-items-center">
                     8%
                   </p>
@@ -78,7 +80,7 @@ function DashBoard() {
                   onClick={() => handleTabClick("access")}
                 >
                                    {
-                    activeTab === "access" ? "Viewing" : "View Detail"
+                    activeTab === "access" ? t('viewing') : t('viewdetail')
                   }   
                 </p>
               </div>
@@ -87,9 +89,9 @@ function DashBoard() {
               <div  className={`card m-1 bg-white p-2 ${
                   activeTab === "blog" ? "active-tab" : ""
                 }`}>
-                <div className="mb-1 fs-12">Manage Blog</div>
+                <div className="mb-1 fs-12">{t('manageblog')}</div>
                 <div className="d-flex justify-content-between">
-                  <p className="fs-24 fw-bold">63 New Blog</p>
+                  <p className="fs-24 fw-bold">63 {t('newblog')}</p>
                   <p className="rounded-pill percent fw-bold d-flex justify-content-center align-items-center">
                     12%
                   </p>
@@ -100,7 +102,7 @@ function DashBoard() {
                   onClick={() => handleTabClick("blog")}
                 >
                                    {
-                    activeTab === "blog" ? "Viewing" : "View Detail"
+                    activeTab === "blog" ? t('viewing') : t('viewdetail')
                   }   
                 </p>
               </div>
@@ -109,9 +111,9 @@ function DashBoard() {
               <div  className={`card m-1 bg-white p-2 ${
                   activeTab === "report" ? "active-tab" : ""
                 }`}>
-                <div className="mb-1 fs-12">Manage Report</div>
+                <div className="mb-1 fs-12">{t('managereport')}</div>
                 <div className="d-flex justify-content-between">
-                  <p className="fs-24 fw-bold">63 New Reports</p>
+                  <p className="fs-24 fw-bold">63 {t('newreport')}</p>
                   <p className="rounded-pill percent fw-bold d-flex justify-content-center align-items-center">
                     12%
                   </p>
@@ -122,7 +124,7 @@ function DashBoard() {
                   onClick={() => handleTabClick("report")}
                 >
                                    {
-                    activeTab === "report" ? "Viewing" : "View Detail"
+                    activeTab === "report" ? t('viewing') : t('viewdetail')
                   }   
                 </p>
               </div>
@@ -131,7 +133,7 @@ function DashBoard() {
         </Col>
         <Col md={3}>
           <div className="cover my-0 h-100">
-            <p className="text-center fw-bold fs-20">Manage Verification</p>
+            <p className="text-center fw-bold fs-20">{t('manageverification')}</p>
             <div className=" d-flex justify-content-center mt-3">
               <div
                 style={{ width: 170 }}
@@ -168,12 +170,14 @@ function DashBoard() {
               </div>
             </div>
 
-            <p className="text-center my-2  ">Not processed yet</p>
+            <p className="text-center my-2  ">{t('newverification')}</p>
             <div className="verification  d-flex justify-content-center">
               <div className="mt-2 d-flex align-items-center justify-content-center detail" style={{color: "#175CD3"}}
               onClick={() => handleTabClick("verify")}
               >
-                <MdFullscreen className="me-2 fs-30"  /> <p>View Detail</p>
+                <MdFullscreen className="me-2 fs-30"  /> <p>{
+                    activeTab === "verify" ? t('viewing') : t('viewdetail')
+                  }</p>
               </div>
             </div>
           </div>

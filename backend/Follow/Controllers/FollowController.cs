@@ -68,10 +68,6 @@ namespace Follow.Controllers
         {
             var followings = await _context.Followers
                 .Where(x => x.idOwner == idOwner)
-                .Select(x => new FollowingView
-                {
-                    idAccount = x.idAccount
-                })
                 .OrderByDescending(x => x.createdDate)
                 .AsNoTracking()
                 .ToListAsync();
@@ -79,13 +75,15 @@ namespace Follow.Controllers
             {
                 return new Response(HttpStatusCode.NotFound, "Followings doesn't exists!");
             }
-            foreach (var following in followings)
+            var result = _mapper.Map<List<FollowingView>>(followings);
+            foreach (var following in result)
             {
                 var infoUser = await GetNameUserCurrent(following.idAccount!);
+                following.email = infoUser.email;
                 following.fullName = infoUser.fullName;
                 following.avatar = infoUser.avatar;
             }
-            return new Response(HttpStatusCode.OK, "Get all followings is success!", followings);            
+            return new Response(HttpStatusCode.OK, "Get all followings is success!", result);            
         }
 
         [HttpGet("GetAllFollowers/{idOwner}")]
@@ -93,10 +91,6 @@ namespace Follow.Controllers
         {
             var followers = await _context.Followers
                 .Where(x => x.idAccount == idOwner)
-                .Select(x => new FollowingView
-                {
-                    idAccount = x.idOwner
-                })
                 .OrderByDescending(x => x.createdDate)
                 .AsNoTracking()
                 .ToListAsync();
@@ -104,13 +98,15 @@ namespace Follow.Controllers
             {
                 return new Response(HttpStatusCode.NotFound, "Followers doesn't exists!");
             }
-            foreach (var follower in followers)
+            var result = _mapper.Map<List<FollowingView>>(followers);
+            foreach (var follower in result)
             {
-                var infoUser = await GetNameUserCurrent(follower.idAccount!);
+                var infoUser = await GetNameUserCurrent(follower.idOwner!);
+                follower.email = infoUser.email;
                 follower.fullName = infoUser.fullName;
                 follower.avatar = infoUser.avatar;
             }
-            return new Response(HttpStatusCode.OK, "Get followers is success!", followers);
+            return new Response(HttpStatusCode.OK, "Get followers is success!", result);
         }
 
         [HttpPost("FollowOrUnfollow/{idOwner}/{idAccount}")]

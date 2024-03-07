@@ -17,7 +17,26 @@ const resources = {
 
             /**Translate follow */
             'following': 'Following',
-            'viewfollow': 'View All'
+            'viewfollow': 'View All',
+
+            /**Translate notifi */
+            'title_noti': 'Notification',
+            'viewnoti': 'All',
+            'notread': 'Unseen',
+
+            /**Translate dashboard */
+            'managepost': 'Manage Post',
+            'manageaccess': 'Manage Access',
+            'manageblog': 'Manage Blog',
+            'managereport': 'Manage Report',
+            'manageverification': 'Manage Verification',
+            'newpost': 'New Posts',
+            'newaccess': 'Accesses',
+            'newblog': 'New Blogs',
+            'newreport': 'New Reports',
+            'newverification': 'Not processed yet',
+            'viewing': 'Viewing',
+            'viewdetail': 'View Detail',
         }
     },
     vi: {
@@ -35,7 +54,26 @@ const resources = {
 
             /**Translate follow */
             'following': 'Đang Follow',
-            'viewfollow': 'Xem tất cả'
+            'viewfollow': 'Xem tất cả',
+
+            /**Translate notifi */
+            'title_noti': 'Thông báo',
+            'viewnoti': 'Tất cả',
+            'notread': 'Chưa xem',
+
+            /**Translate dashboard */
+            'managepost': 'Quản lý bài đăng',
+            'manageaccess': 'Quản lý truy cập',
+            'manageblog': 'Quản lý tin tức',
+            'managereport': 'Quản lý báo cáo',
+            'manageverification': 'Quản lý xác minh',
+            'newpost': 'Bài đăng mới',
+            'newaccess': 'Truy cập',
+            'newblog': 'Tin tức mới',
+            'newreport': 'Báo cáo mới',
+            'newverification': 'Chưa được xử lý',
+            'viewing': 'Đang xem',
+            'viewdetail': 'Xem chi tiết',
         }
     }
 };
