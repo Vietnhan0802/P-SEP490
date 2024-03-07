@@ -7,8 +7,6 @@ namespace BusinessObjects.ViewModels.Credential
     {
         public Guid idDegree { get; set; }
         public string? idAccount { get; set; }
-        public string? fullName { get; set; }
-        public string? avatar { get; set; }
         public string? name { get; set; }
         public string? institution { get; set; }
         public string? url { get; set; }
