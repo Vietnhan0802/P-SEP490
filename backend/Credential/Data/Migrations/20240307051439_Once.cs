@@ -17,13 +17,10 @@ namespace Credential.Data.Migrations
                 {
                     idDegree = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     idAccount = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    date = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    institution = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    country = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    type = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    major = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    image = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    institution = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    url = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    file = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     isDeleted = table.Column<bool>(type: "bit", nullable: true),
                     createdDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
