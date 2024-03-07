@@ -1,8 +1,11 @@
 ﻿using AutoMapper;
 using BusinessObjects.Entities.Credential;
+using BusinessObjects.ViewModels.Blog;
 using BusinessObjects.ViewModels.Credential;
 using BusinessObjects.ViewModels.User;
+using Commons.Helpers;
 using Credential.Data;
+using Credential.Validator;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
@@ -17,13 +20,15 @@ namespace Credential.Controllers
     {
         private readonly AppDBContext _context;
         private readonly IMapper _mapper;
+        private readonly SaveImageService _saveImageService;
         private readonly HttpClient client;
         public string UserApiUrl { get; }
 
-        public DegreeController(AppDBContext context, IMapper mapper)
+        public DegreeController(AppDBContext context, IMapper mapper, SaveImageService saveImageService)
         {
             _context = context;
             _mapper = mapper;
+            _saveImageService = saveImageService;
             client = new HttpClient();
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
             client.DefaultRequestHeaders.Accept.Add(contentType);
@@ -96,10 +101,19 @@ namespace Credential.Controllers
         }
 
         [HttpPost("CreateDegree/{idUser}")]
-        public async Task<Response> CreateDegree(string idUser, CreateDegree degreeDTO)
+        public async Task<Response> CreateDegree(string idUser, [FromForm] CreateUpdateDegree createUpdateDegree)
         {
-            var degree = _mapper.Map<Degree>(degreeDTO);
+            var validator = new CreateUpdateDegreeValidator();
+            var validatorResult = validator.Validate(createUpdateDegree);
+            var error = validatorResult.Errors.Select(x => x.ErrorMessage).ToList();
+            if (!validatorResult.IsValid)
+            {
+                return new Response(HttpStatusCode.BadRequest, "Invalid data", error);
+            }
+            var file = await _saveImageService.SaveImage(createUpdateDegree.FileFile);
+            var degree = _mapper.Map<Degree>(createUpdateDegree);
             degree.idAccount = idUser;
+            degree.file = file;
             degree.isDeleted = false;
             degree.createdDate = DateTime.Now;
             await _context.Degrees.AddAsync(degree);
@@ -108,14 +122,14 @@ namespace Credential.Controllers
         }
 
         [HttpPut("UpdateDegree/{idDegree}")]
-        public async Task<Response> UpdateDegree(Guid idDegree, UpdateDegree degreeDTO)
+        public async Task<Response> UpdateDegree(Guid idDegree, [FromForm] CreateUpdateDegree createUpdateDegree)
         {
             var degree = await _context.Degrees.FirstOrDefaultAsync(x => x.idDegree == idDegree);
             if (degree == null)
             {
                 return new Response(HttpStatusCode.NotFound, "Degree doesn't exists!");
             }
-            _mapper.Map(degreeDTO, degree);
+            _mapper.Map(createUpdateDegree, degree);
             _context.Degrees.Update(degree);
             await _context.SaveChangesAsync();
             return new Response(HttpStatusCode.OK, "Update degree is success!", _mapper.Map<ViewDegree>(degree));

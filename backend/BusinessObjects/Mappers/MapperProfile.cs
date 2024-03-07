@@ -35,8 +35,7 @@ namespace BusinessObjects.Mappers
             CreateMap<Message, CreateUpdateMessage>().ReverseMap();
             CreateMap<Message, ViewMessage>().ReverseMap();
 
-            CreateMap<Degree, CreateDegree>().ReverseMap();
-            CreateMap<Degree, UpdateDegree>().ReverseMap();
+            CreateMap<Degree, CreateUpdateDegree>().ReverseMap();
             CreateMap<Degree, ViewDegree>().ReverseMap();
 
             CreateMap<Follower, FollowingView>().ReverseMap();

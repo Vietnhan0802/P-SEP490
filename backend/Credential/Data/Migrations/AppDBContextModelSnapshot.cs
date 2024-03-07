@@ -28,40 +28,25 @@ namespace Credential.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("country")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime>("createdDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("date")
-                        .HasColumnType("datetime2");
+                    b.Property<string>("file")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("idAccount")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("image")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("institution")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool?>("isDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<string>("major")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("name")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("type")
-                        .IsRequired()
+                    b.Property<string>("url")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("idDegree");
