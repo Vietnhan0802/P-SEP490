@@ -35,7 +35,7 @@ namespace Credential.Controllers
             UserApiUrl = "https://localhost:7006/api/User";
         }
 
-        [HttpGet("GetNameUserCurrent/{idUser}")]
+        /*[HttpGet("GetNameUserCurrent/{idUser}")]
         private async Task<ViewUser> GetNameUserCurrent(string idUser)
         {
             HttpResponseMessage response = await client.GetAsync($"{UserApiUrl}/GetNameUser/{idUser}");
@@ -47,7 +47,7 @@ namespace Credential.Controllers
             var user = JsonSerializer.Deserialize<ViewUser>(strData, option);
 
             return user!;
-        }
+        }*/
 
         [HttpGet("GetAllDegree")]
         public async Task<Response> GetAllDegree()
@@ -60,9 +60,7 @@ namespace Credential.Controllers
             var result = _mapper.Map<List<ViewDegree>>(degrees);
             foreach (var degree in result)
             {
-                var infoUser = await GetNameUserCurrent(degree.idAccount!);
-                degree.fullName = infoUser.fullName;
-                degree.avatar = infoUser.avatar;
+                degree.FileSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, degree.file);
             }
             return new Response(HttpStatusCode.OK, "Get all degree success!", result);
         }
@@ -78,9 +76,7 @@ namespace Credential.Controllers
             var result = _mapper.Map<List<ViewDegree>>(degrees);
             foreach (var degree in result)
             {
-                var infoUser = await GetNameUserCurrent(degree.idAccount!);
-                degree.fullName = infoUser.fullName;
-                degree.avatar = infoUser.avatar;
+                degree.FileSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, degree.file);
             }
             return new Response(HttpStatusCode.OK, "Get degree by user success!", result);
         }
@@ -94,16 +90,14 @@ namespace Credential.Controllers
                 return new Response(HttpStatusCode.NotFound, "Degree doesn't exists!");
             }
             var result = _mapper.Map<ViewDegree>(degree);
-            var infoUser = await GetNameUserCurrent(result.idAccount!);
-            result.fullName = infoUser.fullName;
-            result.avatar = infoUser.avatar;
+            result.FileSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, result.file);
             return new Response(HttpStatusCode.OK, "Get degree by is success!", result);
         }
 
         [HttpPost("CreateDegree/{idUser}")]
         public async Task<Response> CreateDegree(string idUser, [FromForm] CreateUpdateDegree createUpdateDegree)
         {
-            var validator = new CreateUpdateDegreeValidator();
+            var validator = new CreateDegreeValidator();
             var validatorResult = validator.Validate(createUpdateDegree);
             var error = validatorResult.Errors.Select(x => x.ErrorMessage).ToList();
             if (!validatorResult.IsValid)
@@ -124,10 +118,22 @@ namespace Credential.Controllers
         [HttpPut("UpdateDegree/{idDegree}")]
         public async Task<Response> UpdateDegree(Guid idDegree, [FromForm] CreateUpdateDegree createUpdateDegree)
         {
+            var validator = new UpdateDegreeValidator();
+            var validatorResult = validator.Validate(createUpdateDegree);
+            var error = validatorResult.Errors.Select(x => x.ErrorMessage).ToList();
+            if (!validatorResult.IsValid)
+            {
+                return new Response(HttpStatusCode.BadRequest, "Invalid data", error);
+            }
             var degree = await _context.Degrees.FirstOrDefaultAsync(x => x.idDegree == idDegree);
             if (degree == null)
             {
                 return new Response(HttpStatusCode.NotFound, "Degree doesn't exists!");
+            }
+            if (createUpdateDegree.FileFile != null)
+            {
+                _saveImageService.DeleteImage(degree.file);
+                createUpdateDegree.file = await _saveImageService.SaveImage(createUpdateDegree.FileFile);
             }
             _mapper.Map(createUpdateDegree, degree);
             _context.Degrees.Update(degree);
