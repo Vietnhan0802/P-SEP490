@@ -372,6 +372,16 @@ backend/Blog/Images/*.tif
 backend/Blog/Images/*.webp
 backend/Blog/Images/*.svg
 
+backend/Credential/Images/*.jpg
+backend/Credential/Images/*.jpeg
+backend/Credential/Images/*.png
+backend/Credential/Images/*.gif
+backend/Credential/Images/*.bmp
+backend/Credential/Images/*.tiff
+backend/Credential/Images/*.tif
+backend/Credential/Images/*.webp
+backend/Credential/Images/*.svg
+
 backend/Post/Images/*.jpg
 backend/Post/Images/*.jpeg
 backend/Post/Images/*.png
