@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import "../Profile/profile.scss";
 import "../Profile/check-box.scss";
@@ -40,6 +40,7 @@ function Profile({ handleChangeImg }) {
   const location = useLocation();
   // ````````````````````````````
   const [user, setUser] = useState({});
+  const [follow, setFollow] = useState(true);
   const [tab, setTab] = useState("");
   const sessionData = JSON.parse(sessionStorage.getItem("userSession")) || {};
   const { currentUserId } = sessionData;
@@ -59,6 +60,7 @@ function Profile({ handleChangeImg }) {
     imageSrc: "",
     follower: 0,
     following: 0,
+    isFollow: true
   });
   const [userPost, setUserPost] = useState([]);
   const [userProject, setUserProject] = useState([]);
@@ -92,8 +94,8 @@ function Profile({ handleChangeImg }) {
           imageSrc: user?.imageSrc,
           follower: user?.follower,
           following: user?.following,
+          isFollow: user?.isFollow
         });
-        console.log(inputs)
         if (user.role === "Business") {
           postInstance
             .get(`GetPostByUser/${userId}`)
@@ -107,7 +109,6 @@ function Profile({ handleChangeImg }) {
             .get(`GetProjectByUser/${userId}`)
             .then((res) => {
               setUserProject(res?.data?.result);
-              console.log(userProject);
             })
             .catch((error) => {
               console.error(error);
@@ -189,6 +190,12 @@ function Profile({ handleChangeImg }) {
       )
       .then((res) => {
         console.log(res?.data?.result);
+        setInputs(prevInputs => ({
+          ...prevInputs,
+          isFollow: !inputs.isFollow,
+        }));
+        setFollow(!follow);
+        setFollow(!follow);
       })
       .catch((error) => {
         console.error(error);
@@ -225,7 +232,6 @@ function Profile({ handleChangeImg }) {
   // const handleSetTab = (action) => {
   //   console.log(action);
   // };
-  console.log(display)
 
   return (
     <>
@@ -252,12 +258,12 @@ function Profile({ handleChangeImg }) {
                 image={inputs.imageSrc}
                 currentUserId={currentUserId}
                 changeImage={changeImage} />
-              {display && currentUserId !== userId ? (
+              {display === false && currentUserId !== userId ? (
                 <button
                   className="btn edit-btn mt-3 w-75 m-auto"
                   onClick={() => handleFollow()}
                 >
-                  Follow
+                  {inputs.isFollow ? 'UnFollow' : 'Follow'}
                 </button>
               ) : (
                 <button
@@ -711,7 +717,7 @@ function Profile({ handleChangeImg }) {
           </section>
         </Col>
         <Col md={3}>
-          <Follow />
+          <Follow newFollow={follow} />
         </Col>
       </Row>
     </>

@@ -62,7 +62,6 @@ function UpdateAvatarPu({ show, onClose, image, currentUserId, changeImage }) {
                 if (res?.data?.status === "OK") {
                     changeImage('ok');
                 }
-                console.log(res?.data?.status);
             })
             .catch((err) => {
                 console.log(err?.response?.data);

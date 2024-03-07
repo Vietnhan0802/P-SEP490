@@ -129,10 +129,10 @@ function Table({ columns, data }) {
       </div>
 
       <div className="flex flex-col">
-        <div class="over-x-auto">
+        <div className="over-x-auto">
           <table
             {...getTableProps()}
-            class="min-w-full"
+            className="min-w-full"
             style={{
               borderCollapse: "separate",
               borderSpacing: "0 1px",

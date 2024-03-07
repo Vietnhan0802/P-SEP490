@@ -278,7 +278,7 @@ function Post({ postId, onPostClick, activeItem, onItemClick }) {
           </div>
           <div className="d-flex flex-row align-items-center col-auto m-md-0-cus mt-2 p-0">
             <PostPu />
-            <button type="button" class="btn btn-info text-white">Trend</button>
+            <button type="button" className="btn btn-info text-white">Trend</button>
           </div>
 
           
