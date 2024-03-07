@@ -2,7 +2,7 @@ import "./scss/font.scss";
 import "./scss/size.scss";
 import "./scss/color.scss";
 import "./scss/App.scss";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState,useContext } from "react";
 import SignIn from "./page/SignIn/signIn";
 import SignUp from "./page/SignUp/signUp";
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
