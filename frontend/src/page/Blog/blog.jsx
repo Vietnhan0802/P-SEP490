@@ -4,14 +4,18 @@ import "../Blog/blog.scss";
 import { CiCircleChevRight } from "react-icons/ci";
 import { IoFlagOutline } from "react-icons/io5";
 import { FaHeart } from "react-icons/fa";
+import { CiSearch } from "react-icons/ci";
 import { FiEye } from "react-icons/fi";
 import { RiAdminLine } from "react-icons/ri";
 import { CiHeart } from "react-icons/ci";
 import ReportPopup from "../../components/Popup/reportPopup";
 import { blogInstance } from "../../axios/axiosConfig";
 import Cookies from "js-cookie";
-
-import Notification, { notifySuccess, notifyError } from "../../components/notification";
+import BlogPu from "./blogPu";
+import Notification, {
+  notifySuccess,
+  notifyError,
+} from "../../components/notification";
 function calculateTimeDifference(targetDate) {
   // Convert the target date string to a Date object
   const targetTime = new Date(targetDate).getTime();
@@ -38,21 +42,37 @@ function calculateTimeDifference(targetDate) {
   }
 }
 function Blog({ blogId, onBlogClick, activeItem, onItemClick }) {
-  const createData = (id, createdDate, title, content, view, like, viewBlogImages, fullName) => {
+  const createData = (
+    id,
+    createdDate,
+    title,
+    content,
+    view,
+    like,
+    viewBlogImages,
+    fullName
+  ) => {
     return {
-      id, createdDate, title, content, view, like, viewBlogImages, fullName
-    }
-  }
+      id,
+      createdDate,
+      title,
+      content,
+      view,
+      like,
+      viewBlogImages,
+      fullName,
+    };
+  };
 
   //_________________________________________________________//
   const [inputs, setInputs] = useState({
-    title: '',
-    content: '',
+    title: "",
+    content: "",
     CreateUpdateBlogImages: [], // new state for managing multiple images
   });
   const [blogPopups, setBlogPopups] = useState({});
   const [data, setData] = useState([]);
-  const sessionData = JSON.parse(sessionStorage.getItem('userSession')) || {};
+  const sessionData = JSON.parse(sessionStorage.getItem("userSession")) || {};
   const { role, userId } = sessionData;
   const [reset, setReset] = useState(true);
 
@@ -61,27 +81,37 @@ function Blog({ blogId, onBlogClick, activeItem, onItemClick }) {
   const hanldeViewDetail = (blogId) => {
     onBlogClick(blogId);
     onItemClick("blog_detail");
-  }
+  };
   const handleReportClick = (blogId) => {
     setBlogPopups((prev) => ({ ...prev, [blogId]: true }));
   };
   const handleCreateBlog = () => {
     const formData = new FormData();
-    formData.append('title', inputs.title);
-    formData.append('content', inputs.content);
+    formData.append("title", inputs.title);
+    formData.append("content", inputs.content);
 
     inputs.CreateUpdateBlogImages.forEach((imageInfo, index) => {
-      formData.append(`CreateUpdateBlogImages[${index}].image`, imageInfo.image);
-      formData.append(`CreateUpdateBlogImages[${index}].imageFile`, imageInfo.imageFile);
-      formData.append(`CreateUpdateBlogImages[${index}].imageSrc`, imageInfo.imageSrc);
+      formData.append(
+        `CreateUpdateBlogImages[${index}].image`,
+        imageInfo.image
+      );
+      formData.append(
+        `CreateUpdateBlogImages[${index}].imageFile`,
+        imageInfo.imageFile
+      );
+      formData.append(
+        `CreateUpdateBlogImages[${index}].imageSrc`,
+        imageInfo.imageSrc
+      );
     });
 
-    blogInstance.post(`/CreateBlog/${userId}`, formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-        accept: 'application/json',
-      },
-    })
+    blogInstance
+      .post(`/CreateBlog/${userId}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          accept: "application/json",
+        },
+      })
       .then((res) => {
         console.log(res.data);
         notifySuccess("Create blog successfully!");
@@ -89,7 +119,7 @@ function Blog({ blogId, onBlogClick, activeItem, onItemClick }) {
       })
       .catch((err) => {
         console.log(err);
-        notifyError("Create blog failed!")
+        notifyError("Create blog failed!");
       });
   };
   const readFileAsDataURL = (file) => {
@@ -107,19 +137,22 @@ function Blog({ blogId, onBlogClick, activeItem, onItemClick }) {
   //Hanlde like or unlike the the blog
   const handleLikeOrUnlikeBlog = (idBlog) => {
     // Find the index of the blog item to update
-    const index = data.findIndex(item => item.id === idBlog);
+    const index = data.findIndex((item) => item.id === idBlog);
     if (index !== -1) {
       // Toggle the like state and update the like count for the specific blog item
       const newData = [...data]; // Copy the current state
       const isLiked = !newData[index].isLike; // Toggle the current like state
       newData[index].isLike = isLiked; // Update the like state
       // Update the like count based on the new like state
-      newData[index].like = isLiked ? newData[index].like + 1 : newData[index].like - 1;
+      newData[index].like = isLiked
+        ? newData[index].like + 1
+        : newData[index].like - 1;
 
       setData(newData); // Update the state with the new array
 
       // Make the API call to update the like state in the backend
-      blogInstance.post(`LikeOrUnlikeBlog/${userId}/${idBlog}`)
+      blogInstance
+        .post(`LikeOrUnlikeBlog/${userId}/${idBlog}`)
         .then(() => {
           // If the API call is successful, you can optionally refresh the data from the server
           // to ensure the UI is in sync with the backend state
@@ -129,7 +162,9 @@ function Blog({ blogId, onBlogClick, activeItem, onItemClick }) {
           // Revert the like state and count in case of an error
           const revertData = [...data];
           revertData[index].isLike = !isLiked; // Revert the like state
-          revertData[index].like = revertData[index].isLike ? revertData[index].like + 1 : revertData[index].like - 1;
+          revertData[index].like = revertData[index].isLike
+            ? revertData[index].like + 1
+            : revertData[index].like - 1;
           setData(revertData);
         });
     }
@@ -137,7 +172,7 @@ function Blog({ blogId, onBlogClick, activeItem, onItemClick }) {
   // Handler function to update the state when the input changes
   const handleInputChange = (event) => {
     const { name, value, type } = event.target;
-    if (type === 'file') {
+    if (type === "file") {
       const files = Array.from(event.target.files);
 
       // Use FileReader to convert each file to base64
@@ -152,7 +187,10 @@ function Blog({ blogId, onBlogClick, activeItem, onItemClick }) {
       Promise.all(newImages).then((convertedImages) => {
         setInputs((values) => ({
           ...values,
-          CreateUpdateBlogImages: [...values.CreateUpdateBlogImages, ...convertedImages],
+          CreateUpdateBlogImages: [
+            ...values.CreateUpdateBlogImages,
+            ...convertedImages,
+          ],
         }));
       });
     } else {
@@ -160,13 +198,14 @@ function Blog({ blogId, onBlogClick, activeItem, onItemClick }) {
     }
   };
   useEffect(() => {
-    blogInstance.get(`GetAllBlogs/${userId}`)
+    blogInstance
+      .get(`GetAllBlogs/${userId}`)
       .then((res) => {
         const blogList = res?.data?.result;
         setData([]);
         blogList.map((element) => {
           const time = calculateTimeDifference(element.createdDate);
-          setData((prevData) => ([
+          setData((prevData) => [
             ...prevData,
             createData(
               element.idBlog,
@@ -176,17 +215,36 @@ function Blog({ blogId, onBlogClick, activeItem, onItemClick }) {
               element.view,
               element.like,
               element.viewBlogImages,
-              element.fullName)
-          ]));
-        })
+              element.fullName
+            ),
+          ]);
+        });
       })
-      .catch((error) => { console.error(error) });
+      .catch((error) => {
+        console.error(error);
+      });
   }, [reset]);
   return (
     <div>
       <div id="blog">
-        {role === 'Admin' ? <div className="blog-form p-2">
-          <div className="d-flex align-items-center flex-column">
+        {role === "Admin" ? (
+          <div className="blog-form p-2 d-flex flex-grid align-items-center justify-content-between row m-0">
+            <div className="d-flex blog-search align-items-center position-relative col me-2">
+              <CiSearch className="" />
+              <input
+                type="text"
+                placeholder={"Search"}
+                className="search-box size-20"
+              />
+            </div>
+            <div className="d-flex flex-row align-items-center col-auto m-md-0-cus mt-2 p-0">
+              <BlogPu />
+              <button type="button" class="btn btn-info text-white">
+                Trend
+              </button>
+            </div>
+
+            {/* <div className="d-flex align-items-center flex-column">
             <input
               type="text"
               name="title"
@@ -210,22 +268,25 @@ function Blog({ blogId, onBlogClick, activeItem, onItemClick }) {
               className="form-control"
               multiple
             />
-          </div>
+          </div> */}
 
-          <div className="d-flex  justify-content-between mt-2">
+            {/* <div className="d-flex  justify-content-between mt-2">
             <button className="btn btn-outline-primary">Add Image</button>
             <button className="btn" onClick={handleCreateBlog} >
               <CiCircleChevRight className=" fs-3" />
             </button>
+          </div> */}
           </div>
-
-        </div> : ""}
+        ) : (
+          ""
+        )}
 
         {data.map((item) => (
           <div
             key={item.idBlog}
-            className={`blog-item p-2 ${blogPopups[item.id] ? "position-relative" : ""
-              }`}
+            className={`blog-item p-2 ${
+              blogPopups[item.id] ? "position-relative" : ""
+            }`}
           >
             <div className="d-flex align-items-center">
               <div alt="profile" className="profile">
@@ -238,9 +299,11 @@ function Blog({ blogId, onBlogClick, activeItem, onItemClick }) {
             </div>
             <h3 className="mt-2">{item.title}</h3>
 
-            <p className="mt-2" style={{ whiteSpace: 'pre-wrap' }}>{item.content}</p>
+            <p className="mt-2" style={{ whiteSpace: "pre-wrap" }}>
+              {item.content}
+            </p>
             <div className="d-flex">
-              {item.viewBlogImages.map(items => (
+              {item.viewBlogImages.map((items) => (
                 <img src={items.imageSrc} alt="" className="w-50 p-2" />
               ))}
             </div>
@@ -250,10 +313,12 @@ function Blog({ blogId, onBlogClick, activeItem, onItemClick }) {
                   <FiEye className="me-2" />
                   {item.view}
                 </div>
-                <div className="d-flex align-items-center me-3"
+                <div
+                  className="d-flex align-items-center me-3"
                   onClick={() => handleLikeOrUnlikeBlog(item.id)}
                 >
-                  <FaHeart className={`me-2 ${item.isLike ? 'red' : ''}`} /> {item.like}
+                  <FaHeart className={`me-2 ${item.isLike ? "red" : ""}`} />{" "}
+                  {item.like}
                 </div>
                 <div
                   className="d-flex align-items-center me-3"
@@ -262,7 +327,12 @@ function Blog({ blogId, onBlogClick, activeItem, onItemClick }) {
                   <IoFlagOutline />{" "}
                 </div>
               </div>
-              <button className="view-btn btn" onClick={() => hanldeViewDetail(item.id)}>View Detail</button>
+              <button
+                className="view-btn btn"
+                onClick={() => hanldeViewDetail(item.id)}
+              >
+                View Detail
+              </button>
             </div>
             {blogPopups[item.id] && (
               <ReportPopup
