@@ -7,14 +7,15 @@ import { userInstance } from '../../axios/axiosConfig';
 function UpdateAvatarPu({ show, onClose, image, currentUserId, changeImage }) {
 
     const [display, setDisplay] = useState(show);
-    const [avatar, setAvatar] = useState({
-        avatar: "default",
-        imageSrc: image,
-        imageFile: null,
-    });
+    const [avatar, setAvatar] = useState({});
 
     useEffect(() => {
         setDisplay(show);
+        setAvatar({
+            avatar: "default",
+            imageSrc: image,
+            imageFile: null,
+        })
     }, [show]);
     const fileInputRef = useRef(null);
     const handleClick = () => {
@@ -42,6 +43,10 @@ function UpdateAvatarPu({ show, onClose, image, currentUserId, changeImage }) {
     };
     const handleUpdateAvatar = (e) => {
         e.preventDefault();
+        if (image === avatar.imageSrc) {
+            onClose(false);
+            return;
+        }
         const formData = new FormData();
         formData.append("avatar", avatar.avatar);
         formData.append("ImageFile", avatar.imageFile);
@@ -53,7 +58,7 @@ function UpdateAvatarPu({ show, onClose, image, currentUserId, changeImage }) {
                 },
             })
             .then((res) => {
-                setDisplay(false);
+                onClose(false);
                 if (res?.data?.status === "OK") {
                     changeImage('ok');
                 }
