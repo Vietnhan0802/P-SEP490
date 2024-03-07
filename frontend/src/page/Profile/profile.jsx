@@ -220,12 +220,12 @@ function Profile({ handleChangeImg }) {
         action: "project",
       });
     }
-
     setTabs(tabsBasedOnRole);
   }, [user.role]); // Chỉ chạy lại khi user.role thay đổi
   // const handleSetTab = (action) => {
   //   console.log(action);
   // };
+  console.log(display)
 
   return (
     <>
@@ -248,14 +248,11 @@ function Profile({ handleChangeImg }) {
                 className="avatar m-auto"
               />
               <UpdateAvatarPu show={display}
-                onClose={() => setDisplay(false)}
+                onClose={() => setDisplay(!display)}
                 image={inputs.imageSrc}
                 currentUserId={currentUserId}
                 changeImage={changeImage} />
-              {display ? (
-                <div className="d-flex flex-row my-3">
-                </div>
-              ) : currentUserId !== userId ? (
+              {display && currentUserId !== userId ? (
                 <button
                   className="btn edit-btn mt-3 w-75 m-auto"
                   onClick={() => handleFollow()}
@@ -460,7 +457,7 @@ function Profile({ handleChangeImg }) {
               </div>
             </div>
           </div>
-          <section id="switch " className="mt-3">
+          <section id="switch" className="mt-3">
             <div className="btn-swtich d-flex flex-row justify-content-between mb-2">
               <div className="action-swap tabs">
                 {tabs.map((tab, index) => (
