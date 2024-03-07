@@ -13,10 +13,15 @@
   }
 
   .avatar {
-    max-width: 200px;
+    width: 200px;
+    height: 200px;
   }
 }
 
+.avatar {
+  width: 200px;
+  height: 200px;
+}
 #profile {
   background-color: var(--header_background) !important;
   color: var(--header_search_text);

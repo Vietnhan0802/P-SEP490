@@ -8,7 +8,6 @@ import { CiSearch } from "react-icons/ci";
 import { FiEye } from "react-icons/fi";
 import defaultAvatar from "../../images/common/default.png";
 import ReportPopup from "../../components/Popup/reportPopup";
-import Cookies from "js-cookie";
 import {
   postInstance,
   projectInstance,
@@ -48,7 +47,7 @@ function calculateTimeDifference(targetDate) {
 
 function Post({ postId, onPostClick, activeItem, onItemClick }) {
   const sessionData = JSON.parse(sessionStorage.getItem("userSession")) || {};
-  const { role, userId } = sessionData;
+  const { role, currentUserId } = sessionData;
   const [inputs, setInputs] = useState({
     title: "",
     content: "",
@@ -61,7 +60,6 @@ function Post({ postId, onPostClick, activeItem, onItemClick }) {
   const [postList, setPostList] = useState([]);
   const [resetPage, setResetPage] = useState(false);
   //______________________________//
-
   const createData = (
     id,
     createdDate,
@@ -101,8 +99,7 @@ function Post({ postId, onPostClick, activeItem, onItemClick }) {
       setPostList(newData); // Update the state with the new array
 
       // Make the API call to update the like state in the backend
-      postInstance
-        .post(`LikeOrUnlikePost/${userId}/${idBlog}`)
+      postInstance.post(`LikeOrUnlikePost/${currentUserId}/${idBlog}`)
         .then(() => {
           // If the API call is successful, you can optionally refresh the data from the server
           // to ensure the UI is in sync with the backend state
@@ -136,7 +133,7 @@ function Post({ postId, onPostClick, activeItem, onItemClick }) {
 
   useEffect(() => {
     postInstance
-      .get(`GetAllPosts/${userId}`)
+      .get(`GetAllPosts/${currentUserId}`)
       .then((res) => {
         const postList = res?.data?.result;
         setPostList([]);
@@ -197,7 +194,7 @@ function Post({ postId, onPostClick, activeItem, onItemClick }) {
     });
 
     postInstance
-      .post(`/CreatePost/${userId}/${inputs.project}`, formData, {
+      .post(`/CreatePost/${currentUserId}/${inputs.project}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
           accept: "application/json",
@@ -422,7 +419,7 @@ function Post({ postId, onPostClick, activeItem, onItemClick }) {
                   <button
                     className="btn btn-secondary "
                     onClick={() =>
-                      handleCreateReport(userId, item.id, popupContent[item.id])
+                      handleCreateReport(currentUserId, item.id, popupContent[item.id])
                     }
                   >
                     Submit

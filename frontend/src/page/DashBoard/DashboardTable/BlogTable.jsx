@@ -17,71 +17,12 @@ import { GoDotFill } from "react-icons/go";
 import { blogInstance } from "../../../axios/axiosConfig";
 import Cookies from "js-cookie";
 function createData(id, avatar, fullName, title, content, date, report, status) {
-  console.log(date);
   const time = formatDate(date);
   return {
     id, avatar, fullName, title, content, time, report, status
   };
 }
 
-// const rows = [
-//   createData(
-//     1,
-//     "Olivia Rhye",
-//     "example@gmail,com",
-//     "21 Jan 2024",
-//     "Content curating app",
-//     "Description of the current content",
-//     0,
-//     "Block"
-//   ),
-//   createData(
-//     2,
-//     "Adison Schleifer",
-//     "example@gmail,com",
-
-//     "21 Jan 2024",
-//     "Design software",
-//     "Description of the current content",
-
-//     2,
-//     "Block"
-//   ),
-//   createData(
-//     3,
-//     "Martin George",
-//     "example@gmail,com",
-//     "21 Jan 2024",
-//     "Data prediction",
-//     "Description of the current content",
-
-//     3,
-//     "Block"
-//   ),
-//   createData(
-//     4,
-//     "Zaire Herwitz",
-//     "example@gmail,com",
-//     "21 Jan 2024",
-//     "Productivity app",
-//     "Description of the current content",
-
-//     3,
-//     "Block"
-//   ),
-//   //   createData(5, "Gingerbread", 356, 16.0, 49, 3.9),
-//   //   createData(6, "Honeycomb", 408, 3.2, 87, 6.5),
-//   //   createData(7, "Ice cream sandwich", 237, 9.0, 37, 4.3),
-//   //   createData(8, "Jelly Bean", 375, 0.0, 94, 0.0),
-//   //   createData(9, "KitKat", 518, 26.0, 65, 7.0),
-//   //   createData(10, "Lollipop", 392, 0.2, 98, 0.0),
-//   //   createData(11, "Marshmallow", 318, 0, 81, 2.0),
-//   //   createData(12, "Nougat", 360, 19.0, 9, 37.0),
-//   //   createData(13, "Oreo", 437, 18.0, 63, 4.0),
-// ];
-
-
-// Function to format the timestamp
 const formatDate = (timestamp) => {
   const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
     "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -210,7 +151,8 @@ EnhancedTableHead.propTypes = {
 export default function BlogTable() {
 
   
-  const userId = JSON.parse(Cookies.get("userId"));
+  const sessionData = JSON.parse(sessionStorage.getItem("userSession")) || {};
+  const { currentUserId } = sessionData;
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("calories");
   const [selected, setSelected] = React.useState([]);
@@ -246,7 +188,7 @@ export default function BlogTable() {
   // Avoid a layout jump when reaching the last page with empty rows.
   const [blogRows, setUserRows] = React.useState([]);
   React.useEffect(() => {
-    blogInstance.get(`GetAllBlogs/${userId}`)
+    blogInstance.get(`GetAllBlogs/${currentUserId}`)
       .then((res) => {
         // id, name, email, date, title, description, report, status
         const fetchedBlogRows = res.data.result.map(element => (
@@ -257,8 +199,8 @@ export default function BlogTable() {
             element.title,
             element.content,
             element.createdDate,
-            element.role,
-            element.description,
+            element.report,
+            element.status,
           )
         )
         );
