@@ -15,7 +15,7 @@ function BlogPu() {
   const modalShow = () => setShow(true);
   const modelSubmit = () => setShow(false);
   const sessionData = JSON.parse(sessionStorage.getItem("userSession")) || {};
-  const { role, userId } = sessionData;
+  const { role, currentUserId } = sessionData;
   const [reset, setReset] = useState(true);
   const readFileAsDataURL = (file) => {
     return new Promise((resolve, reject) => {
@@ -82,7 +82,7 @@ function BlogPu() {
     });
 
     blogInstance
-      .post(`/CreateBlog/${userId}`, formData, {
+      .post(`/CreateBlog/${currentUserId}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
           accept: "application/json",
