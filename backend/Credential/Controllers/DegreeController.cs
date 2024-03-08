@@ -21,18 +21,18 @@ namespace Credential.Controllers
         private readonly AppDBContext _context;
         private readonly IMapper _mapper;
         private readonly SaveImageService _saveImageService;
-        private readonly HttpClient client;
-        public string UserApiUrl { get; }
+        /*private readonly HttpClient client;
+        public string UserApiUrl { get; }*/
 
         public DegreeController(AppDBContext context, IMapper mapper, SaveImageService saveImageService)
         {
             _context = context;
             _mapper = mapper;
             _saveImageService = saveImageService;
-            client = new HttpClient();
+            /*client = new HttpClient();
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
             client.DefaultRequestHeaders.Accept.Add(contentType);
-            UserApiUrl = "https://localhost:7006/api/User";
+            UserApiUrl = "https://localhost:7006/api/User";*/
         }
 
         /*[HttpGet("GetNameUserCurrent/{idUser}")]
@@ -68,7 +68,7 @@ namespace Credential.Controllers
         [HttpGet("GetDegreeByUser/{idUser}")]
         public async Task<Response> GetDegreeByUser(string idUser)
         {
-            var degrees = await _context.Degrees.Where(x => x.idAccount == idUser && x.isDeleted == false).OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
+            var degrees = await _context.Degrees.Where(x => x.idAccount == idUser).OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
             if (degrees == null)
             {
                 return new Response(HttpStatusCode.NotFound, "Degree doesn't exists!");
@@ -108,7 +108,6 @@ namespace Credential.Controllers
             var degree = _mapper.Map<Degree>(createUpdateDegree);
             degree.idAccount = idUser;
             degree.file = file;
-            degree.isDeleted = false;
             degree.createdDate = DateTime.Now;
             await _context.Degrees.AddAsync(degree);
             await _context.SaveChangesAsync();
@@ -149,8 +148,7 @@ namespace Credential.Controllers
             {
                 return new Response(HttpStatusCode.NotFound, "Degree doesn't exists!");
             }
-            degree.isDeleted = true;
-            _context.Degrees.Update(degree);
+            _context.Degrees.Remove(degree);
             await _context.SaveChangesAsync();
             return new Response(HttpStatusCode.NoContent, "Remove Degree successfullt!");
         }

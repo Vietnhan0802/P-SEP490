@@ -40,13 +40,7 @@ namespace Credential.Data.Migrations
                     b.Property<string>("institution")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool?>("isDeleted")
-                        .HasColumnType("bit");
-
                     b.Property<string>("name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("url")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("idDegree");

@@ -9,9 +9,7 @@ namespace BusinessObjects.Entities.Credential
         public string? idAccount { get; set; }
         public string? name { get; set; }
         public string? institution { get; set; }
-        public string? url { get; set; }
         public string? file { get; set; }
-        public bool? isDeleted { get; set; }
         public DateTime createdDate { get; set; }
     }
 }
