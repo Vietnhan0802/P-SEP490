@@ -39,7 +39,7 @@ function calculateTimeDifference(targetDate) {
 function PostDetail(id) {
 
   const sessionData = JSON.parse(sessionStorage.getItem('userSession')) || {};
-  const { userId } = sessionData;
+  const { curentUserId } = sessionData;
   const idPost = id.id;
 
   const [data, setData] = useState();
@@ -135,7 +135,7 @@ function PostDetail(id) {
     );
   };
   const handleCreateComment = () => {
-    postInstance.post(`CreatePostComment/${userId}/${idPost}/${content}`, {
+    postInstance.post(`CreatePostComment/${curentUserId}/${idPost}/${content}`, {
       headers: {
         accept: 'application/json'
       }
@@ -152,7 +152,7 @@ function PostDetail(id) {
 
     // Perform the reply submission logic with replyContent
     // ...
-    postInstance.post(`CreatePostReply/${userId}/${commentId}/${replyContent}`)
+    postInstance.post(`CreatePostReply/${curentUserId}/${commentId}/${replyContent}`)
       .then((res) => {
         setState(!state)
         console.log(res?.data?.result)
@@ -209,7 +209,7 @@ function PostDetail(id) {
 
       return { ...prevData, isLike: isLiked, like: newLikeCount };
     });
-    postInstance.post(`LikeOrUnlikePost/${userId}/${idPost}`)
+    postInstance.post(`LikeOrUnlikePost/${curentUserId}/${idPost}`)
       .then(() => {
         // No need to update the state here if you're doing optimistic updates
       })
@@ -227,7 +227,7 @@ function PostDetail(id) {
   }
 
   useEffect(() => {
-    postInstance.get(`GetAllPostComments/${idPost}/${userId}`)
+    postInstance.get(`GetAllPostComments/${idPost}/${curentUserId}`)
       .then(
         (res) => {
           setCommentList(res?.data?.result);
@@ -240,7 +240,7 @@ function PostDetail(id) {
 
 
   useEffect(() => {
-    memoizedPostInstance.get(`GetPostById/${idPost}/${userId}`)
+    memoizedPostInstance.get(`GetPostById/${idPost}/${curentUserId}`)
       .then((res) => {
         setData(res?.data?.result);
       })
@@ -250,7 +250,7 @@ function PostDetail(id) {
   }, [memoizedPostInstance, idPost]);
   //Fetch data the user to display in the comment and reply
   useEffect(() => {
-    userInstance.get(`/GetUserById/${userId}`)
+    userInstance.get(`/GetUserById/${curentUserId}`)
       .then((res) => {
         setUser(res?.data?.result)
         // console.log(res?.data?.result.imageSrc);
@@ -319,7 +319,7 @@ function PostDetail(id) {
                 <h6 className="mb-2 d-flex align-items-center h-40">
                   {item.fullName}
                 </h6>
-                {item.idAccount === userId ?
+                {item.idAccount === curentUserId ?
                   <Dropdown>
                     <Dropdown.Toggle id="dropdown-basic" style={{ border: 'none' }} className="bg-white border-none text-body">
                     </Dropdown.Toggle>
@@ -405,7 +405,7 @@ function PostDetail(id) {
                             </div>
                           }
                         </div>
-                        {reply.idAccount === userId ?
+                        {reply.idAccount === curentUserId ?
                           <Dropdown style={{ width: 'auto' }}>
                             <Dropdown.Toggle id="dropdown-basic" style={{ border: 'none' }} className="bg-white border-none text-body">
                             </Dropdown.Toggle>

@@ -21,7 +21,7 @@ function PostPu() {
   const modelSubmit = () => setShow(false);
   const [resetPage, setResetPage] = useState(false);
   const sessionData = JSON.parse(sessionStorage.getItem("userSession")) || {};
-  const { role, userId } = sessionData;
+  const { currentUserId } = sessionData;
   const [inputs, setInputs] = useState({
     title: "",
     content: "",
@@ -62,7 +62,7 @@ function PostPu() {
     });
 
     postInstance
-      .post(`/CreatePost/${userId}/${inputs.project}`, formData, {
+      .post(`/CreatePost/${currentUserId}/${inputs.project}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
           accept: "application/json",

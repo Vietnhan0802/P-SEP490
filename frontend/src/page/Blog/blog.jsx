@@ -73,7 +73,7 @@ function Blog({ blogId, onBlogClick, activeItem, onItemClick }) {
   const [blogPopups, setBlogPopups] = useState({});
   const [data, setData] = useState([]);
   const sessionData = JSON.parse(sessionStorage.getItem("userSession")) || {};
-  const {currentUserId} =sessionData;
+  const { currentUserId } = sessionData;
   const { role, userId } = sessionData;
   const [reset, setReset] = useState(true);
 
@@ -85,43 +85,6 @@ function Blog({ blogId, onBlogClick, activeItem, onItemClick }) {
   };
   const handleReportClick = (blogId) => {
     setBlogPopups((prev) => ({ ...prev, [blogId]: true }));
-  };
-  const handleCreateBlog = () => {
-    const formData = new FormData();
-    formData.append("title", inputs.title);
-    formData.append("content", inputs.content);
-
-    inputs.CreateUpdateBlogImages.forEach((imageInfo, index) => {
-      formData.append(
-        `CreateUpdateBlogImages[${index}].image`,
-        imageInfo.image
-      );
-      formData.append(
-        `CreateUpdateBlogImages[${index}].imageFile`,
-        imageInfo.imageFile
-      );
-      formData.append(
-        `CreateUpdateBlogImages[${index}].imageSrc`,
-        imageInfo.imageSrc
-      );
-    });
-
-    blogInstance
-      .post(`/CreateBlog/${userId}`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          accept: "application/json",
-        },
-      })
-      .then((res) => {
-        console.log(res.data);
-        notifySuccess("Create blog successfully!");
-        setReset(!reset);
-      })
-      .catch((err) => {
-        console.log(err);
-        notifyError("Create blog failed!");
-      });
   };
   const readFileAsDataURL = (file) => {
     return new Promise((resolve, reject) => {
@@ -171,33 +134,6 @@ function Blog({ blogId, onBlogClick, activeItem, onItemClick }) {
     }
   };
   // Handler function to update the state when the input changes
-  const handleInputChange = (event) => {
-    const { name, value, type } = event.target;
-    if (type === "file") {
-      const files = Array.from(event.target.files);
-
-      // Use FileReader to convert each file to base64
-      const newImages = files.map(async (element) => {
-        const base64String = await readFileAsDataURL(element);
-        return {
-          image: element.name,
-          imageFile: element,
-          imageSrc: base64String,
-        };
-      });
-      Promise.all(newImages).then((convertedImages) => {
-        setInputs((values) => ({
-          ...values,
-          CreateUpdateBlogImages: [
-            ...values.CreateUpdateBlogImages,
-            ...convertedImages,
-          ],
-        }));
-      });
-    } else {
-      setInputs((values) => ({ ...values, [name]: value }));
-    }
-  };
   useEffect(() => {
     blogInstance
       .get(`GetAllBlogs/${currentUserId}`)
@@ -225,6 +161,9 @@ function Blog({ blogId, onBlogClick, activeItem, onItemClick }) {
         console.error(error);
       });
   }, [reset]);
+  const resetBlog = (value) => {
+    setReset(!reset);
+  }
   return (
     <div>
       <div id="blog">
@@ -239,44 +178,11 @@ function Blog({ blogId, onBlogClick, activeItem, onItemClick }) {
               />
             </div>
             <div className="d-flex flex-row align-items-center col-auto m-md-0-cus mt-2 p-0">
-              <BlogPu />
+              <BlogPu resetBlog={resetBlog} />
               <button type="button" className="btn btn-info text-white">
                 Trend
               </button>
             </div>
-
-            {/* <div className="d-flex align-items-center flex-column">
-            <input
-              type="text"
-              name="title"
-              value={inputs.title}
-              onChange={handleInputChange}
-              className="input-text"
-              placeholder="Enter the title"
-            />
-            <textarea
-              type="text"
-              value={inputs.content}
-              name="content"
-              onChange={handleInputChange}
-              className="input-text"
-              placeholder="Enter your content..."
-            />
-            <input
-              type="file"
-              name="images"
-              onChange={handleInputChange}
-              className="form-control"
-              multiple
-            />
-          </div> */}
-
-            {/* <div className="d-flex  justify-content-between mt-2">
-            <button className="btn btn-outline-primary">Add Image</button>
-            <button className="btn" onClick={handleCreateBlog} >
-              <CiCircleChevRight className=" fs-3" />
-            </button>
-          </div> */}
           </div>
         ) : (
           ""
@@ -285,9 +191,8 @@ function Blog({ blogId, onBlogClick, activeItem, onItemClick }) {
         {data.map((item) => (
           <div
             key={item.idBlog}
-            className={`blog-item p-2 ${
-              blogPopups[item.id] ? "position-relative" : ""
-            }`}
+            className={`blog-item p-2 ${blogPopups[item.id] ? "position-relative" : ""
+              }`}
           >
             <div className="d-flex align-items-center">
               <div alt="profile" className="profile">
