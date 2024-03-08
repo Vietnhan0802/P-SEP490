@@ -1,0 +1,18 @@
+.popup-body {
+    .start::before {
+        content: "Start-Date";
+        padding-left: 10px;
+    }
+
+    .end::before {
+        content: "End-Date";
+        padding-left: 10px;
+    }
+}
+.btn-scale{
+    height: 100%;
+    width: 100%;
+}
+.cus-btn .warning{
+    background-color: none;
+}

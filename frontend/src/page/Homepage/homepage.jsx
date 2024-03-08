@@ -15,7 +15,7 @@ import OwnProject from "../OwnProject/ownProject";
 import ProjectApplication from "../ProjectApplication/projectApplication";
 import Statistic from "../Statistic/statistic";
 function Homepage() {
-  const [activeComponent, setActiveComponent] = useState("post");
+  const [activeComponent, setActiveComponent] = useState("projectDetail");
   const [postId, setPostId] = useState(null);
   const [blogId, setBlogId] = useState(null);
   const [projectId, setProjectId] = useState(null);
