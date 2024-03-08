@@ -3,55 +3,46 @@ import { useState } from "react";
 import { Row, Col } from "react-bootstrap";
 import "./degree-pu.scss";
 import "./profile.scss";
+import { credentialInstance } from "../../axios/axiosConfig";
 function DegreePu() {
   const [show, setShow] = useState(false);
-  const readFileAsDataURL = (file) => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        resolve(event.target.result);
-      };
-      reader.onerror = (error) => {
-        reject(error);
-      };
-      reader.readAsDataURL(file);
-    });
-  };
   const [inputs, setInputs] = useState({
-    title: "",
-    content: "",
-    CreateUpdateBlogImages: [], // new state for managing multiple images
+    name: '',
+    institution: '',
+    file: '',
+    FileFile: null
   });
   const handleInputChange = (event) => {
     const { name, value, type } = event.target;
     if (type === "file") {
-      const files = Array.from(event.target.files);
-
-      // Use FileReader to convert each file to base64
-      const newImages = files.map(async (element) => {
-        const base64String = await readFileAsDataURL(element);
-        return {
-          image: element.name,
-          imageFile: element,
-          imageSrc: base64String,
-        };
-      });
-      Promise.all(newImages).then((convertedImages) => {
-        setInputs((values) => ({
-          ...values,
-          CreateUpdateBlogImages: [
-            ...values.CreateUpdateBlogImages,
-            ...convertedImages,
-          ],
+      const file = event.target.files[0];
+      const reader = new FileReader();
+      reader.onload = (x) => {
+        setInputs((prevInputs) => ({
+          ...prevInputs,
+          file: file.name,
+          FileFile: x.target.result,
         }));
-      });
+      };
+      reader.readAsDataURL(file);
     } else {
-      setInputs((values) => ({ ...values, [name]: value }));
+      setInputs((prevInputs) => ({ ...prevInputs, [name]: value }));
     }
   };
   const modalClose = () => setShow(false);
   const modalShow = () => setShow(true);
-  const modelSubmit = () => setShow(false);
+  const modelSubmit = () =>
+  {
+    const form = new FormData();
+    form.append('name',inputs.name);
+    form.append('institution',inputs.institution);
+    form.append('file',inputs.file);
+    form.append('FileFile',inputs.FileFile);
+    
+    credentialInstance.post()
+  setShow(false);
+
+  }
   return (
     <div className="">
       <Button variant="m-0 btn btn-primary me-2" onClick={modalShow}>
@@ -64,50 +55,38 @@ function DegreePu() {
         <Modal.Body className="popup-body">
           <input
             type="text"
-            name="title"
-            value={inputs.title}
+            name="name"
+            value={inputs.name}
             onChange={handleInputChange}
             className="input-text form-control mb-3"
             placeholder="Name"
           />
           <input
             type="text"
-            value={inputs.content}
-            name="content"
+            value={inputs.institution}
+            name="institution"
             onChange={handleInputChange}
             className="input-text form-control mb-3"
             placeholder="Institution"
           />
           <input
-            type="text"
-            value={inputs.content}
-            name="content"
-            onChange={handleInputChange}
-            className="input-text form-control mb-3"
-            placeholder="Country"
-          />
-          <input
-            type="text"
-            value={inputs.content}
-            name="content"
-            onChange={handleInputChange}
-            className="input-text form-control mb-3"
-            placeholder="type"
-          />
-          <input
-            type="text"
-            value={inputs.content}
-            name="content"
-            onChange={handleInputChange}
-            className="input-text form-control mb-3"
-            placeholder="major"
-          />
-          <input
             type="file"
-            name="images"
+            name="file"
             onChange={handleInputChange}
             className="form-control "
           />
+          {/* Display the selected file */}
+          {inputs.FileFile && (
+            <div>
+              {inputs.FileFile.startsWith("data:image") ? ( // Check if the file is an image
+                <img src={inputs.FileFile} alt="Selected File" style={{ maxWidth: "100%", maxHeight: "200px" }} />
+              ) : (
+                <a href={inputs.FileFile} download={inputs.file} target="_blank" rel="noopener noreferrer">
+                  Download File
+                </a>
+              )}
+            </div>
+          )}
         </Modal.Body>
 
         <Modal.Footer>
