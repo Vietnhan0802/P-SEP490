@@ -14,7 +14,7 @@ import { AccountData } from "./AccountData";
 import { AccessData } from "./AccessData";
 import LineChart from "./lineChart";
 import { Bar } from "react-chartjs-2";
-import PieChart from "./PpeChart";
+import PieChart from "./PieChart";
 
 import TempAvatar from "../../images/common/Avatar.png";
 
@@ -136,22 +136,182 @@ function Statistic() {
   };
   return (
     <section id="sta-page" className="size-20">
-      <div className="row">
-        <div className="main-content col-9">
-          <div className="card-section row p-2">
-            <div className="col-3">
-              <FormDate />
+      <div className="card-section row ">
+        <Col md={4} className="px-0">
+          <div
+            className={`card  bg-white p-2 m-2 mt-0 ${
+              activeTab === "post" ? "active-tab" : ""
+            }`}
+          >
+            <div className="mb-1 fs-12">Manage Post</div>
+            <div className="d-flex justify-content-between">
+              <p className="fs-24 fw-bold">63 New Post</p>
+              <p className="rounded-pill percent fw-bold d-flex justify-content-center align-items-center">
+                12%
+              </p>
             </div>
-            <div className="col-9" id="content-for-post">
-              <div className="card h-100 w-100">
-                <div className="mb-1 fs-12">Most popular POST </div>
+            <hr style={{ margin: "0.5rem 0" }} />
+            <p
+              className="d-flex justify-content-end  detail"
+              onClick={() => handleTabClick("post")}
+            >
+              {activeTab === "post" ? "Viewing" : "View Detail"}{" "}
+            </p>
+          </div>
+        </Col>
+        <Col md={4} className="px-0">
+          <div
+            className={`card  bg-white p-2 m-2 mt-0 ${
+              activeTab === "access" ? "active-tab" : ""
+            }`}
+          >
+            <div className="mb-1 fs-12">Manage Access</div>
+            <div className="d-flex justify-content-between">
+              <p className="fs-24 fw-bold">63 Accesses</p>
+              <p className="rounded-pill percent fw-bold d-flex justify-content-center align-items-center">
+                8%
+              </p>
+            </div>
+            <hr style={{ margin: "0.5rem 0" }} />
+            <p
+              className="d-flex justify-content-end  detail"
+              onClick={() => handleTabClick("access")}
+            >
+              {activeTab === "access" ? "Viewing" : "View Detail"}
+            </p>
+          </div>
+        </Col>
+        <Col md={4} className="px-0">
+          <div
+            className={`card  bg-white p-2 m-2 mt-0 ${
+              activeTab === "blog" ? "active-tab" : ""
+            }`}
+          >
+            <div className="mb-1 fs-12">Manage Blog</div>
+            <div className="d-flex justify-content-between">
+              <p className="fs-24 fw-bold">63 New Blog</p>
+              <p className="rounded-pill percent fw-bold d-flex justify-content-center align-items-center">
+                12%
+              </p>
+            </div>
+            <hr style={{ margin: "0.5rem 0" }} />
+            <p
+              className="d-flex justify-content-end  detail"
+              onClick={() => handleTabClick("blog")}
+            >
+              {activeTab === "blog" ? "Viewing" : "View Detail"}
+            </p>
+          </div>
+        </Col>
+        <Col md={4} className="px-0">
+          <div
+            className={`card  bg-white p-2 m-2 mt-0 ${
+              activeTab === "report" ? "active-tab" : ""
+            }`}
+          >
+            <div className="mb-1 fs-12">Manage Report</div>
+            <div className="d-flex justify-content-between">
+              <p className="fs-24 fw-bold">63 New Reports</p>
+              <p className="rounded-pill percent fw-bold d-flex justify-content-center align-items-center">
+                12%
+              </p>
+            </div>
+            <hr style={{ margin: "0.5rem 0" }} />
+            <p
+              className="d-flex justify-content-end  detail"
+              onClick={() => handleTabClick("report")}
+            >
+              {activeTab === "report" ? "Viewing" : "View Detail"}
+            </p>
+          </div>
+        </Col>
+        <Col md={4} className="px-0">
+          <div
+            className={`card  bg-white p-2 m-2 mt-0 ${
+              activeTab === "project" ? "active-tab" : ""
+            }`}
+          >
+            <div className="mb-1 fs-12">Manage Project</div>
+            <div className="d-flex justify-content-between">
+              <p className="fs-24 fw-bold">63 New Project</p>
+              <p className="rounded-pill percent fw-bold d-flex justify-content-center align-items-center">
+                12%
+              </p>
+            </div>
+            <hr style={{ margin: "0.5rem 0" }} />
+            <p
+              className="d-flex justify-content-end  detail"
+              onClick={() => handleTabClick("Project")}
+            >
+              {activeTab === "Project" ? "Viewing" : "View Detail"}
+            </p>
+          </div>
+        </Col>
+        <Col md={4} className="px-0">
+          <div
+            className={`card  bg-white p-2 m-2 mt-0 ${
+              activeTab === "report" ? "active-tab" : ""
+            }`}
+          >
+            <div className="mb-1 fs-12">Manage Account</div>
+            <div className="d-flex justify-content-between">
+              <p className="fs-24 fw-bold">63 Account in System</p>
+              <p className="rounded-pill percent fw-bold d-flex justify-content-center align-items-center">
+                12%
+              </p>
+            </div>
+            <hr style={{ margin: "0.5rem 0" }} />
+            <p
+              className="d-flex justify-content-end  detail"
+              onClick={() => handleTabClick("report")}
+            >
+              {activeTab === "report" ? "Viewing" : "View Detail"}
+            </p>
+          </div>
+        </Col>
+      </div>
+      <div className="chart-section d-flex flex-grid row">
+        <div className="chart-all col">
+          <div style={{ width: "100%" }}>
+            <BarChart chartData={projectData} />
+          </div>
+          {/* <div style={{ width: "100%" }}>
+                <BarChart chartData={postData} />
+              </div>
+              <div style={{ width: "100%" }}>
+                <BarChart chartData={blogData} />
+              </div>
+              <div style={{ width: "100%" }}>
+                <PieChart chartData={reportData} />
+              </div>
+              <div style={{ width: "100%" }}>
+                <PieChart chartData={accountData} />
+              </div>
+              <div style={{ width: "100%" }}>
+                <LineChart chartData={accessData} />
+              </div> */}
+        </div>
+
+        <div className="sup-bar col-auto">
+          <div className="d-flex flex-column ">
+            <div className="date-filter mb-2">
+              <div className="start mb-1">
+                <input type="date" className="form-control" />
+              </div>
+              <div className="end mb-1">
+                <input type="date" className="form-control" />
+              </div>
+              <button className="btn btn-primary" onClick={handleDateSort}>
+                Submit
+              </button>
+            </div>
+
+            <div className="" id="content-for-post">
+              <div className="card h-100 w-100 m-0">
+                <div className="mb-2 fs-12">Most popular POST </div>
                 <div className="row align-items-center">
                   <div className="avata-contain col-2 d-flex align-items-center justify-content-center">
-                    <img
-                      src={TempAvatar}
-                      className="avata"
-                      alt="Avatar"
-                    />
+                    <img src={TempAvatar} className="avata" alt="Avatar" />
                   </div>
                   <div className="descript p-0 row flex-column col-10">
                     <p className="title ellipsis fw-bold ">
@@ -164,163 +324,6 @@ function Statistic() {
                 </div>
               </div>
             </div>
-          </div>
-          <div className="chart row">
-            <div style={{ width: "100%" }}>
-              <BarChart chartData={projectData} />
-            </div>
-            <div style={{ width: "100%" }}>
-              <BarChart chartData={postData} />
-            </div>
-            <div style={{ width: "100%" }}>
-              <BarChart chartData={blogData} />
-            </div>
-            <div style={{ width: "100%" }}>
-              <PieChart chartData={reportData} />
-            </div>
-            <div style={{ width: "100%" }}>
-              <PieChart chartData={accountData} />
-            </div>
-            <div style={{ width: "100%" }}>
-              <LineChart chartData={accessData} />
-            </div>
-          </div>
-        </div>
-        <div className="sup-bar col-3">
-          <div className="row">
-            <Col md={12} className="px-0">
-              <div
-                className={`card  bg-white p-2 m-2 mt-0 ${
-                  activeTab === "post" ? "active-tab" : ""
-                }`}
-              >
-                <div className="mb-1 fs-12">Manage Post</div>
-                <div className="d-flex justify-content-between">
-                  <p className="fs-24 fw-bold">63 New Post</p>
-                  <p className="rounded-pill percent fw-bold d-flex justify-content-center align-items-center">
-                    12%
-                  </p>
-                </div>
-                <hr style={{ margin: "0.5rem 0" }} />
-                <p
-                  className="d-flex justify-content-end  detail"
-                  onClick={() => handleTabClick("post")}
-                >
-                  {activeTab === "post" ? "Viewing" : "View Detail"}{" "}
-                </p>
-              </div>
-            </Col>
-            <Col md={12} className="px-0">
-              <div
-                className={`card  bg-white p-2 m-2 mt-0 ${
-                  activeTab === "access" ? "active-tab" : ""
-                }`}
-              >
-                <div className="mb-1 fs-12">Manage Access</div>
-                <div className="d-flex justify-content-between">
-                  <p className="fs-24 fw-bold">63 Accesses</p>
-                  <p className="rounded-pill percent fw-bold d-flex justify-content-center align-items-center">
-                    8%
-                  </p>
-                </div>
-                <hr style={{ margin: "0.5rem 0" }} />
-                <p
-                  className="d-flex justify-content-end  detail"
-                  onClick={() => handleTabClick("access")}
-                >
-                  {activeTab === "access" ? "Viewing" : "View Detail"}
-                </p>
-              </div>
-            </Col>
-            <Col md={12} className="px-0">
-              <div
-                className={`card  bg-white p-2 m-2 mt-0 ${
-                  activeTab === "blog" ? "active-tab" : ""
-                }`}
-              >
-                <div className="mb-1 fs-12">Manage Blog</div>
-                <div className="d-flex justify-content-between">
-                  <p className="fs-24 fw-bold">63 New Blog</p>
-                  <p className="rounded-pill percent fw-bold d-flex justify-content-center align-items-center">
-                    12%
-                  </p>
-                </div>
-                <hr style={{ margin: "0.5rem 0" }} />
-                <p
-                  className="d-flex justify-content-end  detail"
-                  onClick={() => handleTabClick("blog")}
-                >
-                  {activeTab === "blog" ? "Viewing" : "View Detail"}
-                </p>
-              </div>
-            </Col>
-            <Col md={12} className="px-0">
-              <div
-                className={`card  bg-white p-2 m-2 mt-0 ${
-                  activeTab === "report" ? "active-tab" : ""
-                }`}
-              >
-                <div className="mb-1 fs-12">Manage Report</div>
-                <div className="d-flex justify-content-between">
-                  <p className="fs-24 fw-bold">63 New Reports</p>
-                  <p className="rounded-pill percent fw-bold d-flex justify-content-center align-items-center">
-                    12%
-                  </p>
-                </div>
-                <hr style={{ margin: "0.5rem 0" }} />
-                <p
-                  className="d-flex justify-content-end  detail"
-                  onClick={() => handleTabClick("report")}
-                >
-                  {activeTab === "report" ? "Viewing" : "View Detail"}
-                </p>
-              </div>
-            </Col>
-
-            <Col md={12} className="px-0">
-              <div
-                className={`card  bg-white p-2 m-2 mt-0 ${
-                  activeTab === "project" ? "active-tab" : ""
-                }`}
-              >
-                <div className="mb-1 fs-12">Manage Project</div>
-                <div className="d-flex justify-content-between">
-                  <p className="fs-24 fw-bold">63 New Project</p>
-                  <p className="rounded-pill percent fw-bold d-flex justify-content-center align-items-center">
-                    12%
-                  </p>
-                </div>
-                <hr style={{ margin: "0.5rem 0" }} />
-                <p
-                  className="d-flex justify-content-end  detail"
-                  onClick={() => handleTabClick("Project")}
-                >
-                  {activeTab === "Project" ? "Viewing" : "View Detail"}
-                </p>
-              </div>
-            </Col>
-            <Col md={12} className="px-0">
-              <div
-                className={`card  bg-white p-2 m-2 mt-0 ${
-                  activeTab === "report" ? "active-tab" : ""
-                }`}
-              >
-                <div className="mb-1 fs-12">Manage Account</div>
-                <div className="d-flex justify-content-between">
-                  <p className="fs-24 fw-bold">63 Account in System</p>
-                  <p className="rounded-pill percent fw-bold d-flex justify-content-center align-items-center">
-                    12%
-                  </p>
-                </div>
-                <hr style={{ margin: "0.5rem 0" }} />
-                <p
-                  className="d-flex justify-content-end  detail"
-                  onClick={() => handleTabClick("report")}
-                >
-                  {activeTab === "report" ? "Viewing" : "View Detail"}
-                </p>
-              </div>
-            </Col>
           </div>
         </div>
       </div>

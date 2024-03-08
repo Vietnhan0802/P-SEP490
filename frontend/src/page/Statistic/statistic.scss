@@ -12,9 +12,16 @@
 #sta-page {
     border-radius: 8px;
 
-    .card-section {
-        border-radius: 8px;
-        background-color: white;
+    // .card-section, .chart-section {
+    //     border-radius: 8px;
+    //     background-color: white;
+
+    // }
+    .chart-section {
+        .chart-all {
+            border-radius: 8px;
+            background-color: white;
+        }
 
     }
 
@@ -28,9 +35,15 @@
             background-size: cover;
             padding: 0px;
         }
-        .avata-contain{
+
+        .avata-contain {
             height: 100%;
         }
+
+        .card {
+            box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+        }
+
     }
 
     .card {
@@ -38,6 +51,7 @@
         background-color: white;
         padding: 12px;
         border: 2px solid var(--m-4, #a4aab0);
+
     }
 
     .content {
@@ -53,4 +67,14 @@
         }
     }
 
+    .sup-bar {
+        max-width: 350px;
+    }
+
+    .date-filter {
+        border-radius: 8px;
+        background-color: white;
+        padding: 12px;
+        border: 2px solid var(--m-4, #a4aab0);
+    }
 }
