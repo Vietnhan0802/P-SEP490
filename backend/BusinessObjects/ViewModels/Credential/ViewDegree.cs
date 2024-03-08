@@ -13,7 +13,5 @@ namespace BusinessObjects.ViewModels.Credential
         public string? file { get; set; }
         [NotMapped]
         public string? FileSrc { get; set; }
-        public bool isDeleted { get; set; }
-        public DateTime createdDate { get; set; }
     }
 }

@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Credential.Data.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20240307051439_Once")]
+    [Migration("20240308075235_Once")]
     partial class Once
     {
         /// <inheritdoc />
@@ -43,13 +43,7 @@ namespace Credential.Data.Migrations
                     b.Property<string>("institution")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool?>("isDeleted")
-                        .HasColumnType("bit");
-
                     b.Property<string>("name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("url")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("idDegree");

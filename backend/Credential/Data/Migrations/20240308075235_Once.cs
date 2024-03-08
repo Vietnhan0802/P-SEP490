@@ -19,9 +19,7 @@ namespace Credential.Data.Migrations
                     idAccount = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     institution = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    url = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     file = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    isDeleted = table.Column<bool>(type: "bit", nullable: true),
                     createdDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
