@@ -16,10 +16,10 @@ import "../DashboardTable/table.scss";
 import { GoDotFill } from "react-icons/go";
 import { blogInstance } from "../../../axios/axiosConfig";
 import Cookies from "js-cookie";
-function createData(id, avatar, fullName, title, content, date, report, status) {
+function createData(id, avatar, fullName, title, content, date, report, isBlock) {
   const time = formatDate(date);
   return {
-    id, avatar, fullName, title, content, time, report, status
+    id, avatar, fullName, title, content, time, report, isBlock
   };
 }
 
@@ -191,6 +191,7 @@ export default function BlogTable() {
     blogInstance.get(`GetAllBlogs/${currentUserId}`)
       .then((res) => {
         // id, name, email, date, title, description, report, status
+        console.log(res.data.result)
         const fetchedBlogRows = res.data.result.map(element => (
           createData(
             element.idBlog,
@@ -200,11 +201,12 @@ export default function BlogTable() {
             element.content,
             element.createdDate,
             element.report,
-            element.status,
+            element.isBlock,
           )
         )
         );
         setUserRows(fetchedBlogRows);
+        console.log(fetchedBlogRows)
       })
       .catch((err) => { console.log(err) })
   }, []);
@@ -287,10 +289,10 @@ export default function BlogTable() {
                       <div
                         className="d-flex align-items-center justify-content-end"
                       >
-                        <div className={`block-box ${row.report === 3 ? "active-block" : ""
+                        <div className={`block-box ${row.isBlock  ? "active-block" : ""
                           }`}>
                           <GoDotFill className="me-1" />
-                          {row.status}
+                          {row.isblock ? 'UnBlock':'Block'}
                         </div>
                       </div>
                     </TableCell>

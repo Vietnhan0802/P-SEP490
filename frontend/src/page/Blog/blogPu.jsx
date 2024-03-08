@@ -8,7 +8,7 @@ import Notification, {
   notifyError,
 } from "../../components/notification";
 import { blogInstance } from "../../axios/axiosConfig";
-function BlogPu() {
+function BlogPu({ resetBlog }) {
   const [show, setShow] = useState(false);
 
   const modalClose = () => setShow(false);
@@ -81,17 +81,20 @@ function BlogPu() {
       );
     });
 
-    blogInstance
-      .post(`/CreateBlog/${currentUserId}`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          accept: "application/json",
-        },
-      })
+    blogInstance.post(`/CreateBlog/${currentUserId}`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+        accept: "application/json",
+      },
+    })
       .then((res) => {
-        console.log(res.data);
+        setInputs({
+          title: "",
+          content: "",
+          CreateUpdateBlogImages: [], // new state for managing multiple images
+        });
         notifySuccess("Create blog successfully!");
-        setReset(!reset);
+        resetBlog(!reset);
       })
       .catch((err) => {
         console.log(err);
