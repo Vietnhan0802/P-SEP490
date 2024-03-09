@@ -483,7 +483,7 @@ function Profile({ handleChangeImg }) {
                 <span className="glider"></span>
               </div>
               <div className="action-user d-flex flex-row align-items-center justify-content-end">
-                {user.role === "Member" && tab === "degree" && <DegreePu />}
+                {user.role === "Member" && tab === "degree" && <DegreePu user={currentUserId} />}
                 {user.role === "Member" && tab === "degree" && (
                   <button
                     className={`height-50 btn-info btn ${tab === "degree" ? "active" : ""
