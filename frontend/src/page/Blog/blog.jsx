@@ -73,8 +73,7 @@ function Blog({ blogId, onBlogClick, activeItem, onItemClick }) {
   const [blogPopups, setBlogPopups] = useState({});
   const [data, setData] = useState([]);
   const sessionData = JSON.parse(sessionStorage.getItem("userSession")) || {};
-  const { currentUserId } = sessionData;
-  const { role, userId } = sessionData;
+  const { role, currentUserId } = sessionData;
   const [reset, setReset] = useState(true);
 
   //_________________________________________________________//
@@ -85,18 +84,6 @@ function Blog({ blogId, onBlogClick, activeItem, onItemClick }) {
   };
   const handleReportClick = (blogId) => {
     setBlogPopups((prev) => ({ ...prev, [blogId]: true }));
-  };
-  const readFileAsDataURL = (file) => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        resolve(event.target.result);
-      };
-      reader.onerror = (error) => {
-        reject(error);
-      };
-      reader.readAsDataURL(file);
-    });
   };
   //Hanlde like or unlike the the blog
   const handleLikeOrUnlikeBlog = (idBlog) => {

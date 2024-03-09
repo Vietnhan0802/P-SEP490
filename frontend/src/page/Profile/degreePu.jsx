@@ -4,13 +4,14 @@ import { Row, Col } from "react-bootstrap";
 import "./degree-pu.scss";
 import "./profile.scss";
 import { credentialInstance } from "../../axios/axiosConfig";
-function DegreePu() {
+function DegreePu({ ...props }) {
+  const { user } = props;
   const [show, setShow] = useState(false);
   const [inputs, setInputs] = useState({
     name: '',
     institution: '',
     file: '',
-    FileFile: null
+    FileFile: ''
   });
   const handleInputChange = (event) => {
     const { name, value, type } = event.target;
@@ -31,16 +32,32 @@ function DegreePu() {
   };
   const modalClose = () => setShow(false);
   const modalShow = () => setShow(true);
-  const modelSubmit = () =>
-  {
-    const form = new FormData();
-    form.append('name',inputs.name);
-    form.append('institution',inputs.institution);
-    form.append('file',inputs.file);
-    form.append('FileFile',inputs.FileFile);
-    
-    credentialInstance.post()
-  setShow(false);
+  const modelSubmit = () => {
+    const formData = new FormData();
+    formData.append('name', inputs.name);
+    formData.append('institution', inputs.institution);
+    formData.append('file', inputs.file);
+    formData.append('FileFile', inputs.FileFile);
+  //   for (let pair of form.entries()) {
+  //     console.log(pair[0]+ ', ' + pair[1]); 
+  // }
+    credentialInstance.post(`/CreateDegree/${user}`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+        accept: "application/json",
+      }
+    })
+      .then((res) => {
+        console.log(res?.data?.result);
+        setInputs({
+          name: '',
+          institution: '',
+          file: '',
+          FileFile: null
+        });
+      })
+      .catch((error) => { console.error(error); })
+    setShow(false);
 
   }
   return (
