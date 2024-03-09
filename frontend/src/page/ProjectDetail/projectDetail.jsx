@@ -9,6 +9,7 @@ import { LuDot } from "react-icons/lu";
 import MultiStepProgressBar from "../../components/MultiStepProgressBar";
 import { BsSendPlus } from "react-icons/bs";
 import FormMember from "./formMember";
+import FormApply from "./FormApply";
 function ProjectDetail() {
   const project = {
     description: `Lorem ipsum dolor sit amet consectetur. 
@@ -79,10 +80,7 @@ function ProjectDetail() {
             {" "}
             <FormMember/>
             
-            <div className="d-flex align-items-center add-member ">
-              <BsSendPlus className="pe-2 fs-3" />
-              <p>Send Apply</p>
-            </div>
+            <FormApply/>
           </div>
         </div>
         <table className="w-100">
