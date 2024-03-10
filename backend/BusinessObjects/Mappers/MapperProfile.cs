@@ -16,6 +16,7 @@ using BusinessObjects.ViewModels.Interaction;
 using BusinessObjects.ViewModels.Notification;
 using BusinessObjects.ViewModels.Post;
 using BusinessObjects.ViewModels.Project;
+using BusinessObjects.ViewModels.Statistic;
 using BusinessObjects.ViewModels.User;
 
 namespace BusinessObjects.Mappers
@@ -58,6 +59,11 @@ namespace BusinessObjects.Mappers
             CreateMap<ProjectInfo, ProjectInfoCreate>().ReverseMap();
             CreateMap<ProjectInfo, ProjectInfoUpdate>().ReverseMap();
             CreateMap<ProjectMember, ProjectMemberView>().ReverseMap();
+
+            CreateMap<Blogg, ViewStatistic>().ReverseMap();
+            CreateMap<Postt, ViewStatistic>().ReverseMap();
+            CreateMap<ProjectInfo, ViewStatistic>().ReverseMap();
+            CreateMap<AppUser, ViewStatistic>().ReverseMap();
 
             CreateMap<AppUser, SignUpPerson>().ReverseMap();
             CreateMap<AppUser, SignUpBusiness>().ReverseMap();

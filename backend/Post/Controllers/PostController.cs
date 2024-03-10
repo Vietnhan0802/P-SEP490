@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BusinessObjects.Entities.Post;
 using BusinessObjects.ViewModels.Post;
+using BusinessObjects.ViewModels.Statistic;
 using BusinessObjects.ViewModels.User;
 using Commons.Helpers;
 using FluentValidation;
@@ -36,7 +37,6 @@ namespace Post.Controllers
             client.DefaultRequestHeaders.Accept.Add(contentType);
             UserApiUrl = "https://localhost:7006/api/User";
             InteractionApiUrl = "https://localhost:7004/api/Interaction";
-
         }
 
         [HttpGet("GetNameUserCurrent/{idUser}")]
@@ -64,6 +64,31 @@ namespace Post.Controllers
             };
             var postReport = JsonSerializer.Deserialize<int>(strData, option);
             return postReport;
+        }
+
+        /*------------------------------------------------------------Statistic------------------------------------------------------------*/
+
+        [HttpGet("GetPostStatistic")]
+        public async Task<List<ViewStatistic>> GetPostStatistic(DateTime? startDate, DateTime? endDate)
+        {
+            if (startDate == null)
+            {
+                startDate = DateTime.Today.AddDays(-30);
+            }
+            if (endDate == null)
+            {
+                endDate = new DateTime(3999, 1, 1);
+            }
+
+            var postStatistic = await _context.Postts.Where(x => x.createdDate >= startDate && x.createdDate <= endDate)
+                .GroupBy(x => x.createdDate.Date)
+                .Select(result => new ViewStatistic
+                {
+                    dateTime = result.Key,
+                    count = result.Count()
+                })
+                .OrderBy(x => x.dateTime).ToListAsync();
+            return postStatistic;
         }
 
         /*------------------------------------------------------------Post------------------------------------------------------------*/
