@@ -2,6 +2,7 @@
 using BusinessObjects.Entities.User;
 using BusinessObjects.Enums.User;
 using BusinessObjects.ViewModels.Follow;
+using BusinessObjects.ViewModels.Statistic;
 using BusinessObjects.ViewModels.User;
 using Commons.Helpers;
 using Microsoft.AspNetCore.Authentication;
@@ -99,14 +100,32 @@ namespace User.Controllers
             }
         }
 
-        /*------------------------------------------------------------User------------------------------------------------------------*/
+        /*------------------------------------------------------------Statistic------------------------------------------------------------*/
 
-        [HttpGet("GetTotalUsersRegister/{startDate}/{endDate}")]
-        public async Task<Response> GetTotalUsersRegister(DateTime startDate, DateTime endDate)
+        [HttpGet("GetUserStatistic")]
+        public async Task<List<ViewStatistic>> GetUserStatistic(DateTime? startDate, DateTime? endDate)
         {
-            var totalUsersRegister = await _userManager.Users.Where(x => x.createdDate >= startDate && x.createdDate <= endDate).CountAsync();
-            return new Response(HttpStatusCode.OK, "Get total users register is success!", totalUsersRegister);
+            if (startDate == null)
+            {
+                startDate = DateTime.Today.AddDays(-30);
+            }
+            if (endDate == null)
+            {
+                endDate = new DateTime(3999, 1, 1);
+            }
+
+            var userStatistic = await _userManager.Users.Where(x => x.createdDate >= startDate && x.createdDate <= endDate)
+                .GroupBy(x => x.createdDate.Date)
+                .Select(result => new ViewStatistic
+                {
+                    dateTime = result.Key,
+                    count = result.Count()
+                })
+                .OrderBy(x => x.dateTime).ToListAsync();
+            return userStatistic;
         }
+
+        /*------------------------------------------------------------User------------------------------------------------------------*/
 
         [HttpGet("GetTotalBlockedUsers/{startDate}/{endDate}")]
         public async Task<Response> GetTotalBlockedUsers(DateTime startDate, DateTime endDate)

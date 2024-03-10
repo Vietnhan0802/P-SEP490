@@ -3,6 +3,7 @@ using Blog.Data;
 using Blog.Validator;
 using BusinessObjects.Entities.Blog;
 using BusinessObjects.ViewModels.Blog;
+using BusinessObjects.ViewModels.Statistic;
 using BusinessObjects.ViewModels.User;
 using Commons.Helpers;
 using Microsoft.AspNetCore.Mvc;
@@ -62,6 +63,31 @@ namespace Blog.Controllers
             };
             var blogReport = JsonSerializer.Deserialize<int>(strData, option);
             return blogReport;
+        }
+
+        /*------------------------------------------------------------Statistic------------------------------------------------------------*/
+
+        [HttpGet("GetBlogStatistic")]
+        public async Task<List<ViewStatistic>> GetBlogStatistic(DateTime? startDate, DateTime? endDate)
+        {
+            if (startDate == null)
+            {
+                startDate = DateTime.Today.AddDays(-30);
+            }
+            if (endDate == null)
+            {
+                endDate = new DateTime(3999, 1, 1);
+            }
+
+            var blogStatistic = await _context.Blogs.Where(x => x.createdDate >= startDate && x.createdDate <= endDate)
+                .GroupBy(x => x.createdDate.Date)
+                .Select(result => new ViewStatistic
+                {
+                    dateTime = result.Key,
+                    count = result.Count()
+                })
+                .OrderBy(x => x.dateTime).ToListAsync();
+            return blogStatistic;
         }
 
         /*------------------------------------------------------------Blog------------------------------------------------------------*/
