@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
-using BusinessObjects.Entities.Credential;
 using BusinessObjects.Entities.Projects;
 using BusinessObjects.Enums.Project;
 using BusinessObjects.ViewModels.Project;
+using BusinessObjects.ViewModels.Statistic;
 using BusinessObjects.ViewModels.User;
 using Commons.Helpers;
 using Microsoft.AspNetCore.Mvc;
@@ -49,6 +49,33 @@ namespace Project.Controllers
 
             return user!;
         }
+
+        /*------------------------------------------------------------Statistic------------------------------------------------------------*/
+
+        [HttpGet("GetProjectStatistic")]
+        public async Task<List<ViewStatistic>> GetProjectStatistic(DateTime? startDate, DateTime? endDate)
+        {
+            if (startDate == null)
+            {
+                startDate = DateTime.Today.AddDays(-30);
+            }
+            if (endDate == null)
+            {
+                endDate = new DateTime(3999, 1, 1);
+            }
+
+            var projectStatistic = await _context.ProjectInfos.Where(x => x.createdDate >= startDate && x.createdDate <= endDate)
+                .GroupBy(x => x.createdDate.Date)
+                .Select(result => new ViewStatistic
+                {
+                    dateTime = result.Key,
+                    count = result.Count()
+                })
+                .OrderBy(x => x.dateTime).ToListAsync();
+            return projectStatistic;
+        }
+
+        /*------------------------------------------------------------ProjectInfo------------------------------------------------------------*/
 
         [HttpGet("GetTotalProjects")]
         public async Task<Response> GetTotalProjects()
