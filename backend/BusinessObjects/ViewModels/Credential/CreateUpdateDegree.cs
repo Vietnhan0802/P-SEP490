@@ -10,7 +10,6 @@ namespace BusinessObjects.ViewModels.Credential
         public string? file { get; set; }
         [NotMapped]
         public IFormFile FileFile { get; set; }
-        [NotMapped]
-        public IFormFile? FileSrc { get; set; }
+
     }
 }

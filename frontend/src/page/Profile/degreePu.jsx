@@ -11,8 +11,8 @@ function DegreePu({ ...props }) {
     name: '',
     institution: '',
     file: '',
-    FileFile: null,
-    fileSrc: null
+    FileFile:  null,
+    FileSrc:''
   });
   const handleInputChange = (event) => {
     const { name, value, type } = event.target;
@@ -23,7 +23,8 @@ function DegreePu({ ...props }) {
         setInputs((prevInputs) => ({
           ...prevInputs,
           file: file.name,
-          FileFile: x.target.result,
+          FileFile: file,
+          FileSrc:x.target.result
         }));
       };
       reader.readAsDataURL(file);
@@ -96,8 +97,8 @@ function DegreePu({ ...props }) {
           {/* Display the selected file */}
           {inputs.FileFile && (
             <div>
-              {inputs.FileFile.startsWith("data:image") ? ( // Check if the file is an image
-                <img src={inputs.FileFile} alt="Selected File" style={{ maxWidth: "100%", maxHeight: "200px" }} />
+              {inputs.FileSrc.startsWith("data:image") ? ( // Check if the file is an image
+                <img src={inputs.FileSrc} alt="Selected File" style={{ maxWidth: "100%", maxHeight: "200px" }} />
               ) : (
                 <a href={inputs.FileFile} download={inputs.file} target="_blank" rel="noopener noreferrer">
                   Download File
