@@ -58,7 +58,6 @@ namespace Notification.Controllers
                 var infoUser = await GetNameUserCurrent(notification.idSender!);
                 notification.nameSender = infoUser.fullName;
                 notification.avatar = infoUser.avatar;
-                notification.content = $"{notification.nameSender} {notification.content}";
             }
             return result;
         }
@@ -76,7 +75,7 @@ namespace Notification.Controllers
             {
                 idSender = idSender,
                 idReceiver = idReceiver,
-                content = "has just started following you.",
+                content = "'has just started following you.'",
                 isRead = false,
                 url = idSender,
                 createdDate = DateTime.Now
