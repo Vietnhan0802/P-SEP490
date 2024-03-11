@@ -38,9 +38,9 @@ function DegreePu({ ...props }) {
     formData.append('institution', inputs.institution);
     formData.append('file', inputs.file);
     formData.append('FileFile', inputs.FileFile);
-  //   for (let pair of form.entries()) {
-  //     console.log(pair[0]+ ', ' + pair[1]); 
-  // }
+    for (let pair of formData.entries()) {
+      console.log(pair[0]+ ', ' + pair[1]); 
+  }
     credentialInstance.post(`/CreateDegree/${user}`, formData, {
       headers: {
         "Content-Type": "multipart/form-data",
