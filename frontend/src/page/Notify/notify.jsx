@@ -8,6 +8,7 @@ import Ryan from "../../images/chat/Ryan.png";
 import Roger from "../../images/chat/Roger.png";
 import Carla from "../../images/chat/Carla.png";
 import Brandon from "../../images/chat/Brandon.png";
+import defaultImage from "../../images/common/default.png";
 import "../Notify/notify.scss";
 import { notifyInstance } from "../../axios/axiosConfig";
 import { useTranslation } from 'react-i18next';
@@ -90,6 +91,7 @@ function Notify() {
     notifyInstance.get(`GetNotificationByUser/${currentUserId}`)
     .then((res) => {
       setNotifications(res.data)
+      console.log(res.data);
     })
     .catch((error) => {
       console.error(error);
@@ -116,13 +118,13 @@ function Notify() {
               item.status === "unseen" ? "active" : ""
             }`}
           >
-            <div className="d-flex align-items-center">
-              <img src={item.img} alt="profile" className="profile" />
+            <div className="d-flex align-items-center" key={item.idNotification}>
+              <img src={item.avatar === "https://localhost:7006/Images/" ? defaultImage : item.avatar} alt="profile" className="profile" />
               <div className="ms-2">
                 <p className="mb-0">
-                  <span className="fw-bold">{item.name}</span> {item.text}
+                  <span className="fw-bold">{item.nameSender}</span> {t(`${item.content}`)}
                 </p>
-                <p className="mb-0">{item.time}</p>
+                <p className="mb-0">{item.createdDate}</p>
               </div>
             </div>
           </div>

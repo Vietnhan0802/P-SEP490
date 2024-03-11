@@ -42,6 +42,6 @@ export const projectInstance = createAxiosInstance("https://localhost:7005/api/P
 export const userInstance = createAxiosInstance("https://localhost:7006/api/User");
 export const blogInstance = createAxiosInstance("https://localhost:7007/api/Blog");
 export const postInstance = createAxiosInstance("https://localhost:7008/api/Post");
-export const notifyInstance = createAxiosInstance("https://localhost:7009/api/Notificationss");
+export const notifyInstance = createAxiosInstance("https://localhost:7009/api/Notification");
 export const staticInstance = createAxiosInstance("https://localhost:7010/api/Statics");
 
