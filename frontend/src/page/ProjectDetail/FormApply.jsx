@@ -27,10 +27,18 @@ function FormApply() {
         <Modal.Body className="popup-body" id="member-apply">
           <div class="confirmation-box">
             <h2>Are you sure you want to apply for this project?</h2>
+            <p>(Upload your CV to Continue )</p>
+            <input
+              type="file"
+              className="form-control"
+              accept=".pdf,.doc,.docx"
+              required
+            />
+            <br/>
             <button onclick="confirmApplication()">Confirm</button>
           </div>
         </Modal.Body>
-{/* 
+        {/* 
         <Modal.Footer>
           <Button variant="secondary" onClick={modalClose}>
             Close
