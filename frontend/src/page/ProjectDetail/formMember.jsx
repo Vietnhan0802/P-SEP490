@@ -21,7 +21,7 @@ function FormMember() {
       </Button>
       <Modal show={show} onHide={modalClose}>
         <Modal.Header closeButton>
-          <Modal.Title>Select Date</Modal.Title>
+          <Modal.Title>Add member</Modal.Title>
         </Modal.Header>
 
         <Modal.Body className="popup-body" id="member-search">

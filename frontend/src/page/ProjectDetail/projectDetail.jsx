@@ -50,6 +50,20 @@ function ProjectDetail() {
               <div class="status process">Process</div>
               <div class="status pending">Pending</div>
               <div class="status done">Done</div>
+              <select id="projectStatus" class="status-select status preparing">
+                <option value="preparing" class="status preparing">
+                  Preparing
+                </option>
+                <option value="process" class="status process">
+                  Process
+                </option>
+                <option value="pending" class="status pending">
+                  Pending
+                </option>
+                <option value="done" class="status done">
+                  Done
+                </option>
+              </select>
             </label>
           </div>
           <div className="status-block size-18">
@@ -58,6 +72,20 @@ function ProjectDetail() {
               <div class="visibility public">Public</div>
               <div class="visibility private">Private</div>
               <div class="visibility hidden">Hidden</div>
+              <select
+                id="accessVisibility"
+                class="visibility-select visibility public"
+              >
+                <option value="public" class="visibility public">
+                  Public
+                </option>
+                <option value="private" class="visibility private">
+                  Private
+                </option>
+                <option value="hidden" class="visibility hidden">
+                  Hidden
+                </option>
+              </select>
             </label>
           </div>
 
@@ -74,13 +102,11 @@ function ProjectDetail() {
         <div className="d-flex justify-content-between">
           <div className="d-flex align-items-end">
             <p className="title fw-bold">Member</p>
-            <p className="view">View all</p>
-          </div>
+            </div>
           <div className="d-flex align-items-center">
             {" "}
-            <FormMember/>
-            
-            <FormApply/>
+            <FormMember />
+            <FormApply />
           </div>
         </div>
         <table className="w-100">
