@@ -2,15 +2,15 @@ import React, { useEffect, useRef } from "react";
 import "./ownProject.scss";
 import avatar from "../../images/common/default.png";
 import sender from "../../images/common/send-01.png";
+import { CiSearch } from "react-icons/ci";
 
-import { GrAddCircle } from "react-icons/gr";
-import Cookies from "js-cookie";
 import { useState } from "react";
 import { projectInstance } from "../../axios/axiosConfig";
+import CreateProject from "./createProject";
 
 function OwnProject({ projetcId, onProjectClick, activeItem, onItemClick }) {
   const sessionData = JSON.parse(sessionStorage.getItem('userSession')) || {};
-  const { role ,userId} = sessionData;
+  const { role, userId } = sessionData;
 
   const [value, setValue] = useState({
     name: '',
@@ -119,58 +119,20 @@ function OwnProject({ projetcId, onProjectClick, activeItem, onItemClick }) {
   return (
     <div id="own_project">
       {role === "Business" ? (
-        <div className="blog-form p-2 mb-3">
-          <div className="d-flex flex-column">
+        <div className="bg-white p-2 d-flex flex-grid align-items-center justify-content-between row m-0 form mb-3">
+          <div className="d-flex project-search align-items-center position-relative col">
+            <CiSearch className="" />
             <input
               type="text"
-              name="name"
-              value={value.name}
-              onChange={handleInputChange}
-              className="input-text width-100"
-              placeholder="Enter Project Name"
-            />
-            <textarea
-              type="text"
-              value={value.description}
-              name="description"
-              onChange={handleInputChange}
-              className="input-text width-100"
-              placeholder="Enter Project Description..."
+              placeholder={"Search"}
+              className="search-box size-20"
             />
           </div>
-
-          <div className="d-flex  justify-content-between">
-            <div>
-              <select
-                value={value.visibility}
-                name="visibility"
-                onChange={handleInputChange}
-                className="input-text width-200 me-3"
-                defaultValue={1}
-              >
-                <option value={1}>Public</option>
-                <option value={0}>Private</option>
-                <option value={2}>Hidden</option>
-              </select>
-              <button className="btn btn-outline-primary" onClick={handleClick}>
-                Add Image
-              </button>
-            </div>
-            <input
-              type="file"
-              name="images"
-              onChange={handleInputChange}
-              className="form-control"
-              multiple
-              ref={fileInputRef}
-              style={{ display: "none" }} // Hide the input
-            />
-            <button className="btn p-0 width-45" onClick={handleCreateProject}>
-              <GrAddCircle className="width-100 height-100" />
-            </button>
-            <img src={value.ImageSrc} alt="" style={{ width: '50px ' }} />
+          <div className="d-flex flex-row align-items-center col-auto m-md-0-cus mt-2 p-0">
+            <CreateProject />
           </div>
         </div>
+
       ) : (
         ""
       )}
@@ -207,7 +169,7 @@ function OwnProject({ projetcId, onProjectClick, activeItem, onItemClick }) {
               </div>
               <div className="d-flex flex-row gap-2">
                 <button className="d-flex flex-row align-items-center btn bg-white text-dark px-4 py-2 rounded btn-light border border-dark"
-                onClick={()=>hanldeViewDetail(item.idProject)}
+                  onClick={() => hanldeViewDetail(item.idProject)}
                 >
                   Detail
                 </button>

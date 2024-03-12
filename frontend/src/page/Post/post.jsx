@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
 import "../Post/post.scss";
-import { CiCircleChevRight } from "react-icons/ci";
 import { IoFlagOutline } from "react-icons/io5";
 import { FaHeart } from "react-icons/fa";
 import { CiSearch } from "react-icons/ci";
@@ -194,7 +193,7 @@ function Post({ postId, onPostClick, activeItem, onItemClick }) {
 
       {postList.map((item) => (
         <div
-          key={item.idPost}
+          key={item.idPost }
           className={`pos-rel post-item mt-2 p-2 ${blogPopups[item.id] ? "position-relative" : ""
             }`}
         >

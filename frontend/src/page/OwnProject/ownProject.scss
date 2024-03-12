@@ -8,7 +8,24 @@
   .left-30 {
     margin-left: 10px;
   }
-
+  .form{
+    border-radius: 8px;
+  }
+  .project-search {
+    background-color: var(--header_background_search_box);
+    border-radius: 40px;
+    padding: 0px 12px;
+  
+    .search-box {
+      background-color: var(--header_background_search_box);
+      color: var(--header_search_text);
+      border: none !important;
+      outline: none;
+      padding: 8px;
+      border-radius: 8px;
+      font-size: 18px;
+    }
+  }
   .blog-form {
     background-color: #fff;
     border-radius: 8px;
@@ -31,21 +48,7 @@
     max-width: 200px;
   }
 
-  .input-text {
-    border: 1px solid #d0d5dd;
-    max-height: 750px;
-    resize: both;
-    overflow: auto;
-    font-size: 16px;
-    font-weight: 500;
-    border-radius: 8px;
-    padding: 16px;
-    margin: 5px 0px;
 
-    &:focus {
-      outline: none;
-    }
-  }
 
   .bor-8 {
     border-radius: 8px;
@@ -66,5 +69,20 @@
     /* Giữ tỷ lệ của ảnh nhưng vẫn che đầy container */
     object-position: center;
     /* Căn giữa ảnh */
+  }
+}
+.input-text {
+  border: 1px solid #d0d5dd;
+  max-height: 750px;
+  resize: both;
+  overflow: auto;
+  font-size: 16px;
+  font-weight: 500;
+  border-radius: 8px;
+  padding: 16px;
+  margin: 5px 0px;
+
+  &:focus {
+    outline: none;
   }
 }

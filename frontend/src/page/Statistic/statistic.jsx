@@ -1,15 +1,13 @@
 import React, { useState } from "react";
 import "./statistic.scss";
-import { CiCircleChevRight } from "react-icons/ci";
 import { GoPencil } from "react-icons/go";
 import { VscAccount } from "react-icons/vsc";
 import { LuBook } from "react-icons/lu";
 import { VscReport } from "react-icons/vsc";
 import { FiBookOpen } from "react-icons/fi";
-import { Row, Col } from "react-bootstrap";
+import { Col } from "react-bootstrap";
 import { TbPresentationAnalytics } from "react-icons/tb";
-import { RxCardStackPlus } from "react-icons/rx";
-import FormDate from "./formDate";
+
 import { SlChart } from "react-icons/sl";
 import { FaRegCircleCheck } from "react-icons/fa6";
 import BarChart from "./barChart";
@@ -19,11 +17,6 @@ import { BlogData } from "./Data/BlogData";
 import { ReportData } from "./Data/ReportData";
 import { AccountData } from "./Data/AccountData";
 import { AccessData } from "./Data/AccessData";
-import LineChart from "./lineChart";
-import { Bar } from "react-chartjs-2";
-import PieChart from "./PieChart";
-
-import TempAvatar from "../../images/common/Avatar.png";
 
 function handleDateSort() {}
 

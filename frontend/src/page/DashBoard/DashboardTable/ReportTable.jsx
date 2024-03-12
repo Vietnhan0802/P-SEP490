@@ -393,7 +393,6 @@ export default function ReportTable() {
                           </div>
                         </div>
                       </TableCell>
-                      <TableCell align="right" style={{ color: "#5572E8" }}>View</TableCell>
                     </TableRow>
                   );
                 })}
@@ -462,7 +461,6 @@ export default function ReportTable() {
                           </div>
                         </div>
                       </TableCell>
-                      <TableCell align="right" style={{ color: "#5572E8" }}>View</TableCell>
                     </TableRow>
                   );
                 })}

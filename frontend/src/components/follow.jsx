@@ -1,4 +1,4 @@
-import React, { useEffect, useState,} from "react";
+import React, { useEffect, useState, } from "react";
 import "../scss/follow.scss";
 import tick from "../images/common/verifiedTick.png";
 import { LuDot } from "react-icons/lu";
@@ -25,8 +25,8 @@ function Follow({ newFollow }) {
     <div className="follow position-relative">
       <div>
         <p className="text">{t('following')}</p>
-        {following.map((item) => (
-          <div className="follow-user d-flex align-items-center mb-2" key={item.idAccount} onClick={()=>handleAvatarclick(item.idAccount)}>
+        {following.length > 0 ? following.map((item) => (
+          <div className="follow-user d-flex align-items-center mb-2" key={item.idAccount} onClick={() => handleAvatarclick(item.idAccount)}>
             <div className="follow-avata-box">
               <img src={item.avatar === "https://localhost:7006/Images/" ? defaultImage : item.avatar} alt="user" className="user-image" />
               <img src={tick} alt="tick" className="user-tick" />
@@ -35,13 +35,13 @@ function Follow({ newFollow }) {
               <p className="follow-user-name fw-bold">{item.fullName}</p>
               <p className="follow-user-email">{item.email}</p>
             </div>
-          </div>))}
+          </div>)) : <p>You are now following anyone yet!</p>}
       </div>
-
-      <button className="btn border mt-3 fw-bold">
+      {following.length > 10 ? <button className="btn border mt-3 fw-bold">
         <LuDot className="me-1 dot fs-3" />
         {t('viewfollow')}
-      </button>
+      </button> : ''}
+
     </div>
   );
 }
