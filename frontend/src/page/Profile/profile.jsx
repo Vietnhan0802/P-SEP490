@@ -48,6 +48,8 @@ function Profile({ handleChangeImg }) {
   const { userId } = location.state || {};
   const [activePopup, setActivePopup] = useState(false);
   const [resetAvatar, setResetAvatar] = useState(true);
+  const [resetDegree, setResetDegree] = useState(true);
+  const [showAllItems, setShowAllItems] = useState(false);
   const [display, setDisplay] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [inputs, setInputs] = useState({
@@ -66,7 +68,7 @@ function Profile({ handleChangeImg }) {
   const [userPost, setUserPost] = useState([]);
   const [userProject, setUserProject] = useState([]);
   const [userBlog, setUserBlog] = useState([]);
-
+  const [userDegree, setUserDegree] = useState([]);
   useEffect(() => {
     userInstance
       .get(`GetUserById/${currentUserId}?idAccount=${userId}`)
@@ -98,16 +100,14 @@ function Profile({ handleChangeImg }) {
           isFollow: user?.isFollow
         });
         if (user.role === "Business") {
-          postInstance
-            .get(`GetPostByUser/${userId}`)
+          postInstance.get(`GetPostByUser/${userId}`)
             .then((res) => {
               setUserPost(res?.data?.result);
             })
             .catch((error) => {
               console.error(error);
             });
-          projectInstance
-            .get(`GetProjectByUser/${userId}`)
+          projectInstance.get(`GetProjectByUser/${userId}`)
             .then((res) => {
               setUserProject(res?.data?.result);
             })
@@ -125,11 +125,13 @@ function Profile({ handleChangeImg }) {
               console.log(error);
             });
         }
-        if(user.role ==='Member'){
-          credentialInstance.get()
+        if (user.role === 'Member') {
+          credentialInstance.get(`/GetDegreeByUser/${userId}`)
+            .then((res) => { setUserDegree(res?.data?.result) })
+            .catch((error) => { console.error(error) });
         }
       });
-  }, [userId, resetAvatar]);
+  }, [userId, resetAvatar,resetDegree]);
   // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   const projectStatus = (process) => {
     switch (process) {
@@ -177,6 +179,7 @@ function Profile({ handleChangeImg }) {
 
   const hanldeSetTab = (tab) => {
     setTab(tab);
+    setShowAllItems(!showAllItems);
   };
   const handleReportPopup = () => {
     setActivePopup(!activePopup);
@@ -236,7 +239,7 @@ function Profile({ handleChangeImg }) {
 
   return (
     <>
-      <Row className="mx-0 mt-3">
+      <Row className="mx-0 mt-3 pb-3">
         <Col md={3}>
           <div id="sidebar-profile" className="bg-white p-5 position-relative ">
             <div className="text-center mb-3">
@@ -491,7 +494,7 @@ function Profile({ handleChangeImg }) {
                       }`}
                     onClick={() => hanldeSetTab("degree")}
                   >
-                    View All
+                    {showAllItems ? "Show Less" : "View All"}
                   </button>
                 )}
 
@@ -529,25 +532,32 @@ function Profile({ handleChangeImg }) {
             </div>
             <div>
               {user.role === "Member" && tab === "degree" && (
-                <div className="degree tab-content">
-                  <div className="row">
+                <div className={`degree tab-content ${showAllItems ? "scrollable" : ""}`}>
+                  {userDegree.slice(0,  showAllItems ? userDegree.length : 3).map((item) => (<div className="row" key={item.idDegree}>
                     <div className="col-2 d-flex justify-content-center img-contain">
                       <img src={degree} alt="" className="image" />
                     </div>
                     <div className="col-7 d-flex flex-column justify-content-center">
                       <p className="degree-title ellipsis">
                         Degree title:
-                        aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa{" "}
+                        {item.name}
                       </p>
                       <p className="degree-description ellipsis">
-                        Degree information:
-                        aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa{" "}
+                        Degree institution:
+                        {item.institution}
                       </p>
                     </div>
                     <div className="col-3 d-flex justify-content-center align-items-center">
-                      <button className="btn degree-detail">View Detail</button>
+                      <a
+                        href={item.fileSrc} // Link to the PDF file
+                        target="_blank" // Open in a new tab
+                        rel="noopener noreferrer" // Security best practice
+                        className="btn degree-detail"
+                      >
+                        View Detail
+                      </a>
                     </div>
-                  </div>
+                  </div>))}
                 </div>
               )}
               {/* DegreeTab */}

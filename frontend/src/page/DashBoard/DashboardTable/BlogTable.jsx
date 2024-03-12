@@ -15,7 +15,6 @@ import { IoSearchOutline } from "react-icons/io5";
 import "../DashboardTable/table.scss";
 import { GoDotFill } from "react-icons/go";
 import { blogInstance } from "../../../axios/axiosConfig";
-import Cookies from "js-cookie";
 function createData(id, avatar, fullName, title, content, date, report, isBlock) {
   const time = formatDate(date);
   return {
@@ -150,7 +149,7 @@ EnhancedTableHead.propTypes = {
 
 export default function BlogTable() {
 
-  
+
   const sessionData = JSON.parse(sessionStorage.getItem("userSession")) || {};
   const { currentUserId } = sessionData;
   const [order, setOrder] = React.useState("asc");
@@ -158,7 +157,20 @@ export default function BlogTable() {
   const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-
+  const [searchTerm, setSearchTerm] = React.useState('');
+  const handleSearch = (e) => {
+    setSearchTerm(e.target.value);
+  };
+  const filterRows = (rows, searchTerm) => {
+    return rows.filter(
+      (row) =>
+        row.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        row.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        row.content.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        row.time.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        row.report.toString().includes(searchTerm)
+    );
+  };
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
@@ -190,8 +202,6 @@ export default function BlogTable() {
   React.useEffect(() => {
     blogInstance.get(`GetAllBlogs/${currentUserId}`)
       .then((res) => {
-        // id, name, email, date, title, description, report, status
-        console.log(res.data.result)
         const fetchedBlogRows = res.data.result.map(element => (
           createData(
             element.idBlog,
@@ -206,19 +216,17 @@ export default function BlogTable() {
         )
         );
         setUserRows(fetchedBlogRows);
-        console.log(fetchedBlogRows)
       })
       .catch((err) => { console.log(err) })
   }, []);
   const visibleRows = React.useMemo(
     () =>
-      stableSort(blogRows, getComparator(order, orderBy)).slice(
-        page * rowsPerPage,
-        page * rowsPerPage + rowsPerPage
-      ),
-    [order, orderBy, page, rowsPerPage, blogRows]
+      stableSort(
+        filterRows(blogRows, searchTerm),
+        getComparator(order, orderBy)
+      ).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage),
+    [order, orderBy, page, rowsPerPage, blogRows, searchTerm]
   );
-
   return (
     <Box
       id="postTable"
@@ -227,7 +235,9 @@ export default function BlogTable() {
       <Paper sx={{ width: "100%", mb: 2 }} style={{ paddingTop: "10px" }}>
         <div className="ms-2 search-box">
           <IoSearchOutline className="search-icon me-1" />
-          <input type="text" name="" className="search" id="" />
+          <input type="text" name="" className="search"
+            value={searchTerm}
+            onChange={handleSearch} id="" />
         </div>
         <div className="line"></div>
         <TableContainer>
@@ -282,21 +292,21 @@ export default function BlogTable() {
                     <TableCell align="left" className="blur">{row.time}</TableCell>
                     <TableCell align="left">
                       <p style={{ fontSize: "16px", fontWeight: "500" }}>{row.title}</p>
-                      <p className="blur">{row.content}</p>
+                      <p className="blur ellipsis" style={{ maxWidth: '300px' }}>{row.content}</p>
                     </TableCell>
                     <TableCell align="right">{row.report}</TableCell>
                     <TableCell align="right">
                       <div
                         className="d-flex align-items-center justify-content-end"
                       >
-                        <div className={`block-box ${row.isBlock  ? "active-block" : ""
+                        <div className={`block-box ${row.isBlock ? "active-block" : ""
                           }`}>
                           <GoDotFill className="me-1" />
-                          {row.isblock ? 'UnBlock':'Block'}
+                          {row.isblock ? 'UnBlock' : 'Block'}
                         </div>
                       </div>
                     </TableCell>
-                    <TableCell align="right">View</TableCell>
+
                   </TableRow>
                 );
               })}

@@ -19,13 +19,11 @@
     width: 300px;
     margin-left: 0px;
   }
-  .line {
-    margin-top: 10px;
-    margin-left: 10px;
-    height: 1px;
-    width: 1087px;
-    border-top: 1px solid var(--blue-va-1, #175CD3);
-  }
+  .ellipsis {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
   .form-table th,
   .form-table svg,
   .form-table td,

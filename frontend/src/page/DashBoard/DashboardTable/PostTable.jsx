@@ -15,75 +15,26 @@ import avatar from "../../../images/common/Avatar.png";
 import { IoSearchOutline } from "react-icons/io5";
 import "../DashboardTable/table.scss";
 import { GoDotFill } from "react-icons/go";
-
-function createData(id, name, email, date, title, description, report, status) {
+import { postInstance } from "../../../axios/axiosConfig";
+function createData(id, avatar, fullName, title, content, date, report, isBlock) {
+  const time = formatDate(date);
   return {
-    id,
-    name,
-    email,
-    date,
-    title,
-    description,
-    report,
-    status,
+    id, avatar, fullName, title, content, time, report, isBlock
   };
 }
 
-const rows = [
-  createData(
-    1,
-    "Olivia Rhye",
-    "example@gmail,com",
-    "21 Jan 2024",
-    "Content curating app",
-    "Description of the current content",
-    0,
-    "Block"
-  ),
-  createData(
-    2,
-    "Adison Schleifer",
-    "example@gmail,com",
+const formatDate = (timestamp) => {
+  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const date = new Date(timestamp);
+  const day = date.getDate();
+  const month = months[date.getMonth()];
+  const year = date.getFullYear();
 
-    "21 Jan 2024",
-    "Design software",
-    "Description of the current content",
-
-    2,
-    "Block"
-  ),
-  createData(
-    3,
-    "Martin George",
-    "example@gmail,com",
-    "21 Jan 2024",
-    "Data prediction",
-    "Description of the current content",
-
-    3,
-    "UnBlock"
-  ),
-  createData(
-    4,
-    "Zaire Herwitz",
-    "example@gmail,com",
-    "21 Jan 2024",
-    "Productivity app",
-    "Description of the current content",
-
-    3,
-    "UnBlock"
-  ),
-  //   createData(5, "Gingerbread", 356, 16.0, 49, 3.9),
-  //   createData(6, "Honeycomb", 408, 3.2, 87, 6.5),
-  //   createData(7, "Ice cream sandwich", 237, 9.0, 37, 4.3),
-  //   createData(8, "Jelly Bean", 375, 0.0, 94, 0.0),
-  //   createData(9, "KitKat", 518, 26.0, 65, 7.0),
-  //   createData(10, "Lollipop", 392, 0.2, 98, 0.0),
-  //   createData(11, "Marshmallow", 318, 0, 81, 2.0),
-  //   createData(12, "Nougat", 360, 19.0, 9, 37.0),
-  //   createData(13, "Oreo", 437, 18.0, 63, 4.0),
-];
+  return `${day} ${month} ${year}`;
+}
+const sessionData = JSON.parse(sessionStorage.getItem("userSession")) || {};
+const { currentUserId } = sessionData;
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -208,16 +159,40 @@ export default function PostTable() {
   const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-
+  const [postRows, setUserRows] = React.useState([]);
+  const [searchTerm, setSearchTerm] = React.useState('');
+  React.useEffect(() => {
+    postInstance.get(`GetAllposts/${currentUserId}`)
+      .then((res) => {
+        // id, name, email, date, title, description, report, status
+        const fetchedPostRows = res.data.result.map(element => (
+          createData(
+            element.idPost,
+            element.avatar,
+            element.fullName,
+            element.title,
+            element.content,
+            element.createdDate,
+            element.report,
+            element.isBlock,
+          )
+        )
+        );
+        setUserRows(fetchedPostRows);
+      })
+      .catch((err) => { console.log(err) })
+  }, []);
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
     setOrderBy(property);
   };
-
+  const handleSearch = (e) => {
+    setSearchTerm(e.target.value);
+  };
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelected = rows.map((n) => n.id);
+      const newSelected = postRows.map((n) => n.id);
       setSelected(newSelected);
       return;
     }
@@ -236,14 +211,23 @@ export default function PostTable() {
   const isSelected = (id) => selected.indexOf(id) !== -1;
 
   // Avoid a layout jump when reaching the last page with empty rows.
-
+  const filterRows = (rows, searchTerm) => {
+    return rows.filter(
+      (row) =>
+        row.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        row.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        row.content.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        row.time.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        row.report.toString().includes(searchTerm)
+    );
+  };
   const visibleRows = React.useMemo(
     () =>
-      stableSort(rows, getComparator(order, orderBy)).slice(
-        page * rowsPerPage,
-        page * rowsPerPage + rowsPerPage
-      ),
-    [order, orderBy, page, rowsPerPage]
+      stableSort(
+        filterRows(postRows, searchTerm),
+        getComparator(order, orderBy)
+      ).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage),
+    [order, orderBy, page, rowsPerPage, postRows, searchTerm]
   );
 
   return (
@@ -254,18 +238,22 @@ export default function PostTable() {
       <Paper className="form-table" sx={{ width: "100%", mb: 2 }} style={{ paddingTop: "10px" }}>
         <div className="ms-2 search-box">
           <IoSearchOutline className="search-icon me-1 fs-4" />
-          <input type="text" name="" className="search" id="" />
+          <input
+            type="text"
+            name="" className="search"
+            value={searchTerm}
+            onChange={handleSearch}
+            id="" />
         </div>
         <div className="line"></div>
         <TableContainer>
           <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle" className="form-table" >
             <EnhancedTableHead
-              numSelected={selected.length}
               order={order}
               orderBy={orderBy}
               onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
-              rowCount={rows.length}
+              rowCount={postRows.length}
             />
             <TableBody>
               {visibleRows.map((row, index) => {
@@ -291,7 +279,7 @@ export default function PostTable() {
                       <div className="ms-2 my-2 d-flex align-items-center">
                         <img
                           className="me-2"
-                          src={avatar}
+                          src={row.avatar}
                           alt=""
                           style={{
                             width: "40px",
@@ -300,35 +288,31 @@ export default function PostTable() {
                           }}
                         />
                         <div>
-                          {row.name}
-                          <br></br>
-                          {row.email}
+                          {row.fullName}
                         </div>
                       </div>
                     </TableCell>
                     <TableCell align="left" className="blur">
-                      {row.date}
+                      {row.time}
                     </TableCell>
                     <TableCell align="left">
                       <p style={{ fontSize: "16px", fontWeight: "500" }}>
                         {row.title}
                       </p>
-                      <p className="blur">{row.description}</p>
+                      <p className="blur ellipsis" style={{maxWidth:'300px'}}>{row.content}</p>
                     </TableCell>
                     <TableCell align="right">{row.report}</TableCell>
                     <TableCell align="right">
                       <div className="d-flex align-items-center justify-content-end">
                         <div
-                          className={`block-box ${
-                            row.report === 3 ? "active-block" : ""
-                          }`}
+                          className={`block-box ${row.isBlock ? "active-block" : ""
+                            }`}
                         >
                           <GoDotFill className="me-1 dot" />
-                          {row.status}
+                          {row.isBlock ? 'Block' : 'Unblock'}
                         </div>
                       </div>
                     </TableCell>
-                    <TableCell align="right" style={{color:"#5572E8"}}>View</TableCell>
                   </TableRow>
                 );
               })}
@@ -338,7 +322,7 @@ export default function PostTable() {
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={rows.length}
+          count={postRows.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}

@@ -1,6 +1,5 @@
 import { Modal, Button } from "react-bootstrap";
 import { useState } from "react";
-import { Row, Col } from "react-bootstrap";
 import "./degree-pu.scss";
 import "./profile.scss";
 import { credentialInstance } from "../../axios/axiosConfig";
@@ -50,7 +49,7 @@ function DegreePu({ ...props }) {
       }
     })
       .then((res) => {
-        console.log(res?.data?.result);
+        
         setInputs({
           name: '',
           institution: '',
