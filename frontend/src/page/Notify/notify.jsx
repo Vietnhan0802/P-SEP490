@@ -120,11 +120,11 @@ function Notify() {
           >
             <div className="d-flex align-items-center" key={item.idNotification}>
               <img src={item.avatar === "https://localhost:7006/Images/" ? defaultImage : item.avatar} alt="profile" className="profile" />
-              <div className="ms-2">
+              <div className="ms-2 content">
                 <p className="mb-0">
                   <span className="fw-bold">{item.nameSender}</span> {t(`${item.content}`)}
                 </p>
-                <p className="mb-0">{item.createdDate}</p>
+                <p className="mb-0 date">{item.createdDate}</p>
               </div>
             </div>
           </div>

@@ -12,3 +12,14 @@
     background: var(--header_background_search_box);
     //background: var(--blue-va-5, rgba(47, 69, 173, 0.20));
 }
+.profile {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+}
+.content {
+    margin-left: 18px !important;
+}
+.date {
+    margin-top: 12px;
+}

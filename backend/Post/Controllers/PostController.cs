@@ -133,15 +133,15 @@ namespace Post.Controllers
             foreach (var post in result)
             {
                 post.report = await GetAllReportPost();
+                if (post.report >= 3)
+                {
+                    post.isBlock = true;
+                }
                 post.like = await _context.PosttLikes.Where(x => x.idPost == post.idPost).CountAsync();
                 var isLike = await _context.PosttLikes.FirstOrDefaultAsync(x => x.idAccount == idUser);
                 if (isLike != null)
                 {
                     post.isLike = true;
-                }
-                if (post.report >= 3)
-                {
-                    post.isBlock = true;
                 }
                 var infoUser = await GetNameUserCurrent(post.idAccount!);
                 post.fullName = infoUser.fullName;
