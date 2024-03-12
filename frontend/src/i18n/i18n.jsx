@@ -23,7 +23,7 @@ const resources = {
             'title_noti': 'Notification',
             'viewnoti': 'All',
             'notread': 'Unseen',
-            'following': 'has just started following you.',
+            'content_noti': 'has just started following you.',
 
             /**Translate dashboard */
             'managepost': 'Manage Post',
@@ -61,7 +61,7 @@ const resources = {
             'title_noti': 'Thông báo',
             'viewnoti': 'Tất cả',
             'notread': 'Chưa xem',
-            'following': 'đã bắt đầu theo dõi bạn.',
+            'content_noti': 'đã bắt đầu theo dõi bạn.',
 
             /**Translate dashboard */
             'managepost': 'Quản lý bài đăng',
