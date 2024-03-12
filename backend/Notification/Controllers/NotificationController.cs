@@ -75,7 +75,7 @@ namespace Notification.Controllers
             {
                 idSender = idSender,
                 idReceiver = idReceiver,
-                content = "'has just started following you.'",
+                content = "content_noti",
                 isRead = false,
                 url = idSender,
                 createdDate = DateTime.Now

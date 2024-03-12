@@ -13,13 +13,41 @@
     //background: var(--blue-va-5, rgba(47, 69, 173, 0.20));
 }
 .profile {
+    margin-left: 8px;
     width: 56px;
     height: 56px;
     border-radius: 50%;
 }
 .content {
     margin-left: 18px !important;
+    width: 21em;
 }
-.date {
+.date.notRead {
+    font-weight: bold;
     margin-top: 12px;
+    color: #175CD3;
 }
+.date.read {
+    font-weight: bold;
+    margin-top: 12px;
+    color: black;
+}
+.notify-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: #175CD3; /* Thay đổi màu sắc theo yêu cầu */
+    margin-right: auto;
+}
+.read-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: white; /* Thay đổi màu sắc theo yêu cầu */
+    margin-right: auto;
+}
+.notification-item:hover {
+    border-radius: 8px;
+    background-color: var(--header_background_search_box); /* Màu nền khi hover */
+    cursor: pointer; /* Thay đổi con trỏ chuột để chỉ ra có thể tương tác */
+  }
