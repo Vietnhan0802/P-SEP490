@@ -5,7 +5,6 @@ import { FaHeart } from "react-icons/fa";
 import { IoFlagOutline } from "react-icons/io5";
 import avatarDefault from "../../images/common/default.png";
 import { FiEye } from "react-icons/fi";
-import Cookies from "js-cookie";
 import { VscSend } from "react-icons/vsc";
 import { postInstance, userInstance } from "../../axios/axiosConfig";
 import Dropdown from 'react-bootstrap/Dropdown';
@@ -59,8 +58,6 @@ function PostDetail(id) {
   const memoizedPostInstance = useMemo(() => {
     return postInstance; // hoặc tạo một instance mới nếu cần
   }, []);
-
-
 
   const handleUpdateCommentAppear = (updateId, originalContent) => {
     setUpdateShow((prev) => (prev === updateId ? null : updateId));
@@ -248,6 +245,7 @@ function PostDetail(id) {
         console.error(error);
       });
   }, [memoizedPostInstance, idPost]);
+  console.log(data)
   //Fetch data the user to display in the comment and reply
   useEffect(() => {
     userInstance.get(`/GetUserById/${curentUserId}`)
@@ -259,7 +257,6 @@ function PostDetail(id) {
         console.log(err.response.data);
       })
   }, []);
-  console.log(data)
   return (
     <div id="postDetail" className="p-3">
       <div className="d-flex align-items-center mb-2">
@@ -285,7 +282,7 @@ function PostDetail(id) {
         <div className="d-flex align-items-center me-3"
           onClick={() => handleLikeOrUnlikePost()}
         >
-          <FaHeart className={`me-2 ${data?.isLike ? 'red' : ''}`} /> {data?.like}
+          <FaHeart className={`me-2 ${data?.isLike === true ? 'red' : ''}`} /> {data?.like}
         </div>
         <div
           className="d-flex align-items-center me-3"

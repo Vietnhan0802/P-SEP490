@@ -140,7 +140,19 @@ export default function AccessTable() {
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [resetData, setResetData] = React.useState(false);
 
-
+  const [searchTerm, setSearchTerm] = React.useState('');
+  const handleSearch = (e) => {
+    setSearchTerm(e.target.value);
+  };
+  const filterRows = (rows, searchTerm) => {
+    return rows.filter(
+      (row) =>
+        (row.name && row.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (row.email && row.email.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (row.type && row.type.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (row.description && row.description.toLowerCase().includes(searchTerm.toLowerCase()))
+    );
+  };
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
@@ -186,11 +198,11 @@ export default function AccessTable() {
 
   const visibleRows = React.useMemo(
     () =>
-      stableSort(userRows, getComparator(order, orderBy)).slice(
-        page * rowsPerPage,
-        page * rowsPerPage + rowsPerPage
-      ),
-    [order, orderBy, page, rowsPerPage, userRows]
+      stableSort(
+        filterRows(userRows, searchTerm),
+        getComparator(order, orderBy)
+      ).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage),
+    [order, orderBy, page, rowsPerPage, userRows, searchTerm]
   );
 
   return (
@@ -203,7 +215,8 @@ export default function AccessTable() {
           <IoSearchOutline
             className="search-icon me-1 fs-4"
           />
-          <input type="text" name="" className="search" id="" />
+          <input type="text" name="" className="search" value={searchTerm}
+            onChange={handleSearch} id="" />
         </div>
         <div className="line"></div>
         <TableContainer>

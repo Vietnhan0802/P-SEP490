@@ -141,7 +141,7 @@ function PostPu() {
             className="input-text form-control mb-3"
             placeholder="title"
           />
-          <input
+          <textarea
             type="text"
             value={inputs.content}
             name="content"

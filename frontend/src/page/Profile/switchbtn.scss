@@ -13,6 +13,27 @@
 
 
 #switch {
+    .scrollable {
+        max-height: 400px; /* Adjust the maximum height as needed */
+        overflow-y: auto;
+      }
+      
+      /* Additional styling for smooth scrolling */
+      .scrollable::-webkit-scrollbar {
+        width: 8px;
+      }
+      
+      .scrollable::-webkit-scrollbar-track {
+        background: #f1f1f1;
+      }
+      
+      .scrollable::-webkit-scrollbar-thumb {
+        background: #888;
+      }
+      
+      .scrollable::-webkit-scrollbar-thumb:hover {
+        background: #555;
+      }
     .tabs {
         display: flex;
         position: relative;
