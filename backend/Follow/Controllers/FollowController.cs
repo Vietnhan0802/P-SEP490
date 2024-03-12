@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BusinessObjects.Entities.Follow;
 using BusinessObjects.ViewModels.Follow;
+using BusinessObjects.ViewModels.Notification;
 using BusinessObjects.ViewModels.User;
 using Follow.Data;
 using Microsoft.AspNetCore.Cors;
@@ -21,6 +22,7 @@ namespace Follow.Controllers
         private readonly IMapper _mapper;
         private readonly HttpClient client;
 
+        public string NotifyApiUrl { get; }
         public string UserApiUrl { get; }
 
         public FollowController(AppDBContext context, IMapper mapper)
@@ -30,7 +32,19 @@ namespace Follow.Controllers
             client = new HttpClient();
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
             client.DefaultRequestHeaders.Accept.Add(contentType);
+            NotifyApiUrl = "https://localhost:7009/api/Notification";
             UserApiUrl = "https://localhost:7006/api/User";
+        }
+
+        [HttpPost("CreateNotificationFollow/{idSender}/{idReceiver}")]
+        private async Task<IActionResult> CreateNotificationFollow(string idSender, string idReceiver)
+        {
+            HttpResponseMessage response = await client.PostAsync($"{NotifyApiUrl}/CreateNotificationFollow/{idSender}/{idReceiver}", null);
+            if (response.IsSuccessStatusCode)
+            {
+                return Ok("Create notification is successfully!");
+            }
+            return BadRequest("Create notification is fail!");
         }
 
         [HttpGet("GetNameUserCurrent/{idUser}")]
@@ -122,6 +136,7 @@ namespace Follow.Controllers
                     createdDate = DateTime.Now,
                 };
                 await _context.Followers.AddAsync(following);
+                await CreateNotificationFollow(idOwner, idAccount);
             }
             else
             {

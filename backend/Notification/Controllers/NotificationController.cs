@@ -49,22 +49,17 @@ namespace Notification.Controllers
         /*------------------------------------------------------------Notification------------------------------------------------------------*/
 
         [HttpGet("GetNotificationByUser/{idUser}")]
-        public async Task<Response> GetNotificationByUser(string idUser)
+        public async Task<List<ViewNotification>> GetNotificationByUser(string idUser)
         {
             var notifications = await _context.Notifications.Where(x => x.idReceiver == idUser).OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
-            if (notifications == null)
-            {
-                return new Response(HttpStatusCode.NoContent, "No notifications found!");
-            }
             var result = _mapper.Map<List<ViewNotification>>(notifications);
             foreach (var notification in result)
             {
                 var infoUser = await GetNameUserCurrent(notification.idSender!);
                 notification.nameSender = infoUser.fullName;
                 notification.avatar = infoUser.avatar;
-                notification.content = $"{notification.nameSender} {notification.content}";
             }
-            return new Response(HttpStatusCode.OK, "Getall notifications is success!", result);
+            return result;
         }
 
         [HttpGet("GetNotificationById/{idNotification}")]
@@ -80,7 +75,7 @@ namespace Notification.Controllers
             {
                 idSender = idSender,
                 idReceiver = idReceiver,
-                content = "has just started following you.",
+                content = "'has just started following you.'",
                 isRead = false,
                 url = idSender,
                 createdDate = DateTime.Now
@@ -91,7 +86,7 @@ namespace Notification.Controllers
             var infoUser = await GetNameUserCurrent(result.idSender!);
             result.nameSender = infoUser.fullName;
             result.avatar = infoUser.avatar;
-            result.content = $"{result.nameSender} {notification.content}";
+            result.content = $"{notification.content}";
             return result;
         }
 

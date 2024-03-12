@@ -11,6 +11,7 @@ import ProfileReport from "../../components/Popup/ProfileReport";
 import defaultImage from "../../images/common/default.png";
 import {
   blogInstance,
+  credentialInstance,
   followInstance,
   postInstance,
   projectInstance,
@@ -124,6 +125,9 @@ function Profile({ handleChangeImg }) {
               console.log(error);
             });
         }
+        if(user.role ==='Member'){
+          credentialInstance.get()
+        }
       });
   }, [userId, resetAvatar]);
   // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -229,9 +233,6 @@ function Profile({ handleChangeImg }) {
     }
     setTabs(tabsBasedOnRole);
   }, [user.role]); // Chỉ chạy lại khi user.role thay đổi
-  // const handleSetTab = (action) => {
-  //   console.log(action);
-  // };
 
   return (
     <>
