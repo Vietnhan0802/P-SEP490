@@ -2,16 +2,23 @@ import React, { useState } from "react";
 import "./statistic.scss";
 import { CiCircleChevRight } from "react-icons/ci";
 import { GoPencil } from "react-icons/go";
+import { VscAccount } from "react-icons/vsc";
+import { LuBook } from "react-icons/lu";
+import { VscReport } from "react-icons/vsc";
 import { FiBookOpen } from "react-icons/fi";
 import { Row, Col } from "react-bootstrap";
+import { TbPresentationAnalytics } from "react-icons/tb";
+import { RxCardStackPlus } from "react-icons/rx";
 import FormDate from "./formDate";
+import { SlChart } from "react-icons/sl";
+import { FaRegCircleCheck } from "react-icons/fa6";
 import BarChart from "./barChart";
-import { ProjectData } from "./ProjectData";
-import { PostData } from "./PostData";
-import { BlogData } from "./BlogData";
-import { ReportData } from "./ReportData";
-import { AccountData } from "./AccountData";
-import { AccessData } from "./AccessData";
+import { ProjectData } from "./Data/ProjectData";
+import { PostData } from "./Data/PostData";
+import { BlogData } from "./Data/BlogData";
+import { ReportData } from "./Data/ReportData";
+import { AccountData } from "./Data/AccountData";
+import { AccessData } from "./Data/AccessData";
 import LineChart from "./lineChart";
 import { Bar } from "react-chartjs-2";
 import PieChart from "./PieChart";
@@ -137,39 +144,17 @@ function Statistic() {
   return (
     <section id="sta-page" className="size-20">
       <div className="card-section row ">
-        <Col md={4} className="px-0">
-          <div
-            className={`card  bg-white p-2 m-2 mt-0 ${
-              activeTab === "post" ? "active-tab" : ""
-            }`}
-          >
-            <div className="mb-1 fs-12">Manage Post</div>
-            <div className="d-flex justify-content-between">
-              <p className="fs-24 fw-bold">63 New Post</p>
-              <p className="rounded-pill percent fw-bold d-flex justify-content-center align-items-center">
-                12%
-              </p>
-            </div>
-            <hr style={{ margin: "0.5rem 0" }} />
-            <p
-              className="d-flex justify-content-end  detail"
-              onClick={() => handleTabClick("post")}
-            >
-              {activeTab === "post" ? "Viewing" : "View Detail"}{" "}
-            </p>
-          </div>
-        </Col>
-        <Col md={4} className="px-0">
+        <Col md={2} className="px-0">
           <div
             className={`card  bg-white p-2 m-2 mt-0 ${
               activeTab === "access" ? "active-tab" : ""
             }`}
           >
-            <div className="mb-1 fs-12">Manage Access</div>
-            <div className="d-flex justify-content-between">
-              <p className="fs-24 fw-bold">63 Accesses</p>
+            <div className="mb-1 fs-12">ACCOUNT Created </div>
+            <div className="d-flex justify-content-between align-items-center">
+              <VscAccount />
               <p className="rounded-pill percent fw-bold d-flex justify-content-center align-items-center">
-                8%
+                8
               </p>
             </div>
             <hr style={{ margin: "0.5rem 0" }} />
@@ -177,21 +162,48 @@ function Statistic() {
               className="d-flex justify-content-end  detail"
               onClick={() => handleTabClick("access")}
             >
-              {activeTab === "access" ? "Viewing" : "View Detail"}
+              {activeTab === "access" ? (
+                <TbPresentationAnalytics />
+              ) : (
+                <SlChart />
+              )}
             </p>
           </div>
         </Col>
-        <Col md={4} className="px-0">
+        <Col md={2} className="px-0">
+          <div
+            className={`card  bg-white p-2 m-2 mt-0 ${
+              activeTab === "post" ? "active-tab" : ""
+            }`}
+          >
+            <div className="mb-1 fs-12">POST Created </div>
+            <div className="d-flex justify-content-between align-items-center">
+              <GoPencil />
+              <p className="rounded-pill percent fw-bold d-flex justify-content-center align-items-center">
+                12
+              </p>
+            </div>
+            <hr style={{ margin: "0.5rem 0" }} />
+            <p
+              className="d-flex justify-content-end  detail"
+              onClick={() => handleTabClick("post")}
+            >
+              {activeTab === "post" ? <TbPresentationAnalytics /> : <SlChart />}{" "}
+            </p>
+          </div>
+        </Col>
+
+        <Col md={2} className="px-0">
           <div
             className={`card  bg-white p-2 m-2 mt-0 ${
               activeTab === "blog" ? "active-tab" : ""
             }`}
           >
-            <div className="mb-1 fs-12">Manage Blog</div>
-            <div className="d-flex justify-content-between">
-              <p className="fs-24 fw-bold">63 New Blog</p>
+            <div className="mb-1 fs-12">BLOG Created</div>
+            <div className="d-flex justify-content-between align-items-center">
+              <FiBookOpen />
               <p className="rounded-pill percent fw-bold d-flex justify-content-center align-items-center">
-                12%
+                12
               </p>
             </div>
             <hr style={{ margin: "0.5rem 0" }} />
@@ -199,21 +211,21 @@ function Statistic() {
               className="d-flex justify-content-end  detail"
               onClick={() => handleTabClick("blog")}
             >
-              {activeTab === "blog" ? "Viewing" : "View Detail"}
+              {activeTab === "blog" ? <TbPresentationAnalytics /> : <SlChart />}
             </p>
           </div>
         </Col>
-        <Col md={4} className="px-0">
+        <Col md={2} className="px-0">
           <div
             className={`card  bg-white p-2 m-2 mt-0 ${
               activeTab === "report" ? "active-tab" : ""
             }`}
           >
-            <div className="mb-1 fs-12">Manage Report</div>
-            <div className="d-flex justify-content-between">
-              <p className="fs-24 fw-bold">63 New Reports</p>
+            <div className="mb-1 fs-12">REPORT Created</div>
+            <div className="d-flex justify-content-between align-items-center">
+              <VscReport />
               <p className="rounded-pill percent fw-bold d-flex justify-content-center align-items-center">
-                12%
+                12
               </p>
             </div>
             <hr style={{ margin: "0.5rem 0" }} />
@@ -221,21 +233,25 @@ function Statistic() {
               className="d-flex justify-content-end  detail"
               onClick={() => handleTabClick("report")}
             >
-              {activeTab === "report" ? "Viewing" : "View Detail"}
+              {activeTab === "report" ? (
+                <TbPresentationAnalytics />
+              ) : (
+                <SlChart />
+              )}
             </p>
           </div>
         </Col>
-        <Col md={4} className="px-0">
+        <Col md={2} className="px-0">
           <div
             className={`card  bg-white p-2 m-2 mt-0 ${
               activeTab === "project" ? "active-tab" : ""
             }`}
           >
-            <div className="mb-1 fs-12">Manage Project</div>
-            <div className="d-flex justify-content-between">
-              <p className="fs-24 fw-bold">63 New Project</p>
+            <div className="mb-1 fs-12">PROJECT Created</div>
+            <div className="d-flex justify-content-between align-items-center">
+              <LuBook />
               <p className="rounded-pill percent fw-bold d-flex justify-content-center align-items-center">
-                12%
+                12
               </p>
             </div>
             <hr style={{ margin: "0.5rem 0" }} />
@@ -243,35 +259,43 @@ function Statistic() {
               className="d-flex justify-content-end  detail"
               onClick={() => handleTabClick("Project")}
             >
-              {activeTab === "Project" ? "Viewing" : "View Detail"}
+              {activeTab === "Project" ? (
+                <TbPresentationAnalytics />
+              ) : (
+                <SlChart />
+              )}
             </p>
           </div>
         </Col>
-        <Col md={4} className="px-0">
+        <Col md={2} className="px-0">
           <div
             className={`card  bg-white p-2 m-2 mt-0 ${
-              activeTab === "report" ? "active-tab" : ""
+              activeTab === "verification" ? "active-tab" : ""
             }`}
           >
-            <div className="mb-1 fs-12">Manage Account</div>
-            <div className="d-flex justify-content-between">
-              <p className="fs-24 fw-bold">63 Account in System</p>
+            <div className="mb-1 fs-12">VERIFICATION</div>
+            <div className="d-flex justify-content-between align-items-center">
+              <FaRegCircleCheck />
               <p className="rounded-pill percent fw-bold d-flex justify-content-center align-items-center">
-                12%
+                12
               </p>
             </div>
             <hr style={{ margin: "0.5rem 0" }} />
             <p
               className="d-flex justify-content-end  detail"
-              onClick={() => handleTabClick("report")}
+              onClick={() => handleTabClick("verification")}
             >
-              {activeTab === "report" ? "Viewing" : "View Detail"}
+              {activeTab === "verification" ? (
+                <TbPresentationAnalytics />
+              ) : (
+                <SlChart />
+              )}
             </p>
           </div>
         </Col>
       </div>
-      <div className="chart-section d-flex flex-grid row">
-        <div className="chart-all col">
+      <div className="chart-section ">
+        <div className="chart-all p-3">
           <div style={{ width: "100%" }}>
             <BarChart chartData={projectData} />
           </div>
@@ -292,7 +316,7 @@ function Statistic() {
               </div> */}
         </div>
 
-        <div className="sup-bar col-auto">
+        {/* <div className="sup-bar col-auto">
           <div className="d-flex flex-column ">
             <div className="date-filter mb-2">
               <div className="start mb-1">
@@ -325,7 +349,7 @@ function Statistic() {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
     </section>
   );
