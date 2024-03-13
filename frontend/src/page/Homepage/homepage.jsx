@@ -45,6 +45,7 @@ function Homepage() {
             md={`${
               activeComponent === "dashboard" ||
               activeComponent === "projectDetail"||
+              activeComponent === "project_application"||
               activeComponent === "statistic"
                 ? 9
                 : 6
@@ -94,7 +95,7 @@ function Homepage() {
             )}
           </Col>
           {activeComponent !== "dashboard" &&
-            activeComponent !== "projectDetail" &&
+            activeComponent !== "projectDetail" && activeComponent !== "project_application" &&
             activeComponent !== "statistic" && (
               <Col md={3}>
                 <Follow />

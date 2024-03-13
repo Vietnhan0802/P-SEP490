@@ -2,71 +2,73 @@ import React from "react";
 import "./projectApplication.scss";
 import avatar from "../../images/common/Avatar.png";
 import Table, { SelectColumnFilter } from "./table";
+import AcceptConfirm from "./acceptConfirm";
+import RejectConfirm from "./rejectConfirm";
 
 const getData = () => {
   const data = [
     {
       name: "Jane Cooper",
       email: "jane.cooper@example.com",
-      title: "Regional Paradigm Technician",
+      position: "Regional Paradigm Technician",
       department: "Optimization",
       status: "Active",
-      role: "Admin",
+      project: "AdminAdminAdminAdminAdminAdminAdmin",
       imgUrl:
         "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
     },
     {
       name: "Cody Fisher",
       email: "cody.fisher@example.com",
-      title: "Product Directives Officer",
+      position: "Product Directives Officer",
       department: "Intranet",
       status: "Active",
-      role: "Owner",
+      project: "OwnerOwnerOwnerOwnerOwnerOwnerOwner",
       imgUrl:
         "https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
     },
     {
       name: "Esther Howard",
       email: "esther.howard@example.com",
-      title: "Forward Response Developer",
+      position: "Forward Response Developer",
       department: "Directives",
       status: "Active",
-      role: "Member",
+      project: "MemberMemberMemberMemberMemberMemberMember",
       imgUrl:
         "https://images.unsplash.com/photo-1520813792240-56fc4a3765a7?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
     },
     {
       name: "Jenny Wilson",
       email: "jenny.wilson@example.com",
-      title: "Central Security Manager",
+      position: "Central Security Manager",
       department: "Program",
       status: "Active",
-      role: "Member",
+      project: "MemberMemberMemberMemberMemberMemberMember",
       imgUrl:
         "https://images.unsplash.com/photo-1498551172505-8ee7ad69f235?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
     },
     {
       name: "Kristin Watson",
       email: "kristin.watson@example.com",
-      title: "Lean Implementation Liaison",
+      position: "Lean Implementation Liaison",
       department: "Mobility",
       status: "Active",
-      role: "Admin",
+      project: "AdminAdminAdminAdminAdminAdminAdmin",
       imgUrl:
         "https://images.unsplash.com/photo-1532417344469-368f9ae6d187?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
     },
     {
       name: "Cameron Williamson",
       email: "cameron.williamson@example.com",
-      title: "Internal Applications Engineer",
+      position: "Internal Applications Engineer",
       department: "Security",
       status: "Active",
-      role: "Member",
+      project: "MemberMemberMemberMemberMemberMemberMember",
       imgUrl:
         "https://images.unsplash.com/photo-1566492031773-4f4e44671857?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
     },
   ];
-  return [...data,];
+  return [...data];
 };
 
 function ProjectApplication() {
@@ -78,7 +80,7 @@ function ProjectApplication() {
         Cell: ({ row }) => (
           <div style={{ display: "flex", alignItems: "center" }}>
             <img
-              src={row.original.avatar}
+              src={row.original.imgUrl}
               alt="Avatar"
               style={{
                 width: "30px",
@@ -92,18 +94,25 @@ function ProjectApplication() {
         ),
       },
       {
-        Header: "Title",
-        accessor: "title",
+        Header: "Position",
+        accessor: "position",
       },
       {
-        Header: "Status",
-        accessor: "status",
-      },
-      {
-        Header: "Role",
-        accessor: "role",
+        Header: "Project",
+        accessor: "project",
         Filter: SelectColumnFilter, // new
         filter: "includes", // new
+      },
+      {
+        Header: "Action",
+        accessor: "status",
+        Cell: ({ row }) => (
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <button className="btn btn-info text-white">View CV</button>
+            <AcceptConfirm/>
+            <RejectConfirm/>
+          </div>
+        ),
       },
     ],
     []
@@ -111,7 +120,10 @@ function ProjectApplication() {
 
   const data = React.useMemo(() => getData(), []);
   return (
-    <div id="projectApplication" className="min-vh-100 bg-light text-dark border-8 py-2">
+    <div
+      id="projectApplication"
+      className="min-vh-100 bg-light text-dark border-8 py-2"
+    >
       <main className="container ">
         <div className="">
           <Table columns={columns} data={data} />
