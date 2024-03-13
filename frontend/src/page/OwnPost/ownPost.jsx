@@ -144,8 +144,8 @@ function OwnPost({ postId, onPostClick, activeItem, onItemClick }) {
     <div id="own_post">
       {postList.map((item) => (
         <div
-          key={item.id}
-          className={`post-item mt-2 p-2 ${blogPopups[item.id] ? "position-relative" : ""
+          key={item.idPost}
+          className={`post-item p-2 ${blogPopups[item.id] ? "position-relative" : ""
             }`}
         >
           <div className="d-flex align-items-center">

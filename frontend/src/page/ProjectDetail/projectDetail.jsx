@@ -1,35 +1,71 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./projectDetail.scss";
-import { IoPersonAdd } from "react-icons/io5";
 import { IoPersonRemove } from "react-icons/io5";
 import { Row, Col } from "react-bootstrap";
-import projectImage from "../../images/common/projectImage.png";
 import avatar from "../../images/common/Avatar.png";
-import { LuDot } from "react-icons/lu";
 import MultiStepProgressBar from "../../components/MultiStepProgressBar";
-import { BsSendPlus } from "react-icons/bs";
 import FormMember from "./formMember";
 import FormApply from "./FormApply";
-function ProjectDetail() {
-  const project = {
-    description: `Lorem ipsum dolor sit amet consectetur. 
-        Dignissim dui amet elementum commodo dictumst fermentum. Orci auctor imperdiet ultrices netus ullamcorper sapien aliquet purus enim. Bibendum aliquam eu luctus dignissim porttitor mattis rhoncus. Venenatis tristique integer dolor venenatis at in. Ultricies rhoncus eget scelerisque nec consectetur consequat purus at. Varius sem eu pulvinar parturient nunc tellus. Duis id ut etiam ac. Ut vel amet amet sit.
-       Malesuada est nisi dignissim in etiam adipiscing. Lacus diam ultrices interdum faucibus quam cursus sit. Morbi ac interdum elementum iaculis est ornare placerat nunc arcu. Dui bibendum odio id elementum quis ut quis porttitor eget. Suspendisse tortor donec vestibulum odio nulla. Odio est nec etiam vivamus amet. Arcu id odio vestibulum est vitae. Cursus eleifend tortor arcu diam facilisi facilisis vel ut. Et suspendisse venenatis tincidunt nunc pellentesque massa nam ullamcorper cras. Sit molestie sapien interdum nunc amet pretium convallis ornare.
-       Felis libero varius maecenas tellus ultricies fermentum purus amet. Viverra dui tincidunt et sapien pulvinar quis. Tempor aliquam tempus magnis ut vel morbi tellus eros. Semper egestas suspendisse quis eget tempus condimentum. Erat in non nulla varius porttitor eros. Fermentum morbi aliquet sed a id feugiat feugiat. Adipiscing viverra nullam risus non metus netus a. Adipiscing pellentesque cursus in scelerisque id risus euismod commodo. Arcu cursus aliquam tincidunt sed lectus id.
-       Amet amet amet aliquet id nulla a aenean ut. Massa orci nunc ultrices maecenas vulputate ut. Tincidunt felis accumsan semper luctus vivamus mi commodo in. Iaculis quis vivamus est malesuada neque mi sagittis. Praesent risus enim ullamcorper vestibulum odio volutpat adipiscing. Felis nulla vulputate justo tortor est. Gravida bibendum molestie eu fringilla lectus. Dignissim faucibus massa dis quis. Neque feugiat adipiscing ipsum pulvinar at eget ut.
-       Cursus libero tristique quam commodo lectus eget a praesent malesuada. Nulla sed bibendum donec tellus urna porttitor. Elementum dictumst faucibus quis vestibulum vitae blandit tincidunt. Id quam sollicitudin in egestas nec et. Vitae eleifend integer quam consequat aliquet ipsum id. Nunc elit tortor convallis aliquet id. Est convallis elit urna habitant tellus viverra scelerisque tristique placerat. Orci sollicitudin non cursus erat facilisis lacus.
-       Interdum ut dui sapien et massa suspendisse lacus. Nec cras vestibulum at quisque nisi quam. Aliquam sit viverra sit vulputate. Sed posuere posuere diam nec in. Arcu at vulputate elit sed amet diam.`,
-  };
-  
+import { projectInstance } from "../../axios/axiosConfig";
+
+const formatDate = (timestamp) => {
+  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const date = new Date(timestamp);
+  const day = date.getDate();
+  const month = months[date.getMonth()];
+  const year = date.getFullYear();
+
+  return `${day} ${month} ${year}`;
+}
+const projectStatus = (process) => {
+  switch (process) {
+    case 0:
+      return <div className="status preparing">Preparing</div>
+    case 1:
+      return <div className="status process">Process</div>
+    case 2:
+      return <div className="status done">Done</div>
+    case 3:
+      return <div className="status pending">Pending</div>
+    default:
+    // code block
+  }
+}
+const projectVisibility = (visibility) => {
+  switch (visibility) {
+    case 0:
+      return <div className="visibility private">Private</div>
+    case 1:
+      return <div className="visibility public">Public</div>
+    case 2:
+      return <div className="visibility hidden">Hidden</div>
+
+    default:
+    // code block
+  }
+}
+function ProjectDetail({ ...props }) {
+  const [iseEdit, setIsEdit] = useState(true);
+  const [data, setData] = useState();
+  const { id } = props;
+  useEffect(() => {
+    projectInstance.get(`/GetProjectById/${id}`)
+      .then((res) => {
+        console.log(res?.data?.result)
+        setData(res?.data?.result)
+      })
+      .catch((error) => { console.log(error) });
+  }, [])
   return (
     <div id="projectDetail" className="bg-white bor-rad-8 p-2">
       <h1 className="header fw-bold text-center pt-2  mb-4">
-        UX review presentations
+        {data?.name}
       </h1>
       <Row className="pb-4 justify-content-between">
         <Col md={6}>
           <img
-            src={projectImage}
+            src={data?.avatar}
             alt="project"
             className="w-100 mx-2 bor-rad-8 shadow"
           />
@@ -37,31 +73,28 @@ function ProjectDetail() {
         <Col md={6} className="px-4">
           <div className="d-flex project">
             <div className="width-auto">
-              <img src={avatar} alt="avatar" className="avatar" />
+              <img src={data?.avatarUser} alt="avatar" className="avatar" style={{ borderRadius: '50%' }} />
             </div>
             <div className="width-auto ps-3">
-              <p className="owner-name fw-bold">Olivia Rhye</p>
-              <p className="project-start-date">20 Jan 2024</p>
+              <p className="owner-name fw-bold">{data?.fullName}</p>
+              <p className="project-start-date">{formatDate(data?.createdDate)}</p>
             </div>
           </div>
           <div className="status-block size-18">
             <label htmlFor="" className="">
               Project Status:
-              <div class="status preparing">Preparing</div>
-              <div class="status process">Process</div>
-              <div class="status pending">Pending</div>
-              <div class="status done">Done</div>
-              <select id="projectStatus" class="status-select status preparing">
-                <option value="preparing" class="status preparing">
+              {projectStatus(data?.process)}
+              <select id="projectStatus" className="status-select status preparing">
+                <option value="preparing" className="status preparing">
                   Preparing
                 </option>
-                <option value="process" class="status process">
+                <option value="process" className="status process">
                   Process
                 </option>
-                <option value="pending" class="status pending">
+                <option value="pending" className="status pending">
                   Pending
                 </option>
-                <option value="done" class="status done">
+                <option value="done" className="status done">
                   Done
                 </option>
               </select>
@@ -70,20 +103,19 @@ function ProjectDetail() {
           <div className="status-block size-18">
             <label htmlFor="" className="">
               Access Visibility:
-              <div class="visibility public">Public</div>
-              <div class="visibility private">Private</div>
-              <div class="visibility hidden">Hidden</div>
+              {projectVisibility(data?.visibility)}
+              { }
               <select
                 id="accessVisibility"
-                class="visibility-select visibility public"
+                className="visibility-select visibility public"
               >
-                <option value="public" class="visibility public">
+                <option value="public" className="visibility public">
                   Public
                 </option>
-                <option value="private" class="visibility private">
+                <option value="private" className="visibility private">
                   Private
                 </option>
-                <option value="hidden" class="visibility hidden">
+                <option value="hidden" className="visibility hidden">
                   Hidden
                 </option>
               </select>
@@ -91,19 +123,19 @@ function ProjectDetail() {
           </div>
 
           <div className="process-bar">
-            <MultiStepProgressBar />
+            <MultiStepProgressBar page={data?.process} />
           </div>
         </Col>
       </Row>
       <div className="description-cover">
         <p className="description fw-bold ps-3">Description</p>
-        <p className="description-text ps-3">{project.description}</p>
+        <p className="description-text ps-3">{data?.description}</p>
       </div>
       <div className="member px-3">
         <div className="d-flex justify-content-between">
           <div className="d-flex align-items-end">
             <p className="title fw-bold">Member</p>
-            </div>
+          </div>
           <div className="d-flex align-items-center">
             {" "}
             <FormMember />

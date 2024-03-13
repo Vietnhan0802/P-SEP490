@@ -25,7 +25,7 @@ function FormApply() {
         </Modal.Header>
 
         <Modal.Body className="popup-body" id="member-apply">
-          <div class="confirmation-box">
+          <div className="confirmation-box">
             <h2>Are you sure you want to apply for this project?</h2>
             <p>(Upload your CV to Continue )</p>
             <input
