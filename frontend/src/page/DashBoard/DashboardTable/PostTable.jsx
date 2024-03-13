@@ -214,11 +214,11 @@ export default function PostTable() {
   const filterRows = (rows, searchTerm) => {
     return rows.filter(
       (row) =>
-        row.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        row.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        row.content.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        row.time.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        row.report.toString().includes(searchTerm)
+        (row.fullName && row.fullName.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (row.title && row.title.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (row.content && row.content.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (row.time && row.time.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (row.report && row.report.toString().includes(searchTerm))
     );
   };
   const visibleRows = React.useMemo(
@@ -299,7 +299,7 @@ export default function PostTable() {
                       <p style={{ fontSize: "16px", fontWeight: "500" }}>
                         {row.title}
                       </p>
-                      <p className="blur ellipsis" style={{maxWidth:'300px'}}>{row.content}</p>
+                      <p className="blur ellipsis" style={{ maxWidth: '300px' }}>{row.content}</p>
                     </TableCell>
                     <TableCell align="right">{row.report}</TableCell>
                     <TableCell align="right">

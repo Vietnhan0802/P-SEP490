@@ -11,15 +11,16 @@ import TableRow from "@mui/material/TableRow";
 import TableSortLabel from "@mui/material/TableSortLabel";
 import Paper from "@mui/material/Paper";
 import { visuallyHidden } from "@mui/utils";
-import avatar from "../../../images/common/Avatar.png";
+import defaultAvatar from "../../../images/common/default.png";
 import { IoSearchOutline } from "react-icons/io5";
 import "../DashboardTable/table.scss";
 import { GoDotFill } from "react-icons/go";
 import { userInstance } from "../../../axios/axiosConfig";
 
-function createData(id, name, email, type, description, isBlock) {
+function createData(id, avatar, name, email, type, description, isBlock) {
   return {
     id,
+    avatar,
     name,
     email,
     type,
@@ -126,7 +127,6 @@ function EnhancedTableHead(props) {
 EnhancedTableHead.propTypes = {
   numSelected: PropTypes.number.isRequired,
   onRequestSort: PropTypes.func.isRequired,
-  onSelectAllClick: PropTypes.func.isRequired,
   order: PropTypes.oneOf(["asc", "desc"]).isRequired,
   orderBy: PropTypes.string.isRequired,
   rowCount: PropTypes.number.isRequired,
@@ -168,7 +168,6 @@ export default function AccessTable() {
     setPage(0);
   };
 
-  const isSelected = (id) => selected.indexOf(id) !== -1;
   const handleBlock = id => {
     userInstance.put(`BlockUser/${id}`)
       .then((res) => {
@@ -184,6 +183,7 @@ export default function AccessTable() {
         const fetchedUserRows = res.data.result.map(element => (
           createData(
             element.id,
+            element.imageSrc,
             element.fullName,
             element.email,
             element.role,
@@ -191,6 +191,7 @@ export default function AccessTable() {
             element.isBlock
           )
         ));
+        console.log(res.data.result)
         setUserRows(fetchedUserRows);
       })
       .catch((err) => { console.log(err) })
@@ -230,14 +231,12 @@ export default function AccessTable() {
             />
             <TableBody>
               {visibleRows.map((row, index) => {
-                const isItemSelected = isSelected(row.id);
                 const labelId = `enhanced-table-checkbox-${index}`;
 
                 return (
                   <TableRow
                     hover
                     role="checkbox"
-                    aria-checked={isItemSelected}
                     tabIndex={-1}
                     key={row.id}
                     sx={{ cursor: "pointer" }}
@@ -252,7 +251,7 @@ export default function AccessTable() {
                       <div className="ms-2 my-2 d-flex align-items-center">
                         <img
                           className="me-2"
-                          src={avatar}
+                          src={row.avatar === "https://localhost:7006/Images/" ? defaultAvatar : row.avatar}
                           alt=""
                           style={{
                             width: "40px",

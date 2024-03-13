@@ -38,7 +38,7 @@ function calculateTimeDifference(targetDate) {
 function PostDetail(id) {
 
   const sessionData = JSON.parse(sessionStorage.getItem('userSession')) || {};
-  const { curentUserId } = sessionData;
+  const { currentUserId } = sessionData;
   const idPost = id.id;
 
   const [data, setData] = useState();
@@ -132,7 +132,7 @@ function PostDetail(id) {
     );
   };
   const handleCreateComment = () => {
-    postInstance.post(`CreatePostComment/${curentUserId}/${idPost}/${content}`, {
+    postInstance.post(`CreatePostComment/${currentUserId}/${idPost}/${content}`, {
       headers: {
         accept: 'application/json'
       }
@@ -149,7 +149,7 @@ function PostDetail(id) {
 
     // Perform the reply submission logic with replyContent
     // ...
-    postInstance.post(`CreatePostReply/${curentUserId}/${commentId}/${replyContent}`)
+    postInstance.post(`CreatePostReply/${currentUserId}/${commentId}/${replyContent}`)
       .then((res) => {
         setState(!state)
         console.log(res?.data?.result)
@@ -206,7 +206,7 @@ function PostDetail(id) {
 
       return { ...prevData, isLike: isLiked, like: newLikeCount };
     });
-    postInstance.post(`LikeOrUnlikePost/${curentUserId}/${idPost}`)
+    postInstance.post(`LikeOrUnlikePost/${currentUserId}/${idPost}`)
       .then(() => {
         // No need to update the state here if you're doing optimistic updates
       })
@@ -224,7 +224,7 @@ function PostDetail(id) {
   }
 
   useEffect(() => {
-    postInstance.get(`GetAllPostComments/${idPost}/${curentUserId}`)
+    postInstance.get(`GetAllPostComments/${idPost}/${currentUserId}`)
       .then(
         (res) => {
           setCommentList(res?.data?.result);
@@ -237,7 +237,7 @@ function PostDetail(id) {
 
 
   useEffect(() => {
-    memoizedPostInstance.get(`GetPostById/${idPost}/${curentUserId}`)
+    memoizedPostInstance.get(`GetPostById/${idPost}/${currentUserId}`)
       .then((res) => {
         setData(res?.data?.result);
       })
@@ -245,10 +245,9 @@ function PostDetail(id) {
         console.error(error);
       });
   }, [memoizedPostInstance, idPost]);
-  console.log(data)
   //Fetch data the user to display in the comment and reply
   useEffect(() => {
-    userInstance.get(`/GetUserById/${curentUserId}`)
+    userInstance.get(`/GetUserById/${currentUserId}`)
       .then((res) => {
         setUser(res?.data?.result)
         // console.log(res?.data?.result.imageSrc);
@@ -316,7 +315,7 @@ function PostDetail(id) {
                 <h6 className="mb-2 d-flex align-items-center h-40">
                   {item.fullName}
                 </h6>
-                {item.idAccount === curentUserId ?
+                {item.idAccount === currentUserId ?
                   <Dropdown>
                     <Dropdown.Toggle id="dropdown-basic" style={{ border: 'none' }} className="bg-white border-none text-body">
                     </Dropdown.Toggle>
@@ -402,7 +401,7 @@ function PostDetail(id) {
                             </div>
                           }
                         </div>
-                        {reply.idAccount === curentUserId ?
+                        {reply.idAccount === currentUserId ?
                           <Dropdown style={{ width: 'auto' }}>
                             <Dropdown.Toggle id="dropdown-basic" style={{ border: 'none' }} className="bg-white border-none text-body">
                             </Dropdown.Toggle>
