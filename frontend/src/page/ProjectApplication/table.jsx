@@ -1,5 +1,9 @@
 import React from "react";
-
+import { CiSearch } from "react-icons/ci";
+import { MdFirstPage } from "react-icons/md";
+import { MdLastPage } from "react-icons/md";
+import { MdNavigateBefore } from "react-icons/md";
+import { MdNavigateNext } from "react-icons/md";
 import {
   useTable,
   useGlobalFilter,
@@ -8,6 +12,7 @@ import {
   useSortBy,
   usePagination,
 } from "react-table"; // new
+import "./projectApplication.scss";
 export function SelectColumnFilter({
   column: { filterValue, setFilter, preFilteredRows, id },
 }) {
@@ -55,16 +60,20 @@ function GlobalFilter({
 
   return (
     <span className="global-search">
-      Search{" "}
-      <input
-        className="ms-2 px-2 "
-        value={value || ""}
-        onChange={(e) => {
-          setValue(e.target.value);
-          onChange(e.target.value);
-        }}
-        placeholder={`${count} records...`}
-      />
+      <div className="post-form p-2 d-flex flex-grid align-items-center justify-content-between row m-0">
+        <div className="d-flex post-search align-items-center position-relative col me-2">
+          <CiSearch className="" />
+          <input
+            type="text"
+            onChange={(e) => {
+              setValue(e.target.value);
+              onChange(e.target.value);
+            }}
+            placeholder={`${count} records...`}
+            className="search-box size-20"
+          />
+        </div>
+      </div>
     </span>
   );
 }
@@ -104,7 +113,7 @@ function Table({ columns, data }) {
   // Render the UI for your table
   return (
     <>
-      <div className="d-flex size-20 justify-content-between">
+      <div className="d-flex size-20 justify-content-between align-items-center">
         <GlobalFilter
           preGlobalFilteredRows={preGlobalFilteredRows}
           globalFilter={state.globalFilter}
@@ -113,7 +122,7 @@ function Table({ columns, data }) {
         {headerGroups.map((headerGroup) =>
           headerGroup.headers.map((column) =>
             column.Filter ? (
-              <div key={column.id}>
+              <div key={column.id} id="select-custom">
                 <label for={column.id}>{column.render("Header")}: </label>
                 {column.render("Filter")}
               </div>
@@ -141,7 +150,7 @@ function Table({ columns, data }) {
                     // we can add them into the header props
                     <th
                       scope="col"
-                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                       {...column.getHeaderProps(column.getSortByToggleProps())}
                     >
                       {column.render("Header")}
@@ -202,7 +211,7 @@ function Table({ columns, data }) {
         </div>
         <div className="d-none d-sm-flex flex-grow-1 align-items-center justify-content-between">
           <div className="d-flex gap-2">
-            <span className="text-sm text-secondary">
+            <span className="text-sm ">
               Page <span className="fw-bold">{state.pageIndex + 1}</span> of{" "}
               <span className="fw-bold">{pageOptions.length}</span>
             </span>
@@ -221,46 +230,48 @@ function Table({ columns, data }) {
             </select>
           </div>
           <div>
-            <nav aria-label="Pagination">
-              <ul className="pagination">
+            <nav aria-label="Pagination ">
+              <ul className="pagination mb-0">
                 <li className="page-item">
                   <button
-                    className="page-link"
+                    className="page-link d-flex"
                     onClick={() => gotoPage(0)}
                     disabled={!canPreviousPage}
                   >
-                    <span className="visually-hidden">First</span>
+                    <MdFirstPage />
+                    {/* <span>First</span> */}
                     {/* Replace ChevronDoubleLeftIcon with appropriate icon */}
                   </button>
                 </li>
                 <li className="page-item">
                   <button
-                    className="page-link"
+                    className="page-link d-flex"
                     onClick={() => previousPage()}
                     disabled={!canPreviousPage}
                   >
-                    <span className="visually-hidden">Previous</span>
+                    <MdNavigateBefore />
                     {/* Replace ChevronLeftIcon with appropriate icon */}
                   </button>
                 </li>
                 {/* Implement current page button if necessary */}
                 <li className="page-item">
                   <button
-                    className="page-link"
+                    className="page-link d-flex"
                     onClick={() => nextPage()}
                     disabled={!canNextPage}
                   >
-                    <span className="visually-hidden">Next</span>
+                    <MdNavigateNext />
                     {/* Replace ChevronRightIcon with appropriate icon */}
                   </button>
                 </li>
                 <li className="page-item">
                   <button
-                    className="page-link"
+                    className="page-link d-flex"
                     onClick={() => gotoPage(pageCount - 1)}
                     disabled={!canNextPage}
                   >
-                    <span className="visually-hidden">Last</span>
+                    <MdLastPage />
+
                     {/* Replace ChevronDoubleRightIcon with appropriate icon */}
                   </button>
                 </li>
