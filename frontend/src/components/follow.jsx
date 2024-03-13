@@ -35,7 +35,7 @@ function Follow({ newFollow }) {
               <p className="follow-user-name fw-bold">{item.fullName}</p>
               <p className="follow-user-email">{item.email}</p>
             </div>
-          </div>)) : <p>You are now following anyone yet!</p>}
+          </div>)) : <p>You are not following anyone yet!</p>}
       </div>
       {following.length > 10 ? <button className="btn border mt-3 fw-bold">
         <LuDot className="me-1 dot fs-3" />

@@ -141,7 +141,6 @@ function Blog({ blogId, onBlogClick, activeItem, onItemClick }) {
   const resetBlog = (value) => {
     setReset(!reset);
   }
-  console.log(data)
   return (
     <div>
       <div id="blog">

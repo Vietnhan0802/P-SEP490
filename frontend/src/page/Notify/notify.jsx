@@ -41,7 +41,7 @@ function Notify() {
   //   onPostClick(postId);
   //   onItemClick("post_detail");
   // };
-
+console.log(notifications)
   const handleNotifiClick = (idNotification, id, url, idPost) => {
     notifyInstance.put(`ReadNotification/${idNotification}`)
     .then((res) => {
@@ -55,9 +55,8 @@ function Notify() {
       if (url === 'Follow') {
         navigate('/profile', { state: { userId: id } });
       }
-      else {
-        // hanldeViewDetail(idPost);
-        //navigate('/postDetail', { state: { userId: id } });
+      else if(url ==="PostComment") {
+
       }
     })
     .catch((error) => {

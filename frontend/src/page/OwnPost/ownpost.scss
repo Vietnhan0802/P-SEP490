@@ -32,6 +32,9 @@
         }
       }
     }
+    .post-item:not(:first-child){
+      margin-top: 8px;
+    }
     .post-item {
       background-color: #fff;
       border-radius: 8px;

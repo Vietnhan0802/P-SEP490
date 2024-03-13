@@ -108,7 +108,6 @@ function Post({ postId, onPostClick, activeItem, onItemClick }) {
   };
   const handlePopupContent = (event, postId) => {
     setPopupContent((prev) => ({ ...prev, [postId]: event.target.value }));
-    console.log(popupContent);
   };
   const handleCreateReport = (userId, postId, content) => {
     reportInstance
@@ -167,7 +166,6 @@ function Post({ postId, onPostClick, activeItem, onItemClick }) {
   const handleReportClick = (postId) => {
     setBlogPopups((prev) => ({ ...prev, [postId]: true }));
   };
-  console.log(postList)
   return (
     <div id="post">
       {role === "Business" ? (

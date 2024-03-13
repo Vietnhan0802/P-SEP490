@@ -32,6 +32,12 @@ function Homepage() {
   const hanldeProjectClick = (projectId) => {
     setProjectId(projectId);
   };
+  const viewProjectDetail = (value) => {
+    if (value !== null) {
+      setProjectId(value);
+      setActiveComponent("projectDetail")
+    }
+  }
   return (
     <div className="bg m-0 ">
       <>
@@ -43,14 +49,13 @@ function Homepage() {
             />
           </Col>
           <Col
-            md={`${
-              activeComponent === "dashboard" ||
-              activeComponent === "projectDetail"||
-              activeComponent === "project_application"||
+            md={`${activeComponent === "dashboard" ||
+              activeComponent === "projectDetail" ||
+              activeComponent === "project_application" ||
               activeComponent === "statistic"
-                ? 9
-                : 6
-            }`}
+              ? 9
+              : 6
+              }`}
           >
             {activeComponent === "post" && (
               <Post
@@ -68,7 +73,7 @@ function Homepage() {
                 onItemClick={handleSidebarItemClick}
               />
             )}
-            {activeComponent === "post_detail" && <PostDetail id={postId} />}
+            {activeComponent === "post_detail" && <PostDetail id={postId} viewProjectDetail={viewProjectDetail} />}
             {activeComponent === "blog_detail" && <BlogDetail id={blogId} />}
             {activeComponent === "project" && <Project />}
             {activeComponent === "dashboard" && <DashBoard />}

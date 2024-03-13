@@ -273,9 +273,17 @@ namespace User.Controllers
             {
                 return new Response(HttpStatusCode.NotFound, "User doesn't exist!");
             }
-            _mapper.Map(updateUser, userExits);
-            await _userManager.UpdateAsync(userExits);
-            return new Response(HttpStatusCode.OK, "Update user is success!", _mapper.Map<UpdateUser>(userExits));
+            var result =  _mapper.Map(updateUser, userExits);
+            var ab = await _userManager.UpdateAsync(result);
+             if (ab.Succeeded)
+            {
+                return new Response(HttpStatusCode.NoContent, "User has been updated!");
+            }
+            else
+            {
+                return new Response(HttpStatusCode.BadRequest, "User hasn't been updated!");
+            }
+            // return new Response(HttpStatusCode.OK, "Update user is success!", _mapper.Map<UpdateUser>(result));
         }
 
         [HttpPut("UpdateAvatar/{idUser}")]

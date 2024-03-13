@@ -1,46 +1,21 @@
 import React, { useEffect, useMemo, useState } from "react";
 import "./detail.scss";
 import defaultAvatar from "../../images/common/default.png"
-import { FaHeart } from "react-icons/fa";
-import { IoFlagOutline } from "react-icons/io5";
+
 import avatarDefault from "../../images/common/default.png";
-import { FiEye } from "react-icons/fi";
+
 import { VscSend } from "react-icons/vsc";
 import { postInstance, userInstance } from "../../axios/axiosConfig";
 import Dropdown from 'react-bootstrap/Dropdown';
 import { GrUpdate } from "react-icons/gr";
 import { MdDelete } from "react-icons/md";
-function calculateTimeDifference(targetDate) {
-  // Convert the target date string to a Date object
-  const targetTime = new Date(targetDate).getTime();
+import PostContent from "./PostContent";
 
-  // Get the current time
-  const currentTime = new Date().getTime();
-
-  // Calculate the difference in milliseconds
-  const timeDifference = currentTime - targetTime;
-
-  // Calculate the difference in seconds, minutes, hours, and days
-  const seconds = Math.floor(timeDifference / 1000);
-  const minutes = Math.floor(seconds / 60);
-  const hours = Math.floor(minutes / 60);
-  const days = Math.floor(hours / 24);
-
-  // Return an object with the time difference values
-  if (minutes < 60) {
-    return minutes === 1 ? `${minutes} minute ago` : `${minutes} minutes ago`;
-  } else if (hours < 24) {
-    return hours === 1 ? `${hours} hour ago` : `${hours} hours ago`;
-  } else {
-    return days === 1 ? `${days} day ago` : `${hours} days ago`;
-  }
-}
-function PostDetail(id) {
+function PostDetail({id,viewProjectDetail}) {
 
   const sessionData = JSON.parse(sessionStorage.getItem('userSession')) || {};
   const { currentUserId } = sessionData;
-  const idPost = id.id;
-
+  const idPost = id;
   const [data, setData] = useState();
   const [user, setUser] = useState({});
   const [commentList, setCommentList] = useState([]);
@@ -54,7 +29,7 @@ function PostDetail(id) {
   const [replyComment, setReplyComment] = useState(false);
   const [inputReply, setInputReply] = useState({});
 
-
+// console.log(data)
   const memoizedPostInstance = useMemo(() => {
     return postInstance; // hoặc tạo một instance mới nếu cần
   }, []);
@@ -256,40 +231,14 @@ function PostDetail(id) {
         console.log(err.response.data);
       })
   }, []);
+  const viewProject =(value)=>{
+    if(value !==null){
+      viewProjectDetail(value);
+    }
+  }
   return (
     <div id="postDetail" className="p-3">
-      <div className="d-flex align-items-center mb-2">
-        <img src={data?.avatar === "https://localhost:7006/Images/" ? defaultAvatar : data?.avatar} alt="profile" className="profile" />
-        <div className="ms-2">
-          <h6 className="mb-0">{data?.fullName}</h6>
-          <p className="mb-0">{calculateTimeDifference(data?.createdDate)}</p>
-        </div>
-      </div>
-      <p className="fs-4 fw-bold">{data?.title}</p>
-      <p style={{ whiteSpace: 'pre-wrap' }}>
-        {data?.content}
-      </p>
-      <div>
-        {data?.viewPostImages?.map((image)=>(
-          <img src={image.imageSrc} alt="" className="w-100" />
-        ))}
-      </div>
-      <div className="d-flex align-items-center border-bottom pb-3 mt-2 border-dark">
-        <div className="d-flex align-items-center me-3">
-          <FiEye className="me-2" /> {data?.view + 1}
-        </div>
-        <div className="d-flex align-items-center me-3"
-          onClick={() => handleLikeOrUnlikePost()}
-        >
-          <FaHeart className={`me-2 ${data?.isLike === true ? 'red' : ''}`} /> {data?.like}
-        </div>
-        <div
-          className="d-flex align-items-center me-3"
-        // onClick={() => handleReportClick(item.id)}
-        >
-          <IoFlagOutline />{" "}
-        </div>
-      </div>
+      <PostContent data={data} handleLikeOrUnlikePost={handleLikeOrUnlikePost} viewProject={viewProject}/>
       <p className="cmt fw-bold my-3">COMMENT</p>
       <div className="cmt-input d-flex ">
         <img src={data?.avatar === "https://localhost:7006/Images/" ? defaultAvatar : data?.avatar} alt="" className="profile" />
