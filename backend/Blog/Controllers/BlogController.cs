@@ -101,7 +101,7 @@ namespace Blog.Controllers
             {
                 blog.report = await GetAllReportBlog();
                 blog.like = await _context.BlogLikes.Where(x => x.idBlog == blog.idBlog).CountAsync();
-                var isLike = await _context.BlogLikes.FirstOrDefaultAsync(x => x.idAccount == idUser);
+                var isLike = await _context.BlogLikes.FirstOrDefaultAsync(x => x.idAccount == idUser && x.idBlog == blog.idBlog);
                 if (isLike != null)
                 {
                     blog.isLike = true;
@@ -137,7 +137,7 @@ namespace Blog.Controllers
             {
                 blog.report = await GetAllReportBlog();
                 blog.like = await _context.BlogLikes.Where(x => x.idBlog == blog.idBlog).CountAsync();
-                var isLike = await _context.BlogLikes.FirstOrDefaultAsync(x => x.idAccount == idUser);
+                var isLike = await _context.BlogLikes.FirstOrDefaultAsync(x => x.idAccount == idUser && x.idBlog == blog.idBlog);
                 if (isLike != null)
                 {
                     blog.isLike = true;
@@ -168,7 +168,7 @@ namespace Blog.Controllers
             foreach (var blog in result)
             {
                 blog.like = await _context.BlogLikes.Where(x => x.idBlog == blog.idBlog).CountAsync();
-                var isLike = await _context.BlogLikes.FirstOrDefaultAsync(x => x.idAccount == idUser);
+                var isLike = await _context.BlogLikes.FirstOrDefaultAsync(x => x.idAccount == idUser && x.idBlog == blog.idBlog);
                 if (isLike != null)
                 {
                     blog.isLike = true;
@@ -197,7 +197,7 @@ namespace Blog.Controllers
             }
             var result = _mapper.Map<ViewBlog>(blog);
             result.like = await _context.BlogLikes.Where(x => x.idBlog == blog.idBlog).CountAsync();
-            var isLike = await _context.BlogLikes.FirstOrDefaultAsync(x => x.idAccount == idUser);
+            var isLike = await _context.BlogLikes.FirstOrDefaultAsync(x => x.idAccount == idUser && x.idBlog == blog.idBlog);
             if (isLike != null)
             {
                 result.isLike = true;

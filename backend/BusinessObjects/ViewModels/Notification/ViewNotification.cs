@@ -3,6 +3,7 @@
     public class ViewNotification
     {
         public Guid idNotification { get; set; }
+        public Guid idPost { get; set; }
         public string? idSender { get; set; }
         public string? nameSender { get; set; }
         public string? avatar { get; set; }
