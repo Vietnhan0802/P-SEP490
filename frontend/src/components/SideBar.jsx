@@ -40,12 +40,12 @@ function SideBar({ activeItem, onItemClick }) {
       text: "Project Application",
       userRole: "business",
     },
-    {
-      id: "verification",
-      icon: <FaRegCircleCheck />,
-      text: "Send Verification",
-      userRole: "business",
-    },
+    // {
+    //   id: "verification",
+    //   icon: <FaRegCircleCheck />,
+    //   text: "Send Verification",
+    //   userRole: "business",
+    // },
     {
       id: "current_project",
       icon: <MdOutlineSimCardDownload />,

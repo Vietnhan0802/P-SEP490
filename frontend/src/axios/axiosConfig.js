@@ -33,11 +33,10 @@ const createAxiosInstance = (baseURL) => {
   return instance;
 };
 
+export const chatInstance = createAxiosInstance("https://localhost:7001/api/Communication");
 export const followInstance = createAxiosInstance("https://localhost:7002/api/Follow");
 export const credentialInstance = createAxiosInstance("https://localhost:7003/api/Degree");
-export const accountReportInstance = createAxiosInstance("https://localhost:7004/api/AccountReport");
 export const reportInstance = createAxiosInstance("https://localhost:7004/api/Interaction");
-export const verificationsInstance = createAxiosInstance("https://localhost:7004/api/Verifications");
 export const projectInstance = createAxiosInstance("https://localhost:7005/api/ProjectInfo");
 export const userInstance = createAxiosInstance("https://localhost:7006/api/User");
 export const blogInstance = createAxiosInstance("https://localhost:7007/api/Blog");

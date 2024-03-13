@@ -84,7 +84,7 @@ function Profile({ handleChangeImg }) {
         }
         // Update inputs here after user is fetched
         setInputs({
-          userName: user?.username || "",
+          userName: user?.userName || "",
           fullName: user?.fullName || "",
           date: formatDateString(user?.date) || "",
           isMale: user?.isMale, // Assuming isMale is returned as "True" or "False" string
@@ -133,6 +133,7 @@ function Profile({ handleChangeImg }) {
       });
   }, [userId, resetAvatar,resetDegree]);
   // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  console.log(inputs)
   const projectStatus = (process) => {
     switch (process) {
       case 0:
@@ -149,8 +150,7 @@ function Profile({ handleChangeImg }) {
   };
   const handleUpdateUser = () => {
     setIsEdit(!isEdit);
-    userInstance
-      .put(`/UpdateUser/${userId}`, inputs, {
+    userInstance.put(`/UpdateUser/${currentUserId}`, inputs, {
         headers: {
           "Content-Type": "application/json",
         },
