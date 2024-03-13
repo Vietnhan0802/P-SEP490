@@ -191,7 +191,7 @@ function Post({ postId, onPostClick, activeItem, onItemClick }) {
 
       {postList.map((item) => (
         <div
-          key={item.idPost }
+          key={item.id }
           className={`pos-rel post-item mt-2 p-2 ${blogPopups[item.id] ? "position-relative" : ""
             }`}
         >

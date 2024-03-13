@@ -37,10 +37,10 @@ function Notify() {
     })
   }, [currentUserId]);
 
-  const hanldeViewDetail = (postId) => {
-    onPostClick(postId);
-    onItemClick("post_detail");
-  };
+  // const hanldeViewDetail = (postId) => {
+  //   onPostClick(postId);
+  //   onItemClick("post_detail");
+  // };
 
   const handleNotifiClick = (idNotification, id, url, idPost) => {
     notifyInstance.put(`ReadNotification/${idNotification}`)
@@ -56,7 +56,7 @@ function Notify() {
         navigate('/profile', { state: { userId: id } });
       }
       else {
-        hanldeViewDetail(idPost);
+        // hanldeViewDetail(idPost);
         //navigate('/postDetail', { state: { userId: id } });
       }
     })
