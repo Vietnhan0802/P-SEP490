@@ -122,8 +122,7 @@ function Post({ postId, onPostClick, activeItem, onItemClick }) {
   };
 
   useEffect(() => {
-    postInstance
-      .get(`GetAllPosts/${currentUserId}`)
+    postInstance.get(`GetAllPosts/${currentUserId}`)
       .then((res) => {
         const postList = res?.data?.result;
         setPostList([]);
@@ -152,8 +151,7 @@ function Post({ postId, onPostClick, activeItem, onItemClick }) {
   }, [resetPage]);
 
   useEffect(() => {
-    projectInstance
-      .get("GetAllProjects")
+    projectInstance.get("GetAllProjects")
       .then((res) => {
         setProject(res?.data?.result);
       })
