@@ -151,7 +151,7 @@ namespace Post.Controllers
                     post.isBlock = true;
                 }
                 post.like = await _context.PosttLikes.Where(x => x.idPost == post.idPost).CountAsync();
-                var isLike = await _context.PosttLikes.FirstOrDefaultAsync(x => x.idAccount == idUser);
+                var isLike = await _context.PosttLikes.FirstOrDefaultAsync(x => x.idAccount == idUser && x.idPost == post.idPost);
                 if (isLike != null)
                 {
                     post.isLike = true;
@@ -182,7 +182,7 @@ namespace Post.Controllers
             foreach (var post in result)
             {
                 post.like = await _context.PosttLikes.Where(x => x.idPost == post.idPost).CountAsync();
-                var isLike = await _context.PosttLikes.FirstOrDefaultAsync(x => x.idAccount == idUser);
+                var isLike = await _context.PosttLikes.FirstOrDefaultAsync(x => x.idAccount == idUser && x.idPost == post.idPost);
                 if (isLike != null)
                 {
                     post.isLike = true;
@@ -211,7 +211,7 @@ namespace Post.Controllers
             }
             var result = _mapper.Map<ViewPost>(post);
             result.like = await _context.PosttLikes.Where(x => x.idPost == post.idPost).CountAsync();
-            var isLike = await _context.PosttLikes.FirstOrDefaultAsync(x => x.idAccount == idUser);
+            var isLike = await _context.PosttLikes.FirstOrDefaultAsync(x => x.idAccount == idUser && x.idPost == post.idPost);
             if (isLike != null)
             {
                 result.isLike = true;
