@@ -20,6 +20,7 @@ function ProjectDetail() {
        Cursus libero tristique quam commodo lectus eget a praesent malesuada. Nulla sed bibendum donec tellus urna porttitor. Elementum dictumst faucibus quis vestibulum vitae blandit tincidunt. Id quam sollicitudin in egestas nec et. Vitae eleifend integer quam consequat aliquet ipsum id. Nunc elit tortor convallis aliquet id. Est convallis elit urna habitant tellus viverra scelerisque tristique placerat. Orci sollicitudin non cursus erat facilisis lacus.
        Interdum ut dui sapien et massa suspendisse lacus. Nec cras vestibulum at quisque nisi quam. Aliquam sit viverra sit vulputate. Sed posuere posuere diam nec in. Arcu at vulputate elit sed amet diam.`,
   };
+  
   return (
     <div id="projectDetail" className="bg-white bor-rad-8 p-2">
       <h1 className="header fw-bold text-center pt-2  mb-4">

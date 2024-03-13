@@ -1,11 +1,5 @@
 import React from "react";
-import {
-  ChevronDoubleLeftIcon,
-  ChevronLeftIcon,
-  ChevronRightIcon,
-  ChevronDoubleRightIcon,
-} from "@heroicons/react/solid";
-import { Button, PageButton } from "../../utils/button-table";
+
 import {
   useTable,
   useGlobalFilter,

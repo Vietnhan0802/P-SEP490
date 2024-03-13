@@ -1,6 +1,5 @@
 import { Modal, Button } from "react-bootstrap";
 import { useState } from "react";
-import { Row, Col } from "react-bootstrap";
 import React, { useEffect } from "react";
 import "./post-pu.scss";
 import Notification, {
