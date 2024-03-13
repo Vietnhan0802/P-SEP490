@@ -7,7 +7,6 @@ import { FiEye } from "react-icons/fi";
 import ReportPopup from "../../components/Popup/reportPopup";
 import defaultAvatar from "../../images/common/default.png"
 
-import Cookies from "js-cookie";
 import { postInstance, reportInstance } from "../../axios/axiosConfig"
 function calculateTimeDifference(targetDate) {
   // Convert the target date string to a Date object
@@ -36,7 +35,7 @@ function calculateTimeDifference(targetDate) {
 }
 function OwnPost({ postId, onPostClick, activeItem, onItemClick }) {
   const sessionData = JSON.parse(sessionStorage.getItem('userSession')) || {};
-  const { userId } = sessionData;
+  const { currentUserId } = sessionData;
 
   const [blogPopups, setBlogPopups] = useState({});
   const [postList, setPostList] = useState([])
@@ -111,7 +110,7 @@ function OwnPost({ postId, onPostClick, activeItem, onItemClick }) {
   }
 
   useEffect(() => {
-    postInstance.get(`GetPostByUser/${userId}`)
+    postInstance.get(`GetPostByUser/${currentUserId}`)
       .then((res) => {
         const postList = res?.data?.result;
         setPostList([]);
@@ -203,7 +202,7 @@ function OwnPost({ postId, onPostClick, activeItem, onItemClick }) {
                 />
                 <div className="d-flex justify-content-end mt-2">
                   <button className="btn btn-secondary "
-                    onClick={() => handleCreateReport(userId, item.id, popupContent[item.id])}>Submit</button>
+                    onClick={() => handleCreateReport(currentUserId, item.id, popupContent[item.id])}>Submit</button>
                 </div>
               </div>
             </ReportPopup>

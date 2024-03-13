@@ -14,10 +14,6 @@ import {
   reportInstance,
 } from "../../axios/axiosConfig";
 
-import Notification, {
-  notifySuccess,
-  notifyError,
-} from "../../components/notification";
 import PostPu from "./postPu";
 function calculateTimeDifference(targetDate) {
   // Convert the target date string to a Date object
@@ -48,12 +44,6 @@ function calculateTimeDifference(targetDate) {
 function Post({ postId, onPostClick, activeItem, onItemClick }) {
   const sessionData = JSON.parse(sessionStorage.getItem("userSession")) || {};
   const { role, currentUserId } = sessionData;
-  const [inputs, setInputs] = useState({
-    title: "",
-    content: "",
-    CreateUpdatePostImages: [], // new state for managing multiple images
-    project: "",
-  });
   const [popupContent, setPopupContent] = useState("");
   const [project, setProject] = useState();
   const [blogPopups, setBlogPopups] = useState({});
@@ -69,7 +59,7 @@ function Post({ postId, onPostClick, activeItem, onItemClick }) {
     view,
     like,
     viewPostImages,
-    fullName
+    fullName, isLike
   ) => {
     return {
       id,
@@ -81,6 +71,7 @@ function Post({ postId, onPostClick, activeItem, onItemClick }) {
       like,
       viewPostImages,
       fullName,
+      isLike
     };
   };
   const handleLikeOrUnlikeBlog = (idBlog) => {
@@ -150,7 +141,8 @@ function Post({ postId, onPostClick, activeItem, onItemClick }) {
               element.view,
               element.like,
               element.viewPostImages,
-              element.fullName
+              element.fullName,
+              element.isLike
             ),
           ]);
         });
@@ -170,52 +162,6 @@ function Post({ postId, onPostClick, activeItem, onItemClick }) {
         console.error(error);
       });
   }, []);
-  const handleCreatePost = () => {
-    if (inputs.project === "") {
-      alert("Plase choose a project");
-    }
-    const formData = new FormData();
-    formData.append("title", inputs.title);
-    formData.append("content", inputs.content);
-
-    inputs.CreateUpdatePostImages.forEach((imageInfo, index) => {
-      formData.append(
-        `CreateUpdatePostImages[${index}].image`,
-        imageInfo.image
-      );
-      formData.append(
-        `CreateUpdatePostImages[${index}].imageFile`,
-        imageInfo.imageFile
-      );
-      formData.append(
-        `CreateUpdatePostImages[${index}].imageSrc`,
-        imageInfo.imageSrc
-      );
-    });
-
-    postInstance
-      .post(`/CreatePost/${currentUserId}/${inputs.project}`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          accept: "application/json",
-        },
-      })
-      .then((res) => {
-        // console.log(res.data);
-        setResetPage(!resetPage);
-        setInputs({
-          title: "",
-          content: "",
-          CreateUpdatePostImages: [], // new state for managing multiple images
-          project: "",
-        });
-        notifySuccess("Create post successfully!");
-      })
-      .catch((err) => {
-        console.log(err);
-        notifyError("Create post failed!");
-      });
-  };
 
   const hanldeViewDetail = (postId) => {
     onPostClick(postId);
@@ -224,46 +170,7 @@ function Post({ postId, onPostClick, activeItem, onItemClick }) {
   const handleReportClick = (postId) => {
     setBlogPopups((prev) => ({ ...prev, [postId]: true }));
   };
-  const readFileAsDataURL = (file) => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        resolve(event.target.result);
-      };
-      reader.onerror = (error) => {
-        reject(error);
-      };
-      reader.readAsDataURL(file);
-    });
-  };
-  // Handler function to update the state when the input changes
-  const handleInputChange = (event) => {
-    const { name, value, type } = event.target;
-    if (type === "file") {
-      const files = Array.from(event.target.files);
-
-      // Use FileReader to convert each file to base64
-      const newImages = files.map(async (element) => {
-        const base64String = await readFileAsDataURL(element);
-        return {
-          image: element.name,
-          imageFile: element,
-          imageSrc: base64String,
-        };
-      });
-      Promise.all(newImages).then((convertedImages) => {
-        setInputs((values) => ({
-          ...values,
-          CreateUpdatePostImages: [
-            ...values.CreateUpdatePostImages,
-            ...convertedImages,
-          ],
-        }));
-      });
-    } else {
-      setInputs((values) => ({ ...values, [name]: value }));
-    }
-  };
+  console.log(postList)
   return (
     <div id="post">
       {role === "Business" ? (
@@ -280,53 +187,6 @@ function Post({ postId, onPostClick, activeItem, onItemClick }) {
             <PostPu />
             <button type="button" className="btn btn-info text-white">Trend</button>
           </div>
-
-          
-          <div className=" flex-column">
-            <input
-              type="text"
-              name="title"
-              value={inputs.title}
-              onChange={handleInputChange}
-              className="input-text"
-              placeholder="Enter the title"
-            />
-            <textarea
-              type="text"
-              value={inputs.content}
-              name="content"
-              onChange={handleInputChange}
-              className="input-text"
-              placeholder="Enter your content..."
-            />
-            <input
-              type="file"
-              name="images"
-              onChange={handleInputChange}
-              className="form-control"
-              multiple
-            />
-            <label>Select a project(optional):</label>
-            <select
-              id="dropdown"
-              name="project"
-              value={inputs.project}
-              onChange={handleInputChange}
-            >
-              <option value="">Select a project</option>
-              {project?.map((item) => (
-                <option key={item.idProject} value={item.idProject}>
-                  {item.name}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div className="d-flex  justify-content-end mt-2">
-            <button className="btn" onClick={handleCreatePost}>
-              <CiCircleChevRight className=" fs-3" />
-            </button>
-          </div>
         </div>
       ) : (
         ""
@@ -334,10 +194,9 @@ function Post({ postId, onPostClick, activeItem, onItemClick }) {
 
       {postList.map((item) => (
         <div
-          key={item.id}
-          className={`pos-rel post-item mt-2 p-2 ${
-            blogPopups[item.id] ? "position-relative" : ""
-          }`}
+          key={item.idPost}
+          className={`pos-rel post-item mt-2 p-2 ${blogPopups[item.id] ? "position-relative" : ""
+            }`}
         >
           <div className="d-flex justify-content-between">
             <div className="d-flex align-items-center">
@@ -385,7 +244,7 @@ function Post({ postId, onPostClick, activeItem, onItemClick }) {
                 className="d-flex align-items-center me-3"
                 onClick={() => handleLikeOrUnlikeBlog(item.id)}
               >
-                <FaHeart className={`me-2 ${item.isLike ? "red" : ""}`} />{" "}
+                <FaHeart className={`me-2 ${item.isLike === true ? "red" : ""}`} />{" "}
                 {item.like}
               </div>
             </div>

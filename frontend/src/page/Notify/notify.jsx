@@ -10,10 +10,13 @@ import Carla from "../../images/chat/Carla.png";
 import Brandon from "../../images/chat/Brandon.png";
 import defaultImage from "../../images/common/default.png";
 import "../Notify/notify.scss";
+import { formatDistanceToNow, parseISO } from 'date-fns';
 import { notifyInstance } from "../../axios/axiosConfig";
+import { useNavigate } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
 function Notify() {
   const {t} = useTranslation()
+  const navigate = useNavigate();
 
   const sessionData = JSON.parse(sessionStorage.getItem("userSession")) || {};
   const { currentUserId } = sessionData;
@@ -85,18 +88,34 @@ function Notify() {
   //   },
   // ];
 
+  function formatTimeAgo(dateString) {
+    const result = formatDistanceToNow(parseISO(dateString), { addSuffix: true });
+    // Loại bỏ từ "about" khỏi chuỗi
+    return result.replace("about ", "");
+  }
+
   const [notifications, setNotifications] = useState([]);
 
   useEffect(() => {
     notifyInstance.get(`GetNotificationByUser/${currentUserId}`)
     .then((res) => {
-      setNotifications(res.data)
+      const formattedNotifi = res.data.map(notifications => {
+        return {
+          ...notifications,
+          timeAgo: formatTimeAgo(notifications.createdDate),
+        };
+      });
+      setNotifications(formattedNotifi);
       console.log(res.data);
     })
     .catch((error) => {
       console.error(error);
     })
-  }, []);
+  }, [currentUserId]);
+
+  const handleNotifiClick = (id) => {
+    navigate('/profile', { state: { userId: id } });
+  };
 
   return (
     <div
@@ -113,18 +132,21 @@ function Notify() {
       </div>
       <div className="mt-3">
         {notifications.map((item) => (
-          <div
-            className={`d-flex align-items-center justify-content-between py-3 chat-item ${
-              item.status === "unseen" ? "active" : ""
-            }`}
-          >
+          <div className="d-flex align-items-center justify-content-between py-3 notification-item" onClick={()=>handleNotifiClick(item.url)}>
             <div className="d-flex align-items-center" key={item.idNotification}>
               <img src={item.avatar === "https://localhost:7006/Images/" ? defaultImage : item.avatar} alt="profile" className="profile" />
               <div className="ms-2 content">
                 <p className="mb-0">
-                  <span className="fw-bold">{item.nameSender}</span> {t(`${item.content}`)}
+                  <span className="fw-bold">{item.nameSender}</span> {item.content === 'content_noti' ? t('content_noti') : item.content}
                 </p>
-                <p className="mb-0 date">{item.createdDate}</p>
+                <p className={`mb-0 date ${
+                  item.isRead === false ? "notRead" : "read"
+                }`}>{item.timeAgo}</p>
+              </div>
+              <div className={`${
+                  item.isRead === false ? "notify-dot" : "read-dot"
+                }`}>
+
               </div>
             </div>
           </div>
