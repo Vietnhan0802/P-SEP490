@@ -15,7 +15,7 @@ import OwnProject from "../OwnProject/ownProject";
 import ProjectApplication from "../ProjectApplication/projectApplication";
 import Statistic from "../Statistic/statistic";
 function Homepage() {
-  const [activeComponent, setActiveComponent] = useState("projectDetail");
+  const [activeComponent, setActiveComponent] = useState("post");
   const [postId, setPostId] = useState(null);
   const [blogId, setBlogId] = useState(null);
   const [projectId, setProjectId] = useState(null);
@@ -45,6 +45,7 @@ function Homepage() {
             md={`${
               activeComponent === "dashboard" ||
               activeComponent === "projectDetail"||
+              activeComponent === "project_application"||
               activeComponent === "statistic"
                 ? 9
                 : 6
@@ -94,7 +95,7 @@ function Homepage() {
             )}
           </Col>
           {activeComponent !== "dashboard" &&
-            activeComponent !== "projectDetail" &&
+            activeComponent !== "projectDetail" && activeComponent !== "project_application" &&
             activeComponent !== "statistic" && (
               <Col md={3}>
                 <Follow />

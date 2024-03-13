@@ -257,7 +257,6 @@ function BlogDetail(id) {
   const dateTime = calculateTimeDifference(data.createdDate);
 
   //Palce to log data to debug
-  console.log(commentList)
   return (
     <div id="BlogDetail" className="p-3 mb-4">
       <div className="d-flex align-items-center mb-2">

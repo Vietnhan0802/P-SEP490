@@ -1,21 +1,15 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
 import "../Blog/blog.scss";
-import { CiCircleChevRight } from "react-icons/ci";
 import { IoFlagOutline } from "react-icons/io5";
 import { FaHeart } from "react-icons/fa";
 import { CiSearch } from "react-icons/ci";
 import { FiEye } from "react-icons/fi";
 import { RiAdminLine } from "react-icons/ri";
-import { CiHeart } from "react-icons/ci";
 import ReportPopup from "../../components/Popup/reportPopup";
 import { blogInstance } from "../../axios/axiosConfig";
-import Cookies from "js-cookie";
 import BlogPu from "./blogPu";
-import Notification, {
-  notifySuccess,
-  notifyError,
-} from "../../components/notification";
+
 function calculateTimeDifference(targetDate) {
   // Convert the target date string to a Date object
   const targetTime = new Date(targetDate).getTime();
@@ -177,7 +171,7 @@ function Blog({ blogId, onBlogClick, activeItem, onItemClick }) {
 
         {data.map((item) => (
           <div
-            key={item.idBlog}
+            key={item.id}
             className={`blog-item p-2 ${blogPopups[item.id] ? "position-relative" : ""
               }`}
           >
