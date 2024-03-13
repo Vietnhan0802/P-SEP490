@@ -77,7 +77,7 @@ namespace Notification.Controllers
                 idReceiver = idReceiver,
                 content = "content_noti",
                 isRead = false,
-                url = idSender,
+                url = "Follow",
                 createdDate = DateTime.Now
             };
             await _context.Notifications.AddAsync(notification);
@@ -90,16 +90,29 @@ namespace Notification.Controllers
             return result;
         }
 
-        [HttpPost("CreateNotificationComment/{idSender}/{idReceiver}")]
-        public async Task<ViewNotification> CreateNotificationComment(string idSender, string idReceiver)
+        [HttpPut("ReadNotification/{idNotification}")]
+        public async Task<IActionResult> ReadNotification(Guid idNotification)
+        {
+            var notifi = await _context.Notifications.FirstOrDefaultAsync(x => x.idNotification == idNotification);
+            if (notifi == null)
+            {
+                return NotFound();
+            }
+            notifi.isRead = true;
+            await _context.SaveChangesAsync();
+            return Ok(notifi);
+        }
+
+        [HttpPost("CreateNotificationComment/{idSender}/{idReceiver}/{idPost}")]
+        public async Task<ViewNotification> CreateNotificationComment(string idSender, string idReceiver, Guid idPost)
         {
             Notificationn notification = new Notificationn()
             {
                 idSender = idSender,
                 idReceiver = idReceiver,
-                content = "commented on one of your posts.",
+                content = "content_notipost",
                 isRead = false,
-                url = idSender,
+                url = "PostComment",
                 createdDate = DateTime.Now
             };
             await _context.Notifications.AddAsync(notification);
@@ -108,7 +121,7 @@ namespace Notification.Controllers
             var infoUser = await GetNameUserCurrent(result.idSender!);
             result.nameSender = infoUser.fullName;
             result.avatar = infoUser.avatar;
-            result.content = $"{result.nameSender} {notification.content}";
+            result.content = $"{notification.content}";
             return result;
         }
     }

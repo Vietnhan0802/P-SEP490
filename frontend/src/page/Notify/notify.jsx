@@ -1,13 +1,5 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
-import Nolan from "../../images/chat/Nolan.png";
-import Angel from "../../images/chat/Angel.png";
-import Davis from "../../images/chat/Davis.png";
-import Desirae from "../../images/chat/Desirae.png";
-import Ryan from "../../images/chat/Ryan.png";
-import Roger from "../../images/chat/Roger.png";
-import Carla from "../../images/chat/Carla.png";
-import Brandon from "../../images/chat/Brandon.png";
 import defaultImage from "../../images/common/default.png";
 import "../Notify/notify.scss";
 import { formatDistanceToNow, parseISO } from 'date-fns';
@@ -20,73 +12,6 @@ function Notify() {
 
   const sessionData = JSON.parse(sessionStorage.getItem("userSession")) || {};
   const { currentUserId } = sessionData;
-  //const { userId } = location.state || {};
-  // const chatList = [
-  //   {
-  //     id: 1,
-  //     name: "Nolan Bator",
-  //     img: Nolan,
-  //     status: "seen",
-  //     text: "check out the all new dashboard view. Pages and exports now load faster.",
-  //     time: "10 minutes ago",
-  //   },
-  //   {
-  //     id: 2,
-  //     name: "Angel Mango",
-  //     img: Angel,
-  //     status: "seen",
-  //     text: "check out the all new dashboard view. Pages and exports now load faster.",
-  //     time: "2 days ago",
-  //   },
-  //   {
-  //     id: 3,
-  //     name: "Davis Rhiel",
-  //     img: Davis,
-  //     status: "unseen",
-  //     text: "check out the all new dashboard view. Pages and exports now load faster.",
-  //     time: "3 days ago",
-  //   },
-  //   {
-  //     id: 4,
-  //     name: "Desirae Lubin",
-  //     img: Desirae,
-  //     status: "seen",
-  //     text: "check out the all new dashboard view. Pages and exports now load faster.",
-  //     time: "5 days ago",
-  //   },
-  //   {
-  //     id: 5,
-  //     name: "Ryan Dokidis",
-  //     img: Ryan,
-  //     status: "unseen",
-  //     text: "check out the all new dashboard view. Pages and exports now load faster.",
-  //     time: "1 hours ago",
-  //   },
-  //   {
-  //     id: 6,
-  //     name: "Roger Stanton",
-  //     img: Roger,
-  //     status: "seen",
-  //     text: "check out the all new dashboard view. Pages and exports now load faster.",
-  //     time: "3 days ago",
-  //   },
-  //   {
-  //     id: 7,
-  //     name: "Carla Septimus",
-  //     img: Carla,
-  //     status: "seen",
-  //     text: "check out the all new dashboard view. Pages and exports now load faster.",
-  //     time: "12 hours ago",
-  //   },
-  //   {
-  //     id: 8,
-  //     name: "Brandon Philips",
-  //     img: Brandon,
-  //     status: "unseen",
-  //     text: "check out the all new dashboard view. Pages and exports now load faster.",
-  //     time: "10 minutes ago",
-  //   },
-  // ];
 
   function formatTimeAgo(dateString) {
     const result = formatDistanceToNow(parseISO(dateString), { addSuffix: true });
@@ -106,15 +31,38 @@ function Notify() {
         };
       });
       setNotifications(formattedNotifi);
-      console.log(res.data);
     })
     .catch((error) => {
       console.error(error);
     })
   }, [currentUserId]);
 
-  const handleNotifiClick = (id) => {
-    navigate('/profile', { state: { userId: id } });
+  const hanldeViewDetail = (postId) => {
+    onPostClick(postId);
+    onItemClick("post_detail");
+  };
+
+  const handleNotifiClick = (idNotification, id, url, idPost) => {
+    notifyInstance.put(`ReadNotification/${idNotification}`)
+    .then((res) => {
+      const updateNotifi = notifications.map(notify => {
+        if (notify.idNotification === idNotification) {
+          return {...notify, isRead: true};
+        }
+        return notify;
+      });
+      setNotifications(updateNotifi);
+      if (url === 'Follow') {
+        navigate('/profile', { state: { userId: id } });
+      }
+      else {
+        hanldeViewDetail(idPost);
+        //navigate('/postDetail', { state: { userId: id } });
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+    });
   };
 
   return (
@@ -132,12 +80,12 @@ function Notify() {
       </div>
       <div className="mt-3">
         {notifications.map((item) => (
-          <div className="d-flex align-items-center justify-content-between py-3 notification-item" onClick={()=>handleNotifiClick(item.url)}>
+          <div className="d-flex align-items-center justify-content-between py-3 notification-item" onClick={()=>handleNotifiClick(item.idNotification, item.idSender, item.url, item.idPost)}>
             <div className="d-flex align-items-center" key={item.idNotification}>
               <img src={item.avatar === "https://localhost:7006/Images/" ? defaultImage : item.avatar} alt="profile" className="profile" />
               <div className="ms-2 content">
                 <p className="mb-0">
-                  <span className="fw-bold">{item.nameSender}</span> {item.content === 'content_noti' ? t('content_noti') : item.content}
+                  <span className="fw-bold">{item.nameSender}</span> {item.content === 'content_noti' ? t('content_noti') : t('content_notipost')}
                 </p>
                 <p className={`mb-0 date ${
                   item.isRead === false ? "notRead" : "read"
@@ -146,7 +94,6 @@ function Notify() {
               <div className={`${
                   item.isRead === false ? "notify-dot" : "read-dot"
                 }`}>
-
               </div>
             </div>
           </div>

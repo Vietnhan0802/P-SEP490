@@ -24,6 +24,7 @@ namespace Post.Controllers
         private readonly SaveImageService _saveImageService;
         private readonly HttpClient client;
 
+        public string NotifyApiUrl { get; }
         public string UserApiUrl { get; }
         public string InteractionApiUrl { get; }
 
@@ -35,8 +36,20 @@ namespace Post.Controllers
             client = new HttpClient();
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
             client.DefaultRequestHeaders.Accept.Add(contentType);
+            NotifyApiUrl = "https://localhost:7009/api/Notification";
             UserApiUrl = "https://localhost:7006/api/User";
             InteractionApiUrl = "https://localhost:7004/api/Interaction";
+        }
+
+        [HttpPost("CreateNotificationComment/{idSender}/{idReceiver}/{idPost}")]
+        private async Task<IActionResult> CreateNotificationComment(string idSender, string idReceiver, Guid idPost)
+        {
+            HttpResponseMessage response = await client.PostAsync($"{NotifyApiUrl}/CreateNotificationComment/{idSender}/{idReceiver}/{idPost}", null);
+            if (response.IsSuccessStatusCode)
+            {
+                return Ok("Create notification is successfully!");
+            }
+            return BadRequest("Create notification is fail!");
         }
 
         [HttpGet("GetNameUserCurrent/{idUser}")]
@@ -401,8 +414,10 @@ namespace Post.Controllers
                 isDeleted = false,
                 createdDate = DateTime.Now
             };
+            
             await _context.PosttComments.AddAsync(postComment);
             await _context.SaveChangesAsync();
+            await CreateNotificationComment(idUser, post.idAccount, post.idPost);
             return new Response(HttpStatusCode.OK, "Create post comment is success!", _mapper.Map<ViewPostComment>(postComment));
         }
 

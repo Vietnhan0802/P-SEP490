@@ -24,6 +24,7 @@ const resources = {
             'viewnoti': 'All',
             'notread': 'Unseen',
             'content_noti': 'has just started following you.',
+            'content_notipost': 'commented on one of your posts.',
 
             /**Translate dashboard */
             'managepost': 'Manage Post',
@@ -62,6 +63,7 @@ const resources = {
             'viewnoti': 'Tất cả',
             'notread': 'Chưa xem',
             'content_noti': 'đã bắt đầu theo dõi bạn.',
+            'content_notipost': 'đã bình luận bài viết của bạn.',
 
             /**Translate dashboard */
             'managepost': 'Quản lý bài đăng',
