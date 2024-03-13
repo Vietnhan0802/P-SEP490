@@ -115,7 +115,7 @@ namespace Post.Controllers
             {
                 post.report = await GetAllReportPost();
                 post.like = await _context.PosttLikes.Where(x => x.idPost == post.idPost).CountAsync();
-                var isLike = await _context.PosttLikes.FirstOrDefaultAsync(x => x.idAccount == idUser);
+                var isLike = await _context.PosttLikes.FirstOrDefaultAsync(x => x.idAccount == idUser && x.idPost == post.idPost);
                 if (isLike != null)
                 {
                     post.isLike = true;
