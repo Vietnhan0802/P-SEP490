@@ -44,7 +44,7 @@ function Blog({ blogId, onBlogClick, activeItem, onItemClick }) {
     view,
     like,
     viewBlogImages,
-    fullName
+    fullName,isLike
   ) => {
     return {
       id,
@@ -55,15 +55,11 @@ function Blog({ blogId, onBlogClick, activeItem, onItemClick }) {
       like,
       viewBlogImages,
       fullName,
+      isLike
     };
   };
 
   //_________________________________________________________//
-  const [inputs, setInputs] = useState({
-    title: "",
-    content: "",
-    CreateUpdateBlogImages: [], // new state for managing multiple images
-  });
   const [blogPopups, setBlogPopups] = useState({});
   const [data, setData] = useState([]);
   const sessionData = JSON.parse(sessionStorage.getItem("userSession")) || {};
@@ -116,8 +112,7 @@ function Blog({ blogId, onBlogClick, activeItem, onItemClick }) {
   };
   // Handler function to update the state when the input changes
   useEffect(() => {
-    blogInstance
-      .get(`GetAllBlogs/${currentUserId}`)
+    blogInstance.get(`GetAllBlogs/${currentUserId}`)
       .then((res) => {
         const blogList = res?.data?.result;
         setData([]);
@@ -133,7 +128,8 @@ function Blog({ blogId, onBlogClick, activeItem, onItemClick }) {
               element.view,
               element.like,
               element.viewBlogImages,
-              element.fullName
+              element.fullName,
+              element.isLike
             ),
           ]);
         });
@@ -145,6 +141,7 @@ function Blog({ blogId, onBlogClick, activeItem, onItemClick }) {
   const resetBlog = (value) => {
     setReset(!reset);
   }
+  console.log(data)
   return (
     <div>
       <div id="blog">
@@ -171,7 +168,7 @@ function Blog({ blogId, onBlogClick, activeItem, onItemClick }) {
 
         {data.map((item) => (
           <div
-            key={item.id}
+            key={item.idBlog}
             className={`blog-item p-2 ${blogPopups[item.id] ? "position-relative" : ""
               }`}
           >
