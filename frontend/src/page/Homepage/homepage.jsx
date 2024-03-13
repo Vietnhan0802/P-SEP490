@@ -13,6 +13,7 @@ import ProjectDetail from "../ProjectDetail/projectDetail";
 import OwnPost from "../OwnPost/ownPost";
 import OwnProject from "../OwnProject/ownProject";
 import ProjectApplication from "../ProjectApplication/projectApplication";
+import Project from "../Project/project";
 import Statistic from "../Statistic/statistic";
 function Homepage() {
   const [activeComponent, setActiveComponent] = useState("post");
@@ -69,6 +70,7 @@ function Homepage() {
             )}
             {activeComponent === "post_detail" && <PostDetail id={postId} />}
             {activeComponent === "blog_detail" && <BlogDetail id={blogId} />}
+            {activeComponent === "project" && <Project />}
             {activeComponent === "dashboard" && <DashBoard />}
             {activeComponent === "statistic" && <Statistic />}
             {activeComponent === "projectDetail" && (
