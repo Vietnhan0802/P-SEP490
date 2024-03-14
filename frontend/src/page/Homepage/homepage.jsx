@@ -75,7 +75,11 @@ function Homepage() {
             )}
             {activeComponent === "post_detail" && <PostDetail id={postId} viewProjectDetail={viewProjectDetail} />}
             {activeComponent === "blog_detail" && <BlogDetail id={blogId} />}
-            {activeComponent === "project" && <Project />}
+            {activeComponent === "project" && <Project
+              activeProject={projectId}
+              onProjectClick={hanldeProjectClick}
+              activeItem={activeComponent}
+              onItemClick={handleSidebarItemClick} />}
             {activeComponent === "dashboard" && <DashBoard />}
             {activeComponent === "statistic" && <Statistic />}
             {activeComponent === "projectDetail" && (

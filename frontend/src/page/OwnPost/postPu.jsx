@@ -12,12 +12,11 @@ import {
   reportInstance,
 } from "../../axios/axiosConfig";
 
-function PostPu() {
+function PostPu({reset}) {
   const [show, setShow] = useState(false);
   const [project, setProject] = useState();
   const modalClose = () => setShow(false);
   const modalShow = () => setShow(true);
-  const modelSubmit = () => setShow(false);
   const [resetPage, setResetPage] = useState(false);
   const sessionData = JSON.parse(sessionStorage.getItem("userSession")) || {};
   const { currentUserId } = sessionData;
@@ -60,16 +59,15 @@ function PostPu() {
       );
     });
 
-    postInstance
-      .post(`/CreatePost/${currentUserId}/${inputs.project}`, formData, {
+    postInstance.post(`/CreatePost/${currentUserId}/${inputs.project}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
           accept: "application/json",
         },
       })
       .then((res) => {
-        // console.log(res.data);
-        setResetPage(!resetPage);
+
+        reset(!resetPage);
         setInputs({
           title: "",
           content: "",
@@ -77,6 +75,7 @@ function PostPu() {
           project: "",
         });
         notifySuccess("Create post successfully!");
+
       })
       .catch((err) => {
         console.log(err);
@@ -145,7 +144,7 @@ function PostPu() {
             value={inputs.content}
             name="content"
             onChange={handleInputChange}
-            className="input-text form-control mb-3"
+            className="input-text form-control mb-3 w-100"
             placeholder="content"
           />
           <input
