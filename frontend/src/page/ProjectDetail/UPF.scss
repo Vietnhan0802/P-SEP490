@@ -1,0 +1,56 @@
+#form-update-project {
+    .image-container {
+        max-height: 60vh;
+        background-color: #f0f0f0;
+        overflow: hidden;
+    }
+
+    .image-container img {
+        width: 100%;
+        object-fit: contain;
+        object-position: center;
+    }
+}
+
+#cus-w.modal-dialog {
+    max-width: 90vw;
+    height: 90vh;
+
+    .d-h-2 {
+        height: 100px;
+        max-height: 100px;
+    }
+
+    .m-h-2 {
+        height: 200px;
+        max-height: 200px;
+    }
+
+    .update-img-btn {
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        height: 50px;
+        width: 50px;
+        opacity: 0.7;
+        margin: 10px;
+        background-color: #f0f0f0;
+        border-radius: 8px;
+    }
+
+    .pos-re {
+        position: relative;
+    }
+
+    .status,
+    .visibility {
+        padding: 5px;
+        color: black;
+        border-radius: 5px;
+        display: inline-block;
+        margin: 5px;
+        border: 0.5px solid black;
+    }
+
+   
+}
