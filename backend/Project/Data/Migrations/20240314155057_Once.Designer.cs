@@ -12,8 +12,8 @@ using Project.Data;
 namespace Project.Data.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20240220070935_One")]
-    partial class One
+    [Migration("20240314155057_Once")]
+    partial class Once
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,6 +25,25 @@ namespace Project.Data.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("BusinessObjects.Entities.Projects.Position", b =>
+                {
+                    b.Property<Guid>("idPosition")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("idProject")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("namePosition")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("idPosition");
+
+                    b.HasIndex("idProject");
+
+                    b.ToTable("Positions");
+                });
+
             modelBuilder.Entity("BusinessObjects.Entities.Projects.ProjectInfo", b =>
                 {
                     b.Property<Guid>("idProject")
@@ -32,24 +51,21 @@ namespace Project.Data.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("avatar")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("createdDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("description")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("idAccount")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool?>("isDeleted")
+                    b.Property<bool>("isDeleted")
                         .HasColumnType("bit");
 
                     b.Property<string>("name")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("process")
@@ -76,11 +92,13 @@ namespace Project.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("cvUrl")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("idAccount")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("idPosition")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid?>("idProject")
                         .HasColumnType("uniqueidentifier");
@@ -93,22 +111,43 @@ namespace Project.Data.Migrations
 
                     b.HasKey("idProjectMember");
 
+                    b.HasIndex("idPosition");
+
                     b.HasIndex("idProject");
 
                     b.ToTable("ProjectMembers");
                 });
 
+            modelBuilder.Entity("BusinessObjects.Entities.Projects.Position", b =>
+                {
+                    b.HasOne("BusinessObjects.Entities.Projects.ProjectInfo", "ProjectInfo")
+                        .WithMany("Positions")
+                        .HasForeignKey("idProject")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ProjectInfo");
+                });
+
             modelBuilder.Entity("BusinessObjects.Entities.Projects.ProjectMember", b =>
                 {
+                    b.HasOne("BusinessObjects.Entities.Projects.Position", "Position")
+                        .WithMany()
+                        .HasForeignKey("idPosition");
+
                     b.HasOne("BusinessObjects.Entities.Projects.ProjectInfo", "ProjectInfo")
                         .WithMany("ProjectMembers")
                         .HasForeignKey("idProject");
+
+                    b.Navigation("Position");
 
                     b.Navigation("ProjectInfo");
                 });
 
             modelBuilder.Entity("BusinessObjects.Entities.Projects.ProjectInfo", b =>
                 {
+                    b.Navigation("Positions");
+
                     b.Navigation("ProjectMembers");
                 });
 #pragma warning restore 612, 618
