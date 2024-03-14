@@ -7,84 +7,114 @@ import MultiStepProgressBar from "../../components/MultiStepProgressBar";
 import FormMember from "./formMember";
 import FormApply from "./FormApply";
 import { projectInstance } from "../../axios/axiosConfig";
+import UpdateProjectForm from "./updateProjectForm";
 
 const formatDate = (timestamp) => {
-  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
-    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const months = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
   const date = new Date(timestamp);
   const day = date.getDate();
   const month = months[date.getMonth()];
   const year = date.getFullYear();
 
   return `${day} ${month} ${year}`;
-}
+};
 const projectStatus = (process) => {
   switch (process) {
     case 0:
-      return <div className="status preparing">Preparing</div>
+      return <div className="status preparing">Preparing</div>;
     case 1:
-      return <div className="status process">Process</div>
+      return <div className="status process">Process</div>;
     case 2:
-      return <div className="status done">Done</div>
+      return <div className="status done">Done</div>;
     case 3:
-      return <div className="status pending">Pending</div>
+      return <div className="status pending">Pending</div>;
     default:
     // code block
   }
-}
+};
 const projectVisibility = (visibility) => {
   switch (visibility) {
     case 0:
-      return <div className="visibility private">Private</div>
+      return <div className="visibility private">Private</div>;
     case 1:
-      return <div className="visibility public">Public</div>
+      return <div className="visibility public">Public</div>;
     case 2:
-      return <div className="visibility hidden">Hidden</div>
+      return <div className="visibility hidden">Hidden</div>;
 
     default:
     // code block
   }
-}
+};
 function ProjectDetail({ ...props }) {
   const [iseEdit, setIsEdit] = useState(true);
   const [data, setData] = useState();
   const { id } = props;
   useEffect(() => {
-    projectInstance.get(`/GetProjectById/${id}`)
+    projectInstance
+      .get(`/GetProjectById/${id}`)
       .then((res) => {
-        console.log(res?.data?.result)
-        setData(res?.data?.result)
+        console.log(res?.data?.result);
+        setData(res?.data?.result);
       })
-      .catch((error) => { console.log(error) });
-  }, [])
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
   return (
     <div id="projectDetail" className="bg-white bor-rad-8 p-2">
-      <h1 className="header fw-bold text-center pt-2  mb-4">
-        {data?.name}
-      </h1>
+      <h1 className="header fw-bold text-center pt-2  mb-4">{data?.name}</h1>
       <Row className="pb-4 justify-content-between">
         <Col md={6}>
-          <img
-            src={data?.avatar}
-            alt="project"
-            className="w-100 mx-2 bor-rad-8 shadow"
-          />
+          <div className="image-container d-flex justify-content-center">
+            <img
+              className="rounded-t-lg bor-8"
+              src={data?.avatar}
+              alt="project"
+            />
+          </div>
         </Col>
         <Col md={6} className="px-4">
-          <div className="d-flex project">
-            <div className="width-auto">
-              <img src={data?.avatarUser} alt="avatar" className="avatar" style={{ borderRadius: '50%' }} />
+          <div className="d-flex align-items-center justify-content-between">
+            <div className="d-flex project">
+              <div className="width-auto">
+                <img
+                  src={data?.avatarUser}
+                  alt="avatar"
+                  className="avatar"
+                  style={{ borderRadius: "50%" }}
+                />
+              </div>
+              <div className="width-auto ps-3">
+                <p className="owner-name fw-bold">{data?.fullName}</p>
+                <p className="project-start-date">
+                  {formatDate(data?.createdDate)}
+                </p>
+              </div>
             </div>
-            <div className="width-auto ps-3">
-              <p className="owner-name fw-bold">{data?.fullName}</p>
-              <p className="project-start-date">{formatDate(data?.createdDate)}</p>
-            </div>
+            <UpdateProjectForm />
           </div>
+
           <div className="status-block size-18">
             <label htmlFor="" className="">
               Project Status:
               {projectStatus(data?.process)}
-              <select id="projectStatus" className="status-select status preparing">
+              <select
+                id="projectStatus"
+                className="status-select status preparing"
+              >
                 <option value="preparing" className="status preparing">
                   Preparing
                 </option>
@@ -104,7 +134,7 @@ function ProjectDetail({ ...props }) {
             <label htmlFor="" className="">
               Access Visibility:
               {projectVisibility(data?.visibility)}
-              { }
+              {}
               <select
                 id="accessVisibility"
                 className="visibility-select visibility public"
