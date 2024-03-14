@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
 import "../OwnPost/ownpost.scss";
+import { CiSearch } from "react-icons/ci";
 import { BsChat } from "react-icons/bs";
 import { IoFlagOutline } from "react-icons/io5";
 import { FiEye } from "react-icons/fi";
@@ -8,6 +9,7 @@ import ReportPopup from "../../components/Popup/reportPopup";
 import defaultAvatar from "../../images/common/default.png"
 
 import { postInstance, reportInstance } from "../../axios/axiosConfig"
+import PostPu from "./postPu";
 function calculateTimeDifference(targetDate) {
   // Convert the target date string to a Date object
   const targetTime = new Date(targetDate).getTime();
@@ -41,58 +43,6 @@ function OwnPost({ postId, onPostClick, activeItem, onItemClick }) {
   const [postList, setPostList] = useState([])
   const [resetPage, setResetPage] = useState(false);
   const [popupContent, setPopupContent] = useState('');
-  const postContent = [
-    {
-      id: 1,
-      name: "Admin",
-      // img: <RiAdminLine />,
-      time: "10 minutes ago",
-      content:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam voluptates, voluptate, quidem, dolorum quae doloremque exercitationem voluptatum quod officiis doloribus quos. Quisquam voluptates, voluptate, quidem, dolorum quae doloremque exercitationem voluptatum quod officiis doloribus quos.",
-      view: 12,
-      comment: 123,
-    },
-    {
-      id: 2,
-      name: "Admin",
-      // img: <RiAdminLine />,
-      time: "10 minutes ago",
-      content:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam voluptates, voluptate, quidem, dolorum quae doloremque exercitationem voluptatum quod officiis doloribus quos. Quisquam voluptates, voluptate, quidem, dolorum quae doloremque exercitationem voluptatum quod officiis doloribus quos.",
-      view: 12,
-      comment: 123,
-    },
-    {
-      id: 3,
-      name: "Admin",
-      // img: <RiAdminLine />,
-      time: "10 minutes ago",
-      content:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam voluptates, voluptate, quidem, dolorum quae doloremque exercitationem voluptatum quod officiis doloribus quos. Quisquam voluptates, voluptate, quidem, dolorum quae doloremque exercitationem voluptatum quod officiis doloribus quos.",
-      view: 12,
-      comment: 123,
-    },
-    {
-      id: 4,
-      name: "Admin",
-      // img: <RiAdminLine />,
-      time: "10 minutes ago",
-      content:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam voluptates, voluptate, quidem, dolorum quae doloremque exercitationem voluptatum quod officiis doloribus quos. Quisquam voluptates, voluptate, quidem, dolorum quae doloremque exercitationem voluptatum quod officiis doloribus quos.",
-      view: 12,
-      comment: 123,
-    },
-    {
-      id: 5,
-      name: "Admin",
-      // img: <RiAdminLine />,
-      time: "10 minutes ago",
-      content:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam voluptates, voluptate, quidem, dolorum quae doloremque exercitationem voluptatum quod officiis doloribus quos. Quisquam voluptates, voluptate, quidem, dolorum quae doloremque exercitationem voluptatum quod officiis doloribus quos.",
-      view: 12,
-      comment: 123,
-    },
-  ];
   const createData = (id, createdDate, avatar, title, content, view, like, viewPostImages, fullName) => {
     return {
       id, createdDate, avatar, title, content, view, like, viewPostImages, fullName
@@ -140,8 +90,30 @@ function OwnPost({ postId, onPostClick, activeItem, onItemClick }) {
   const handleReportClick = (postId) => {
     setBlogPopups((prev) => ({ ...prev, [postId]: true }));
   };
+  const reset =(value)=>{
+    if(value){
+      setResetPage(value)
+    }
+  }
   return (
     <div id="own_post">
+      
+      <div className="bg-white blog-form p-2 d-flex flex-grid align-items-center justify-content-between row m-0" style={{borderRadius:'8px'}}>
+          <div className="d-flex blog-search align-items-center position-relative col me-2">
+            <CiSearch className="" />
+            <input
+              type="text"
+              placeholder={"Search"}
+              className="search-box size-20"
+            />
+          </div>
+          <div className="d-flex flex-row align-items-center col-auto m-md-0-cus mt-2 p-0">
+          <PostPu reset={reset} />
+            <button type="button" className="btn btn-info text-white">
+              Trend
+            </button>
+          </div>
+        </div>
       {postList.map((item) => (
         <div
           key={item.idPost}

@@ -44,7 +44,7 @@ function Blog({ blogId, onBlogClick, activeItem, onItemClick }) {
     view,
     like,
     viewBlogImages,
-    fullName,isLike
+    fullName, isLike
   ) => {
     return {
       id,
@@ -144,26 +144,26 @@ function Blog({ blogId, onBlogClick, activeItem, onItemClick }) {
   return (
     <div>
       <div id="blog">
-        {role === "Admin" ? (
-          <div className="blog-form p-2 d-flex flex-grid align-items-center justify-content-between row m-0">
-            <div className="d-flex blog-search align-items-center position-relative col me-2">
-              <CiSearch className="" />
-              <input
-                type="text"
-                placeholder={"Search"}
-                className="search-box size-20"
-              />
-            </div>
-            <div className="d-flex flex-row align-items-center col-auto m-md-0-cus mt-2 p-0">
-              <BlogPu resetBlog={resetBlog} />
-              <button type="button" className="btn btn-info text-white">
-                Trend
-              </button>
-            </div>
+
+        <div className="blog-form p-2 d-flex flex-grid align-items-center justify-content-between row m-0">
+          <div className="d-flex blog-search align-items-center position-relative col me-2">
+            <CiSearch className="" />
+            <input
+              type="text"
+              placeholder={"Search"}
+              className="search-box size-20"
+            />
           </div>
-        ) : (
-          ""
-        )}
+          <div className="d-flex flex-row align-items-center col-auto m-md-0-cus mt-2 p-0">
+            {role === "Admin" ? (<BlogPu resetBlog={resetBlog} />) : (
+              ""
+            )}
+
+            <button type="button" className="btn btn-info text-white">
+              Trend
+            </button>
+          </div>
+        </div>
 
         {data.map((item) => (
           <div
