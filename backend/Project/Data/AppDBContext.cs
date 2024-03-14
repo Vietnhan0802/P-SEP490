@@ -7,6 +7,7 @@ namespace Project.Data
     {
         public AppDBContext(DbContextOptions<AppDBContext> options) : base(options) { }
 
+        public DbSet<Position> Positions { get; set; }
         public DbSet<ProjectInfo> ProjectInfos { get; set; }
         public DbSet<ProjectMember> ProjectMembers { get; set; }
 
@@ -16,6 +17,14 @@ namespace Project.Data
                 .HasOne(p => p.ProjectInfo)
                 .WithMany(p => p.ProjectMembers)
                 .HasForeignKey(p => p.idProject);
+            modelBuilder.Entity<Position>()
+                .HasOne(p => p.ProjectInfo)
+                .WithMany(p => p.Positions)
+                .HasForeignKey(p => p.idProject);
+            modelBuilder.Entity<ProjectMember>()
+                .HasOne(p => p.Position)
+                .WithMany()
+                .HasForeignKey(p => p.idPosition);
 
             base.OnModelCreating(modelBuilder);
         }
