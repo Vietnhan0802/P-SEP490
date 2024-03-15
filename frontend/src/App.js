@@ -15,6 +15,9 @@ import ForgetPassword from "./page/Password/forgetPassword";
 import ResetPassword from "./page/Password/resetPassword";
 import { ToastContainer } from "react-toastify";
 import '../src/i18n/i18n';
+import PostDetail from "./page/Detail/postDetail";
+import BlogDetail from "./page/Detail/blogDetail";
+import ProjectDetail from "./page/ProjectDetail/projectDetail";
 function App() {
   const location = useLocation();
   const appRef = useRef(null);
@@ -75,6 +78,9 @@ function App() {
         <Route path="/" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/home" element={<Homepage />} />
+        <Route path="/home/postdetail" element={<PostDetail/>}/>
+        <Route path="/home/blogdetail" element={<BlogDetail/>}/>
+        <Route path="/home/projectdetail" element={<ProjectDetail/>}/>
         <Route path="/chat" element={<Chat />} />
         <Route
           path="/profile"

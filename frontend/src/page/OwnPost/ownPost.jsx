@@ -10,6 +10,7 @@ import defaultAvatar from "../../images/common/default.png"
 
 import { postInstance, reportInstance } from "../../axios/axiosConfig"
 import PostPu from "./postPu";
+import { useNavigate } from "react-router-dom";
 function calculateTimeDifference(targetDate) {
   // Convert the target date string to a Date object
   const targetTime = new Date(targetDate).getTime();
@@ -35,10 +36,12 @@ function calculateTimeDifference(targetDate) {
     return days === 1 ? `${days} day ago` : `${hours} days ago`;
   }
 }
-function OwnPost({ postId, onPostClick, activeItem, onItemClick }) {
+function OwnPost() {
+
   const sessionData = JSON.parse(sessionStorage.getItem('userSession')) || {};
   const { currentUserId } = sessionData;
 
+  const navigate = useNavigate();
   const [blogPopups, setBlogPopups] = useState({});
   const [postList, setPostList] = useState([])
   const [resetPage, setResetPage] = useState(false);
@@ -84,8 +87,7 @@ function OwnPost({ postId, onPostClick, activeItem, onItemClick }) {
       .catch((error) => { console.error(error) });
   }, [resetPage]);
   const hanldeViewDetail = (postId) => {
-    onPostClick(postId);
-    onItemClick("post_detail");
+    navigate('/home/postdetail', { state: { idPost: postId } });
   }
   const handleReportClick = (postId) => {
     setBlogPopups((prev) => ({ ...prev, [postId]: true }));

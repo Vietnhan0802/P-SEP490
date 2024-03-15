@@ -31,7 +31,6 @@ function OwnProject({ projetcId, onProjectClick, activeItem, onItemClick }) {
       setResetProject(!resetProject);
     }
   }
-  console.log(reset)
   return (
     <div id="own_project">
 

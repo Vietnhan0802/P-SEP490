@@ -12,8 +12,8 @@ import {
   projectInstance,
   reportInstance,
 } from "../../axios/axiosConfig";
+import { useNavigate } from "react-router-dom";
 
-import PostPu from "../OwnPost/postPu";
 function calculateTimeDifference(targetDate) {
   // Convert the target date string to a Date object
   const targetTime = new Date(targetDate).getTime();
@@ -42,6 +42,7 @@ function calculateTimeDifference(targetDate) {
 
 function Post({ postId, onPostClick, activeItem, onItemClick }) {
   const sessionData = JSON.parse(sessionStorage.getItem("userSession")) || {};
+  const navigate = useNavigate();
   const { role, currentUserId } = sessionData;
   const [popupContent, setPopupContent] = useState("");
   const [project, setProject] = useState();
@@ -160,9 +161,9 @@ function Post({ postId, onPostClick, activeItem, onItemClick }) {
   }, []);
 
   const hanldeViewDetail = (postId) => {
-    onPostClick(postId);
-    onItemClick("post_detail");
-  };
+    console.log(postId)
+    navigate('/home/postdetail', { state: { idPost: postId } });
+  }
   const handleReportClick = (postId) => {
     setBlogPopups((prev) => ({ ...prev, [postId]: true }));
   };

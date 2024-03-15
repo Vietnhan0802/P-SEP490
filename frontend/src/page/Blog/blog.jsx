@@ -9,6 +9,7 @@ import { RiAdminLine } from "react-icons/ri";
 import ReportPopup from "../../components/Popup/reportPopup";
 import { blogInstance } from "../../axios/axiosConfig";
 import BlogPu from "./blogPu";
+import { useNavigate } from "react-router-dom";
 
 function calculateTimeDifference(targetDate) {
   // Convert the target date string to a Date object
@@ -35,7 +36,7 @@ function calculateTimeDifference(targetDate) {
     return days === 1 ? `${days} day ago` : `${hours} days ago`;
   }
 }
-function Blog({ blogId, onBlogClick, activeItem, onItemClick }) {
+function Blog() {
   const createData = (
     id,
     createdDate,
@@ -65,12 +66,11 @@ function Blog({ blogId, onBlogClick, activeItem, onItemClick }) {
   const sessionData = JSON.parse(sessionStorage.getItem("userSession")) || {};
   const { role, currentUserId } = sessionData;
   const [reset, setReset] = useState(true);
-
+  const navigate = useNavigate();
   //_________________________________________________________//
 
   const hanldeViewDetail = (blogId) => {
-    onBlogClick(blogId);
-    onItemClick("blog_detail");
+    navigate("/home/blogdetail", { state: { idBlog: blogId } });
   };
   const handleReportClick = (blogId) => {
     setBlogPopups((prev) => ({ ...prev, [blogId]: true }));
