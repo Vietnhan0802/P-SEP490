@@ -14,7 +14,5 @@ namespace BusinessObjects.ViewModels.Project
         public ICollection<PositionCreateUpdate>? PositionCreateUpdates { get; set; }
         [NotMapped]
         public IFormFile? ImageFile { get; set; }
-        [NotMapped]
-        public string? ImageSrc { get; set; }
     }
 }
