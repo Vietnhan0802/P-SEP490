@@ -5,17 +5,19 @@ import { CiSearch } from "react-icons/ci";
 
 import { useState } from "react";
 import { projectInstance } from "../../axios/axiosConfig";
-import CreateProject from "../OwnProject/createProject";
+import { useNavigate } from "react-router-dom";
+import { Col, Row } from "react-bootstrap";
+import SideBar from "../../components/sidebar";
+import Follow from "../../components/follow";
 
 function Project({ projetcId, onProjectClick, activeItem, onItemClick }) {
   const sessionData = JSON.parse(sessionStorage.getItem('userSession')) || {};
   const { role } = sessionData;
-
+  const navigate = useNavigate();
   const [projects, setProjects] = useState([]);
 
   const hanldeViewDetail = (projectId) => {
-    onProjectClick(projectId);
-    onItemClick("projectDetail");
+    navigate('/projectdetail', { state: { idProject: projectId } })
   };
 
   useEffect(() => {
@@ -26,6 +28,11 @@ function Project({ projetcId, onProjectClick, activeItem, onItemClick }) {
       .catch((error) => { console.error(error) })
   }, [])
   return (
+    <Row className="pt-3 ms-0 me-0">
+    <Col md={3} >
+      <SideBar />
+    </Col>
+    <Col md={6}>
     <div id="own_project">
       {role === "Business" ? (
         <div className="bg-white p-2 d-flex flex-grid align-items-center justify-content-between row m-0 form mb-3">
@@ -79,7 +86,7 @@ function Project({ projetcId, onProjectClick, activeItem, onItemClick }) {
                 >
                   Detail
                 </button>
-                
+
               </div>
             </div>
           </div>
@@ -87,6 +94,11 @@ function Project({ projetcId, onProjectClick, activeItem, onItemClick }) {
       ))}
 
     </div>
+    </Col>
+      <Col md={3}>
+        <Follow />
+      </Col>
+    </Row>
   );
 }
 

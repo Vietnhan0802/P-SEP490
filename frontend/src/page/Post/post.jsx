@@ -13,7 +13,13 @@ import {
   reportInstance,
 } from "../../axios/axiosConfig";
 import { useNavigate } from "react-router-dom";
+
+import { Col, Row } from "react-bootstrap";
+import SideBar from "../../components/sidebar";
+import Follow from "../../components/follow";
+
 import PostReport from "../../components/report-popup/PostReport";
+
 
 function calculateTimeDifference(targetDate) {
   // Convert the target date string to a Date object
@@ -163,123 +169,142 @@ function Post({ postId, onPostClick, activeItem, onItemClick }) {
 
   const hanldeViewDetail = (postId) => {
     console.log(postId)
-    navigate('/home/postdetail', { state: { idPost: postId } });
+    navigate('/postdetail', { state: { idPost: postId } });
   }
   const handleReportClick = (postId) => {
     setBlogPopups((prev) => ({ ...prev, [postId]: true }));
   };
   return (
-    <div id="post">
-
-      <div className="post-form p-2 d-flex flex-grid align-items-center justify-content-between row m-0">
-        <div className="d-flex post-search align-items-center position-relative col me-2">
-          <CiSearch className="" />
-          <input
-            type="text"
-            placeholder={"Search"}
-            className="search-box size-20"
-          />
-        </div>
-        <div className="d-flex flex-row align-items-center col-auto m-md-0-cus mt-2 p-0">
-
-          <button type="button" className="btn btn-info text-white">Trend</button>
-        </div>
-      </div>
-
-
-      {postList.map((item) => (
-        <div
-          key={item.id}
-          className={`pos-rel post-item mt-2 p-2 ${blogPopups[item.id] ? "position-relative" : ""
-            }`}
-        >
-          <div className="d-flex justify-content-between">
-            <div className="d-flex align-items-center">
-              <img
-                className="avata-s mr-4"
-                src={
-                  item.avatar === "https://localhost:7006/Images/"
-                    ? defaultAvatar
-                    : item.avatar
-                }
-                alt="Instructor Cooper Bator"
+    <Row className="pt-3 ms-0 me-0">
+      <Col md={3} >
+        <SideBar />
+      </Col>
+      <Col md={6}>
+        <div id="post">
+          <div className="post-form p-2 d-flex flex-grid align-items-center justify-content-between row m-0">
+            <div className="d-flex post-search align-items-center position-relative col me-2">
+              <CiSearch className="" />
+              <input
+                type="text"
+                placeholder={"Search"}
+                className="search-box size-20"
               />
-              <div className="left-30 d-flex flex-column justify-content-center">
-                <div className="size-20 SFU-heavy d-flex">{item.fullName}</div>
-                <div className="size-14 SFU-reg text-gray-600 d-flex">
-                  {item.createdDate}
-                </div>
-              </div>
+            </div>
+            <div className="d-flex flex-row align-items-center col-auto m-md-0-cus mt-2 p-0">
+
+
+              <button type="button" className="btn btn-info text-white">Trend</button>
             </div>
 
            <PostReport/>
-          </div>
-          <h4 className="mt-2">{item.title}</h4>
 
-          <p className="mt-2" style={{ whiteSpace: "pre-wrap" }}>
-            {item.content}
-          </p>
+          </div>
 
-          <div className="d-flex post-imgs">
-            {item.viewPostImages?.map((items) => (
-              <img src={items.imageSrc} alt="" className="w-50 p-2" />
-            ))}
-          </div>
-          <div className="d-flex justify-content-between mt-2">
-            <div className="d-flex align-items-center">
-              <div className="d-flex align-items-center me-3">
-                <FiEye className="me-2" /> {item.view}
-              </div>
-              <div
-                className="d-flex align-items-center me-3"
-                onClick={() => handleLikeOrUnlikeBlog(item.id)}
-              >
-                <FaHeart className={`me-2 ${item.isLike === true ? "red" : ""}`} />{" "}
-                {item.like}
-              </div>
-            </div>
-            <button
-              className="view-btn btn"
-              onClick={() => hanldeViewDetail(item.id)}
+
+          {postList.map((item) => (
+            <div
+              key={item.id}
+              className={`pos-rel post-item mt-2 p-2 ${blogPopups[item.id] ? "position-relative" : ""
+                }`}
             >
-              View Detail
-            </button>
-          </div>
-          {blogPopups[item.id] && (
-            <ReportPopup
-              trigger={blogPopups[item.id]}
-              setTrigger={(value) =>
-                setBlogPopups((prev) => ({ ...prev, [item.id]: value }))
-              }
-            >
-              <div className="bg-white h-100 post-report">
-                <h3 className="text-center border-bottom pb-2">Report</h3>
-                <p>
-                  <b>Please fill in your feedback</b>
-                </p>
-                <textarea
-                  type="text"
-                  placeholder="What's wrong with this post"
-                  value={popupContent[item.id]}
-                  className="w-100 p-3"
-                  onChange={(event) => handlePopupContent(event, item.id)}
-                />
-                <div className="d-flex justify-content-end mt-2">
-                  <button
-                    className="btn btn-secondary "
-                    onClick={() =>
-                      handleCreateReport(currentUserId, item.id, popupContent[item.id])
+              <div className="d-flex justify-content-between">
+                <div className="d-flex align-items-center">
+                  <img
+                    className="avata-s mr-4"
+                    src={
+                      item.avatar === "https://localhost:7006/Images/"
+                        ? defaultAvatar
+                        : item.avatar
                     }
-                  >
-                    Submit
-                  </button>
+                    alt="Instructor Cooper Bator"
+                  />
+                  <div className="left-30 d-flex flex-column justify-content-center">
+                    <div className="size-20 SFU-heavy d-flex">{item.fullName}</div>
+                    <div className="size-14 SFU-reg text-gray-600 d-flex">
+                      {item.createdDate}
+                    </div>
+                  </div>
+                </div>
+
+                <div
+                  className="d-flex align-items-center me-3 flag-icon"
+                  onClick={() => handleReportClick(item.id)}
+                >
+                  <IoFlagOutline className="full-div" />{" "}
                 </div>
               </div>
-            </ReportPopup>
-          )}
+              <h4 className="mt-2">{item.title}</h4>
+
+              <p className="mt-2" style={{ whiteSpace: "pre-wrap" }}>
+                {item.content}
+              </p>
+
+              <div className="d-flex post-imgs">
+                {item.viewPostImages?.map((items) => (
+                  <img src={items.imageSrc} alt="" className="w-50 p-2" />
+                ))}
+              </div>
+              <div className="d-flex justify-content-between mt-2">
+                <div className="d-flex align-items-center">
+                  <div className="d-flex align-items-center me-3">
+                    <FiEye className="me-2" /> {item.view}
+                  </div>
+                  <div
+                    className="d-flex align-items-center me-3"
+                    onClick={() => handleLikeOrUnlikeBlog(item.id)}
+                  >
+                    <FaHeart className={`me-2 ${item.isLike === true ? "red" : ""}`} />{" "}
+                    {item.like}
+                  </div>
+                </div>
+                <button
+                  className="view-btn btn"
+                  onClick={() => hanldeViewDetail(item.id)}
+                >
+                  View Detail
+                </button>
+              </div>
+              {blogPopups[item.id] && (
+                <ReportPopup
+                  trigger={blogPopups[item.id]}
+                  setTrigger={(value) =>
+                    setBlogPopups((prev) => ({ ...prev, [item.id]: value }))
+                  }
+                >
+                  <div className="bg-white h-100 post-report">
+                    <h3 className="text-center border-bottom pb-2">Report</h3>
+                    <p>
+                      <b>Please fill in your feedback</b>
+                    </p>
+                    <textarea
+                      type="text"
+                      placeholder="What's wrong with this post"
+                      value={popupContent[item.id]}
+                      className="w-100 p-3"
+                      onChange={(event) => handlePopupContent(event, item.id)}
+                    />
+                    <div className="d-flex justify-content-end mt-2">
+                      <button
+                        className="btn btn-secondary "
+                        onClick={() =>
+                          handleCreateReport(currentUserId, item.id, popupContent[item.id])
+                        }
+                      >
+                        Submit
+                      </button>
+                    </div>
+                  </div>
+                </ReportPopup>
+              )}
+            </div>
+          ))}
         </div>
-      ))}
-    </div>
+      </Col>
+      <Col md={3}>
+        <Follow />
+      </Col>
+    </Row>
+
   );
 }
 

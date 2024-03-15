@@ -1,16 +1,23 @@
 import { Modal, Button } from "react-bootstrap";
-import { useState } from "react";
-import { Row, Col } from "react-bootstrap";
+import { useEffect, useState } from "react";
 import "./form-member.scss";
 import { IoPersonAdd } from "react-icons/io5";
 import { CiSearch } from "react-icons/ci";
 import Avatar from "../../images/common/post-img-3.png";
+import { userInstance } from "../../axios/axiosConfig";
+function createData(id, avatar, fullName, email, role) {
+  return { id, avatar, fullName, email, role }
+}
 function FormMember() {
   const [show, setShow] = useState(false);
 
   const modalClose = () => setShow(false);
   const modalShow = () => setShow(true);
-  const modelSubmit = () => setShow(false);
+  useEffect(() => {
+    userInstance.get(`GetAllUsers`)
+      .then((res) => { console.log(res?.data?.result) })
+      .catch((error) => { console.error(error); })
+  }, [])
   return (
     <div className="p-1">
       <Button variant="" onClick={modalShow}>
