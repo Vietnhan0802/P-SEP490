@@ -10,16 +10,19 @@ import Dropdown from 'react-bootstrap/Dropdown';
 import { GrUpdate } from "react-icons/gr";
 import { MdDelete } from "react-icons/md";
 import PostContent from "./PostContent";
+import { useLocation } from "react-router-dom";
 
-function PostDetail({id,viewProjectDetail}) {
+function PostDetail() {
 
+  const location = useLocation();
   const sessionData = JSON.parse(sessionStorage.getItem('userSession')) || {};
   const { currentUserId } = sessionData;
-  const idPost = id;
+  const  {idPost}  = location.state || {};
+
+
   const [data, setData] = useState();
   const [user, setUser] = useState({});
   const [commentList, setCommentList] = useState([]);
-
   const [content, setContent] = useState('');
   const [viewReply, setViewReply] = useState(null);
   const [state, setState] = useState(true)
@@ -29,7 +32,7 @@ function PostDetail({id,viewProjectDetail}) {
   const [replyComment, setReplyComment] = useState(false);
   const [inputReply, setInputReply] = useState({});
 
-// console.log(data)
+  // console.log(data)
   const memoizedPostInstance = useMemo(() => {
     return postInstance; // hoặc tạo một instance mới nếu cần
   }, []);
@@ -231,14 +234,14 @@ function PostDetail({id,viewProjectDetail}) {
         console.log(err.response.data);
       })
   }, []);
-  const viewProject =(value)=>{
-    if(value !==null){
-      viewProjectDetail(value);
-    }
-  }
+  // const viewProject =(value)=>{
+  //   if(value !==null){
+  //     viewProjectDetail(value);
+  //   }
+  // }
   return (
     <div id="postDetail" className="p-3">
-      <PostContent data={data} handleLikeOrUnlikePost={handleLikeOrUnlikePost} viewProject={viewProject}/>
+      <PostContent data={data} handleLikeOrUnlikePost={handleLikeOrUnlikePost} />
       <p className="cmt fw-bold my-3">COMMENT</p>
       <div className="cmt-input d-flex ">
         <img src={data?.avatar === "https://localhost:7006/Images/" ? defaultAvatar : data?.avatar} alt="" className="profile" />
