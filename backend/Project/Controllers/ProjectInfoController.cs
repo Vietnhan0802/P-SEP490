@@ -157,20 +157,24 @@ namespace Project.Controllers
             project.process = Process.Preparing;
             project.isDeleted = false;
             project.createdDate = DateTime.Now;
-            foreach (var position in projectInfoCreate.PositionCreateUpdates)
+            await _context.ProjectInfos.AddAsync(project);
+            foreach (var position in projectInfoCreate.namePosition)
             {
                 Position newPosition = new Position()
                 {
                     idProject = project.idProject,
-                    namePosition = position.namePosition
+                    namePosition = position
                 };
                 await _context.Positions.AddAsync(newPosition);
             }
-            await _context.ProjectInfos.AddAsync(project);
             var isSuccess = await _context.SaveChangesAsync();
             if (isSuccess > 0)
             {
-                return new Response(HttpStatusCode.OK, "Create project is success!", _mapper.Map<ProjectInfoView>(project));
+                var result = _mapper.Map<ProjectInfoView>(project);
+                var positions = await _context.Positions.Where(x => x.idProject == project.idProject).ToListAsync();
+                var viewPosition = _mapper.Map<List<PositionView>>(positions);
+                result.PositionViews = viewPosition;
+                return new Response(HttpStatusCode.OK, "Create project is success!", result);
             }
             return new Response(HttpStatusCode.BadRequest, "Create project is fail!");
         }
