@@ -12,8 +12,9 @@ namespace BusinessObjects.ViewModels.Project
         public string? avatar { get; set; }
         public Guid? idProject { get; set; }
         public string? nameProject { get; set; }
+        public Guid? idPosition { get; set; }
+        public string? namePosition { get; set; }
         public string? cvUrl { get; set; }
-        public string? position { get; set; }
         public bool isAcept { get; set; }
         public DateTime createdDate { get; set; }
         [NotMapped]

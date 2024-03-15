@@ -37,11 +37,6 @@ function Notify() {
     })
   }, [currentUserId]);
 
-  // const hanldeViewDetail = (postId) => {
-  //   onPostClick(postId);
-  //   onItemClick("post_detail");
-  // };
-console.log(notifications)
   const handleNotifiClick = (idNotification, id, url, idPost) => {
     notifyInstance.put(`ReadNotification/${idNotification}`)
     .then((res) => {
@@ -55,8 +50,8 @@ console.log(notifications)
       if (url === 'Follow') {
         navigate('/profile', { state: { userId: id } });
       }
-      else if(url ==="PostComment") {
-
+      else {
+        navigate('/postDetail', { state: { userId: id } });
       }
     })
     .catch((error) => {
