@@ -10,6 +10,7 @@ import ReportPopup from "../../components/Popup/reportPopup";
 import { blogInstance } from "../../axios/axiosConfig";
 import BlogPu from "./blogPu";
 import { useNavigate } from "react-router-dom";
+import BlogReport from "../../components/report-popup/BlogReport";
 
 function calculateTimeDifference(targetDate) {
   // Convert the target date string to a Date object
@@ -45,7 +46,8 @@ function Blog() {
     view,
     like,
     viewBlogImages,
-    fullName, isLike
+    fullName,
+    isLike
   ) => {
     return {
       id,
@@ -56,7 +58,7 @@ function Blog() {
       like,
       viewBlogImages,
       fullName,
-      isLike
+      isLike,
     };
   };
 
@@ -112,7 +114,8 @@ function Blog() {
   };
   // Handler function to update the state when the input changes
   useEffect(() => {
-    blogInstance.get(`GetAllBlogs/${currentUserId}`)
+    blogInstance
+      .get(`GetAllBlogs/${currentUserId}`)
       .then((res) => {
         const blogList = res?.data?.result;
         setData([]);
@@ -140,11 +143,10 @@ function Blog() {
   }, [reset]);
   const resetBlog = (value) => {
     setReset(!reset);
-  }
+  };
   return (
     <div>
       <div id="blog">
-
         <div className="blog-form p-2 d-flex flex-grid align-items-center justify-content-between row m-0">
           <div className="d-flex blog-search align-items-center position-relative col me-2">
             <CiSearch className="" />
@@ -155,9 +157,7 @@ function Blog() {
             />
           </div>
           <div className="d-flex flex-row align-items-center col-auto m-md-0-cus mt-2 p-0">
-            {role === "Admin" ? (<BlogPu resetBlog={resetBlog} />) : (
-              ""
-            )}
+            {role === "Admin" ? <BlogPu resetBlog={resetBlog} /> : ""}
 
             <button type="button" className="btn btn-info text-white">
               Trend
@@ -168,18 +168,24 @@ function Blog() {
         {data.map((item) => (
           <div
             key={item.idBlog}
-            className={`blog-item p-2 ${blogPopups[item.id] ? "position-relative" : ""
-              }`}
+            className={`blog-item p-2 ${
+              blogPopups[item.id] ? "position-relative" : ""
+            }`}
           >
-            <div className="d-flex align-items-center">
-              <div alt="profile" className="profile">
-                <RiAdminLine />
+            <div className="d-flex justify-content-between">
+              {" "}
+              <div className="d-flex align-items-center">
+                <div alt="profile" className="profile">
+                  <RiAdminLine />
+                </div>
+                <div className="ms-2">
+                  <h6 className="mb-0">{item.fullName}</h6>
+                  <p className="mb-0">{item.createdDate}</p>
+                </div>
               </div>
-              <div className="ms-2">
-                <h6 className="mb-0">{item.fullName}</h6>
-                <p className="mb-0">{item.createdDate}</p>
-              </div>
+              <BlogReport />
             </div>
+
             <h3 className="mt-2">{item.title}</h3>
 
             <p className="mt-2" style={{ whiteSpace: "pre-wrap" }}>
@@ -202,12 +208,6 @@ function Blog() {
                 >
                   <FaHeart className={`me-2 ${item.isLike ? "red" : ""}`} />{" "}
                   {item.like}
-                </div>
-                <div
-                  className="d-flex align-items-center me-3"
-                  onClick={() => handleReportClick(item.id)}
-                >
-                  <IoFlagOutline />{" "}
                 </div>
               </div>
               <button

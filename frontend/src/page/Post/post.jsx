@@ -13,6 +13,7 @@ import {
   reportInstance,
 } from "../../axios/axiosConfig";
 import { useNavigate } from "react-router-dom";
+import PostReport from "../../components/report-popup/PostReport";
 
 function calculateTimeDifference(targetDate) {
   // Convert the target date string to a Date object
@@ -211,12 +212,7 @@ function Post({ postId, onPostClick, activeItem, onItemClick }) {
               </div>
             </div>
 
-            <div
-              className="d-flex align-items-center me-3 flag-icon"
-              onClick={() => handleReportClick(item.id)}
-            >
-              <IoFlagOutline className="full-div" />{" "}
-            </div>
+           <PostReport/>
           </div>
           <h4 className="mt-2">{item.title}</h4>
 
