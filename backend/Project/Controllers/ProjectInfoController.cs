@@ -157,16 +157,16 @@ namespace Project.Controllers
             project.process = Process.Preparing;
             project.isDeleted = false;
             project.createdDate = DateTime.Now;
-            foreach (var position in projectInfoCreate.PositionCreateUpdates)
+            await _context.ProjectInfos.AddAsync(project);
+            foreach (var position in projectInfoCreate.namePosition)
             {
                 Position newPosition = new Position()
                 {
                     idProject = project.idProject,
-                    namePosition = position.namePosition
+                    namePosition = position
                 };
                 await _context.Positions.AddAsync(newPosition);
             }
-            await _context.ProjectInfos.AddAsync(project);
             var isSuccess = await _context.SaveChangesAsync();
             if (isSuccess > 0)
             {

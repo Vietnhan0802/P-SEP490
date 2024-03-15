@@ -11,7 +11,7 @@ namespace BusinessObjects.ViewModels.Project
         public string? avatar { get; set; }
         public Process process { get; set; }
         public Visibility visibility { get; set; }
-        public ICollection<PositionCreateUpdate>? PositionCreateUpdates { get; set; }
+        public ICollection<string>? namePosition { get; set; }
         [NotMapped]
         public IFormFile? ImageFile { get; set; }
     }
