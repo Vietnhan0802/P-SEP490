@@ -25,6 +25,7 @@ import { useLocation } from "react-router-dom";
 import defaultProject from "../../images/common/default_project.webp";
 import DegreePu from "./degreePu";
 import UpdateAvatarPu from "./UpdateAvatarPu";
+import AccountReport from "../../components/report-popup/AccountReport";
 function formatDateString(dateString) {
   // Check if the dateString is not empty
   if (dateString) {
@@ -305,7 +306,7 @@ function Profile({ handleChangeImg }) {
                   </div>
                 </div>
               </ProfileReport>
-              <FiFlag onClick={() => handleReportPopup()} />
+              <AccountReport/>
             </div>
           </div>
         </Col>
