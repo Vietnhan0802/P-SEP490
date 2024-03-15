@@ -39,7 +39,7 @@ export default function SignIn() {
         // Broadcast the login event to other tabs
         const loginChannel = new BroadcastChannel('login_channel');
         loginChannel.postMessage({ action: 'login', userSession: { userId: decode.Id, role: response?.data?.result.role } });
-        navigate("/home");
+        navigate("/post", { state: { activeItem: 'post' } });
       } else {
         notifyError('Sign in failed!');
       }

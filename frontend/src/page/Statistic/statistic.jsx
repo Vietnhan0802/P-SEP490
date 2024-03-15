@@ -5,7 +5,7 @@ import { VscAccount } from "react-icons/vsc";
 import { LuBook } from "react-icons/lu";
 import { VscReport } from "react-icons/vsc";
 import { FiBookOpen } from "react-icons/fi";
-import { Col } from "react-bootstrap";
+import { Col, Row } from "react-bootstrap";
 import { TbPresentationAnalytics } from "react-icons/tb";
 
 import { SlChart } from "react-icons/sl";
@@ -17,6 +17,7 @@ import { BlogData } from "./Data/BlogData";
 import { ReportData } from "./Data/ReportData";
 import { AccountData } from "./Data/AccountData";
 import { AccessData } from "./Data/AccessData";
+import SideBar from "../../components/sidebar";
 
 function handleDateSort() {}
 
@@ -135,6 +136,11 @@ function Statistic() {
     setActiveTab(tab);
   };
   return (
+    <Row className="pt-3 ms-0 me-0">
+    <Col md={3} >
+      <SideBar />
+    </Col>
+    <Col md={9}>
     <section id="sta-page" className="size-20">
       <div className="card-section row ">
         <Col md={2} className="px-0">
@@ -345,6 +351,9 @@ function Statistic() {
         </div> */}
       </div>
     </section>
+    </Col>
+
+</Row>
   );
 }
 

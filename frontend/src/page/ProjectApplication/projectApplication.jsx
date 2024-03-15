@@ -4,6 +4,9 @@ import avatar from "../../images/common/Avatar.png";
 import Table, { SelectColumnFilter } from "./table";
 import AcceptConfirm from "./acceptConfirm";
 import RejectConfirm from "./rejectConfirm";
+import { Col, Row } from "react-bootstrap";
+import SideBar from "../../components/sidebar";
+import Follow from "../../components/follow";
 
 const getData = () => {
   const data = [
@@ -109,8 +112,8 @@ function ProjectApplication() {
         Cell: ({ row }) => (
           <div style={{ display: "flex", alignItems: "center" }}>
             <button className="btn btn-info text-white">View CV</button>
-            <AcceptConfirm/>
-            <RejectConfirm/>
+            <AcceptConfirm />
+            <RejectConfirm />
           </div>
         ),
       },
@@ -120,16 +123,24 @@ function ProjectApplication() {
 
   const data = React.useMemo(() => getData(), []);
   return (
-    <div
-      id="projectApplication"
-      className="min-vh-100 bg-light text-dark border-8 py-2"
-    >
-      <main className="container ">
-        <div className="">
-          <Table columns={columns} data={data} />
+    <Row className="pt-3 ms-0 me-0">
+      <Col md={3} >
+        <SideBar />
+      </Col>
+      <Col md={9}>
+        <div
+          id="projectApplication"
+          className="min-vh-100 bg-light text-dark border-8 py-2"
+        >
+          <main className="container ">
+            <div className="">
+              <Table columns={columns} data={data} />
+            </div>
+          </main>
         </div>
-      </main>
-    </div>
+      </Col>
+
+    </Row>
   );
 }
 

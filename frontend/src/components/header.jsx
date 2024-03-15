@@ -17,7 +17,7 @@ import { userInstance } from "../axios/axiosConfig";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
 export default function Header({ activeComponent, onItemClick, changeImage }) {
-  const {t} = useTranslation()
+  const { t } = useTranslation()
   const sessionData = JSON.parse(sessionStorage.getItem('userSession')) || {};
   const { role, currentUserId, userName, userEmail } = sessionData;
 
@@ -65,7 +65,7 @@ export default function Header({ activeComponent, onItemClick, changeImage }) {
     navigate('/profile', { state: { userId: id } });
   };
   const hanldeReturnHome = () => {
-    navigate('/home');
+    navigate('/post');
   }
   const searchUser = (event) => {
     setSearchName(event.target.value);
@@ -88,7 +88,7 @@ export default function Header({ activeComponent, onItemClick, changeImage }) {
           <div className={`position-absolute user-box ${searchName === '' ? 'hidden-box' : ''}`} >
             {filterListUser.length > 0 ? (
               filterListUser.map((user) => (
-                <div key={user.id} className="d-flex align-items-center" onClick={()=>handleAvatarClick(user.id)}>
+                <div key={user.id} className="d-flex align-items-center" onClick={() => handleAvatarClick(user.id)}>
                   <img src={user.imageSrc === 'https://localhost:7006/Images/' ? defaultImage : user.imageSrc} style={{ width: '20px', height: '20px' }} alt="" />
                   <div>
                     {user.fullName}
@@ -107,7 +107,7 @@ export default function Header({ activeComponent, onItemClick, changeImage }) {
         <LuHome
           className={`home-icon ${activeItem === "home" ? "active-header-item" : ""
             }`}
-          onClick={() => handleItemClick("home")}
+          onClick={() => hanldeReturnHome()}
         />
         <IoChatbubblesOutline
           className={`chat-icon ${activeItem === "chat" ? "active-header-item" : ""

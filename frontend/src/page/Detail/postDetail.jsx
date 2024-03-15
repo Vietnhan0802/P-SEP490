@@ -11,13 +11,16 @@ import { GrUpdate } from "react-icons/gr";
 import { MdDelete } from "react-icons/md";
 import PostContent from "./PostContent";
 import { useLocation } from "react-router-dom";
+import { Col, Row } from "react-bootstrap";
+import Follow from "../../components/follow";
+import SideBar from "../../components/sidebar";
 
 function PostDetail() {
 
   const location = useLocation();
   const sessionData = JSON.parse(sessionStorage.getItem('userSession')) || {};
   const { currentUserId } = sessionData;
-  const  {idPost}  = location.state || {};
+  const { idPost } = location.state || {};
 
 
   const [data, setData] = useState();
@@ -240,142 +243,152 @@ function PostDetail() {
   //   }
   // }
   return (
-    <div id="postDetail" className="p-3">
-      <PostContent data={data} handleLikeOrUnlikePost={handleLikeOrUnlikePost} />
-      <p className="cmt fw-bold my-3">COMMENT</p>
-      <div className="cmt-input d-flex ">
-        <img src={data?.avatar === "https://localhost:7006/Images/" ? defaultAvatar : data?.avatar} alt="" className="profile" />
-        <input
-          type="text"
-          className="w-100 ps-3"
-          placeholder="Type your comment"
-          value={content}
-          onChange={handleInputComment}
-        />
-        <VscSend style={{ fontSize: "30px" }} onClick={handleCreateComment} />
-      </div>
-      <div className="cmt-block">
-        {commentList.map((item) => (
-          <div
-            key={item?.id}
-            className={`d-flex pb-3 mt-2 cmt-item ${item.type === "reply-comment" ? "ms-5" : ""
-              }`}
-          >
-            <img src={item?.avatar === 'https://localhost:7006/Images/' ? avatarDefault : item?.avatar} alt="" className="profile" />
-            <div className="ms-3  w-100 ">
-              <div className="d-flex  justify-content-between">
-                <h6 className="mb-2 d-flex align-items-center h-40">
-                  {item.fullName}
-                </h6>
-                {item.idAccount === currentUserId ?
-                  <Dropdown>
-                    <Dropdown.Toggle id="dropdown-basic" style={{ border: 'none' }} className="bg-white border-none text-body">
-                    </Dropdown.Toggle>
+    <Row className="pt-3 ms-0 me-0">
+      <Col md={3} >
+        <SideBar />
+      </Col>
+      <Col md={6}>
+        <div id="postDetail" className="p-3">
+          <PostContent data={data} handleLikeOrUnlikePost={handleLikeOrUnlikePost} />
+          <p className="cmt fw-bold my-3">COMMENT</p>
+          <div className="cmt-input d-flex ">
+            <img src={data?.avatar === "https://localhost:7006/Images/" ? defaultAvatar : data?.avatar} alt="" className="profile" />
+            <input
+              type="text"
+              className="w-100 ps-3"
+              placeholder="Type your comment"
+              value={content}
+              onChange={handleInputComment}
+            />
+            <VscSend style={{ fontSize: "30px" }} onClick={handleCreateComment} />
+          </div>
+          <div className="cmt-block">
+            {commentList.map((item) => (
+              <div
+                key={item?.id}
+                className={`d-flex pb-3 mt-2 cmt-item ${item.type === "reply-comment" ? "ms-5" : ""
+                  }`}
+              >
+                <img src={item?.avatar === 'https://localhost:7006/Images/' ? avatarDefault : item?.avatar} alt="" className="profile" />
+                <div className="ms-3  w-100 ">
+                  <div className="d-flex  justify-content-between">
+                    <h6 className="mb-2 d-flex align-items-center h-40">
+                      {item.fullName}
+                    </h6>
+                    {item.idAccount === currentUserId ?
+                      <Dropdown>
+                        <Dropdown.Toggle id="dropdown-basic" style={{ border: 'none' }} className="bg-white border-none text-body">
+                        </Dropdown.Toggle>
 
-                    <Dropdown.Menu style={{ minWidth: 'auto' }}>
-                      <Dropdown.Item onClick={() => handleUpdateCommentAppear(item.idPostComment)}><GrUpdate /></Dropdown.Item>
-                      <Dropdown.Item onClick={() => handleDeleteComment(item.idPostComment)}><MdDelete /></Dropdown.Item>
-                    </Dropdown.Menu>
-                  </Dropdown> : ""
-                }
-              </div>
-              {updateShow !== item.idPostComment ? (
-                <p className="mb-0">{item.content}</p>
-              ) : (
-                <>
-                  <input
-                    type="text"
-                    className="form-control"
-                    value={originalContent || item.content}
-                    onChange={(e) => handleUpdateInputComment(item.idPostComment, e.target.value)}
-                  />
-                  <button onClick={() => handleUpdateCommentCancel(item.idPostComment)}>Cancel</button>
-                  <button onClick={() => handleUpdateComment(item.idPostComment, item.content)}>Save</button>
-                </>
-              )}
-              <div className="rep d-flex w-100" >
-                <div className={`d-flex justify-content-between w-100 align-items-center ${viewReply !== item.idPostComment ? 'justify-content-end' : "justify-content-between"}`}>
-                  {viewReply !== item.idPostComment ?
-                    <div className="d-flex justify-content-start align-items-center w-100 py-2">
-                      {item.viewPostReplies && (
-                        item.viewPostReplies.length === 0 ?
-                          ''
-                          :
-                          <p onClick={() => handleViewReply(item.idPostComment)}>View Reply</p>
-                      )}
-                    </div> :
-                    <div className="d-flex justify-content-end align-items-center w-100  py-2">
-                      <p onClick={() => handleViewReply(item.idPostComment)}>Close</p>
-                    </div>
-                  }
-                </div>
-              </div>
-              <div>
-                <div className="d-flex justify-content-end w-100 align-items-center" >
-                  {replyComment === item.idPostComment ?
-                    <p onClick={() => handleShowReplyComment(item.idPostComment)}>Reply</p> :
-                    <div className="cmt-input d-flex align-items-center mt-2">
-                      <img src={user?.imageSrc === 'https://localhost:7006/Images/' ? avatarDefault : user?.imageSrc} alt="" className="profile" />
+                        <Dropdown.Menu style={{ minWidth: 'auto' }}>
+                          <Dropdown.Item onClick={() => handleUpdateCommentAppear(item.idPostComment)}><GrUpdate /></Dropdown.Item>
+                          <Dropdown.Item onClick={() => handleDeleteComment(item.idPostComment)}><MdDelete /></Dropdown.Item>
+                        </Dropdown.Menu>
+                      </Dropdown> : ""
+                    }
+                  </div>
+                  {updateShow !== item.idPostComment ? (
+                    <p className="mb-0">{item.content}</p>
+                  ) : (
+                    <>
                       <input
                         type="text"
-                        className="w-100 ps-3"
-                        placeholder="Type your Reply"
-                        value={inputReply[item.idPostComment] || ''}
-                        onChange={(e) => handleInputReplyComment(item.idPostComment, e.target.value)}
-
+                        className="form-control"
+                        value={originalContent || item.content}
+                        onChange={(e) => handleUpdateInputComment(item.idPostComment, e.target.value)}
                       />
-                      <VscSend style={{ fontSize: "30px" }}
-                        onClick={() => handleCreateReplyComment(item.idPostComment)}
-                      />
-                    </div>
-                  }
-                </div>
-                {viewReply === item.idPostComment ? (
-                  item.viewPostReplies.map((reply) => (
-                    <>
-                      <div className="d-flex">
-                        <img src={reply.avatar === 'https://localhost:7006/Images/' ? avatarDefault : reply.avatar} alt="" className="profile reply-cmt" />
-                        <div className="ms-3 w-100">
-                          <h6 className="mb-2 d-flex align-items-center h-40 ms">
-                            {reply.fullName}
-                          </h6>
-                          {updateReplyShow !== reply.idPostReply ?
-                            <p className="mb-0">{reply.content}</p> :
-                            <div>
-                              <input
-                                type="text"
-                                className="form-control"
-                                value={reply.content}
-                                onChange={(e) => handleUpdateInputReplyComment(reply.idPostReply, e.target.value)}
-                              />
-                              <button onClick={() => handleUpdateReplyCancel(reply.idPostReply)}>Cancel</button>
-                              <button onClick={() => handleUpdateReply(reply.idPostReply, reply.content)}>Save</button>
-                            </div>
-                          }
-                        </div>
-                        {reply.idAccount === currentUserId ?
-                          <Dropdown style={{ width: 'auto' }}>
-                            <Dropdown.Toggle id="dropdown-basic" style={{ border: 'none' }} className="bg-white border-none text-body">
-                            </Dropdown.Toggle>
-
-                            <Dropdown.Menu style={{ minWidth: 'auto' }}>
-                              <Dropdown.Item onClick={() => handleUpdateReplyCommentAppear(reply.idPostReply)}><GrUpdate /></Dropdown.Item>
-                              <Dropdown.Item onClick={() => handleDeleteReplyComment(reply.idPostReply)}><MdDelete /></Dropdown.Item>
-                            </Dropdown.Menu>
-                          </Dropdown> : ""
-                        }
-                      </div>
-
-
+                      <button onClick={() => handleUpdateCommentCancel(item.idPostComment)}>Cancel</button>
+                      <button onClick={() => handleUpdateComment(item.idPostComment, item.content)}>Save</button>
                     </>
-                  ))
-                ) : null}
+                  )}
+                  <div className="rep d-flex w-100" >
+                    <div className={`d-flex justify-content-between w-100 align-items-center ${viewReply !== item.idPostComment ? 'justify-content-end' : "justify-content-between"}`}>
+                      {viewReply !== item.idPostComment ?
+                        <div className="d-flex justify-content-start align-items-center w-100 py-2">
+                          {item.viewPostReplies && (
+                            item.viewPostReplies.length === 0 ?
+                              ''
+                              :
+                              <p onClick={() => handleViewReply(item.idPostComment)}>View Reply</p>
+                          )}
+                        </div> :
+                        <div className="d-flex justify-content-end align-items-center w-100  py-2">
+                          <p onClick={() => handleViewReply(item.idPostComment)}>Close</p>
+                        </div>
+                      }
+                    </div>
+                  </div>
+                  <div>
+                    <div className="d-flex justify-content-end w-100 align-items-center" >
+                      {replyComment === item.idPostComment ?
+                        <p onClick={() => handleShowReplyComment(item.idPostComment)}>Reply</p> :
+                        <div className="cmt-input d-flex align-items-center mt-2">
+                          <img src={user?.imageSrc === 'https://localhost:7006/Images/' ? avatarDefault : user?.imageSrc} alt="" className="profile" />
+                          <input
+                            type="text"
+                            className="w-100 ps-3"
+                            placeholder="Type your Reply"
+                            value={inputReply[item.idPostComment] || ''}
+                            onChange={(e) => handleInputReplyComment(item.idPostComment, e.target.value)}
+
+                          />
+                          <VscSend style={{ fontSize: "30px" }}
+                            onClick={() => handleCreateReplyComment(item.idPostComment)}
+                          />
+                        </div>
+                      }
+                    </div>
+                    {viewReply === item.idPostComment ? (
+                      item.viewPostReplies.map((reply) => (
+                        <>
+                          <div className="d-flex">
+                            <img src={reply.avatar === 'https://localhost:7006/Images/' ? avatarDefault : reply.avatar} alt="" className="profile reply-cmt" />
+                            <div className="ms-3 w-100">
+                              <h6 className="mb-2 d-flex align-items-center h-40 ms">
+                                {reply.fullName}
+                              </h6>
+                              {updateReplyShow !== reply.idPostReply ?
+                                <p className="mb-0">{reply.content}</p> :
+                                <div>
+                                  <input
+                                    type="text"
+                                    className="form-control"
+                                    value={reply.content}
+                                    onChange={(e) => handleUpdateInputReplyComment(reply.idPostReply, e.target.value)}
+                                  />
+                                  <button onClick={() => handleUpdateReplyCancel(reply.idPostReply)}>Cancel</button>
+                                  <button onClick={() => handleUpdateReply(reply.idPostReply, reply.content)}>Save</button>
+                                </div>
+                              }
+                            </div>
+                            {reply.idAccount === currentUserId ?
+                              <Dropdown style={{ width: 'auto' }}>
+                                <Dropdown.Toggle id="dropdown-basic" style={{ border: 'none' }} className="bg-white border-none text-body">
+                                </Dropdown.Toggle>
+
+                                <Dropdown.Menu style={{ minWidth: 'auto' }}>
+                                  <Dropdown.Item onClick={() => handleUpdateReplyCommentAppear(reply.idPostReply)}><GrUpdate /></Dropdown.Item>
+                                  <Dropdown.Item onClick={() => handleDeleteReplyComment(reply.idPostReply)}><MdDelete /></Dropdown.Item>
+                                </Dropdown.Menu>
+                              </Dropdown> : ""
+                            }
+                          </div>
+
+
+                        </>
+                      ))
+                    ) : null}
+                  </div>
+                </div>
               </div>
-            </div>
+            ))}
           </div>
-        ))}
-      </div>
-    </div>
+        </div>
+      </Col>
+      <Col md={3}>
+        <Follow />
+      </Col>
+    </Row>
   );
 }
 

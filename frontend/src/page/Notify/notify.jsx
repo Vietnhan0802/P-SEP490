@@ -7,7 +7,7 @@ import { notifyInstance } from "../../axios/axiosConfig";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
 function Notify() {
-  const {t} = useTranslation()
+  const { t } = useTranslation()
   const navigate = useNavigate();
 
   const sessionData = JSON.parse(sessionStorage.getItem("userSession")) || {};
@@ -23,40 +23,41 @@ function Notify() {
 
   useEffect(() => {
     notifyInstance.get(`GetNotificationByUser/${currentUserId}`)
-    .then((res) => {
-      const formattedNotifi = res.data.map(notifications => {
-        return {
-          ...notifications,
-          timeAgo: formatTimeAgo(notifications.createdDate),
-        };
-      });
-      setNotifications(formattedNotifi);
-    })
-    .catch((error) => {
-      console.error(error);
-    })
+      .then((res) => {
+        const formattedNotifi = res.data.map(notifications => {
+          return {
+            ...notifications,
+            timeAgo: formatTimeAgo(notifications.createdDate),
+          };
+        });
+        setNotifications(formattedNotifi);
+      })
+      .catch((error) => {
+        console.error(error);
+      })
   }, [currentUserId]);
 
-  const handleNotifiClick = (idNotification, id, url, idPost) => {
+  const handleNotifiClick = (idNotification, id, url, idPost, idBlog) => {
     notifyInstance.put(`ReadNotification/${idNotification}`)
-    .then((res) => {
-      const updateNotifi = notifications.map(notify => {
-        if (notify.idNotification === idNotification) {
-          return {...notify, isRead: true};
+      .then((res) => {
+        const updateNotifi = notifications.map(notify => {
+          if (notify.idNotification === idNotification) {
+            return { ...notify, isRead: true };
+          }
+          return notify;
+        });
+        setNotifications(updateNotifi);
+        if (url === 'Follow') {
+          navigate('/profile', { state: { userId: id } });
+        }else if (url === 'PostComment') {
+          navigate('/postdetail', { state: { idPost: idPost } });
+        } if (url === 'BlogComment') {
+          navigate('/blogdetail', { state: { idblog: idBlog } });
         }
-        return notify;
+      })
+      .catch((error) => {
+        console.error(error);
       });
-      setNotifications(updateNotifi);
-      if (url === 'Follow') {
-        navigate('/profile', { state: { userId: id } });
-      }
-      else {
-        navigate('/postDetail', { state: { userId: id } });
-      }
-    })
-    .catch((error) => {
-      console.error(error);
-    });
   };
 
   return (
@@ -74,19 +75,17 @@ function Notify() {
       </div>
       <div className="mt-3">
         {notifications.map((item) => (
-          <div className="d-flex align-items-center justify-content-between py-3 notification-item" onClick={()=>handleNotifiClick(item.idNotification, item.idSender, item.url, item.idPost)}>
+          <div className="d-flex align-items-center justify-content-between py-3 notification-item" onClick={() => handleNotifiClick(item.idNotification, item.idSender, item.url, item.idPost)}>
             <div className="d-flex align-items-center" key={item.idNotification}>
               <img src={item.avatar === "https://localhost:7006/Images/" ? defaultImage : item.avatar} alt="profile" className="profile" />
               <div className="ms-2 content">
                 <p className="mb-0">
                   <span className="fw-bold">{item.nameSender}</span> {item.content === 'content_noti' ? t('content_noti') : t('content_notipost')}
                 </p>
-                <p className={`mb-0 date ${
-                  item.isRead === false ? "notRead" : "read"
-                }`}>{item.timeAgo}</p>
+                <p className={`mb-0 date ${item.isRead === false ? "notRead" : "read"
+                  }`}>{item.timeAgo}</p>
               </div>
-              <div className={`${
-                  item.isRead === false ? "notify-dot" : "read-dot"
+              <div className={`${item.isRead === false ? "notify-dot" : "read-dot"
                 }`}>
               </div>
             </div>
