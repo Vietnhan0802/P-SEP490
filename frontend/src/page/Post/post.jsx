@@ -13,9 +13,13 @@ import {
   reportInstance,
 } from "../../axios/axiosConfig";
 import { useNavigate } from "react-router-dom";
+
 import { Col, Row } from "react-bootstrap";
 import SideBar from "../../components/sidebar";
 import Follow from "../../components/follow";
+
+import PostReport from "../../components/report-popup/PostReport";
+
 
 function calculateTimeDifference(targetDate) {
   // Convert the target date string to a Date object
@@ -188,8 +192,12 @@ function Post({ postId, onPostClick, activeItem, onItemClick }) {
             </div>
             <div className="d-flex flex-row align-items-center col-auto m-md-0-cus mt-2 p-0">
 
+
               <button type="button" className="btn btn-info text-white">Trend</button>
             </div>
+
+           <PostReport/>
+
           </div>
 
 
