@@ -197,11 +197,29 @@ namespace Project.Controllers
             _saveImageService.DeleteImage(project.avatar);
             projectInfoUpdate.avatar = await _saveImageService.SaveImage(projectInfoUpdate.ImageFile);
             _mapper.Map(projectInfoUpdate, project);
+            var positionOld = await _context.Positions.Where(x => x.idProject == project.idProject).ToListAsync();
+            foreach (var position in positionOld)
+            {
+                _context.Positions.Remove(position);
+            }
+            foreach (var position in projectInfoUpdate.namePosition)
+            {
+                Position newPosition = new Position()
+                {
+                    idProject = project.idProject,
+                    namePosition = position
+                };
+                await _context.Positions.AddAsync(newPosition);
+            }
             _context.ProjectInfos.Update(project);
             var isSuccess = await _context.SaveChangesAsync();
             if (isSuccess > 0)
             {
-                return new Response(HttpStatusCode.OK, "Update project is success!", _mapper.Map<ProjectInfoView>(project));
+                var result = _mapper.Map<ProjectInfoView>(project);
+                var positionNew = await _context.Positions.Where(x => x.idProject == project.idProject).ToListAsync();
+                var viewPosition = _mapper.Map<List<PositionView>>(positionNew);
+                result.PositionViews = viewPosition;
+                return new Response(HttpStatusCode.OK, "Update project is success!", result);
             }
             return new Response(HttpStatusCode.BadRequest, "Update project is fail!");
         }
