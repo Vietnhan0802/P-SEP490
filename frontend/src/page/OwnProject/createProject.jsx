@@ -2,10 +2,11 @@ import React, { useState } from 'react'
 import { useRef } from 'react';
 import { Modal, Button } from "react-bootstrap";
 import { projectInstance } from '../../axios/axiosConfig';
-function CreateProject() {
+function CreateProject({reset}) {
     const sessionData = JSON.parse(sessionStorage.getItem('userSession')) || {};
     const { currentUserId } = sessionData;
     const [show, setShow] = useState(false);
+    const [resetPage ,setResetPage] = useState("");
     const modalClose = () => setShow(false);
     const modalShow = () => setShow(true);
     const [value, setValue] = useState({
@@ -32,7 +33,6 @@ function CreateProject() {
                 ImageSrc: base64String,
 
             }));
-            console.log(value);
             showPreview(event);
         } else {
             setValue((values) => ({ ...values, [name]: value }));
@@ -88,6 +88,7 @@ function CreateProject() {
                 accept: "application/json",
             },
         }).then(() => {
+            reset("Success");
             setValue({
                 name: '',
                 description: '',

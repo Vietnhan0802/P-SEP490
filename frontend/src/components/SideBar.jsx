@@ -1,5 +1,4 @@
 import React from "react";
-import { useState } from "react";
 import Cookies from "js-cookie";
 import "../scss/sidebar.scss";
 import { GoPencil } from "react-icons/go";
@@ -7,7 +6,6 @@ import { FiBookOpen } from "react-icons/fi";
 import { TbFloatLeft } from "react-icons/tb";
 import { LuBook } from "react-icons/lu";
 import { LuFileEdit } from "react-icons/lu";
-import { FaRegCircleCheck } from "react-icons/fa6";
 import { CiLogout } from "react-icons/ci";
 import { FaFacebook } from "react-icons/fa";
 import { GrTwitter } from "react-icons/gr";

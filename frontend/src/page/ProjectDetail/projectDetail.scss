@@ -1,4 +1,20 @@
 #projectDetail {
+  .image-container {
+    max-height: 60vh;
+    /* Hoặc bất kỳ chiều cao nào bạn muốn */
+    background-color: #f0f0f0;
+    /* Màu của background cho phần bị thừa */
+    overflow: hidden;
+    /* Ẩn phần của ảnh không vừa với container */
+  }
+
+  .image-container img {
+    width: 100%;
+    object-fit: contain;
+    /* Giữ tỷ lệ của ảnh nhưng vẫn che đầy container */
+    object-position: center;
+    /* Căn giữa ảnh */
+  }
 
   border-radius: 8px;
 
@@ -120,7 +136,7 @@
       border-radius: 8px;
       box-shadow: 0px 0px 0px 4px #f2f4f7,
         0px 1px 2px 0px rgba(16, 24, 40, 0.05);
-        height: auto;
+      height: auto;
     }
 
     .member-img {
@@ -154,4 +170,9 @@
       }
     }
   }
+}
+
+#btn-update-project {
+  width: 25px;
+  height: 25px;
 }

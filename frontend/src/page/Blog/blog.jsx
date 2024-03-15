@@ -9,6 +9,7 @@ import { RiAdminLine } from "react-icons/ri";
 import ReportPopup from "../../components/Popup/reportPopup";
 import { blogInstance } from "../../axios/axiosConfig";
 import BlogPu from "./blogPu";
+import { useNavigate } from "react-router-dom";
 
 function calculateTimeDifference(targetDate) {
   // Convert the target date string to a Date object
@@ -35,7 +36,7 @@ function calculateTimeDifference(targetDate) {
     return days === 1 ? `${days} day ago` : `${hours} days ago`;
   }
 }
-function Blog({ blogId, onBlogClick, activeItem, onItemClick }) {
+function Blog() {
   const createData = (
     id,
     createdDate,
@@ -44,7 +45,7 @@ function Blog({ blogId, onBlogClick, activeItem, onItemClick }) {
     view,
     like,
     viewBlogImages,
-    fullName,isLike
+    fullName, isLike
   ) => {
     return {
       id,
@@ -65,12 +66,11 @@ function Blog({ blogId, onBlogClick, activeItem, onItemClick }) {
   const sessionData = JSON.parse(sessionStorage.getItem("userSession")) || {};
   const { role, currentUserId } = sessionData;
   const [reset, setReset] = useState(true);
-
+  const navigate = useNavigate();
   //_________________________________________________________//
 
   const hanldeViewDetail = (blogId) => {
-    onBlogClick(blogId);
-    onItemClick("blog_detail");
+    navigate("/home/blogdetail", { state: { idBlog: blogId } });
   };
   const handleReportClick = (blogId) => {
     setBlogPopups((prev) => ({ ...prev, [blogId]: true }));
@@ -144,26 +144,26 @@ function Blog({ blogId, onBlogClick, activeItem, onItemClick }) {
   return (
     <div>
       <div id="blog">
-        {role === "Admin" ? (
-          <div className="blog-form p-2 d-flex flex-grid align-items-center justify-content-between row m-0">
-            <div className="d-flex blog-search align-items-center position-relative col me-2">
-              <CiSearch className="" />
-              <input
-                type="text"
-                placeholder={"Search"}
-                className="search-box size-20"
-              />
-            </div>
-            <div className="d-flex flex-row align-items-center col-auto m-md-0-cus mt-2 p-0">
-              <BlogPu resetBlog={resetBlog} />
-              <button type="button" className="btn btn-info text-white">
-                Trend
-              </button>
-            </div>
+
+        <div className="blog-form p-2 d-flex flex-grid align-items-center justify-content-between row m-0">
+          <div className="d-flex blog-search align-items-center position-relative col me-2">
+            <CiSearch className="" />
+            <input
+              type="text"
+              placeholder={"Search"}
+              className="search-box size-20"
+            />
           </div>
-        ) : (
-          ""
-        )}
+          <div className="d-flex flex-row align-items-center col-auto m-md-0-cus mt-2 p-0">
+            {role === "Admin" ? (<BlogPu resetBlog={resetBlog} />) : (
+              ""
+            )}
+
+            <button type="button" className="btn btn-info text-white">
+              Trend
+            </button>
+          </div>
+        </div>
 
         {data.map((item) => (
           <div

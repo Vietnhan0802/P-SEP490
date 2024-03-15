@@ -63,7 +63,8 @@ function Profile({ handleChangeImg }) {
     imageSrc: "",
     follower: 0,
     following: 0,
-    isFollow: true
+    isFollow: true,
+    role: ''
   });
   const [userPost, setUserPost] = useState([]);
   const [userProject, setUserProject] = useState([]);
@@ -75,6 +76,7 @@ function Profile({ handleChangeImg }) {
       .then((res) => {
         setUser(res?.data?.result);
         const user = res?.data?.result;
+        console.log(user)
         if (user.role === "Admin") {
           setTab("blog");
         } else if (user.role === "Business") {
@@ -93,11 +95,12 @@ function Profile({ handleChangeImg }) {
           address: user?.address || "",
           description:
             user?.description ||
-            "Hope you will give us some description about yourselves",
+            "",
           imageSrc: user?.imageSrc,
           follower: user?.follower,
           following: user?.following,
-          isFollow: user?.isFollow
+          isFollow: user?.isFollow,
+          role: user?.role
         });
         if (user.role === "Business") {
           postInstance.get(`GetPostByUser/${userId}`)
@@ -131,9 +134,8 @@ function Profile({ handleChangeImg }) {
             .catch((error) => { console.error(error) });
         }
       });
-  }, [userId, resetAvatar,resetDegree]);
+  }, [userId, resetAvatar, resetDegree]);
   // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  console.log(inputs)
   const projectStatus = (process) => {
     switch (process) {
       case 0:
@@ -151,10 +153,10 @@ function Profile({ handleChangeImg }) {
   const handleUpdateUser = () => {
     setIsEdit(!isEdit);
     userInstance.put(`/UpdateUser/${currentUserId}`, inputs, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
       .then((res) => {
         console.log(res?.data);
       })
@@ -354,7 +356,7 @@ function Profile({ handleChangeImg }) {
                 </div>
 
                 <div className="col-md-6">
-                  <label className="form-label">Birthday</label>
+                  <label className="form-label">{inputs.role === 'Business' ? 'Establish date' : 'Birthday'}</label>
                   <input
                     type="date"
                     name="date"
@@ -380,52 +382,56 @@ function Profile({ handleChangeImg }) {
                 </div>
 
                 <div className="col-md-6">
-                  <label className="form-label">Gender:</label>
-                  <div className="form-control bg-text">
-                    {!isEdit ? (
-                      user.isMale ? (
-                        <p>Male</p>
-                      ) : (
-                        <p>Female</p>
-                      )
-                    ) : (
-                      <div className="checkbox-wrapper-13 bg-text">
-                        <div className="checkbox-wrapper-13 bg-text">
-                          <label>
-                            <input
-                              id="c1-13"
-                              className="me-1"
-                              type="checkbox"
-                              checked={inputs.isMale}
-                              name="isMale"
-                              onChange={() =>
-                                handleChange({
-                                  target: { name: "isMale", value: true },
-                                })
-                              }
-                            />
-                            Male
-                          </label>
+                  {inputs.role !== 'Business' && (
+                    <div>
+                      <label className="form-label">Gender:</label>
+                      <div className="form-control bg-text">
+                        {!isEdit ? (
+                          user.isMale ? (
+                            <p>Male</p>
+                          ) : (
+                            <p>Female</p>
+                          )
+                        ) : (
+                          <div className="checkbox-wrapper-13 bg-text">
+                            <label>
+                              <input
+                                id="c1-13"
+                                className="me-1"
+                                type="checkbox"
+                                checked={inputs.isMale}
+                                name="isMale"
+                                onChange={() =>
+                                  handleChange({
+                                    target: { name: "isMale", value: true },
+                                  })
+                                }
+                              />
+                              Male
+                            </label>
 
-                          <label className="ps-4">
-                            <input
-                              id="c1-13"
-                              className="me-1"
-                              type="checkbox"
-                              checked={!inputs.isMale}
-                              name="isMale"
-                              onChange={() =>
-                                handleChange({
-                                  target: { name: "isMale", value: false },
-                                })
-                              }
-                            />
-                            Female
-                          </label>
-                        </div>
+                            <label className="ps-4">
+                              <input
+                                id="c1-13"
+                                className="me-1"
+                                type="checkbox"
+                                checked={!inputs.isMale}
+                                name="isMale"
+                                onChange={() =>
+                                  handleChange({
+                                    target: { name: "isMale", value: false },
+                                  })
+                                }
+                              />
+                              Female
+                            </label>
+                          </div>
+                        )}
                       </div>
-                    )}
-                  </div>
+                    </div>
+                  )}
+
+
                 </div>
                 <div className="col-md-6">
                   <label className="form-label">Address:</label>
@@ -457,7 +463,8 @@ function Profile({ handleChangeImg }) {
                   <input
                     type="text"
                     name="description"
-                    value={inputs.description}
+                    value={inputs.description || ""}
+                    placeholder="Hope you will give us some description about yourselves"
                     disabled={!isEdit}
                     onChange={handleChange}
                     className="form-control bg-text"
@@ -533,7 +540,7 @@ function Profile({ handleChangeImg }) {
             <div>
               {user.role === "Member" && tab === "degree" && (
                 <div className={`degree tab-content ${showAllItems ? "scrollable" : ""}`}>
-                  {userDegree.slice(0,  showAllItems ? userDegree.length : 3).map((item) => (<div className="row" key={item.idDegree}>
+                  {userDegree.slice(0, showAllItems ? userDegree.length : 3).map((item) => (<div className="row" key={item.idDegree}>
                     <div className="col-2 d-flex justify-content-center img-contain">
                       <img src={degree} alt="" className="image" />
                     </div>

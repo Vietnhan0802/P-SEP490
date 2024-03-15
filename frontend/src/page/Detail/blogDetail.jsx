@@ -10,6 +10,7 @@ import { GrUpdate } from "react-icons/gr";
 import { MdDelete } from "react-icons/md";
 import Cookies from "js-cookie";
 import Dropdown from 'react-bootstrap/Dropdown';
+import { useLocation } from "react-router-dom";
 function calculateTimeDifference(targetDate) {
   // Convert the target date string to a Date object
   const targetTime = new Date(targetDate).getTime();
@@ -35,11 +36,12 @@ function calculateTimeDifference(targetDate) {
     return days === 1 ? `${days} day ago` : `${hours} days ago`;
   }
 }
-function BlogDetail(id) {
+function BlogDetail() {
 
   const sessionData = JSON.parse(sessionStorage.getItem("userSession")) || {};
   const { currentUserId } = sessionData;
-  const idBlog = id.id;
+  const location = useLocation();
+  const {idBlog} = location.state || {};
 
   const [user, setUser] = useState({});
   const [data, setData] = useState({});
@@ -52,8 +54,9 @@ function BlogDetail(id) {
   const [updateReplyShow, setUpdateReplyShow] = useState(null);
   const [replyComment, setReplyComment] = useState(false);
   const [inputReply, setInputReply] = useState({});
-  //__________________________________________________________________//
 
+  //__________________________________________________________________//
+  
   const handleUpdateCommentAppear = (updateId, originalContent) => {
     setUpdateShow((prev) => (prev === updateId ? null : updateId));
     // If the original content is not set (i.e., it's an empty string), set it with the current content
@@ -247,7 +250,6 @@ function BlogDetail(id) {
     userInstance.get(`/GetUserById/${currentUserId}`)
       .then((res) => {
         setUser(res?.data?.result)
-        // console.log(res?.data?.result.imageSrc);
       })
       .catch((err) => {
         console.log(err.response.data);

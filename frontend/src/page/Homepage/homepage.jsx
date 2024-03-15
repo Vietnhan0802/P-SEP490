@@ -7,8 +7,6 @@ import Follow from "../../components/follow";
 import Post from "../Post/post";
 import Blog from "../Blog/blog";
 import DashBoard from "../DashBoard/dashBoard";
-import PostDetail from "../Detail/postDetail";
-import BlogDetail from "../Detail/blogDetail";
 import ProjectDetail from "../ProjectDetail/projectDetail";
 import OwnPost from "../OwnPost/ownPost";
 import OwnProject from "../OwnProject/ownProject";
@@ -17,27 +15,13 @@ import Project from "../Project/project";
 import Statistic from "../Statistic/statistic";
 function Homepage() {
   const [activeComponent, setActiveComponent] = useState("post");
-  const [postId, setPostId] = useState(null);
-  const [blogId, setBlogId] = useState(null);
   const [projectId, setProjectId] = useState(null);
   const handleSidebarItemClick = (itemId) => {
     setActiveComponent(itemId);
   };
-  const handlePostClick = (postId) => {
-    setPostId(postId);
-  };
-  const handleBlogClick = (blogId) => {
-    setBlogId(blogId);
-  };
   const hanldeProjectClick = (projectId) => {
     setProjectId(projectId);
   };
-  const viewProjectDetail = (value) => {
-    if (value !== null) {
-      setProjectId(value);
-      setActiveComponent("projectDetail")
-    }
-  }
   return (
     <div className="bg m-0 ">
       <>
@@ -57,25 +41,13 @@ function Homepage() {
               : 6
               }`}
           >
-            {activeComponent === "post" && (
-              <Post
-                activePost={postId}
-                onPostClick={handlePostClick}
-                activeItem={activeComponent}
-                onItemClick={handleSidebarItemClick}
-              />
-            )}
-            {activeComponent === "blog" && (
-              <Blog
-                activeBlog={postId}
-                onBlogClick={handleBlogClick}
-                activeItem={activeComponent}
-                onItemClick={handleSidebarItemClick}
-              />
-            )}
-            {activeComponent === "post_detail" && <PostDetail id={postId} viewProjectDetail={viewProjectDetail} />}
-            {activeComponent === "blog_detail" && <BlogDetail id={blogId} />}
-            {activeComponent === "project" && <Project />}
+            {activeComponent === "post" && (<Post />)}
+            {activeComponent === "blog" && (<Blog />)}
+            {activeComponent === "project" && <Project
+              activeProject={projectId}
+              onProjectClick={hanldeProjectClick}
+              activeItem={activeComponent}
+              onItemClick={handleSidebarItemClick} />}
             {activeComponent === "dashboard" && <DashBoard />}
             {activeComponent === "statistic" && <Statistic />}
             {activeComponent === "projectDetail" && (
@@ -83,10 +55,6 @@ function Homepage() {
             )}
             {activeComponent === "own_post" && (
               <OwnPost
-                activePost={postId}
-                onPostClick={handlePostClick}
-                activeItem={activeComponent}
-                onItemClick={handleSidebarItemClick}
               />
             )}
             {activeComponent === "own_project" && (
@@ -101,8 +69,9 @@ function Homepage() {
               <ProjectApplication />
             )}
           </Col>
-          {activeComponent !== "dashboard" &&
-            activeComponent !== "projectDetail" && activeComponent !== "project_application" &&
+            {activeComponent !== "dashboard" &&
+            activeComponent !== "projectDetail" && 
+            activeComponent !== "project_application" &&
             activeComponent !== "statistic" && (
               <Col md={3}>
                 <Follow />
