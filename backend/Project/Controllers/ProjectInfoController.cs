@@ -334,7 +334,7 @@ namespace Project.Controllers
             projectApplication.isAcept = null;
             projectApplication.createdDate = DateTime.Now;
             await _context.ProjectMembers.AddAsync(projectApplication);
-            var isSuucess =  await _context.SaveChangesAsync();
+            var isSuucess = await _context.SaveChangesAsync();
             if (isSuucess > 0)
             {
                 return new Response(HttpStatusCode.OK, "Create project application is success!", projectApplication);
@@ -342,23 +342,19 @@ namespace Project.Controllers
             return new Response(HttpStatusCode.BadRequest, "Create project application is fail!");
         }
 
-        [HttpPost("CreateProjectInvite/{idUser}/{idProject}")]
-        public async Task<Response> CreateProjectInvite(string idUser, Guid idProject, [FromForm] ProjectMemberCreateUpdate projectMemberCreateUpdate)
+        [HttpPost("CreateProjectInvite/{idUser}")]
+        public async Task<Response> CreateProjectInvite(string idUser, [FromQuery] Guid idProject, [FromQuery] Guid idPosition)
         {
-            var validator = new ProjectMemberValidator();
-            var validatorResult = validator.Validate(projectMemberCreateUpdate);
-            var error = validatorResult.Errors.Select(x => x.ErrorMessage).ToList();
-            if (!validatorResult.IsValid)
+            ProjectMember projectApplication = new ProjectMember
             {
-                return new Response(HttpStatusCode.BadRequest, "Invalid data", error);
-            }
-            projectMemberCreateUpdate.cvUrl = await _saveImageService.SaveImage(projectMemberCreateUpdate.cvUrlFile);
-            var projectApplication = _mapper.Map<ProjectMember>(projectMemberCreateUpdate);
-            projectApplication.idAccount = idUser;
-            projectApplication.idProject = idProject;
-            projectApplication.type = BusinessObjects.Enums.Project.Type.Invited;
-            projectApplication.isAcept = null;
-            projectApplication.createdDate = DateTime.Now;
+                idPosition = idPosition,
+                idAccount = idUser,
+                idProject = idProject,
+                type = BusinessObjects.Enums.Project.Type.Invited,
+                isAcept = null,
+                createdDate = DateTime.Now
+            };
+
             await _context.ProjectMembers.AddAsync(projectApplication);
             var isSuucess = await _context.SaveChangesAsync();
             if (isSuucess > 0)
@@ -379,7 +375,7 @@ namespace Project.Controllers
             projectApplication.isAcept = true;
             projectApplication.confirmedDate = DateTime.Now;
             _context.ProjectMembers.Update(projectApplication);
-            var isSuccess =  await _context.SaveChangesAsync();
+            var isSuccess = await _context.SaveChangesAsync();
             if (isSuccess > 0)
             {
                 return new Response(HttpStatusCode.OK, "Accept project application is success!", projectApplication);
@@ -398,7 +394,7 @@ namespace Project.Controllers
             projectApplication.isAcept = false;
             projectApplication.confirmedDate = DateTime.Now;
             _context.ProjectMembers.Update(projectApplication);
-            var isSuccess =  await _context.SaveChangesAsync();
+            var isSuccess = await _context.SaveChangesAsync();
             if (isSuccess > 0)
             {
                 return new Response(HttpStatusCode.OK, "Deny project application is success!", projectApplication);
@@ -415,7 +411,7 @@ namespace Project.Controllers
                 return new Response(HttpStatusCode.NotFound, "Member doesn't exists!");
             }
             _context.ProjectMembers.Remove(member);
-            var isSuccess =  await _context.SaveChangesAsync();
+            var isSuccess = await _context.SaveChangesAsync();
             if (isSuccess > 0)
             {
                 return new Response(HttpStatusCode.NoContent, "Remove member is success!");
