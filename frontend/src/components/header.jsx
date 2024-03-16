@@ -19,13 +19,13 @@ import { useTranslation } from 'react-i18next';
 export default function Header({ activeComponent, onItemClick, changeImage }) {
   const { t } = useTranslation()
   const sessionData = JSON.parse(sessionStorage.getItem('userSession')) || {};
-  const { role, currentUserId, userName, userEmail } = sessionData;
+  const { currentUserId } = sessionData;
 
   const navigate = useNavigate();
   const [activeItem, setActiveItem] = useState("home");
   const [activePopup, setActivePopup] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
-  const [value, setValue] = useState({ imageSrc: '' });
+  const [value, setValue] = useState({});
   const [users, setUsers] = useState([]);
   const [filterListUser, setFilterlistUser] = useState([]);
   const [searchName, setSearchName] = useState('');
@@ -42,10 +42,11 @@ export default function Header({ activeComponent, onItemClick, changeImage }) {
   useEffect(() => {
     userInstance.get(`/GetUserById/${currentUserId}`)
       .then((res) => {
+        setValue(res?.data?.result)
         if (res?.data?.result.imageSrc === 'https://localhost:7006/Images/') {
-          setValue(defaultImage)
+          setValue((prev) => ({ ...prev, imageSrc: defaultImage }));
         } else {
-          setValue(res?.data?.result.imageSrc)
+          setValue((prev) => ({ ...prev, imageSrc: res?.data?.result?.imageSrc }));
         }
       })
       .catch((err) => {
@@ -56,6 +57,7 @@ export default function Header({ activeComponent, onItemClick, changeImage }) {
     setShowPopup(!showPopup);
     setActivePopup(!activePopup);
   };
+
   const handleItemClick = (itemId) => {
     setActiveItem(itemId);
     onItemClick(itemId);
@@ -81,18 +83,18 @@ export default function Header({ activeComponent, onItemClick, changeImage }) {
     <Row id="header" className="m-0">
       <Col className="d-flex align-items-center" sm={4}>
         <Image src={logoImg} className="logo" onClick={() => hanldeReturnHome()} />
-        <div className="d-flex search align-items-center position-relative">
+        <div className="d-flex search align-items-center position-relative w-50">
           <CiSearch className="" />
-          <input type="text" placeholder={t('search')} value={searchName} className="search-box" onChange={searchUser} />
+          <input type="text" placeholder={t('search')} value={searchName} className="search-box w-100" onChange={searchUser} />
 
-          <div className={`position-absolute user-box ${searchName === '' ? 'hidden-box' : ''}`} >
+          <div className={`position-absolute w-100 form-control overflow-hidden user-box ${searchName === '' ? 'hidden-box' : ''}`} style={{ textOverflow: 'ellipsis' }} >
             {filterListUser.length > 0 ? (
               filterListUser.map((user) => (
-                <div key={user.id} className="d-flex align-items-center" onClick={() => handleAvatarClick(user.id)}>
-                  <img src={user.imageSrc === 'https://localhost:7006/Images/' ? defaultImage : user.imageSrc} style={{ width: '20px', height: '20px' }} alt="" />
-                  <div>
-                    {user.fullName}
-                    {user.email}
+                <div key={user.id} className="d-flex align-items-center my-2" onClick={() => handleAvatarClick(user.id)}>
+                  <img src={user.imageSrc === 'https://localhost:7006/Images/' ? defaultImage : user.imageSrc} style={{ width: '50px', height: '50px' }} alt="" />
+                  <div className="ms-2">
+                    <p>{user.fullName}</p>
+                    <p>{user.email}</p>
                   </div>
                 </div>
               ))
@@ -130,10 +132,10 @@ export default function Header({ activeComponent, onItemClick, changeImage }) {
         <Translate />
         <DarkMode />
         <div className=" d-flex align-items-center" onClick={() => handleAvatarClick(currentUserId)}>
-          <img src={value} alt="" className="avatar" />
+          <img src={value.imageSrc} alt="" className="avatar" />
           <div className="ms-2 t-black">
-            <p>{userName}</p>
-            <p>{userEmail}</p>
+            <p>{value.fullName}</p>
+            <p>{value.email}</p>
           </div>
         </div>
       </Col>

@@ -6,7 +6,6 @@ import { FaHeart } from "react-icons/fa";
 import { CiSearch } from "react-icons/ci";
 import { FiEye } from "react-icons/fi";
 import defaultAvatar from "../../images/common/default.png";
-import ReportPopup from "../../components/Popup/reportPopup";
 import {
   postInstance,
   projectInstance,
@@ -18,7 +17,7 @@ import { Col, Row } from "react-bootstrap";
 import SideBar from "../../components/sidebar";
 import Follow from "../../components/follow";
 
-import PostReport from "../../components/report-popup/PostReport";
+import Report from "../../components/report-popup/Report";
 
 function calculateTimeDifference(targetDate) {
   // Convert the target date string to a Date object
@@ -46,14 +45,15 @@ function calculateTimeDifference(targetDate) {
   }
 }
 
-function Post({ postId, onPostClick, activeItem, onItemClick }) {
+function Post() {
   const sessionData = JSON.parse(sessionStorage.getItem("userSession")) || {};
   const navigate = useNavigate();
   const { role, currentUserId } = sessionData;
-  const [popupContent, setPopupContent] = useState("");
   const [project, setProject] = useState();
   const [blogPopups, setBlogPopups] = useState({});
   const [postList, setPostList] = useState([]);
+  const [search, setSearch] = useState('');
+  const [filterPost, setFilterPost] = useState([]);
   const [resetPage, setResetPage] = useState(false);
   //______________________________//
   const createData = (
@@ -115,9 +115,6 @@ function Post({ postId, onPostClick, activeItem, onItemClick }) {
         });
     }
   };
-  const handlePopupContent = (event, postId) => {
-    setPopupContent((prev) => ({ ...prev, [postId]: event.target.value }));
-  };
   const handleCreateReport = (userId, postId, content) => {
     reportInstance
       .post(`/CreatePostReport/${userId}/${postId}/${content}`)
@@ -174,9 +171,15 @@ function Post({ postId, onPostClick, activeItem, onItemClick }) {
     console.log(postId);
     navigate("/postdetail", { state: { idPost: postId } });
   };
-  const handleReportClick = (postId) => {
-    setBlogPopups((prev) => ({ ...prev, [postId]: true }));
-  };
+  const handleSearchPost = (event) => {
+    setSearch(event.target.value);
+    const searchLower = event.target.value.toLowerCase();
+    const filtered = postList.filter(post =>
+      post.fullName.toLowerCase().includes(searchLower) || post.title.toLowerCase().includes(searchLower)
+    );
+    setFilterPost(filtered);
+  }
+
   return (
     <Row className="pt-3 ms-0 me-0">
       <Col md={3}>
@@ -189,8 +192,10 @@ function Post({ postId, onPostClick, activeItem, onItemClick }) {
               <CiSearch className="" />
               <input
                 type="text"
+                onChange={handleSearchPost}
+                value={search}
                 placeholder={"Search"}
-                className="search-box size-20"
+                className="search-box size-20 w-100"
               />
             </div>
             <div className="d-flex flex-row align-items-center col-auto m-md-0-cus mt-2 p-0">
@@ -200,12 +205,11 @@ function Post({ postId, onPostClick, activeItem, onItemClick }) {
             </div>
           </div>
 
-          {postList.map((item) => (
+          {(search ? filterPost : postList).map((item) => (
             <div
               key={item.id}
-              className={`pos-rel post-item mt-2 p-2 ${
-                blogPopups[item.id] ? "position-relative" : ""
-              }`}
+              className={`pos-rel post-item mt-2 p-2 ${blogPopups[item.id] ? "position-relative" : ""
+                }`}
             >
               <div className="d-flex justify-content-between">
                 <div className="d-flex align-items-center">
@@ -227,13 +231,7 @@ function Post({ postId, onPostClick, activeItem, onItemClick }) {
                     </div>
                   </div>
                 </div>
-                <PostReport />
-                {/* <div
-                  className="d-flex align-items-center me-3 flag-icon"
-                  onClick={() => handleReportClick(item.id)}
-                >
-                  <IoFlagOutline className="full-div" />{" "}
-                </div> */}
+                <Report />
               </div>
               <h4 className="mt-2">{item.title}</h4>
 
@@ -268,42 +266,6 @@ function Post({ postId, onPostClick, activeItem, onItemClick }) {
                   View Detail
                 </button>
               </div>
-              {blogPopups[item.id] && (
-                <ReportPopup
-                  trigger={blogPopups[item.id]}
-                  setTrigger={(value) =>
-                    setBlogPopups((prev) => ({ ...prev, [item.id]: value }))
-                  }
-                >
-                  <div className="bg-white h-100 post-report">
-                    <h3 className="text-center border-bottom pb-2">Report</h3>
-                    <p>
-                      <b>Please fill in your feedback</b>
-                    </p>
-                    <textarea
-                      type="text"
-                      placeholder="What's wrong with this post"
-                      value={popupContent[item.id]}
-                      className="w-100 p-3"
-                      onChange={(event) => handlePopupContent(event, item.id)}
-                    />
-                    <div className="d-flex justify-content-end mt-2">
-                      <button
-                        className="btn btn-secondary "
-                        onClick={() =>
-                          handleCreateReport(
-                            currentUserId,
-                            item.id,
-                            popupContent[item.id]
-                          )
-                        }
-                      >
-                        Submit
-                      </button>
-                    </div>
-                  </div>
-                </ReportPopup>
-              )}
             </div>
           ))}
         </div>

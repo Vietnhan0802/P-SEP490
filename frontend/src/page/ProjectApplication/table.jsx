@@ -210,13 +210,13 @@ function Table({ columns, data }) {
           </button>
         </div>
         <div className="d-none d-sm-flex flex-grow-1 align-items-center justify-content-between">
-          <div className="d-flex gap-2">
-            <span className="text-sm ">
+          <div className="d-flex gap-2 w-100 align-items-center">
+            <span className=" ">
               Page <span className="fw-bold">{state.pageIndex + 1}</span> of{" "}
               <span className="fw-bold">{pageOptions.length}</span>
             </span>
             <select
-              className="form-select"
+              className="form-select w-auto"
               value={state.pageSize}
               onChange={(e) => {
                 setPageSize(Number(e.target.value));

@@ -1,42 +1,49 @@
 #projectApplication {
-    .border-8 {
-        border-radius: 8px;
-    }
+  border-radius: 8px;
 
-    .global-search input {
-        border-radius: 8px;
-        border: 0.5px solid gray;
-    }
+  .global-search input {
+    border-radius: 8px;
+    border: 0.5px solid gray;
+  }
 
-    .min-w-full {
-        min-width: 100%;
-    }
+  .min-w-full {
+    min-width: 100%;
+  }
 
-    .over-x-auto {
-        overflow-x: auto;
-    }
+  .over-x-auto {
+    overflow-x: auto;
+  }
 
-    table {
-
-        td,
-        th {
-            text-wrap: nowrap;
-            background-color: white;
-        }
+  table {
+    td,
+    th {
+      text-wrap: nowrap;
+      background-color: white;
     }
+  }
 
-    #select-custom select {
-        --bs-form-select-bg-img: url(data:image/svg+xml,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 16 16%27%3e%3cpath fill=%27none%27 stroke=%27%23343a40%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27 stroke-width=%272%27 d=%27m2 5 6 6 6-6%27/%3e%3c/svg%3e);
-        max-width:150px;
-        padding: 0.375rem 2.25rem 0.375rem 0.75rem;
-        font-weight: 400;
-        appearance: none;
-        background-image: var(--bs-form-select-bg-img), var(--bs-form-select-bg-icon, none);
-        background-repeat: no-repeat;
-        background-position: right 0.75rem center;
-        background-size: 16px 12px;
-        border: var(--bs-border-width) solid var(--bs-border-color);
-        border-radius: var(--bs-border-radius);
-        transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+  #select-custom {
+    select {
+      /* Define your CSS variables at the top or ensure they are imported from a framework */
+      --bs-form-select-bg-img: url(data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e);
+      --bs-border-width: 1px; /* Example definition, adjust as needed */
+      --bs-border-color: #ccc; /* Example definition, adjust as needed */
+      --bs-border-radius: 4px; /* Example definition, adjust as needed */
+
+      max-width: 150px;
+      padding: 0.375rem 2.25rem 0.375rem 0.75rem;
+      font-weight: 400;
+      -webkit-appearance: none; /* Added for better cross-browser compatibility */
+      -moz-appearance: none;    /* Added for Firefox */
+      appearance: none;
+      background-image: var(--bs-form-select-bg-img),
+        var(--bs-form-select-bg-icon, none);
+      background-repeat: no-repeat;
+      background-position: right 0.75rem center;
+      background-size: 16px 12px;
+      border: var(--bs-border-width) solid var(--bs-border-color);
+      border-radius: var(--bs-border-radius);
+      transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
     }
+  }
 }

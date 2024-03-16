@@ -49,6 +49,8 @@ function OwnPost() {
   const [postList, setPostList] = useState([])
   const [resetPage, setResetPage] = useState(false);
   const [popupContent, setPopupContent] = useState('');
+  const [search, setSearch] = useState('');
+  const [filterPost, setFilterPost] = useState([]);
   const createData = (id, createdDate, avatar, title, content, view, like, viewPostImages, fullName) => {
     return {
       id, createdDate, avatar, title, content, view, like, viewPostImages, fullName
@@ -100,6 +102,14 @@ function OwnPost() {
       setResetPage(value)
     }
   }
+  const handleSearchPost = (event) => {
+    setSearch(event.target.value);
+    const searchLower = event.target.value.toLowerCase();
+    const filtered = postList.filter(post =>
+      post.fullName.toLowerCase().includes(searchLower) || post.title.toLowerCase().includes(searchLower)
+    );
+    setFilterPost(filtered);
+  }
   return (
     <Row className="pt-3 ms-0 me-0">
       <Col md={3} >
@@ -113,8 +123,10 @@ function OwnPost() {
               <CiSearch className="" />
               <input
                 type="text"
+                onChange={handleSearchPost}
+                value={search}
                 placeholder={"Search"}
-                className="search-box size-20"
+                className="search-box size-20 w-100"
               />
             </div>
             <div className="d-flex flex-row align-items-center col-auto m-md-0-cus mt-2 p-0">
@@ -124,7 +136,7 @@ function OwnPost() {
               </button>
             </div>
           </div>
-          {postList.map((item) => (
+          {(search ? filterPost : postList).map((item) => (
             <div
               key={item.idPost}
               className={`post-item p-2 ${blogPopups[item.id] ? "position-relative" : ""

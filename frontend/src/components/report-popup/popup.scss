@@ -7,14 +7,19 @@
 }
 
 
+// Assuming .option-content is initially hidden (e.g., height: 0;)
+// and .open class makes it visible (e.g., height: auto;)
 .option-content {
-    max-height: 0;
     overflow: hidden;
-    transition: max-height 0.5s ease-in-out;
+    transition: max-height 0.5s ease-out, opacity 0.5s ease-out;
+    max-height: 0; // Start with 0 to ensure it's hidden initially
+    opacity: 0; // Start with 0 to ensure it's fully transparent initially
   }
   
+  // When the option-content is opened
   .option-content.open {
-    max-height: 500px; // You might need to adjust this value based on your content
+    max-height: 500px; // Set a max-height that's higher than any content's height
+    opacity: 1; // Ensure it's fully opaque
   }
 .report-popup {
     .option {

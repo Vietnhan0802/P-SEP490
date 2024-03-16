@@ -1,80 +1,34 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./projectApplication.scss";
-import avatar from "../../images/common/Avatar.png";
 import Table, { SelectColumnFilter } from "./table";
 import AcceptConfirm from "./acceptConfirm";
 import RejectConfirm from "./rejectConfirm";
 import { Col, Row } from "react-bootstrap";
 import SideBar from "../../components/sidebar";
-import Follow from "../../components/follow";
+import { projectInstance } from "../../axios/axiosConfig";
 
-const getData = () => {
-  const data = [
-    {
-      name: "Jane Cooper",
-      email: "jane.cooper@example.com",
-      position: "Regional Paradigm Technician",
-      department: "Optimization",
-      status: "Active",
-      project: "AdminAdminAdminAdminAdminAdminAdmin",
-      imgUrl:
-        "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
-    },
-    {
-      name: "Cody Fisher",
-      email: "cody.fisher@example.com",
-      position: "Product Directives Officer",
-      department: "Intranet",
-      status: "Active",
-      project: "OwnerOwnerOwnerOwnerOwnerOwnerOwner",
-      imgUrl:
-        "https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
-    },
-    {
-      name: "Esther Howard",
-      email: "esther.howard@example.com",
-      position: "Forward Response Developer",
-      department: "Directives",
-      status: "Active",
-      project: "MemberMemberMemberMemberMemberMemberMember",
-      imgUrl:
-        "https://images.unsplash.com/photo-1520813792240-56fc4a3765a7?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
-    },
-    {
-      name: "Jenny Wilson",
-      email: "jenny.wilson@example.com",
-      position: "Central Security Manager",
-      department: "Program",
-      status: "Active",
-      project: "MemberMemberMemberMemberMemberMemberMember",
-      imgUrl:
-        "https://images.unsplash.com/photo-1498551172505-8ee7ad69f235?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
-    },
-    {
-      name: "Kristin Watson",
-      email: "kristin.watson@example.com",
-      position: "Lean Implementation Liaison",
-      department: "Mobility",
-      status: "Active",
-      project: "AdminAdminAdminAdminAdminAdminAdmin",
-      imgUrl:
-        "https://images.unsplash.com/photo-1532417344469-368f9ae6d187?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
-    },
-    {
-      name: "Cameron Williamson",
-      email: "cameron.williamson@example.com",
-      position: "Internal Applications Engineer",
-      department: "Security",
-      status: "Active",
-      project: "MemberMemberMemberMemberMemberMemberMember",
-      imgUrl:
-        "https://images.unsplash.com/photo-1566492031773-4f4e44671857?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
-    },
-  ];
-  return [...data];
+const createData = (
+  id,
+  name,
+  email,
+  position,
+  project,
+  imgUrl,
+  cvFile) => {
+  return {
+    id,
+    name,
+    email,
+    position,
+    project,
+    imgUrl,
+    cvFile
+  }
 };
 
 function ProjectApplication() {
+  const sessionData = JSON.parse(sessionStorage.getItem('userSession')) || {};
+  const { currentUserId } = sessionData;
   const columns = React.useMemo(
     () => [
       {
@@ -111,9 +65,14 @@ function ProjectApplication() {
         accessor: "status",
         Cell: ({ row }) => (
           <div style={{ display: "flex", alignItems: "center" }}>
-            <button className="btn btn-info text-white">View CV</button>
-            <AcceptConfirm />
-            <RejectConfirm />
+            <a className="btn btn-info text-white"
+              href={row.original.cvFile} // Directly use the cvFile URL here
+              target="_blank" // Ensure it opens in a new tab
+              rel="noopener noreferrer" // Improve security for opening new tabs
+            > View CV
+            </a>
+            <AcceptConfirm id={row.original.id} />
+            <RejectConfirm id={row.original.id} />
           </div>
         ),
       },
@@ -121,7 +80,16 @@ function ProjectApplication() {
     []
   );
 
-  const data = React.useMemo(() => getData(), []);
+  const [applications, setApplications] = useState([]);
+  useEffect(() => {
+    projectInstance.get(`GetAllProjectApplications/${currentUserId}`)
+      .then((res) => {
+        const data = res?.data?.result;
+        setApplications(data.map((item) => createData(item.idProjectMember, item.fullName, item.email, item.namePosition, item.nameProject, item.avatar, item.cvUrlFile)));
+      })
+      .catch((error) => { console.error(error) });
+  }, []);
+  // const data = React.useMemo(() => getData(), []);
   return (
     <Row className="pt-3 ms-0 me-0">
       <Col md={3} >
@@ -130,11 +98,11 @@ function ProjectApplication() {
       <Col md={9}>
         <div
           id="projectApplication"
-          className="min-vh-100 bg-light text-dark border-8 py-2"
+          className=" bg-light text-dark border-8 py-2"
         >
           <main className="container ">
             <div className="">
-              <Table columns={columns} data={data} />
+              <Table columns={columns} data={applications} />
             </div>
           </main>
         </div>
