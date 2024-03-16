@@ -1,17 +1,16 @@
 import { Modal, Button } from "react-bootstrap";
 import { useState } from "react";
-import "./degree-pu.scss";
 import "./profile.scss";
 import { credentialInstance } from "../../axios/axiosConfig";
 function DegreePu({ ...props }) {
   const { user } = props;
   const [show, setShow] = useState(false);
   const [inputs, setInputs] = useState({
-    name: '',
-    institution: '',
-    file: '',
-    FileFile:  null,
-    FileSrc:''
+    name: "",
+    institution: "",
+    file: "",
+    FileFile: null,
+    FileSrc: "",
   });
   const handleInputChange = (event) => {
     const { name, value, type } = event.target;
@@ -23,7 +22,7 @@ function DegreePu({ ...props }) {
           ...prevInputs,
           file: file.name,
           FileFile: file,
-          FileSrc:x.target.result
+          FileSrc: x.target.result,
         }));
       };
       reader.readAsDataURL(file);
@@ -35,32 +34,33 @@ function DegreePu({ ...props }) {
   const modalShow = () => setShow(true);
   const modelSubmit = () => {
     const formData = new FormData();
-    formData.append('name', inputs.name);
-    formData.append('institution', inputs.institution);
-    formData.append('file', inputs.file);
-    formData.append('FileFile', inputs.FileFile);
+    formData.append("name", inputs.name);
+    formData.append("institution", inputs.institution);
+    formData.append("file", inputs.file);
+    formData.append("FileFile", inputs.FileFile);
     for (let pair of formData.entries()) {
-      console.log(pair[0] + ', ' + pair[1]);
+      console.log(pair[0] + ", " + pair[1]);
     }
-    credentialInstance.post(`/CreateDegree/${user}`, formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-        accept: "application/json",
-      }
-    })
+    credentialInstance
+      .post(`/CreateDegree/${user}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          accept: "application/json",
+        },
+      })
       .then((res) => {
-        
         setInputs({
-          name: '',
-          institution: '',
-          file: '',
-          FileFile: null
+          name: "",
+          institution: "",
+          file: "",
+          FileFile: null,
         });
       })
-      .catch((error) => { console.error(error); })
+      .catch((error) => {
+        console.error(error);
+      });
     setShow(false);
-
-  }
+  };
   return (
     <div className="">
       <Button variant="m-0 btn btn-primary me-2" onClick={modalShow}>
@@ -97,9 +97,18 @@ function DegreePu({ ...props }) {
           {inputs.FileFile && (
             <div>
               {inputs.FileSrc.startsWith("data:image") ? ( // Check if the file is an image
-                <img src={inputs.FileSrc} alt="Selected File" style={{ maxWidth: "100%", maxHeight: "200px" }} />
+                <img
+                  src={inputs.FileSrc}
+                  alt="Selected File"
+                  style={{ maxWidth: "100%", maxHeight: "200px" }}
+                />
               ) : (
-                <a href={inputs.FileFile} download={inputs.file} target="_blank" rel="noopener noreferrer">
+                <a
+                  href={inputs.FileFile}
+                  download={inputs.file}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   Download File
                 </a>
               )}

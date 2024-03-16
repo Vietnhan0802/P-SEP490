@@ -20,7 +20,6 @@ import Follow from "../../components/follow";
 
 import PostReport from "../../components/report-popup/PostReport";
 
-
 function calculateTimeDifference(targetDate) {
   // Convert the target date string to a Date object
   const targetTime = new Date(targetDate).getTime();
@@ -66,7 +65,8 @@ function Post({ postId, onPostClick, activeItem, onItemClick }) {
     view,
     like,
     viewPostImages,
-    fullName, isLike
+    fullName,
+    isLike
   ) => {
     return {
       id,
@@ -78,7 +78,7 @@ function Post({ postId, onPostClick, activeItem, onItemClick }) {
       like,
       viewPostImages,
       fullName,
-      isLike
+      isLike,
     };
   };
   const handleLikeOrUnlikeBlog = (idBlog) => {
@@ -97,7 +97,8 @@ function Post({ postId, onPostClick, activeItem, onItemClick }) {
       setPostList(newData); // Update the state with the new array
 
       // Make the API call to update the like state in the backend
-      postInstance.post(`LikeOrUnlikePost/${currentUserId}/${idBlog}`)
+      postInstance
+        .post(`LikeOrUnlikePost/${currentUserId}/${idBlog}`)
         .then(() => {
           // If the API call is successful, you can optionally refresh the data from the server
           // to ensure the UI is in sync with the backend state
@@ -129,7 +130,8 @@ function Post({ postId, onPostClick, activeItem, onItemClick }) {
   };
 
   useEffect(() => {
-    postInstance.get(`GetAllPosts/${currentUserId}`)
+    postInstance
+      .get(`GetAllPosts/${currentUserId}`)
       .then((res) => {
         const postList = res?.data?.result;
         setPostList([]);
@@ -158,7 +160,8 @@ function Post({ postId, onPostClick, activeItem, onItemClick }) {
   }, [resetPage]);
 
   useEffect(() => {
-    projectInstance.get("GetAllProjects")
+    projectInstance
+      .get("GetAllProjects")
       .then((res) => {
         setProject(res?.data?.result);
       })
@@ -168,15 +171,15 @@ function Post({ postId, onPostClick, activeItem, onItemClick }) {
   }, []);
 
   const hanldeViewDetail = (postId) => {
-    console.log(postId)
-    navigate('/postdetail', { state: { idPost: postId } });
-  }
+    console.log(postId);
+    navigate("/postdetail", { state: { idPost: postId } });
+  };
   const handleReportClick = (postId) => {
     setBlogPopups((prev) => ({ ...prev, [postId]: true }));
   };
   return (
     <Row className="pt-3 ms-0 me-0">
-      <Col md={3} >
+      <Col md={3}>
         <SideBar />
       </Col>
       <Col md={6}>
@@ -191,21 +194,18 @@ function Post({ postId, onPostClick, activeItem, onItemClick }) {
               />
             </div>
             <div className="d-flex flex-row align-items-center col-auto m-md-0-cus mt-2 p-0">
-
-
-              <button type="button" className="btn btn-info text-white">Trend</button>
+              <button type="button" className="btn btn-info text-white">
+                Trend
+              </button>
             </div>
-
-           <PostReport/>
-
           </div>
-
 
           {postList.map((item) => (
             <div
               key={item.id}
-              className={`pos-rel post-item mt-2 p-2 ${blogPopups[item.id] ? "position-relative" : ""
-                }`}
+              className={`pos-rel post-item mt-2 p-2 ${
+                blogPopups[item.id] ? "position-relative" : ""
+              }`}
             >
               <div className="d-flex justify-content-between">
                 <div className="d-flex align-items-center">
@@ -219,19 +219,21 @@ function Post({ postId, onPostClick, activeItem, onItemClick }) {
                     alt="Instructor Cooper Bator"
                   />
                   <div className="left-30 d-flex flex-column justify-content-center">
-                    <div className="size-20 SFU-heavy d-flex">{item.fullName}</div>
+                    <div className="size-20 SFU-heavy d-flex">
+                      {item.fullName}
+                    </div>
                     <div className="size-14 SFU-reg text-gray-600 d-flex">
                       {item.createdDate}
                     </div>
                   </div>
                 </div>
-
-                <div
+                <PostReport />
+                {/* <div
                   className="d-flex align-items-center me-3 flag-icon"
                   onClick={() => handleReportClick(item.id)}
                 >
                   <IoFlagOutline className="full-div" />{" "}
-                </div>
+                </div> */}
               </div>
               <h4 className="mt-2">{item.title}</h4>
 
@@ -253,7 +255,9 @@ function Post({ postId, onPostClick, activeItem, onItemClick }) {
                     className="d-flex align-items-center me-3"
                     onClick={() => handleLikeOrUnlikeBlog(item.id)}
                   >
-                    <FaHeart className={`me-2 ${item.isLike === true ? "red" : ""}`} />{" "}
+                    <FaHeart
+                      className={`me-2 ${item.isLike === true ? "red" : ""}`}
+                    />{" "}
                     {item.like}
                   </div>
                 </div>
@@ -287,7 +291,11 @@ function Post({ postId, onPostClick, activeItem, onItemClick }) {
                       <button
                         className="btn btn-secondary "
                         onClick={() =>
-                          handleCreateReport(currentUserId, item.id, popupContent[item.id])
+                          handleCreateReport(
+                            currentUserId,
+                            item.id,
+                            popupContent[item.id]
+                          )
                         }
                       >
                         Submit
@@ -304,7 +312,6 @@ function Post({ postId, onPostClick, activeItem, onItemClick }) {
         <Follow />
       </Col>
     </Row>
-
   );
 }
 
