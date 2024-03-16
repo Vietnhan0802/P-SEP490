@@ -546,12 +546,12 @@ namespace User.Controllers
             return BadRequest("User doesn't exists!");
         }
 
-        [HttpGet("GoogleSignIn")]
-        public IActionResult GoogleSignIn()
+        [HttpGet("GoogleSignUp")]
+        public IActionResult GoogleSignUp()
         {
             var properties = new AuthenticationProperties
             {
-                RedirectUri = Url.Action("GoogleResponse"),
+                RedirectUri = Url.Action("GoogleSignUpResponse"),
                 Items =
                 {
                     { "scheme", "Google" },
@@ -560,69 +560,54 @@ namespace User.Controllers
             return Challenge(properties, "Google");
         }
 
-        [HttpGet("GoogleResponse")]
-        public async Task<Response> GoogleResponse()
+        [HttpGet("GoogleSignUpResponse")]
+        public async Task<Response> GoogleSignUpResponse()
         {
-            var userInfo = await HttpContext.AuthenticateAsync("Google");
-            if (!userInfo.Succeeded)
+            var result = await HttpContext.AuthenticateAsync("Google");
+            if (!result.Succeeded)
             {
                 return new Response(HttpStatusCode.Unauthorized, "Failed to authenticate with Google!");
             }
-            var googleEmail = userInfo.Principal.FindFirst(ClaimTypes.Email)?.ToString();
-            var user = await _userManager.FindByEmailAsync(googleEmail);
-            if (user == null)
+            var email = result.Principal.FindFirst(ClaimTypes.Email)?.ToString();
+
+            var userExists = await _userManager.FindByEmailAsync(email);
+            if (userExists != null)
             {
-                AppUser newUser = new AppUser()
-                {
-                    UserName = userInfo.Principal.FindFirst(ClaimTypes.Email)?.ToString(),
-                    Email = userInfo.Principal.FindFirst(ClaimTypes.Email)?.ToString(),
-                    fullName = userInfo.Principal.FindFirst(ClaimTypes.Name)?.ToString(),
-                    date = DateTime.Parse(userInfo.Principal.FindFirst(ClaimTypes.DateOfBirth)?.ToString()),
-                    isMale = userInfo.Principal.FindFirst(ClaimTypes.Gender)?.ToString() == "male",
-                    PhoneNumber = userInfo.Principal.FindFirst(ClaimTypes.MobilePhone)?.ToString(),
-                    address = userInfo.Principal.FindFirst(ClaimTypes.StreetAddress)?.ToString(),
-                    isBlock = false,
-                    createdDate = DateTime.Now,
-                    SecurityStamp = Guid.NewGuid().ToString()
-                };
-                var createUser = await _userManager.CreateAsync(newUser);
-                if (!createUser.Succeeded)
-                {
-                    return new Response(HttpStatusCode.BadRequest, "User failed to create! Please check and try again!");
-                }
-                if (await _roleManager.RoleExistsAsync(TypeUser.Member.ToString()))
-                {
-                    await _userManager.AddToRoleAsync(newUser, TypeUser.Member.ToString());
-                    return new Response(HttpStatusCode.NoContent, "User creates successfully!");
-                }
-                return new Response(HttpStatusCode.BadRequest, "User failed to create!");
+                return new Response(HttpStatusCode.BadRequest, "User already exists!");
             }
-            var userRoles = await _userManager.GetRolesAsync(user);
-            var authClaims = new List<Claim>
+
+            AppUser newUser = new AppUser()
             {
-                new Claim(JwtRegisteredClaimNames.Sub, _configuration["Jwt:Subject"]),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()),
-                new Claim("Id" , user.Id.ToString()),
-                new Claim("Username", user.UserName),
-                new Claim("Email", user.Email),
-                new Claim("FullName", user.fullName),
-                new Claim("Date", user.date.ToString()),
-                new Claim("IsMale", user.isMale.ToString()),
-                new Claim("Phone", user.PhoneNumber),
-                new Claim("Address", user.address)
+                UserName = result.Principal.FindFirst(ClaimTypes.Email)?.ToString(),
+                Email = result.Principal.FindFirst(ClaimTypes.Email)?.ToString(),
+                fullName = result.Principal.FindFirst(ClaimTypes.Name)?.ToString(),
+                date = DateTime.Parse(result.Principal.FindFirst(ClaimTypes.DateOfBirth)?.ToString()),
+                PhoneNumber = result.Principal.FindFirst(ClaimTypes.MobilePhone)?.ToString(),
+                address = result.Principal.FindFirst(ClaimTypes.StreetAddress)?.ToString(),
+                isBlock = false,
+                createdDate = DateTime.Now,
+                SecurityStamp = Guid.NewGuid().ToString()
             };
-            foreach (var userRole in userRoles)
+            var createUser = await _userManager.CreateAsync(newUser);
+            if (!createUser.Succeeded)
             {
-                authClaims.Add(new Claim(ClaimTypes.Role, userRole));
+                return new Response(HttpStatusCode.BadRequest, "User failed to create! Please check and try again!");
             }
-            var jwtToken = GetToken(authClaims);
-            var result = new
+            //await _userManager.AddToRoleAsync(newUser, "Member");
+            if (await _roleManager.RoleExistsAsync(TypeUser.Member.ToString()))
             {
-                token = new JwtSecurityTokenHandler().WriteToken(jwtToken),
-                role = string.Join(",", userRoles)
-            };
-            return new Response(HttpStatusCode.OK, "Login successfully", result);
+                await _userManager.AddToRoleAsync(newUser, TypeUser.Member.ToString());
+
+                var token = await _userManager.GenerateEmailConfirmationTokenAsync(newUser);
+                var confirmLink = Url.Action(nameof(ConfirmEmail), "User", new { token, email = newUser.Email }, Request.Scheme);
+                EmailRequest emailRequest = new EmailRequest();
+                emailRequest.ToEmail = newUser.Email;
+                emailRequest.Subject = "Confirmation Email";
+                emailRequest.Body = GetHtmlContent(newUser.fullName, confirmLink!);
+                await _emailService.SendEmailAsync(emailRequest);
+                return new Response(HttpStatusCode.NoContent, "User creates & sends email successfully!");
+            }
+            return new Response(HttpStatusCode.BadRequest, "User failed to create!");
         }
     }
 }

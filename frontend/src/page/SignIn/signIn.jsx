@@ -10,6 +10,7 @@ import { userInstance } from "../../axios/axiosConfig";
 import { jwtDecode } from "jwt-decode";
 import Cookies from 'js-cookie';
 import Notification, { notifySuccess, notifyError } from "../../components/notification";
+import { GoogleLogin } from '@react-oauth/google';
 
 export default function SignIn() {
   Cookies.remove('user');
@@ -46,6 +47,18 @@ export default function SignIn() {
     } catch (error) {
       console.error("Error during sign in:", error);
     }
+  };
+
+  const handleLoginSuccess = (credentialResponse) => {
+    console.log(credentialResponse);
+    notifySuccess('Google Sign in successfully!');
+    // You should send credentialResponse.credential (JWT) to your backend for verification and further processing
+    // navigate("/home"); or handle session setup here
+  };
+
+  const handleLoginFailure = () => {
+    console.error('Google Sign in failed');
+    notifyError('Google Sign in failed!');
   };
 
   const handleClickGG = () => {
@@ -124,14 +137,28 @@ export default function SignIn() {
               </div>
               <div className="d-flex flex-row pt-3 pb-3">
                 <div className="d-flex col-6 google-btn justify-content-end">
-                  <button
+                <GoogleLogin
+                  onSuccess={handleLoginSuccess}
+                  onError={handleLoginFailure}
+                  render={renderProps => (
+                    <button
+                      className="gray-border white-bg d-flex flex-row rounded-50 align-items-center justify-content-center"
+                      onClick={renderProps.onClick}
+                      disabled={renderProps.disabled}
+                    >
+                      <img src={GGIcon} alt="Google sign-in" />
+                      <p>Google</p>
+                    </button>
+                  )}
+                />
+                  {/* <button
                     className="gray-border white-bg d-flex flex-row rounded-50 align-items-center justify-content-center"
                     type="button"
                     onClick={handleClickGG}
                   >
                     <img src={GGIcon} alt="GGIcon" />
                     <p>Google</p>
-                  </button>
+                  </button> */}
                 </div>
                 <div className="d-flex col-6 facebook-btn">
                   <button

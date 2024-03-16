@@ -50,16 +50,11 @@ builder.Services.AddAuthentication(options =>
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
 })
-    .AddCookie()
     .AddGoogle(googleOptions =>
     {
-        googleOptions.ClientId = builder.Configuration["Authentication:Google:ClientId"]!;
-        googleOptions.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"]!;
-        googleOptions.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-        googleOptions.SaveTokens = true;
+        googleOptions.ClientId = "901410740401-3e5cucjupfa8ehj4a1v1ehbvu5qi2o5g.apps.googleusercontent.com";
+        googleOptions.ClientSecret = "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";
     })
     .AddJwtBearer(options =>
     {
