@@ -55,11 +55,12 @@ namespace BusinessObjects.Mappers
             CreateMap<PosttComment, ViewPostComment>().ReverseMap();
             CreateMap<PosttReply, ViewPostReply>().ReverseMap();
 
+            CreateMap<Position, PositionView>().ReverseMap();
             CreateMap<ProjectInfo, ProjectInfoCreate>().ReverseMap();
             CreateMap<ProjectInfo, ProjectInfoUpdate>().ReverseMap();
             CreateMap<ProjectInfo, ProjectInfoView>().ReverseMap();
             CreateMap<ProjectMember, ProjectMemberView>().ReverseMap();
-            CreateMap<Position,  PositionView>().ReverseMap();
+            CreateMap<ProjectMember, ProjectMemberCreateUpdate>().ReverseMap();
 
             CreateMap<Blogg, ViewStatistic>().ReverseMap();
             CreateMap<Postt, ViewStatistic>().ReverseMap();
