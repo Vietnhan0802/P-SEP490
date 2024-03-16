@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Cookies from "js-cookie";
 import "../scss/sidebar.scss";
 import { GoPencil } from "react-icons/go";
@@ -15,13 +15,17 @@ import { MdOutlineSimCardDownload } from "react-icons/md";
 import { MdOutlineSpaceDashboard } from "react-icons/md";
 import { FaChartLine } from "react-icons/fa6";
 import { useTranslation } from "react-i18next";
-function SideBar({ activeItem, onItemClick }) {
+import { useLocation, useNavigate } from "react-router-dom";
+function SideBar() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { activeItem } = location.state || {};
   const sidebarItems = [
     { id: "post", icon: <GoPencil />, text: t("post"), userRole: "all" },
     { id: "blog", icon: <FiBookOpen />, text: t("blog"), userRole: "all" },
     {
-      id: "own_post",
+      id: "ownpost",
       icon: <TbFloatLeft />,
       text: "Own Post",
       userRole: "business",
@@ -33,13 +37,13 @@ function SideBar({ activeItem, onItemClick }) {
       userRole: "all",
     },
     {
-      id: "own_project",
+      id: "ownproject",
       icon: <LuBook />,
       text: "Own Project",
       userRole: "business",
     },
     {
-      id: "project_application",
+      id: "projectapplication",
       icon: <LuFileEdit />,
       text: "Project Application",
       userRole: "business",
@@ -51,7 +55,7 @@ function SideBar({ activeItem, onItemClick }) {
     //   userRole: "business",
     // },
     {
-      id: "current_project",
+      id: "currentproject",
       icon: <MdOutlineSimCardDownload />,
       text: "Current Project",
       userRole: "member",
@@ -76,7 +80,8 @@ function SideBar({ activeItem, onItemClick }) {
     window.location.href = "/";
   };
   const handleItemClick = (itemId) => {
-    onItemClick(itemId);
+    // onItemClick(itemId);\
+    navigate(`/${itemId}`, { state: { activeItem: itemId } })
   };
   const sessionData = JSON.parse(sessionStorage.getItem("userSession")) || {};
   const { role } = sessionData;
@@ -97,9 +102,8 @@ function SideBar({ activeItem, onItemClick }) {
         {filteredSidebarItems.map((item) => (
           <div
             key={item.id}
-            className={`mb-3 d-flex align-items-center ${
-              activeItem === item.id ? "active-sidebar-item" : ""
-            }`}
+            className={`mb-3 d-flex align-items-center ${activeItem === item.id ? "active-sidebar-item" : ""
+              }`}
             onClick={() => handleItemClick(item.id)}
           >
             {item.icon}

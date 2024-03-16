@@ -69,8 +69,8 @@ function Homepage() {
               <ProjectApplication />
             )}
           </Col>
-            {activeComponent !== "dashboard" &&
-            activeComponent !== "projectDetail" && 
+          {activeComponent !== "dashboard" &&
+            activeComponent !== "projectDetail" &&
             activeComponent !== "project_application" &&
             activeComponent !== "statistic" && (
               <Col md={3}>
