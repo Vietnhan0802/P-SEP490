@@ -47,13 +47,8 @@ function FormMember({ projectId, positionOption }) {
       userId: invite.userId,
       positionId: invite.positionId
     };
-    projectInstance.post(`CreateProjectInvite/${postData.userId}`, {
-      params: {
-        idProject: postData.idProject,
-        idPosition: postData.positionId,
-        // Add other query parameters here
-      }
-    }).then((res) => { console.log(res?.data?.result); })
+    projectInstance.post(`CreateProjectInvite/${postData.userId}?idProject=${postData.idProject}&idPosition=${postData.positionId}`)
+      .then((res) => { console.log(res?.data?.result); })
       .catch((error) => { console.error(error) });
   };
 

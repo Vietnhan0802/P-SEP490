@@ -1,6 +1,5 @@
 import { Modal, Button } from "react-bootstrap";
 import { useState } from "react";
-import { Row, Col } from "react-bootstrap";
 import "./popup.scss";
 import { IoFlagOutline } from "react-icons/io5";
 function PostReport() {
@@ -34,7 +33,7 @@ function PostReport() {
         </Modal.Header>
 
         <Modal.Body className="popup-body report-popup" id="report-body">
-          <div className="option hateAndHarassment">
+          <div className="option hateAndHarassment form-control">
             <input
               type="radio"
               id="hateAndHarassment"
@@ -44,19 +43,19 @@ function PostReport() {
               checked={selectedOption === "hateAndHarassment"}
             />
             <label htmlFor="hateAndHarassment">Hate and Harassment</label>
-            {selectedOption === "hateAndHarassment" && (
-              <p>
-                *We do not allow the posting of content:
-                <br />
-                ** Behavior that insults or threatens others, including using
-                obscene language to degrade them
-                <br />
-                ** Threats to perform actions such as collecting information,
-                blackmailing, disclosing
-              </p>
-            )}
+            <div className={`option-content ${selectedOption === "hateAndHarassment" ? "open" : ""}`}>
+              {selectedOption === "hateAndHarassment" && (
+                <p>
+                  *We do not allow the posting of content:
+                  <br />
+                  ** Behavior that insults or threatens others, including using obscene language to degrade them
+                  <br />
+                  ** Threats to perform actions such as collecting information, blackmailing, disclosing
+                </p>
+              )}
+            </div>
           </div>
-          <div className="option shockingContent">
+          <div className="option shockingContent form-control">
             <input
               type="radio"
               id="shockingContent"
@@ -68,19 +67,21 @@ function PostReport() {
             <label htmlFor="shockingContent">
               Shocking and Offensive Content
             </label>
-            {selectedOption === "shockingContent" && (
-              <p>
-                *We do not allow the posting of content:
-                <br />
-                ** Images of death, accidents
-                <br />
-                ** Human or animal body parts that are cut, mutilated, burned,
-                or severely injured
-              </p>
-            )}
+            <div className={`option-content ${selectedOption === "shockingContent" ? "open" : ""}`}>
+              {selectedOption === "shockingContent" && (
+                <p>
+                  *We do not allow the posting of content:
+                  <br />
+                  ** Images of death, accidents
+                  <br />
+                  ** Human or animal body parts that are cut, mutilated, burned,
+                  or severely injured
+                </p>
+              )}
+            </div>
           </div>
 
-          <div className="option misinformation">
+          <div className="option misinformation form-control">
             <input
               type="radio"
               id="misinformation"
@@ -90,18 +91,21 @@ function PostReport() {
               checked={selectedOption === "misinformation"}
             />
             <label htmlFor="misinformation">Misinformation</label>
-            {selectedOption === "misinformation" && (
-              <p>
-                *We do not allow the posting of content:
-                <br />
-                ** False information that poses a danger to the community or
-                causes panic
-                <br />
-                ** Schemes promoting violence, hatred, or targeting individuals
-              </p>
-            )}
+            <div className={`option-content ${selectedOption === "misinformation" ? "open" : ""}`}>
+              {selectedOption === "misinformation" && (
+                <p>
+                  *We do not allow the posting of content:
+                  <br />
+                  ** False information that poses a danger to the community or
+                  causes panic
+                  <br />
+                  ** Schemes promoting violence, hatred, or targeting individuals
+                </p>
+              )}
+            </div>
+
           </div>
-          <div className="option fraudAndScam">
+          <div className="option fraudAndScam form-control">
             <input
               type="radio"
               id="fraudAndScam"
@@ -111,19 +115,21 @@ function PostReport() {
               checked={selectedOption === "fraudAndScam"}
             />
             <label htmlFor="fraudAndScam">Fraud and Scam</label>
-            {selectedOption === "fraudAndScam" && (
-              <p>
-                *We do not allow the posting of content:
-                <br />
-                ** Financial scams, recruitment or impersonation scams including
-                identity theft
-                <br />
-                ** Collusion or assistance in scamming or instructions on how to
-                scam
-              </p>
-            )}
+            <div className={`option-content ${selectedOption === "fraudAndScam" ? "open" : ""}`}>
+              {selectedOption === "fraudAndScam" && (
+                <p>
+                  *We do not allow the posting of content:
+                  <br />
+                  ** Financial scams, recruitment or impersonation scams including
+                  identity theft
+                  <br />
+                  ** Collusion or assistance in scamming or instructions on how to
+                  scam
+                </p>
+              )}
+            </div>
           </div>
-          <div className="option others">
+          <div className="option others form-control">
             <input
               type="radio"
               id="others"
@@ -133,13 +139,16 @@ function PostReport() {
               checked={selectedOption === "others"}
             />
             <label htmlFor="others">Others</label>
-            {selectedOption === "others" && (
-              <p>
-                *Our priority is to provide a safe environment. We encourage the
-                removal of scam content and accounts. Choose this option if your
-                report does not fit into any category.
-              </p>
-            )}
+            <div className={`option-content ${selectedOption === "others" ? "open" : ""}`}>
+              {selectedOption === "others" && (
+                <p>
+                  *Our priority is to provide a safe environment. We encourage the
+                  removal of scam content and accounts. Choose this option if your
+                  report does not fit into any category.
+                </p>
+              )}
+            </div>
+
           </div>
         </Modal.Body>
 

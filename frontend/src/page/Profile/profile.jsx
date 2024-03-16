@@ -17,10 +17,7 @@ import {
   projectInstance,
   userInstance,
 } from "../../axios/axiosConfig";
-import { FiEdit } from "react-icons/fi";
 import { CgProfile } from "react-icons/cg";
-import { MdOutlineFileDownloadDone } from "react-icons/md";
-import { FiFlag } from "react-icons/fi";
 import { useLocation } from "react-router-dom";
 import defaultProject from "../../images/common/default_project.webp";
 import DegreePu from "./degreePu";
@@ -77,7 +74,6 @@ function Profile({ handleChangeImg }) {
       .then((res) => {
         setUser(res?.data?.result);
         const user = res?.data?.result;
-        console.log(user);
         if (user.role === "Admin") {
           setTab("blog");
         } else if (user.role === "Business") {

@@ -343,7 +343,7 @@ namespace Project.Controllers
         }
 
         [HttpPost("CreateProjectInvite/{idUser}")]
-        public async Task<Response> CreateProjectInvite(string idUser, [FromQuery] Guid idProject, [FromQuery] Guid idPosition)
+        public async Task<Response> CreateProjectInvite(string idUser,  Guid idProject, Guid idPosition)
         {
             ProjectMember projectApplication = new ProjectMember
             {

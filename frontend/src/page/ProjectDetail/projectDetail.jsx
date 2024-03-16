@@ -62,13 +62,10 @@ const projectVisibility = (visibility) => {
 };
 function ProjectDetail() {
   const location = useLocation();
-
-
   const [data, setData] = useState();
   const { idProject } = location.state || {};
   useEffect(() => {
-    projectInstance
-      .get(`/GetProjectById/${idProject}`)
+    projectInstance.get(`/GetProjectById/${idProject}`)
       .then((res) => {
         setData(res?.data?.result);
       })
@@ -149,7 +146,7 @@ function ProjectDetail() {
               <div className="d-flex align-items-center">
                 {" "}
                 <FormMember projectId={idProject} positionOption={data?.positionViews} />
-                <FormApply />
+                <FormApply projectId={idProject} positionOption={data?.positionViews} />
               </div>
             </div>
             <table className="w-100">

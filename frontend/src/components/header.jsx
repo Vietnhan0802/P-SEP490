@@ -65,7 +65,7 @@ export default function Header({ activeComponent, onItemClick, changeImage }) {
     navigate('/profile', { state: { userId: id } });
   };
   const hanldeReturnHome = () => {
-    navigate('/post');
+    navigate('/post', { state: { activeItem: 'post' } });
   }
   const searchUser = (event) => {
     setSearchName(event.target.value);
