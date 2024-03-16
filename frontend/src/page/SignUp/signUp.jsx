@@ -27,6 +27,7 @@ export default function SignIn() {
     }
   };
   const handleClickGG = () => {
+    
     // const clientId = "901410740401-3e5cucjupfa8ehj4a1v1ehbvu5qi2o5g.apps.googleusercontent.com";
     // const redirectUri = "YOUR_FRONTEND_REDIRECT_URI";
     // const scope = "email profile openid";
