@@ -12,7 +12,7 @@ using Notification.Data;
 namespace Notification.Data.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20240311075909_Once")]
+    [Migration("20240316143706_Once")]
     partial class Once
     {
         /// <inheritdoc />
@@ -42,6 +42,9 @@ namespace Notification.Data.Migrations
 
                     b.Property<string>("idSender")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("idUrl")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<bool?>("isRead")
                         .HasColumnType("bit");

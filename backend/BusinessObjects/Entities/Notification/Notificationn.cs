@@ -10,6 +10,7 @@ namespace BusinessObjects.Entities.Notification
         public string? idReceiver { get; set; }
         public string? content { get; set; }
         public bool? isRead { get; set; }
+        public Guid? idUrl { get; set; }
         public string? url { get; set; }
         public DateTime createdDate { get; set; }
     }
