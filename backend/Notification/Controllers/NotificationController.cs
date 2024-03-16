@@ -112,13 +112,13 @@ namespace Notification.Controllers
                 idReceiver = idReceiver,
                 content = "content_notipost",
                 isRead = false,
+                idUrl = idPost,
                 url = "PostComment",
                 createdDate = DateTime.Now
             };
             await _context.Notifications.AddAsync(notification);
             await _context.SaveChangesAsync();
             var result = _mapper.Map<ViewNotification>(notification);
-            result.idPost = idPost;
             var infoUser = await GetNameUserCurrent(result.idSender!);
             result.nameSender = infoUser.fullName;
             result.avatar = infoUser.avatar;
