@@ -114,7 +114,6 @@ function CreateProject({ reset }) {
                 position
             );
         });
-        // formData.append("namePosition", JSON.stringify(value.namePosition)); // Pass namePosition as JSON string
         projectInstance.post(`/CreateProject/${currentUserId}`, formData, {
             headers: {
                 "Content-Type": "multipart/form-data",

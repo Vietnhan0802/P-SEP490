@@ -10,7 +10,6 @@ import FormApply from "./FormApply";
 import { projectInstance } from "../../axios/axiosConfig";
 import UpdateProjectForm from "./updateProjectForm";
 import { useLocation, useNavigate } from "react-router-dom";
-import Follow from "../../components/follow";
 
 const formatDate = (timestamp) => {
   const months = [
@@ -149,7 +148,7 @@ function ProjectDetail() {
               </div>
               <div className="d-flex align-items-center">
                 {" "}
-                <FormMember />
+                <FormMember projectId={idProject} positionOption={data?.positionViews} />
                 <FormApply />
               </div>
             </div>
