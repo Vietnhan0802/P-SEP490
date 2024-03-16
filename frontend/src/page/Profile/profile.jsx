@@ -26,6 +26,7 @@ import defaultProject from "../../images/common/default_project.webp";
 import DegreePu from "./degreePu";
 import UpdateAvatarPu from "./UpdateAvatarPu";
 import AccountReport from "../../components/report-popup/AccountReport";
+import UpdateInformationPu from "./UpdateInformationPu";
 function formatDateString(dateString) {
   // Check if the dateString is not empty
   if (dateString) {
@@ -38,7 +39,6 @@ function formatDateString(dateString) {
   return "";
 }
 function Profile({ handleChangeImg }) {
-
   const location = useLocation();
   // ````````````````````````````
   const [user, setUser] = useState({});
@@ -65,7 +65,7 @@ function Profile({ handleChangeImg }) {
     follower: 0,
     following: 0,
     isFollow: true,
-    role: ''
+    role: "",
   });
   const [userPost, setUserPost] = useState([]);
   const [userProject, setUserProject] = useState([]);
@@ -77,7 +77,7 @@ function Profile({ handleChangeImg }) {
       .then((res) => {
         setUser(res?.data?.result);
         const user = res?.data?.result;
-        console.log(user)
+        console.log(user);
         if (user.role === "Admin") {
           setTab("blog");
         } else if (user.role === "Business") {
@@ -94,24 +94,24 @@ function Profile({ handleChangeImg }) {
           phoneNumber: user?.phoneNumber || "",
           tax: user?.tax || "",
           address: user?.address || "",
-          description:
-            user?.description ||
-            "",
+          description: user?.description || "",
           imageSrc: user?.imageSrc,
           follower: user?.follower,
           following: user?.following,
           isFollow: user?.isFollow,
-          role: user?.role
+          role: user?.role,
         });
         if (user.role === "Business") {
-          postInstance.get(`GetPostByUser/${userId}`)
+          postInstance
+            .get(`GetPostByUser/${userId}`)
             .then((res) => {
               setUserPost(res?.data?.result);
             })
             .catch((error) => {
               console.error(error);
             });
-          projectInstance.get(`GetProjectByUser/${userId}`)
+          projectInstance
+            .get(`GetProjectByUser/${userId}`)
             .then((res) => {
               setUserProject(res?.data?.result);
             })
@@ -129,10 +129,15 @@ function Profile({ handleChangeImg }) {
               console.log(error);
             });
         }
-        if (user.role === 'Member') {
-          credentialInstance.get(`/GetDegreeByUser/${userId}`)
-            .then((res) => { setUserDegree(res?.data?.result) })
-            .catch((error) => { console.error(error) });
+        if (user.role === "Member") {
+          credentialInstance
+            .get(`/GetDegreeByUser/${userId}`)
+            .then((res) => {
+              setUserDegree(res?.data?.result);
+            })
+            .catch((error) => {
+              console.error(error);
+            });
         }
       });
   }, [userId, resetAvatar, resetDegree]);
@@ -153,11 +158,12 @@ function Profile({ handleChangeImg }) {
   };
   const handleUpdateUser = () => {
     setIsEdit(!isEdit);
-    userInstance.put(`/UpdateUser/${currentUserId}`, inputs, {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
+    userInstance
+      .put(`/UpdateUser/${currentUserId}`, inputs, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
       .then((res) => {
         console.log(res?.data);
       })
@@ -200,7 +206,7 @@ function Profile({ handleChangeImg }) {
       )
       .then((res) => {
         console.log(res?.data?.result);
-        setInputs(prevInputs => ({
+        setInputs((prevInputs) => ({
           ...prevInputs,
           isFollow: !inputs.isFollow,
         }));
@@ -213,11 +219,11 @@ function Profile({ handleChangeImg }) {
   };
   const [tabs, setTabs] = useState([]);
   const changeImage = (value) => {
-    if (value === 'ok') {
+    if (value === "ok") {
       setResetAvatar(!resetAvatar);
-      handleChangeImg('ok');
+      handleChangeImg("ok");
     }
-  }
+  };
   useEffect(() => {
     // Xác định tabs dựa trên role của user
     let tabsBasedOnRole = [];
@@ -249,28 +255,32 @@ function Profile({ handleChangeImg }) {
               <div className="person-name fs-3 fw-bold">{inputs.fullName}</div>
               <div className="account">{inputs.userName}</div>
             </div>
-            <div className="information position-relative d-flex flex-column justify-content-center">
-              <img
-                src={
-                  inputs.imageSrc === "https://localhost:7006/Images/"
-                    ? defaultImage
-                    : inputs.imageSrc
-                }
-                alt=""
-                style={{ borderRadius: "50%" }}
-                className="avatar m-auto"
-              />
-              <UpdateAvatarPu show={display}
+            <div className="information position-relative align-items-center d-flex flex-column justify-content-center">
+              <div className="avatar-contain wh-200">
+                <img
+                  src={
+                    inputs.imageSrc === "https://localhost:7006/Images/"
+                      ? defaultImage
+                      : inputs.imageSrc
+                  }
+                  alt=""
+                  className="m-auto"
+                />
+              </div>
+
+              <UpdateAvatarPu
+                show={display}
                 onClose={() => setDisplay(!display)}
                 image={inputs.imageSrc}
                 currentUserId={currentUserId}
-                changeImage={changeImage} />
+                changeImage={changeImage}
+              />
               {display === false && currentUserId !== userId ? (
                 <button
                   className="btn edit-btn mt-3 w-75 m-auto"
                   onClick={() => handleFollow()}
                 >
-                  {inputs.isFollow ? 'UnFollow' : 'Follow'}
+                  {inputs.isFollow ? "UnFollow" : "Follow"}
                 </button>
               ) : (
                 <button
@@ -306,7 +316,7 @@ function Profile({ handleChangeImg }) {
                   </div>
                 </div>
               </ProfileReport>
-              <AccountReport/>
+              <AccountReport />
             </div>
           </div>
         </Col>
@@ -318,22 +328,23 @@ function Profile({ handleChangeImg }) {
                   {" "}
                   <h4 className="">Contact detail</h4>
                   {currentUserId === userId ? (
-                    <div className="edit-btn-info btnr">
+                    <div className="edit-text-white btn-info btnr">
                       {currentUserId === userId ? (
-                        <div className="edit-btn-info btnr">
-                          {!isEdit && (
-                            <FiEdit
-                              onClick={() => hanldeEdit()}
-                              className="edit-icon mb-2 fs-2"
-                            />
-                          )}
-                          {isEdit && (
-                            <MdOutlineFileDownloadDone
-                              onClick={() => handleUpdateUser()}
-                              className="edit-icon mb-2 fs-2"
-                            />
-                          )}
-                        </div>
+                        // <div className="edit-text-white btn-info btnr">
+                        //   {!isEdit && (
+                        //     <FiEdit
+                        //       onClick={() => hanldeEdit()}
+                        //       className="edit-icon mb-2 fs-2"
+                        //     />
+                        //   )}
+                        //   {isEdit && (
+                        //     <MdOutlineFileDownloadDone
+                        //       onClick={() => handleUpdateUser()}
+                        //       className="edit-icon mb-2 fs-2"
+                        //     />
+                        //   )}
+                        // </div>
+                        <UpdateInformationPu />
                       ) : (
                         ""
                       )}
@@ -357,7 +368,9 @@ function Profile({ handleChangeImg }) {
                 </div>
 
                 <div className="col-md-6">
-                  <label className="form-label">{inputs.role === 'Business' ? 'Establish date' : 'Birthday'}</label>
+                  <label className="form-label">
+                    {inputs.role === "Business" ? "Establish date" : "Birthday"}
+                  </label>
                   <input
                     type="date"
                     name="date"
@@ -383,7 +396,7 @@ function Profile({ handleChangeImg }) {
                 </div>
 
                 <div className="col-md-6">
-                  {inputs.role !== 'Business' && (
+                  {inputs.role !== "Business" && (
                     <div>
                       <label className="form-label">Gender:</label>
                       <div className="form-control bg-text">
@@ -431,8 +444,6 @@ function Profile({ handleChangeImg }) {
                       </div>
                     </div>
                   )}
-
-
                 </div>
                 <div className="col-md-6">
                   <label className="form-label">Address:</label>
@@ -495,11 +506,14 @@ function Profile({ handleChangeImg }) {
                 <span className="glider"></span>
               </div>
               <div className="action-user d-flex flex-row align-items-center justify-content-end">
-                {user.role === "Member" && tab === "degree" && <DegreePu user={currentUserId} />}
+                {user.role === "Member" && tab === "degree" && (
+                  <DegreePu user={currentUserId} />
+                )}
                 {user.role === "Member" && tab === "degree" && (
                   <button
-                    className={`height-50 btn-info btn ${tab === "degree" ? "active" : ""
-                      }`}
+                    className={`height-50 text-white btn-info btn ${
+                      tab === "degree" ? "active" : ""
+                    }`}
                     onClick={() => hanldeSetTab("degree")}
                   >
                     {showAllItems ? "Show Less" : "View All"}
@@ -508,8 +522,9 @@ function Profile({ handleChangeImg }) {
 
                 {user.role === "Admin" && tab === "blog" && (
                   <button
-                    className={`height-50 btn-info btn ${tab === "blog" ? "active" : ""
-                      }`}
+                    className={`height-50 text-white btn-info btn ${
+                      tab === "blog" ? "active" : ""
+                    }`}
                     onClick={() => hanldeSetTab("blog")}
                   >
                     {" "}
@@ -518,8 +533,9 @@ function Profile({ handleChangeImg }) {
                 )}
                 {user.role === "Business" && tab === "post" && (
                   <button
-                    className={`height-50 btn-info btn ${tab === "post" ? "active" : ""
-                      }`}
+                    className={`height-50 text-white btn-info btn ${
+                      tab === "post" ? "active" : ""
+                    }`}
                     onClick={() => hanldeSetTab("post")}
                   >
                     {" "}
@@ -528,8 +544,9 @@ function Profile({ handleChangeImg }) {
                 )}
                 {user.role !== "Admin" && tab === "project" && (
                   <button
-                    className={`height-50 btn-info btn ${tab === "project" ? "active" : ""
-                      }`}
+                    className={`height-50 text-white btn-info btn ${
+                      tab === "project" ? "active" : ""
+                    }`}
                     onClick={() => hanldeSetTab("project")}
                   >
                     {" "}
@@ -540,194 +557,213 @@ function Profile({ handleChangeImg }) {
             </div>
             <div>
               {user.role === "Member" && tab === "degree" && (
-                <div className={`degree tab-content ${showAllItems ? "scrollable" : ""}`}>
-                  {userDegree.slice(0, showAllItems ? userDegree.length : 3).map((item) => (<div className="row" key={item.idDegree}>
-                    <div className="col-2 d-flex justify-content-center img-contain">
-                      <img src={degree} alt="" className="image" />
-                    </div>
-                    <div className="col-7 d-flex flex-column justify-content-center">
-                      <p className="degree-title ellipsis">
-                        Degree title:
-                        {item.name}
-                      </p>
-                      <p className="degree-description ellipsis">
-                        Degree institution:
-                        {item.institution}
-                      </p>
-                    </div>
-                    <div className="col-3 d-flex justify-content-center align-items-center">
-                      <a
-                        href={item.fileSrc} // Link to the PDF file
-                        target="_blank" // Open in a new tab
-                        rel="noopener noreferrer" // Security best practice
-                        className="btn degree-detail"
-                      >
-                        View Detail
-                      </a>
-                    </div>
-                  </div>))}
+                <div
+                  className={`degree tab-content ${
+                    showAllItems ? "scrollable" : ""
+                  }`}
+                >
+                  {userDegree
+                    .slice(0, showAllItems ? userDegree.length : 3)
+                    .map((item) => (
+                      <div className="row" key={item.idDegree}>
+                        <div className="col-2 d-flex justify-content-center img-contain">
+                          <img src={degree} alt="" className="image" />
+                        </div>
+                        <div className="col-7 d-flex flex-column justify-content-center">
+                          <p className="degree-title ellipsis">
+                            Degree title:
+                            {item.name}
+                          </p>
+                          <p className="degree-description ellipsis">
+                            Degree institution:
+                            {item.institution}
+                          </p>
+                        </div>
+                        <div className="col-3 d-flex justify-content-center align-items-center">
+                          <a
+                            href={item.fileSrc} // Link to the PDF file
+                            target="_blank" // Open in a new tab
+                            rel="noopener noreferrer" // Security best practice
+                            className="btn degree-detail"
+                          >
+                            View Detail
+                          </a>
+                        </div>
+                      </div>
+                    ))}
                 </div>
               )}
               {/* DegreeTab */}
               {user.role === "Business" && tab === "post" && (
                 <div className="post tab-content">
-                  {
-                    userPost.length > 0 ?
-                      userPost.map((post) => (
-                        <div className="row">
-                          <div className="col-3 d-flex justify-content-center img-contain">
+                  {userPost.length > 0 ? (
+                    userPost.map((post) => (
+                      <div className="row">
+                        <div className="col-3 d-flex justify-content-center img-contain">
+                          <img
+                            src={
+                              post.viewPostImages.length > 0
+                                ? post.viewPostImages[0].imageSrc
+                                : defaultProject
+                            }
+                            alt=""
+                            className="image"
+                          />
+                        </div>
+                        <div className="col-7 d-flex flex-column justify-content-start">
+                          <div className="d-flex items-center">
                             <img
-                              src={
-                                post.viewPostImages.length > 0
-                                  ? post.viewPostImages[0].imageSrc
-                                  : defaultProject
-                              }
-                              alt=""
-                              className="image"
+                              className="avata-s mr-4"
+                              src={post.avatar}
+                              alt="Instructor Cooper Bator"
                             />
-                          </div>
-                          <div className="col-7 d-flex flex-column justify-content-start">
-                            <div className="d-flex items-center">
-                              <img
-                                className="avata-s mr-4"
-                                src={post.avatar}
-                                alt="Instructor Cooper Bator"
-                              />
-                              <div className="left-30 d-flex flex-column justify-content-center">
-                                <div className="size-20 SFU-heavy d-flex ellipsis">
-                                  {post.fullName}
-                                </div>
-                                <div className="size-14 SFU-reg text-gray-600 d-flex ellipsis">
-                                  {formatDateString(post.createdDate)}
-                                </div>
+                            <div className="left-30 d-flex flex-column justify-content-center">
+                              <div className="size-20 SFU-heavy d-flex ellipsis">
+                                {post.fullName}
+                              </div>
+                              <div className="size-14 SFU-reg text-gray-600 d-flex ellipsis">
+                                {formatDateString(post.createdDate)}
                               </div>
                             </div>
-                            <p className="degree-description ellipsis">
-                              Post Title: {post.title}
-                            </p>
                           </div>
-                          <div className="col-2 d-flex justify-content-center align-items-center">
-                            <button className="btn degree-detail">
-                              View Detail
-                            </button>
-                          </div>
+                          <p className="degree-description ellipsis">
+                            Post Title: {post.title}
+                          </p>
                         </div>
-                      )) : <p>There is no post </p>}
+                        <div className="col-2 d-flex justify-content-center align-items-center">
+                          <button className="btn degree-detail">
+                            View Detail
+                          </button>
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <p>There is no post </p>
+                  )}
                 </div>
               )}
               {/* Posttab of business profile*/}
               {user.role === "Admin" && tab === "blog" && (
                 <div className="blog tab-content">
-                  {
-                    userBlog.length > 0 ?
-                      userBlog.map((blog) => (
-                        <div className="row" key={blog.idBlog}>
-                          <div className="col-3 d-flex justify-content-center img-contain">
-                            <img
-                              src={
-                                blog.viewBlogImages.length > 0
-                                  ? blog.viewBlogImages[0].imageSrc
-                                  : defaultProject
-                              }
-                              alt=""
-                              className="image"
-                            />
-                          </div>
-                          <div className="col-7 d-flex flex-column justify-content-start">
-                            <div className="d-flex items-center">
+                  {userBlog.length > 0 ? (
+                    userBlog.map((blog) => (
+                      <div
+                        className="row align-items-center mb-3"
+                        key={blog.idBlog}
+                      >
+                        <div className="col-3 d-flex justify-content-center img-contain">
+                          <img
+                            src={
+                              blog.viewBlogImages.length > 0
+                                ? blog.viewBlogImages[0].imageSrc
+                                : defaultProject
+                            }
+                            alt=""
+                            className="image"
+                          />
+                        </div>
+                        <div className="col-7 d-flex flex-column justify-content-start">
+                          <div className="d-flex items-center">
+                            <div className="avatar-contain me-2">
                               <img
-                                className="avata-s mr-4"
                                 src={blog.avatar}
                                 alt="Instructor Cooper Bator"
                               />
-                              <div className="left-30 d-flex flex-column justify-content-center">
-                                <div className="size-20 SFU-heavy d-flex ellipsis">
-                                  {blog.fullName}
-                                </div>
-                                <div className="size-14 SFU-reg text-gray-600 d-flex ellipsis">
-                                  {formatDateString(blog.createdDate)}
-                                </div>
+                            </div>
+
+                            <div className="left-30 d-flex flex-column justify-content-center">
+                              <div className="size-20 SFU-heavy d-flex ellipsis">
+                                {blog.fullName}
+                              </div>
+                              <div className="size-14 SFU-reg text-gray-600 d-flex ellipsis">
+                                {formatDateString(blog.createdDate)}
                               </div>
                             </div>
-                            <p className="degree-description ellipsis">
-                              Post Title:{blog.title}
-                            </p>
                           </div>
-                          <div className="col-2 d-flex justify-content-center align-items-center">
-                            <button className="btn degree-detail">
-                              View Detail
-                            </button>
-                          </div>
+                          <p className="degree-description ellipsis">
+                            Post Title:{blog.title}
+                          </p>
                         </div>
-                      )) : <p>There is no blog</p>}
+                        <div className="col-2 d-flex justify-content-center align-items-center">
+                          <button className="btn degree-detail">
+                            View More
+                          </button>
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <p>There is no blog</p>
+                  )}
                 </div>
               )}
               {user.role !== "Admin" && tab === "project" && (
                 <div className="project tab-content">
                   <div className="row" id="all-projects">
-                    {
-                      userProject.length > 0 ?
-                        userProject.map((project) => (
-                          <div className="col-md-6" id="project-items-1">
-                            <div className="card">
-                              <div className="card-body">
-                                <div className="d-flex mb-3">
-                                  <div className="flex-grow-1 align-items-start">
-                                    <div>
-                                      <h6 className="mb-0 text-muted">
-                                        <i className="mdi mdi-circle-medium text-danger fs-3 align-middle"></i>
-                                        <span className="team-date">
-                                          {formatDateString(project.createdDate)}
-                                        </span>
-                                      </h6>
-                                    </div>
+                    {userProject.length > 0 ? (
+                      userProject.map((project) => (
+                        <div className="col-md-6" id="project-items-1">
+                          <div className="card">
+                            <div className="card-body">
+                              <div className="d-flex mb-3">
+                                <div className="flex-grow-1 align-items-start">
+                                  <div>
+                                    <h6 className="mb-0 text-muted">
+                                      <i className="mdi mdi-circle-medium text-danger fs-3 align-middle"></i>
+                                      <span className="team-date">
+                                        {formatDateString(project.createdDate)}
+                                      </span>
+                                    </h6>
                                   </div>
                                 </div>
+                              </div>
 
-                                <div className="mb-4">
-                                  <h5 className="mb-1 font-size-17 team-title ellipsis">
-                                    {project.name}
-                                  </h5>
-                                  <p className="text-muted mb-0 team-description ellipsis">
-                                    {project.description}
-                                  </p>
+                              <div className="mb-4">
+                                <h5 className="mb-1 font-size-17 team-title ellipsis">
+                                  {project.name}
+                                </h5>
+                                <p className="text-muted mb-0 team-description ellipsis">
+                                  {project.description}
+                                </p>
+                              </div>
+                              <div className="d-flex">
+                                <div className="avatar-group float-start flex-grow-1 task-assigne">
+                                  {/* Clone from */}
+                                  <div className="avatar-group-item">
+                                    <img
+                                      src="https://bootdey.com/img/Content/avatar/avatar1.png"
+                                      alt=""
+                                      className="rounded-circle avatar-sm"
+                                    />
+                                  </div>
+                                  {/* to THis */}
+                                  <div className="avatar-group-item">
+                                    <img
+                                      src="https://bootdey.com/img/Content/avatar/avatar1.png"
+                                      alt=""
+                                      className="rounded-circle avatar-sm"
+                                    />
+                                  </div>
+                                  <div className="avatar-group-item">
+                                    <img
+                                      src="https://bootdey.com/img/Content/avatar/avatar1.png"
+                                      alt=""
+                                      className="rounded-circle avatar-sm"
+                                    />
+                                  </div>
                                 </div>
-                                <div className="d-flex">
-                                  <div className="avatar-group float-start flex-grow-1 task-assigne">
-                                    {/* Clone from */}
-                                    <div className="avatar-group-item">
-                                      <img
-                                        src="https://bootdey.com/img/Content/avatar/avatar1.png"
-                                        alt=""
-                                        className="rounded-circle avatar-sm"
-                                      />
-                                    </div>
-                                    {/* to THis */}
-                                    <div className="avatar-group-item">
-                                      <img
-                                        src="https://bootdey.com/img/Content/avatar/avatar1.png"
-                                        alt=""
-                                        className="rounded-circle avatar-sm"
-                                      />
-                                    </div>
-                                    <div className="avatar-group-item">
-                                      <img
-                                        src="https://bootdey.com/img/Content/avatar/avatar1.png"
-                                        alt=""
-                                        className="rounded-circle avatar-sm"
-                                      />
-                                    </div>
-                                  </div>
-                                  <div className="align-self-end">
-                                    <span className="badge badge-soft-danger p-2 team-status">
-                                      {projectStatus(project.process)}
-                                    </span>
-                                  </div>
+                                <div className="align-self-end">
+                                  <span className="badge badge-soft-danger p-2 team-status">
+                                    {projectStatus(project.process)}
+                                  </span>
                                 </div>
                               </div>
                             </div>
                           </div>
-                        )) : <p>There is no project</p>}
+                        </div>
+                      ))
+                    ) : (
+                      <p>There is no project</p>
+                    )}
                   </div>
                 </div>
               )}
