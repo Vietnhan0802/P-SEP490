@@ -18,7 +18,7 @@ function PostReport() {
     event.preventDefault();
     if (!selectedOption) {
       alert("Please select an option before submitting.");
-      return; // Ngăn form không được submit nếu không có option nào được chọn
+      return;
     }
     alert(`Report submitted for: ${selectedOption}`);
     modalClose();
@@ -33,7 +33,7 @@ function PostReport() {
           <Modal.Title>Report Content</Modal.Title>
         </Modal.Header>
 
-        <Modal.Body className="popup-body report-popup" id="post-report-body">
+        <Modal.Body className="popup-body report-popup" id="report-body">
           <div className="option hateAndHarassment">
             <input
               type="radio"
@@ -43,23 +43,19 @@ function PostReport() {
               onChange={handleChange}
               checked={selectedOption === "hateAndHarassment"}
             />
-            <label htmlFor="hateAndHarassment">Thù ghét và quấy rối</label>
+            <label htmlFor="hateAndHarassment">Hate and Harassment</label>
             {selectedOption === "hateAndHarassment" && (
               <p>
-                *Chúng tôi không cho phép đăng nội dung:
+                *We do not allow the posting of content:
                 <br />
-                ** Hành vi lăng mạ hoặc đe dọa người khác, bao gồm việc sử dụng
-                lời lẽ tục tĩu để hạ bệ họ
+                ** Behavior that insults or threatens others, including using
+                obscene language to degrade them
                 <br />
-                ** Đe dọa thực hiện những hành vi như thu thập thông tin, tống
-                tiền, tiết lộ
+                ** Threats to perform actions such as collecting information,
+                blackmailing, disclosing
               </p>
             )}
           </div>
-
-          {/* Repeat the div for each option, adjusting the className, id, value, and label as needed. 
-             You can style each option individually using the className. */}
-
           <div className="option shockingContent">
             <input
               type="radio"
@@ -70,16 +66,16 @@ function PostReport() {
               checked={selectedOption === "shockingContent"}
             />
             <label htmlFor="shockingContent">
-              Nội dung gây sốc và phản cảm
+              Shocking and Offensive Content
             </label>
             {selectedOption === "shockingContent" && (
               <p>
-                *Chúng tôi không cho phép đăng nội dung:
+                *We do not allow the posting of content:
                 <br />
-                ** Hình ảnh tử vong, tai nạn
+                ** Images of death, accidents
                 <br />
-                ** Bộ phận cơ thể người hoặc động vật bị cắt xẻ, hủy hoại, đốt
-                hoặc bị thương nghiêm trọng
+                ** Human or animal body parts that are cut, mutilated, burned,
+                or severely injured
               </p>
             )}
           </div>
@@ -93,15 +89,15 @@ function PostReport() {
               onChange={handleChange}
               checked={selectedOption === "misinformation"}
             />
-            <label htmlFor="misinformation">Thông tin sai lệch</label>
+            <label htmlFor="misinformation">Misinformation</label>
             {selectedOption === "misinformation" && (
               <p>
-                *Chúng tôi không cho phép đăng nội dung:
+                *We do not allow the posting of content:
                 <br />
-                ** Thông tin sai lệnh gây ra nguy hiểm cho cộng đồng hoặc gây ra
-                hoảng loạn
+                ** False information that poses a danger to the community or
+                causes panic
                 <br />
-                ** Ấm mưu cổ xúy bạo lực, lòng thù hận hoặc nhắm đến cá nhân
+                ** Schemes promoting violence, hatred, or targeting individuals
               </p>
             )}
           </div>
@@ -114,15 +110,16 @@ function PostReport() {
               onChange={handleChange}
               checked={selectedOption === "fraudAndScam"}
             />
-            <label htmlFor="fraudAndScam">Gian lận và lừa đảo</label>
+            <label htmlFor="fraudAndScam">Fraud and Scam</label>
             {selectedOption === "fraudAndScam" && (
               <p>
-                *Chúng tôi không cho phép đăng nội dung:
+                *We do not allow the posting of content:
                 <br />
-                ** Lừa đảo tài chính, tuyển dụng hoặc lừa đảo giả mạo bao gồm
-                trộm cắp danh tính
+                ** Financial scams, recruitment or impersonation scams including
+                identity theft
                 <br />
-                ** Thông đồng hoặc hỗ trợ lừa đảo hoặc hướng dẫn cách lừa đảo
+                ** Collusion or assistance in scamming or instructions on how to
+                scam
               </p>
             )}
           </div>
@@ -135,16 +132,15 @@ function PostReport() {
               onChange={handleChange}
               checked={selectedOption === "others"}
             />
-            <label htmlFor="others">Khác</label>
+            <label htmlFor="others">Others</label>
             {selectedOption === "others" && (
               <p>
-                *Ưu tiên của chúng tôi là cung cấp một môi trường an toàn.
-                Khuyến khích loại bỏ nội dung và tài khoản lừa đảo. Hãy chọn mục
-                này nếu báo cáo của bạn không thuộc bất cứ danh mục nào.
+                *Our priority is to provide a safe environment. We encourage the
+                removal of scam content and accounts. Choose this option if your
+                report does not fit into any category.
               </p>
             )}
           </div>
-          {/* Continue for other options... */}
         </Modal.Body>
 
         <Modal.Footer>
