@@ -7,6 +7,7 @@ import "../SignIn/signIn.scss";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { userInstance } from "../../axios/axiosConfig";
+import { GoogleLogin } from '@react-oauth/google';
 import { jwtDecode } from "jwt-decode";
 import Cookies from 'js-cookie';
 import Notification, { notifySuccess, notifyError } from "../../components/notification";
@@ -46,6 +47,47 @@ export default function SignIn() {
     } catch (error) {
       console.error("Error during sign in:", error);
     }
+  };
+
+  const responseMessage = async (googleResponse) => {
+    try {
+      console.log("Google login response:", googleResponse);
+      const { credential } = googleResponse;
+      const decodedGG = jwtDecode(credential); // Assuming the JWT format response
+
+      // Implement your logic for successful Google login here.
+      // For demonstration, let's just log the decoded JWT
+      console.log("Decoded JWT from Google:", decodedGG);
+      const email = decodedGG.email; // Might have been 'email' instead of 'Email'
+      const fullName = decodedGG.name; // Might have been 'name' instead of 'FullName'
+
+      console.log(email, fullName);
+
+      const apiResponse = await userInstance.post(`/SignInGoogle/${email}`);
+      if (apiResponse?.data?.status === "OK") {
+        notifySuccess('Sign in successfully!');
+        const decode = jwtDecode(apiResponse?.data?.result.token);
+        sessionStorage.setItem('userSession', JSON.stringify({
+          currentUserId: decode.Id,
+          userName: decode.FullName,
+          userEmail: decode.Email,
+          token: apiResponse?.data?.result.token,
+          role: apiResponse?.data?.result.role,
+        }));
+        // Broadcast the login event to other tabs
+        const loginChannel = new BroadcastChannel('login_channel');
+        loginChannel.postMessage({ action: 'login', userSession: { userId: decode.Id, role: apiResponse?.data?.result.role } });
+        navigate("/post", { state: { activeItem: 'post' } });
+      } else {
+        notifyError('Sign in failed!');
+      }
+    } catch (error) {
+      console.error("Error during sign in:", error);
+    }
+  };
+  
+  const errorMessage = (error) => {
+    console.error("Google login error:", error);
   };
 
   const handleClickGG = () => {
@@ -124,14 +166,15 @@ export default function SignIn() {
               </div>
               <div className="d-flex flex-row pt-3 pb-3">
                 <div className="d-flex col-6 google-btn justify-content-end">
-                  <button
+                <GoogleLogin onSuccess={responseMessage} onError={errorMessage} />
+                  {/* <button
                     className="gray-border white-bg d-flex flex-row rounded-50 align-items-center justify-content-center"
                     type="button"
                     onClick={handleClickGG}
                   >
                     <img src={GGIcon} alt="GGIcon" />
                     <p>Google</p>
-                  </button>
+                  </button> */}
                 </div>
                 <div className="d-flex col-6 facebook-btn">
                   <button

@@ -546,68 +546,103 @@ namespace User.Controllers
             return BadRequest("User doesn't exists!");
         }
 
-        [HttpGet("GoogleSignUp")]
-        public IActionResult GoogleSignUp()
+        [HttpPost("SignUpGoogleMember/{email}/{fullName}")]
+        public async Task<Response> SignUpGoogleMember(string email, string fullName)
         {
-            var properties = new AuthenticationProperties
+            var userExits = await _userManager.FindByEmailAsync(email);
+            if (userExits != null)
             {
-                RedirectUri = Url.Action("GoogleSignUpResponse"),
-                Items =
-                {
-                    { "scheme", "Google" },
-                },
-            };
-            return Challenge(properties, "Google");
-        }
-
-        [HttpGet("GoogleSignUpResponse")]
-        public async Task<Response> GoogleSignUpResponse()
-        {
-            var result = await HttpContext.AuthenticateAsync("Google");
-            if (!result.Succeeded)
-            {
-                return new Response(HttpStatusCode.Unauthorized, "Failed to authenticate with Google!");
-            }
-            var email = result.Principal.FindFirst(ClaimTypes.Email)?.ToString();
-
-            var userExists = await _userManager.FindByEmailAsync(email);
-            if (userExists != null)
-            {
-                return new Response(HttpStatusCode.BadRequest, "User already exists!");
+                return new Response(HttpStatusCode.Conflict, "User already exists!");
             }
 
             AppUser newUser = new AppUser()
             {
-                UserName = result.Principal.FindFirst(ClaimTypes.Email)?.ToString(),
-                Email = result.Principal.FindFirst(ClaimTypes.Email)?.ToString(),
-                fullName = result.Principal.FindFirst(ClaimTypes.Name)?.ToString(),
-                date = DateTime.Parse(result.Principal.FindFirst(ClaimTypes.DateOfBirth)?.ToString()),
-                PhoneNumber = result.Principal.FindFirst(ClaimTypes.MobilePhone)?.ToString(),
-                address = result.Principal.FindFirst(ClaimTypes.StreetAddress)?.ToString(),
+                UserName = email,
+                Email = email,
+                fullName = fullName,
                 isBlock = false,
                 createdDate = DateTime.Now,
                 SecurityStamp = Guid.NewGuid().ToString()
             };
-            var createUser = await _userManager.CreateAsync(newUser);
-            if (!createUser.Succeeded)
+            var isSuccess = await _userManager.CreateAsync(newUser);
+            if (!isSuccess.Succeeded)
             {
                 return new Response(HttpStatusCode.BadRequest, "User failed to create! Please check and try again!");
             }
-            //await _userManager.AddToRoleAsync(newUser, "Member");
             if (await _roleManager.RoleExistsAsync(TypeUser.Member.ToString()))
             {
                 await _userManager.AddToRoleAsync(newUser, TypeUser.Member.ToString());
-
-                var token = await _userManager.GenerateEmailConfirmationTokenAsync(newUser);
-                var confirmLink = Url.Action(nameof(ConfirmEmail), "User", new { token, email = newUser.Email }, Request.Scheme);
-                EmailRequest emailRequest = new EmailRequest();
-                emailRequest.ToEmail = newUser.Email;
-                emailRequest.Subject = "Confirmation Email";
-                emailRequest.Body = GetHtmlContent(newUser.fullName, confirmLink!);
-                await _emailService.SendEmailAsync(emailRequest);
-                return new Response(HttpStatusCode.NoContent, "User creates & sends email successfully!");
+                return new Response(HttpStatusCode.NoContent, "User creates is success!");
             }
             return new Response(HttpStatusCode.BadRequest, "User failed to create!");
+        }
+        [HttpPost("SignUpGoogleBusiness/{email}/{fullName}")]
+        public async Task<Response> SignUpGoogleBusiness(string email, string fullName)
+        {
+            var userExits = await _userManager.FindByEmailAsync(email);
+            if (userExits != null)
+            {
+                return new Response(HttpStatusCode.Conflict, "User already exists!");
+            }
+
+            AppUser newUser = new AppUser()
+            {
+                UserName = email,
+                Email = email,
+                fullName = fullName,
+                isBlock = false,
+                createdDate = DateTime.Now,
+                SecurityStamp = Guid.NewGuid().ToString()
+            };
+            var isSuccess = await _userManager.CreateAsync(newUser);
+            if (!isSuccess.Succeeded)
+            {
+                return new Response(HttpStatusCode.BadRequest, "User failed to create! Please check and try again!");
+            }
+            if (await _roleManager.RoleExistsAsync(TypeUser.Business.ToString()))
+            {
+                await _userManager.AddToRoleAsync(newUser, TypeUser.Business.ToString());
+                return new Response(HttpStatusCode.NoContent, "User creates is success!");
+            }
+            return new Response(HttpStatusCode.BadRequest, "User failed to create!");
+        }
+        [HttpPost("SignInGoogle/{email}")]
+        public async Task<Response> SignInGoogleMember(string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user != null)
+            {
+                if (user.isBlock == true)
+                {
+                    return new Response(HttpStatusCode.Unauthorized, "User has been blocked!");
+                }
+                var userRoles = await _userManager.GetRolesAsync(user);
+                var authClaims = new List<Claim>
+                {
+                    new Claim("Id" , user.Id.ToString()),
+                    new Claim("Username", user.UserName),
+                    new Claim("Email", user.Email),
+                    new Claim("FullName", user.fullName),
+                    /*new Claim("Date", user.date.ToString()),
+                    new Claim("IsMale", user.isMale.ToString()),
+                    new Claim("Phone", user.PhoneNumber),
+                    new Claim("Tax", user.tax),
+                    new Claim("Address", user.address),*/
+                };
+                foreach (var userRole in userRoles)
+                {
+                    authClaims.Add(new Claim(ClaimTypes.Role, userRole));
+                }
+
+                var jwtToken = GetToken(authClaims);
+                var result = new
+                {
+                    token = new JwtSecurityTokenHandler().WriteToken(jwtToken),
+                    role = userRoles.FirstOrDefault()
+                };
+                return new Response(HttpStatusCode.OK, "Login successfully", result);
+            }
+            return new Response(HttpStatusCode.BadRequest, "Invalid input attempt!");
         }
     }
 }
