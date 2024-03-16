@@ -2,7 +2,7 @@ import { Modal, Button } from "react-bootstrap";
 import { useState } from "react";
 import "./popup.scss";
 import { IoFlagOutline } from "react-icons/io5";
-function PostReport() {
+function Report() {
   const [show, setShow] = useState(false);
   const modalClose = () => setShow(false);
   const modalShow = () => setShow(true);
@@ -10,7 +10,15 @@ function PostReport() {
   const [selectedOption, setSelectedOption] = useState("");
 
   const handleChange = (event) => {
-    setSelectedOption(event.target.value);
+    // Add a small delay to allow for a smoother transition effect
+    // when switching between options
+    const value = event.target.value;
+    if (selectedOption !== value) {
+      setSelectedOption(""); // Reset or collapse all options first
+      setTimeout(() => {
+        setSelectedOption(value); // Then open the new option after a slight delay
+      }, 100); // Adjust delay timing as necessary for smoothness
+    }
   };
 
   const modelSubmit = (event) => {
@@ -164,4 +172,4 @@ function PostReport() {
     </div>
   );
 }
-export default PostReport;
+export default Report;

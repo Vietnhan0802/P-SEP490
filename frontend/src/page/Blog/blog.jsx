@@ -1,19 +1,17 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
 import "../Blog/blog.scss";
-import { IoFlagOutline } from "react-icons/io5";
 import { FaHeart } from "react-icons/fa";
 import { CiSearch } from "react-icons/ci";
 import { FiEye } from "react-icons/fi";
 import { RiAdminLine } from "react-icons/ri";
-import ReportPopup from "../../components/Popup/reportPopup";
 import { blogInstance } from "../../axios/axiosConfig";
 import BlogPu from "./blogPu";
 import { useNavigate } from "react-router-dom";
 import { Col, Row } from "react-bootstrap";
 import Follow from "../../components/follow";
 import SideBar from "../../components/sidebar";
-import PostReport from "../../components/report-popup/PostReport";
+import Report from "../../components/report-popup/Report";
 
 function calculateTimeDifference(targetDate) {
   // Convert the target date string to a Date object
@@ -72,13 +70,12 @@ function Blog() {
   const { role, currentUserId } = sessionData;
   const [reset, setReset] = useState(true);
   const navigate = useNavigate();
+  const [search, setSearch] = useState('');
+  const [filterBlog, setFilterBlog] = useState([]);
   //_________________________________________________________//
 
   const hanldeViewDetail = (blogId) => {
     navigate("/blogdetail", { state: { idBlog: blogId } });
-  };
-  const handleReportClick = (blogId) => {
-    setBlogPopups((prev) => ({ ...prev, [blogId]: true }));
   };
   //Hanlde like or unlike the the blog
   const handleLikeOrUnlikeBlog = (idBlog) => {
@@ -147,6 +144,14 @@ function Blog() {
   const resetBlog = (value) => {
     setReset(!reset);
   };
+  const handleSearchPost = (event) => {
+    setSearch(event.target.value);
+    const searchLower = event.target.value.toLowerCase();
+    const filtered = data.filter(blog =>
+      blog.fullName.toLowerCase().includes(searchLower) || blog.title.toLowerCase().includes(searchLower)
+    );
+    setFilterBlog(filtered);
+  }
   return (
     <Row className="pt-3 ms-0 me-0">
       <Col md={3}>
@@ -159,8 +164,10 @@ function Blog() {
               <CiSearch className="" />
               <input
                 type="text"
+                onChange={handleSearchPost}
+                value={search}
                 placeholder={"Search"}
-                className="search-box size-20"
+                className="search-box size-20 w-100"
               />
             </div>
             <div className="d-flex flex-row align-items-center col-auto m-md-0-cus mt-2 p-0">
@@ -172,12 +179,11 @@ function Blog() {
             </div>
           </div>
 
-          {data.map((item) => (
+          {(search ? filterBlog : data).map((item) => (
             <div
               key={item.idBlog}
-              className={`blog-item p-2 ${
-                blogPopups[item.id] ? "position-relative" : ""
-              }`}
+              className={`blog-item p-2 ${blogPopups[item.id] ? "position-relative" : ""
+                }`}
             >
               <div className="d-flex justify-content-between align-items-center">
                 {" "}
@@ -190,7 +196,7 @@ function Blog() {
                     <p className="mb-0">{item.createdDate}</p>
                   </div>
                 </div>
-                <PostReport />
+                <Report />
               </div>
 
               <h3 className="mt-2">{item.title}</h3>
@@ -216,12 +222,6 @@ function Blog() {
                     <FaHeart className={`me-2 ${item.isLike ? "red" : ""}`} />{" "}
                     {item.like}
                   </div>
-                  {/* <div
-                    className="d-flex align-items-center me-3"
-                    onClick={() => handleReportClick(item.id)}
-                  >
-                    <IoFlagOutline />{" "}
-                  </div> */}
                 </div>
                 <button
                   className="view-btn btn"
@@ -230,29 +230,6 @@ function Blog() {
                   View Detail
                 </button>
               </div>
-              {blogPopups[item.id] && (
-                <ReportPopup
-                  trigger={blogPopups[item.id]}
-                  setTrigger={(value) =>
-                    setBlogPopups((prev) => ({ ...prev, [item.id]: value }))
-                  }
-                >
-                  <div className="bg-white h-100 blog-report">
-                    <h3 className="text-center border-bottom pb-2">Report</h3>
-                    <p>
-                      <b>Please fill in your feedback</b>
-                    </p>
-                    <textarea
-                      type="text"
-                      placeholder="What's wrong with this blog"
-                      className="w-100 p-3"
-                    />
-                    <div className="d-flex justify-content-end mt-2">
-                      <button className="btn btn-secondary ">Submit</button>
-                    </div>
-                  </div>
-                </ReportPopup>
-              )}
             </div>
           ))}
         </div>

@@ -256,7 +256,7 @@ namespace Project.Controllers
                                                                            .OrderByDescending(x => x.createdDate)
                                                                            .AsNoTracking()
                                                                            .ToListAsync();
-                    if (projectApplications != null)
+                    if (projectApplications == null)
                     {
                         return new Response(HttpStatusCode.NoContent, "Project application doesn't exists!");
                     }
@@ -265,12 +265,14 @@ namespace Project.Controllers
                     {
                         var infoUser = await GetNameUserCurrent(projectApplication.idAccount);
                         projectApplication.fullName = infoUser.fullName;
+                        projectApplication.email = infoUser.email;
                         projectApplication.avatar = infoUser.avatar;
                         projectApplication.nameProject = project.name;
                         projectApplication.cvUrlFile = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, projectApplication.cvUrl);
-                        foreach (var position in projectApplications)
+                        var positionName = await _context.Positions.Where(x=> x.idProject == projectApplication.idProject).AsNoTracking().ToListAsync();
+                        foreach (var position in positionName)
                         {
-                            projectApplication.namePosition = position.Position.namePosition;
+                            projectApplication.namePosition = position.namePosition;
                         }
                     }
                     return new Response(HttpStatusCode.OK, "Get all project application is success!", result);

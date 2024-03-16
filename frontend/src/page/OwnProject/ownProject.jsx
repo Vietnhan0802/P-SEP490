@@ -18,6 +18,8 @@ function OwnProject() {
   const navigate = useNavigate();
   const [resetProject, setResetProject] = useState(false);
   const [projects, setProjects] = useState([]);
+  const [search, setSearch] = useState('');
+  const [filterProjects, setFilterProject] = useState();
   const hanldeViewDetail = (projectId) => {
     navigate('/projectdetail', { state: { idProject: projectId } })
   };
@@ -34,7 +36,14 @@ function OwnProject() {
       setResetProject(!resetProject);
     }
   }
-  console.log(projects)
+  const handleSearch = (event) => {
+    setSearch(event.target.value);
+    const searchLower = event.target.value.toLowerCase();
+    const filtered = projects.filter(project =>
+      project.name.toLowerCase().includes(searchLower) || project.fullName.toLowerCase().includes(searchLower)
+    );
+    setFilterProject(filtered);
+  }
   return (
     <Row className="pt-3 ms-0 me-0">
       <Col md={3} >
@@ -49,7 +58,9 @@ function OwnProject() {
               <input
                 type="text"
                 placeholder={"Search"}
-                className="search-box size-20"
+                value={search}
+                onChange={handleSearch}
+                className="search-box size-20 w-100"
               />
             </div>
             <div className="d-flex flex-row align-items-center col-auto m-md-0-cus mt-2 p-0">
@@ -60,7 +71,7 @@ function OwnProject() {
             </div>
           </div>
 
-          {projects.map((item) => (
+          {(search ? filterProjects : projects).map((item) => (
             <div className="p-2 card bg-white p-6 rounded-lg w-96 mb-4" key={item.idProject}>
               <div className="image-container d-flex justify-content-center">
                 <img
