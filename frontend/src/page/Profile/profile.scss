@@ -30,12 +30,16 @@
   .text-white {
     color: white;
   }
-
-  // .bg-text {
-  //   background-color: var(--header_background_search_box);
-  //   color: var(--header_search_text);
-  // }
-
+  .btn.degree-detail{
+    border: solid 0.5px black;
+  }
+  .bg-text {
+    background-color: var(--header_background_search_box);
+    color: var(--header_search_text);
+  }
+  .none-resize{
+    resize: none;
+  }
   .rounded {
     background-color: var(--header_background) !important;
   }
