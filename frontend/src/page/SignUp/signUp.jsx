@@ -8,6 +8,7 @@ import "../SignUp/signUp.scss";
 import { useState } from "react";
 import PersonForm from "./PersonForm";
 import BusinessForm from "./BusinessForm";
+import { userInstance } from "../../axios/axiosConfig";
 
 export default function SignIn() {
   const [showForm1, setShowForm1] = useState(true);
@@ -26,6 +27,14 @@ export default function SignIn() {
     }
   };
   const handleClickGG = () => {
+    
+    // const clientId = "901410740401-3e5cucjupfa8ehj4a1v1ehbvu5qi2o5g.apps.googleusercontent.com";
+    // const redirectUri = "YOUR_FRONTEND_REDIRECT_URI";
+    // const scope = "email profile openid";
+    // const responseType = "code";
+
+    // const googleUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=${responseType}&scope=${scope}`;
+    // window.location.href = googleUrl;
     // implementation details
   };
   const handleClickFB = () => {

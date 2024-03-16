@@ -468,14 +468,14 @@ function Profile({ handleChangeImg }) {
 
                 <div className="col-md-12 ">
                   <label className="form-label">Description:</label>
-                  <input
+                  <textarea
                     type="text"
                     name="description"
                     value={inputs.description || ""}
                     placeholder="Hope you will give us some description about yourselves"
                     disabled={!isEdit}
                     onChange={handleChange}
-                    className="form-control bg-text"
+                    className="form-control bg-text none-resize"
                     aria-label="Description"
                   />
                 </div>
@@ -561,7 +561,7 @@ function Profile({ handleChangeImg }) {
                   {userDegree
                     .slice(0, showAllItems ? userDegree.length : 3)
                     .map((item) => (
-                      <div className="row" key={item.idDegree}>
+                      <div className="row mb-4" key={item.idDegree}>
                         <div className="col-2 d-flex justify-content-center img-contain">
                           <img src={degree} alt="" className="image" />
                         </div>
@@ -580,7 +580,7 @@ function Profile({ handleChangeImg }) {
                             href={item.fileSrc} // Link to the PDF file
                             target="_blank" // Open in a new tab
                             rel="noopener noreferrer" // Security best practice
-                            className="btn degree-detail"
+                            className="btn degree-detail btn-info text-white"
                           >
                             View Detail
                           </a>
@@ -608,11 +608,12 @@ function Profile({ handleChangeImg }) {
                         </div>
                         <div className="col-7 d-flex flex-column justify-content-start">
                           <div className="d-flex items-center">
-                            <img
-                              className="avata-s mr-4"
-                              src={post.avatar}
-                              alt="Instructor Cooper Bator"
-                            />
+                            <div className="avatar-contain me-2">
+                              <img
+                                src={post.avatar}
+                                alt="Instructor Cooper Bator"
+                              />
+                            </div>
                             <div className="left-30 d-flex flex-column justify-content-center">
                               <div className="size-20 SFU-heavy d-flex ellipsis">
                                 {post.fullName}
