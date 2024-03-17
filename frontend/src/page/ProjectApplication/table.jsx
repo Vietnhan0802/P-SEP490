@@ -109,7 +109,7 @@ function Table({ columns, data }) {
     useSortBy,
     usePagination // new
   );
-
+  const noDataAvailable = data.length === 0;
   // Render the UI for your table
   return (
     <>
@@ -171,23 +171,31 @@ function Table({ columns, data }) {
               {...getTableBodyProps()}
               className="bg-white divide-y divide-gray-200"
             >
-              {page.map((row) => {
-                prepareRow(row);
-                return (
-                  <tr {...row.getRowProps()}>
-                    {row.cells.map((cell) => {
-                      return (
+              {noDataAvailable ? (
+                // Render this row if there's no data
+                <tr>
+                  <td colSpan="100%" className="text-center py-3">
+                    No data available
+                  </td>
+                </tr>
+              ) : (
+                // Render page rows if data is available
+                page.map((row) => {
+                  prepareRow(row);
+                  return (
+                    <tr {...row.getRowProps()}>
+                      {row.cells.map((cell) => (
                         <td
                           className="px-2 py-3 whitespace-nowrap"
                           {...cell.getCellProps()}
                         >
                           {cell.render("Cell")}
                         </td>
-                      );
-                    })}
-                  </tr>
-                );
-              })}
+                      ))}
+                    </tr>
+                  );
+                })
+              )}
             </tbody>
           </table>
         </div>

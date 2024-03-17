@@ -26,11 +26,16 @@ import OwnProject from "./page/OwnProject/ownProject";
 import OwnPost from "./page/OwnPost/ownPost";
 import ProjectApplication from "./page/ProjectApplication/projectApplication";
 import Statistic from "./page/Statistic/statistic";
+import { followInstance } from "./axios/axiosConfig";
+import Follow from "./components/follow";
 function App() {
   const location = useLocation();
   const appRef = useRef(null);
   const navigate = useNavigate(); // Hook to handle navigation
   const [changeImage, setChangeImage] = useState(false);
+  const [following, setFollowing] = useState([]);
+  const sessionData = JSON.parse(sessionStorage.getItem("userSession")) || {};
+  const { currentUserId } = sessionData;
   useEffect(() => {
     // Kiểm tra chiều cao của .App và nếu lớn hơn 100vh thì chuyển về 100%
     const appElement = appRef.current;
@@ -72,7 +77,11 @@ function App() {
       setChangeImage(!changeImage);
     }
   };
-
+  useEffect(() => {
+    followInstance.get(`GetAllFollowings/${currentUserId}`)
+      .then((res) => { setFollowing(res?.data?.result) })
+      .catch((error) => { console.error(error) })
+  }, [])
   return (
     <div
       className="App"
@@ -83,25 +92,24 @@ function App() {
         <Header onItemClick={handleHeaderItemClick} changeImage={changeImage} />
       )}
       <Routes>
-        <Route path="/" element={<SignIn />} />
+        <Route path="/" element={<SignIn/>} />
         <Route path="/signup" element={<SignUp />} />
-        <Route path="/home" element={<Homepage />} />
-        <Route path="/postdetail" element={<PostDetail />} />
+        <Route path="/postdetail" element={<PostDetail/>} />
         <Route path="/blogdetail" element={<BlogDetail />} />
         <Route path="/projectdetail" element={<ProjectDetail />} />
         <Route path="/dashboard" element={<DashBoard />} />
-        <Route path="/post" element={<Post />} />
-        <Route path="/blog" element={<Blog />} />
-        <Route path="/project" element={<Project />} />
-        <Route path="/ownproject" element={<OwnProject />} />
-        <Route path="/ownpost" element={<OwnPost />} />
+        <Route path="/post" element={<Post value={following}/>} />
+        <Route path="/blog" element={<Blog value={following}/>} />
+        <Route path="/project" element={<Project value={following} />} />
+        <Route path="/ownproject" element={<OwnProject value={following} />} />
+        <Route path="/ownpost" element={<OwnPost value={following}/>} />
         <Route path="/projectapplication" element={<ProjectApplication />} />
-        <Route path="/currentproject" element={<OwnProject />} />
+        <Route path="/currentproject" element={<OwnProject value={following}/>} />
         <Route path="/statistic" element={<Statistic />} />
         <Route path="/chat" element={<Chat />} />
         <Route
           path="/profile"
-          element={<Profile handleChangeImg={handleChangeImg} />}
+          element={<Profile handleChangeImg={handleChangeImg} value={following} />}
         />
         <Route path="/notify" element={<Notify />} />
         <Route path="/forgetpassword" element={<ForgetPassword />} />

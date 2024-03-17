@@ -46,16 +46,18 @@ function calculateTimeDifference(targetDate) {
   }
 }
 
-function Post() {
+function Post({value}) {
   const sessionData = JSON.parse(sessionStorage.getItem("userSession")) || {};
   const navigate = useNavigate();
   const { role, currentUserId } = sessionData;
   const [project, setProject] = useState();
   const [blogPopups, setBlogPopups] = useState({});
   const [postList, setPostList] = useState([]);
+  const [postListTrend, setPostListTrend] = useState([]);
   const [search, setSearch] = useState("");
   const [filterPost, setFilterPost] = useState([]);
   const [resetPage, setResetPage] = useState(false);
+  const [showTrendList, setShowTrendList] = useState(false);
   //______________________________//
   const createData = (
     id,
@@ -116,17 +118,6 @@ function Post() {
         });
     }
   };
-  const handleCreateReport = (userId, postId, content) => {
-    reportInstance
-      .post(`/CreatePostReport/${userId}/${postId}/${content}`)
-      .then((res) => {
-        console.log(res?.data?.result);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  };
-
   useEffect(() => {
     postInstance
       .get(`GetAllPosts/${currentUserId}`)
@@ -156,6 +147,34 @@ function Post() {
         console.error(error);
       });
   }, [resetPage]);
+  useEffect(() => {
+    postInstance.get(`GetAllPostsTrend/${currentUserId}`)
+      .then((res) => {
+        const postList = res?.data?.result;
+        setPostListTrend([]);
+        postList.map((element) => {
+          const time = calculateTimeDifference(element.createdDate);
+          setPostListTrend((prevData) => [
+            ...prevData,
+            createData(
+              element.idPost,
+              time,
+              element.avatar,
+              element.title,
+              element.content,
+              element.view,
+              element.like,
+              element.viewPostImages,
+              element.fullName,
+              element.isLike
+            ),
+          ]);
+        });
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, [])
 
   useEffect(() => {
     projectInstance
@@ -197,6 +216,9 @@ function Post() {
       }
     };
   }, []);
+  const toggleTrendList = () => {
+    setShowTrendList(!showTrendList);
+  };
   return (
     <Row className="pt-3 ms-0 me-0">
       <Col md={3}>
@@ -216,18 +238,17 @@ function Post() {
               />
             </div>
             <div className="d-flex flex-row align-items-center col-auto m-md-0-cus mt-2 p-0">
-              <button type="button" className="btn btn-info text-white">
-                Trend
+              <button type="button" className="btn btn-info text-white" onClick={toggleTrendList}>
+                {showTrendList ? 'ViewAll' : "Trend"}
               </button>
             </div>
           </div>
 
-          {(search ? filterPost : postList).map((item) => (
+          {(showTrendList ? postListTrend : (search ? filterPost : postList)).map((item) => (
             <div
               key={item.id}
-              className={`pos-rel post-item mt-2 p-2 ${
-                blogPopups[item.id] ? "position-relative" : ""
-              }`}
+              className={`pos-rel post-item mt-2 p-2 ${blogPopups[item.id] ? "position-relative" : ""
+                }`}
             >
               <div className="d-flex justify-content-between">
                 <div className="d-flex align-items-center">
@@ -345,7 +366,7 @@ function Post() {
         </div>
       </Col>
       <Col md={3}>
-        <Follow />
+        <Follow followValue={value}/>
       </Col>
     </Row>
   );

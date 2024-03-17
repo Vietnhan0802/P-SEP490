@@ -35,7 +35,7 @@ function formatDateString(dateString) {
   // If dateString is empty, return an empty string
   return "";
 }
-function Profile({ handleChangeImg }) {
+function Profile({ handleChangeImg ,value}) {
   const location = useLocation();
   // ````````````````````````````
   const [user, setUser] = useState({});

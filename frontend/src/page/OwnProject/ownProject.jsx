@@ -12,7 +12,7 @@ import { Col, Row } from "react-bootstrap";
 import SideBar from "../../components/sidebar";
 import Follow from "../../components/follow";
 
-function OwnProject() {
+function OwnProject({value}) {
   const sessionData = JSON.parse(sessionStorage.getItem('userSession')) || {};
   const { role, currentUserId } = sessionData;
   const navigate = useNavigate();
@@ -108,10 +108,10 @@ function OwnProject() {
                     >
                       Detail
                     </button>
-                    <button className="d-flex flex-row align-items-center btn bg-white text-dark px-4 py-2 rounded btn-light border border-dark">
+                    {/* <button className="d-flex flex-row align-items-center btn bg-white text-dark px-4 py-2 rounded btn-light border border-dark">
                       <img src={sender} alt="sender"></img>
                       <div className="ms-3">Apply</div>
-                    </button>
+                    </button> */}
                   </div>
                 </div>
               </div>
@@ -121,7 +121,7 @@ function OwnProject() {
         </div>
       </Col>
       <Col md={3}>
-        <Follow />
+        <Follow followValue={value}/>
       </Col>
     </Row>
   );
