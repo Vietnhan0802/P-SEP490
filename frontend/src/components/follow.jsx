@@ -3,21 +3,16 @@ import "../scss/follow.scss";
 import tick from "../images/common/verifiedTick.png";
 import { LuDot } from "react-icons/lu";
 import { useTranslation } from 'react-i18next';
-import { followInstance } from "../axios/axiosConfig";
 import defaultImage from "../../src/images/common/default.png";
 import { useNavigate } from "react-router-dom";
 
-function Follow({ newFollow }) {
+function Follow({ followValue }) {
+  console.log(followValue)
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [following, setFollowing] = useState([]);
-  const sessionData = JSON.parse(sessionStorage.getItem("userSession")) || {};
-  const { currentUserId } = sessionData;
-  useEffect(() => {
-    followInstance.get(`GetAllFollowings/${currentUserId}`)
-      .then((res) => { setFollowing(res?.data?.result) })
-      .catch((error) => { console.error(error) })
-  }, [newFollow])
+  useEffect(()=>{setFollowing(followValue)},[])
+
   const handleAvatarclick = (value) => {
     navigate('/profile', { state: { userId: value } });
   }

@@ -20,7 +20,50 @@ function Report() {
       }, 100); // Adjust delay timing as necessary for smoothness
     }
   };
-
+  const data = [
+    {
+      id: "hateAndHarassment",
+      title: "Hate and Harassment",
+      content: `*We do not allow the posting of content:
+      <br />
+    ** Behavior that insults or threatens others, including using obscene language to degrade them
+      <br />
+    ** Threats to perform actions such as collecting information, blackmailing, disclosing`
+    }, {
+      id: "shockingContent",
+      title: "Shocking and Offensive Content",
+      content: ` *We do not allow the posting of content:
+      <br />
+      ** Images of death, accidents
+      <br />
+      ** Human or animal body parts that are cut, mutilated, burned,
+      or severely injured`
+    }, {
+      id: "missinformation",
+      title: "Miss information",
+      content: `*We do not allow the posting of content:
+      <br />
+      ** False information that poses a danger to the community or
+      causes panic
+      <br />
+      ** Schemes promoting violence, hatred, or targeting individuals`
+    }, {
+      id: "fraudAndScam",
+      title: "Fraud and Scam",
+      content: `    *We do not allow the posting of content:
+      <br />
+      ** Financial scams, recruitment or impersonation scams including
+      identity theft
+      <br />
+      ** Collusion or assistance in scamming or instructions on how to
+      scam`
+    }, {
+      id: "others",
+      title: "Others",
+      content: `*Our priority is to provide a safe environment. We encourage the
+      removal of scam content and accounts. Choose this option if your
+      report does not fit into any category.`
+    }]
   const modelSubmit = (event) => {
     event.preventDefault();
     if (!selectedOption) {
@@ -41,123 +84,24 @@ function Report() {
         </Modal.Header>
 
         <Modal.Body className="popup-body report-popup" id="report-body">
-          <div className="option hateAndHarassment form-control">
+          {data.map((item) => (<div className={`option ${item.id} form-control`}>
             <input
               type="radio"
-              id="hateAndHarassment"
+              id={item.id}
               name="reportType"
-              value="hateAndHarassment"
+              value={item.id}
               onChange={handleChange}
-              checked={selectedOption === "hateAndHarassment"}
+              checked={selectedOption === item.id}
             />
-            <label htmlFor="hateAndHarassment">Hate and Harassment</label>
-            <div className={`option-content ${selectedOption === "hateAndHarassment" ? "open" : ""}`}>
-              {selectedOption === "hateAndHarassment" && (
-                <p>
-                  *We do not allow the posting of content:
-                  <br />
-                  ** Behavior that insults or threatens others, including using obscene language to degrade them
-                  <br />
-                  ** Threats to perform actions such as collecting information, blackmailing, disclosing
+            <label htmlFor={item.id}>{item.title}</label>
+            <div className={`option-content ${selectedOption === item.id ? "open" : ""}`}>
+              {selectedOption === item.id && (
+                <p dangerouslySetInnerHTML={{ __html: item.content }}>
+                  {/* {item.content} */}
                 </p>
               )}
             </div>
-          </div>
-          <div className="option shockingContent form-control">
-            <input
-              type="radio"
-              id="shockingContent"
-              name="reportType"
-              value="shockingContent"
-              onChange={handleChange}
-              checked={selectedOption === "shockingContent"}
-            />
-            <label htmlFor="shockingContent">
-              Shocking and Offensive Content
-            </label>
-            <div className={`option-content ${selectedOption === "shockingContent" ? "open" : ""}`}>
-              {selectedOption === "shockingContent" && (
-                <p>
-                  *We do not allow the posting of content:
-                  <br />
-                  ** Images of death, accidents
-                  <br />
-                  ** Human or animal body parts that are cut, mutilated, burned,
-                  or severely injured
-                </p>
-              )}
-            </div>
-          </div>
-
-          <div className="option misinformation form-control">
-            <input
-              type="radio"
-              id="misinformation"
-              name="reportType"
-              value="misinformation"
-              onChange={handleChange}
-              checked={selectedOption === "misinformation"}
-            />
-            <label htmlFor="misinformation">Misinformation</label>
-            <div className={`option-content ${selectedOption === "misinformation" ? "open" : ""}`}>
-              {selectedOption === "misinformation" && (
-                <p>
-                  *We do not allow the posting of content:
-                  <br />
-                  ** False information that poses a danger to the community or
-                  causes panic
-                  <br />
-                  ** Schemes promoting violence, hatred, or targeting individuals
-                </p>
-              )}
-            </div>
-
-          </div>
-          <div className="option fraudAndScam form-control">
-            <input
-              type="radio"
-              id="fraudAndScam"
-              name="reportType"
-              value="fraudAndScam"
-              onChange={handleChange}
-              checked={selectedOption === "fraudAndScam"}
-            />
-            <label htmlFor="fraudAndScam">Fraud and Scam</label>
-            <div className={`option-content ${selectedOption === "fraudAndScam" ? "open" : ""}`}>
-              {selectedOption === "fraudAndScam" && (
-                <p>
-                  *We do not allow the posting of content:
-                  <br />
-                  ** Financial scams, recruitment or impersonation scams including
-                  identity theft
-                  <br />
-                  ** Collusion or assistance in scamming or instructions on how to
-                  scam
-                </p>
-              )}
-            </div>
-          </div>
-          <div className="option others form-control">
-            <input
-              type="radio"
-              id="others"
-              name="reportType"
-              value="others"
-              onChange={handleChange}
-              checked={selectedOption === "others"}
-            />
-            <label htmlFor="others">Others</label>
-            <div className={`option-content ${selectedOption === "others" ? "open" : ""}`}>
-              {selectedOption === "others" && (
-                <p>
-                  *Our priority is to provide a safe environment. We encourage the
-                  removal of scam content and accounts. Choose this option if your
-                  report does not fit into any category.
-                </p>
-              )}
-            </div>
-
-          </div>
+          </div>))}
         </Modal.Body>
 
         <Modal.Footer>

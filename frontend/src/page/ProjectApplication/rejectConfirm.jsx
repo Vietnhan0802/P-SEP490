@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Row, Col } from "react-bootstrap";
 import { projectInstance } from "../../axios/axiosConfig";
 
-function RejectConfirm({ id }) {
+function RejectConfirm({ id, reset }) {
   const idMember = id;
   const [show, setShow] = useState(false);
   const modalClose = () => setShow(false);
@@ -12,6 +12,7 @@ function RejectConfirm({ id }) {
     projectInstance.put(`AcceptProjectApplication/${idMember}`)
       .then((res) => {
         setShow(false);
+        reset('Success');
       })
       .catch((error) => { })
   }
