@@ -100,6 +100,32 @@ namespace Project.Controllers
             return new Response(HttpStatusCode.OK, "Get project list is success!", result);
         }
 
+        [HttpGet("GetProjectByMember/{idUser}")]
+        public async Task<Response> GetProjectByMember(string idUser)
+        {
+            var member = await _context.ProjectMembers.Where(x => x.idAccount == idUser && x.isAcept == true)
+                                                      .OrderByDescending(x => x.createdDate)
+                                                      .AsNoTracking()
+                                                      .ToListAsync();
+            if (member.Count != 0)
+            {
+                var result = _mapper.Map<List<ProjectInfoView>>(member);
+                foreach (var projectMember in result)
+                {
+                    var project = await _context.ProjectInfos.FirstOrDefaultAsync(x => x.idProject == projectMember.idProject);
+                    var inforUser = await GetNameUserCurrent(project.idAccount);
+                    projectMember.fullName = inforUser.fullName;
+                    projectMember.avatarUser = inforUser.avatar;
+                    projectMember.avatar = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, projectMember.avatar);
+                    var positions = await _context.Positions.Where(x => x.idProject == project.idProject).ToListAsync();
+                    var viewPosition = _mapper.Map<List<PositionView>>(positions);
+                    projectMember.PositionViews = viewPosition;
+                }
+                return new Response(HttpStatusCode.OK, "Get project list is success!", result);
+            }
+            return new Response(HttpStatusCode.NoContent, "Project list is empty!");
+        }
+
         [HttpGet("GetProjectByUser/{idUser}")]
         public async Task<Response> GetProjectByUser(string idUser)
         {
