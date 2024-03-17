@@ -18,11 +18,11 @@ import {
   userInstance,
 } from "../../axios/axiosConfig";
 import { CgProfile } from "react-icons/cg";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import defaultProject from "../../images/common/default_project.webp";
 import DegreePu from "./degreePu";
 import UpdateAvatarPu from "./UpdateAvatarPu";
-import AccountReport from "../../components/report-popup/AccountReport";
+import Report from "../../components/report-popup/Report";
 import UpdateInformationPu from "./UpdateInformationPu";
 function formatDateString(dateString) {
   // Check if the dateString is not empty
@@ -36,6 +36,7 @@ function formatDateString(dateString) {
   return "";
 }
 function Profile({ handleChangeImg, value }) {
+  const navigate = useNavigate();
   const location = useLocation();
   // ````````````````````````````
   const [user, setUser] = useState({});
@@ -44,12 +45,10 @@ function Profile({ handleChangeImg, value }) {
   const sessionData = JSON.parse(sessionStorage.getItem("userSession")) || {};
   const { currentUserId } = sessionData;
   const { userId } = location.state || {};
-  const [activePopup, setActivePopup] = useState(false);
   const [resetAvatar, setResetAvatar] = useState(true);
   const [resetDegree, setResetDegree] = useState(true);
   const [showAllItems, setShowAllItems] = useState(false);
   const [display, setDisplay] = useState(false);
-  const [isEdit, setIsEdit] = useState(false);
   const [inputs, setInputs] = useState({
     userName: "",
     fullName: "",
@@ -214,6 +213,9 @@ function Profile({ handleChangeImg, value }) {
   const reset = (value) => {
     setResetAvatar(!resetAvatar)
   }
+  const navigateChat =()=>{
+    navigate('/chat');
+  }
   return (
     <>
       <Row className="mx-0 mt-3 pb-3">
@@ -244,12 +246,21 @@ function Profile({ handleChangeImg, value }) {
                 changeImage={changeImage}
               />
               {display === false && currentUserId !== userId ? (
-                <button
-                  className="btn edit-btn mt-3 w-75 m-auto"
-                  onClick={() => handleFollow()}
-                >
-                  {inputs.isFollow ? "UnFollow" : "Follow"}
-                </button>
+                <div className="d-flex justify-content-evenly w-100">
+                  <button
+                    className="btn edit-btn mt-3 w-25 m-auto"
+                    onClick={() => handleFollow()}
+                  >
+                    {inputs.isFollow ? "UnFollow" : "Follow"}
+                  </button>
+                  <button
+                    className="btn edit-btn mt-3 w-25 m-auto"
+                    onClick={() => navigateChat()}
+                  >
+                    Chat
+                  </button>
+                </div>
+
               ) : (
                 <button
                   className="btn edit-btn mt-3 w-75 m-auto"
@@ -267,7 +278,8 @@ function Profile({ handleChangeImg, value }) {
               </div>
             </div>
             <div className="fs-3 position-absolute top-0 end-0">
-              <AccountReport />
+              {currentUserId !== userId ? (
+                <Report id={currentUserId} idItem={userId} type="account" />) : ""}
             </div>
           </div>
         </Col>

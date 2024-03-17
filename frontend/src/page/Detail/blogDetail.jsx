@@ -39,7 +39,7 @@ function calculateTimeDifference(targetDate) {
     return days === 1 ? `${days} day ago` : `${hours} days ago`;
   }
 }
-function BlogDetail() {
+function BlogDetail({value}) {
 
   const sessionData = JSON.parse(sessionStorage.getItem("userSession")) || {};
   const { currentUserId } = sessionData;
@@ -444,7 +444,7 @@ function BlogDetail() {
         </div>
       </Col>
       <Col md={3}>
-        <Follow />
+        <Follow followValue={value}/>
       </Col>
     </Row>
   );

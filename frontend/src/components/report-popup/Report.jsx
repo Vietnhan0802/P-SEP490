@@ -2,16 +2,18 @@ import { Modal, Button } from "react-bootstrap";
 import { useState } from "react";
 import "./popup.scss";
 import { IoFlagOutline } from "react-icons/io5";
-function Report({ id, idItem }) {
+import { reportInstance } from "../../axios/axiosConfig";
+function Report({ id, idItem, type }) {
   const [show, setShow] = useState(false);
   const modalClose = () => setShow(false);
   const [selectedOption, setSelectedOption] = useState("");
-
+  const [reportType, setReportType] = useState('');
   const handleChange = (event, content) => {
     // Add a small delay to allow for a smoother transition effect
     // when switching between options
     const value = event.target.value;
     if (selectedOption !== value) {
+      setReport((prev => ({ ...prev, content: content })));
       setSelectedOption(""); // Reset or collapse all options first
       setTimeout(() => {
         setSelectedOption(value); // Then open the new option after a slight delay
@@ -23,9 +25,24 @@ function Report({ id, idItem }) {
     idPosted: '',
     content: ''
   })
-  const modalShow = () => { setShow(true); setReport((prev) => ({ ...prev, idReporter: id, idPosted: idItem })) };
-  console.log(report);
-
+  const modalShow = () => {
+    setShow(true);
+    setReport((prev) => ({ ...prev, idReporter: id, idPosted: idItem }));
+    setReportType(type);
+  };
+  if (reportType === 'post') {
+    reportInstance.post(`CreatePostReport/${report.idReporter}/${report.idPosted}/${report.content}`)
+      .then((res) => { console.log(res?.data?.result) })
+      .catch((error) => { console.error(error) })
+  } else if (reportType === 'blog') {
+    reportInstance.post(`CreateBlogReport/${report.idReporter}/${report.idPosted}/${report.content}`)
+      .then((res) => { console.log(res?.data?.result) })
+      .catch((error) => { console.error(error) })
+  }else{
+    reportInstance.post(`CreateBlogReport/${report.idReporter}/${report.idPosted}/${report.content}`)
+    .then((res) => { console.log(res?.data?.result) })
+    .catch((error) => { console.error(error) })
+  }
   const data = [
     {
       id: "hateAndHarassment",
@@ -96,7 +113,7 @@ function Report({ id, idItem }) {
               id={item.id}
               name="reportType"
               value={item.id}
-              onChange={() => handleChange(item.content)}
+              onChange={(event, content) => handleChange(event, item.title)}
               checked={selectedOption === item.id}
             />
             <label htmlFor={item.id}>{item.title}</label>
