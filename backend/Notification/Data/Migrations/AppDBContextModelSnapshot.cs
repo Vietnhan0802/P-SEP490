@@ -40,6 +40,9 @@ namespace Notification.Data.Migrations
                     b.Property<string>("idSender")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid?>("idUrl")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<bool?>("isRead")
                         .HasColumnType("bit");
 

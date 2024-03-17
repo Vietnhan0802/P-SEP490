@@ -5,7 +5,6 @@ using BusinessObjects.ViewModels.Follow;
 using BusinessObjects.ViewModels.Statistic;
 using BusinessObjects.ViewModels.User;
 using Commons.Helpers;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -55,28 +54,36 @@ namespace User.Controllers
         private async Task<int> GetTotalFollowings(string idOwner)
         {
             HttpResponseMessage response = await client.GetAsync($"{FollowApiUrl}/GetTotalFollowings/{idOwner}");
-            string strData = await response.Content.ReadAsStringAsync();
-            var option = new JsonSerializerOptions
+            if (response.IsSuccessStatusCode)
             {
-                PropertyNameCaseInsensitive = true,
-            };
-            var followings = JsonSerializer.Deserialize<int>(strData, option);
+                string strData = await response.Content.ReadAsStringAsync();
+                var option = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true,
+                };
+                var followings = JsonSerializer.Deserialize<int>(strData, option);
 
-            return followings!;
+                return followings!;
+            }
+            return 0;
         }
 
         [HttpGet("GetTotalFollowers/{idOwner}")]
         private async Task<int> GetTotalFollowers(string idOwner)
         {
             HttpResponseMessage response = await client.GetAsync($"{FollowApiUrl}/GetTotalFollowers/{idOwner}");
-            string strData = await response.Content.ReadAsStringAsync();
-            var option = new JsonSerializerOptions
+            if (response.IsSuccessStatusCode)
             {
-                PropertyNameCaseInsensitive = true,
-            };
-            var followers = JsonSerializer.Deserialize<int>(strData, option);
+                string strData = await response.Content.ReadAsStringAsync();
+                var option = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true,
+                };
+                var followers = JsonSerializer.Deserialize<int>(strData, option);
 
-            return followers!;
+                return followers!;
+            }
+            return 0;
         }
 
         [HttpGet("GetFollow/{idOwner}/{idAccount}")]
@@ -94,10 +101,7 @@ namespace User.Controllers
 
                 return follow;
             }
-            else
-            {
-                return null;
-            }
+            return null;
         }
 
         /*------------------------------------------------------------Statistic------------------------------------------------------------*/
@@ -302,8 +306,12 @@ namespace User.Controllers
                 var result = _mapper.Map(updateAvatar, userExits);
                 result.avatar = await _saveImageService.SaveImage(result.ImageFile);
             }          
-            await _userManager.UpdateAsync(userExits);
-            return new Response(HttpStatusCode.OK, "Update user is success!", _mapper.Map<UpdateUser>(userExits));
+            var isSuccess = await _userManager.UpdateAsync(userExits);
+            if (isSuccess.Succeeded)
+            {
+                return new Response(HttpStatusCode.OK, "Update user is success!", _mapper.Map<UpdateUser>(userExits));
+            }
+            return new Response(HttpStatusCode.BadRequest, "Update user is fail!");
         }
 
         [HttpPost("SignUpMember")]
