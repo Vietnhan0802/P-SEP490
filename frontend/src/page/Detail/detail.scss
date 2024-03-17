@@ -1,44 +1,73 @@
-#postDetail,#BlogDetail {
+#postDetail,
+#BlogDetail {
   background-color: #fff;
   border-radius: 8px;
+
   .h-40 {
-    height: 40px    ;
+    height: 40px;
   }
+
   .profile {
     border-radius: 50%;
     width: 40px;
     height: 40px;
   }
-  .reply-cmt{
+
+  .reply-cmt {
     margin: 8px 13px;
   }
+
   .cmt {
     color: #2f45ad;
   }
-  .red{
+
+  .red {
     color: red;
   }
+
   .cmt-input {
     border-radius: 8px;
     padding: 8px 12px;
     width: 100%;
     border: 1px solid #d0d5dd;
+
     input {
       border: none;
       width: 100%;
+
       &:focus {
         outline: none;
       }
     }
   }
-  .cmt-item{
+
+  .cmt-item {
     padding: 10px;
     border-radius: 8px;
     border: 1px solid #d0d5dd;
   }
-  .rep{
+
+  .rep {
     display: flex;
     justify-content: space-between;
     color: #20BECB;
   }
+}
+
+.post-content.image-container {
+  max-height: 60vh;
+  /* Hoặc bất kỳ chiều cao nào bạn muốn */
+  background-color: #f0f0f0;
+  /* Màu của background cho phần bị thừa */
+  overflow: hidden;
+  /* Ẩn phần của ảnh không vừa với container */
+}
+
+.post-content.image-container img {
+  width: 100%;
+  object-fit: contain;
+  /* Giữ tỷ lệ của ảnh nhưng vẫn che đầy container */
+  object-position: center;
+  /* Căn giữa ảnh */
+  border-radius: 8px;
 }
