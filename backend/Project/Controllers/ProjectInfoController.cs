@@ -248,34 +248,38 @@ namespace Project.Controllers
         public async Task<Response> GetAllProjectApplications(string idUser)
         {
             var projects = await _context.ProjectInfos.Where(x => x.idAccount == idUser).AsNoTracking().ToListAsync();
-            if (projects != null)
+            if (projects.Count != 0)
             {
+                List<ProjectMemberView> allProjectApplications = new List<ProjectMemberView>();
                 foreach (var project in projects)
                 {
                     var projectApplications = await _context.ProjectMembers.Where(x => x.idProject == project.idProject && x.type == BusinessObjects.Enums.Project.Type.Applied && x.isAcept == null)
                                                                            .OrderByDescending(x => x.createdDate)
                                                                            .AsNoTracking()
                                                                            .ToListAsync();
-                    if (projectApplications == null)
+                    if (projectApplications.Count != 0)
                     {
-                        return new Response(HttpStatusCode.NoContent, "Project application doesn't exists!");
-                    }
-                    var result = _mapper.Map<List<ProjectMemberView>>(projectApplications);
-                    foreach (var projectApplication in result)
-                    {
-                        var infoUser = await GetNameUserCurrent(projectApplication.idAccount);
-                        projectApplication.fullName = infoUser.fullName;
-                        projectApplication.email = infoUser.email;
-                        projectApplication.avatar = infoUser.avatar;
-                        projectApplication.nameProject = project.name;
-                        projectApplication.cvUrlFile = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, projectApplication.cvUrl);
-                        var positionName = await _context.Positions.Where(x=> x.idProject == projectApplication.idProject).AsNoTracking().ToListAsync();
-                        foreach (var position in positionName)
+                        var result = _mapper.Map<List<ProjectMemberView>>(projectApplications);
+                        foreach (var projectApplication in result)
                         {
-                            projectApplication.namePosition = position.namePosition;
+                            var infoUser = await GetNameUserCurrent(projectApplication.idAccount);
+                            projectApplication.fullName = infoUser.fullName;
+                            projectApplication.email = infoUser.email;
+                            projectApplication.avatar = infoUser.avatar;
+                            projectApplication.nameProject = project.name;
+                            projectApplication.cvUrlFile = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, projectApplication.cvUrl);
+                            var positionName = await _context.Positions.Where(x => x.idProject == projectApplication.idProject).AsNoTracking().ToListAsync();
+                            foreach (var position in positionName)
+                            {
+                                projectApplication.namePosition = position.namePosition;
+                            }
                         }
+                        allProjectApplications.AddRange(result);
                     }
-                    return new Response(HttpStatusCode.OK, "Get all project application is success!", result);
+                }
+                if (allProjectApplications.Count != 0)
+                {
+                    return new Response(HttpStatusCode.NoContent, "Get all project application is success!", allProjectApplications);
                 }
                 return new Response(HttpStatusCode.NoContent, "Get all project application is empty!");
             }
