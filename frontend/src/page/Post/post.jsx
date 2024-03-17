@@ -1,4 +1,5 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
+import bootstrap from "bootstrap/dist/js/bootstrap.bundle.min";
 import { useState } from "react";
 import "../Post/post.scss";
 import { IoFlagOutline } from "react-icons/io5";
@@ -52,7 +53,7 @@ function Post() {
   const [project, setProject] = useState();
   const [blogPopups, setBlogPopups] = useState({});
   const [postList, setPostList] = useState([]);
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState("");
   const [filterPost, setFilterPost] = useState([]);
   const [resetPage, setResetPage] = useState(false);
   //______________________________//
@@ -174,12 +175,28 @@ function Post() {
   const handleSearchPost = (event) => {
     setSearch(event.target.value);
     const searchLower = event.target.value.toLowerCase();
-    const filtered = postList.filter(post =>
-      post.fullName.toLowerCase().includes(searchLower) || post.title.toLowerCase().includes(searchLower)
+    const filtered = postList.filter(
+      (post) =>
+        post.fullName.toLowerCase().includes(searchLower) ||
+        post.title.toLowerCase().includes(searchLower)
     );
     setFilterPost(filtered);
-  }
+  };
+  const carouselRef = useRef(null);
+  useEffect(() => {
+    if (carouselRef.current) {
+      var carouselInstance = new bootstrap.Carousel(carouselRef.current, {
+        interval: 99999999,
+        wrap: true,
+      });
+    }
 
+    return () => {
+      if (carouselInstance) {
+        carouselInstance.dispose();
+      }
+    };
+  }, []);
   return (
     <Row className="pt-3 ms-0 me-0">
       <Col md={3}>
@@ -208,20 +225,23 @@ function Post() {
           {(search ? filterPost : postList).map((item) => (
             <div
               key={item.id}
-              className={`pos-rel post-item mt-2 p-2 ${blogPopups[item.id] ? "position-relative" : ""
-                }`}
+              className={`pos-rel post-item mt-2 p-2 ${
+                blogPopups[item.id] ? "position-relative" : ""
+              }`}
             >
               <div className="d-flex justify-content-between">
                 <div className="d-flex align-items-center">
-                  <img
-                    className="avata-s mr-4"
-                    src={
-                      item.avatar === "https://localhost:7006/Images/"
-                        ? defaultAvatar
-                        : item.avatar
-                    }
-                    alt="Instructor Cooper Bator"
-                  />
+                  <div className="avatar-contain me-2">
+                    <img
+                      src={
+                        item.avatar === "https://localhost:7006/Images/"
+                          ? defaultAvatar
+                          : item.avatar
+                      }
+                      alt="Instructor Cooper Bator"
+                    />
+                  </div>
+
                   <div className="left-30 d-flex flex-column justify-content-center">
                     <div className="size-20 SFU-heavy d-flex">
                       {item.fullName}
@@ -238,12 +258,66 @@ function Post() {
               <p className="mt-2" style={{ whiteSpace: "pre-wrap" }}>
                 {item.content}
               </p>
+              <div
+                id={`carouselExampleControls-${item.id}`}
+                className="carousel slide"
+                data-bs-ride="carousel"
+                ref={carouselRef} // Thêm tham chiếu này
+              >
+                <div className="carousel-inner">
+                  {item.viewPostImages?.map((items, index) => (
+                    <div
+                      className={`carousel-item ${index === 0 ? "active" : ""}`}
+                    >
+                      <div className="image-container d-flex justify-content-center">
+                        <img
+                          src={items.imageSrc}
+                          className="d-block w-100"
+                          alt=""
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
 
-              <div className="d-flex post-imgs">
-                {item.viewPostImages?.map((items) => (
-                  <img src={items.imageSrc} alt="" className="w-50 p-2" />
-                ))}
+                {item.viewPostImages?.length > 1 && (
+                  <>
+                    <button
+                      className="carousel-control-prev"
+                      type="button"
+                      data-bs-target={`#carouselExampleControls-${item.id}`}
+                      data-bs-slide="prev"
+                    >
+                      <span
+                        className="carousel-control-prev-icon"
+                        style={{
+                          backgroundColor: "rgba(128, 128, 128, 0.6)",
+                          padding: "15px",
+                        }}
+                        aria-hidden="true"
+                      ></span>
+                      <span className="visually-hidden">Previous</span>
+                    </button>
+                    <button
+                      className="carousel-control-next"
+                      type="button"
+                      data-bs-target={`#carouselExampleControls-${item.id}`}
+                      data-bs-slide="next"
+                    >
+                      <span
+                        className="carousel-control-next-icon"
+                        style={{
+                          backgroundColor: "rgba(128, 128, 128, 0.6)",
+                          padding: "15px",
+                        }}
+                        aria-hidden="true"
+                      ></span>
+                      <span className="visually-hidden">Next</span>
+                    </button>
+                  </>
+                )}
               </div>
+
               <div className="d-flex justify-content-between mt-2">
                 <div className="d-flex align-items-center">
                   <div className="d-flex align-items-center me-3">
