@@ -275,14 +275,21 @@ namespace User.Controllers
         [HttpPut("UpdateUser/{idUser}")]
         public async Task<Response> UpdateUser(string idUser, UpdateUser updateUser)
         {
+            var validator = new UpdateUserValidator();
+            var validatorResult = validator.Validate(updateUser);
+            var error = validatorResult.Errors.Select(x => x.ErrorMessage).ToList();
+            if (!validatorResult.IsValid)
+            {
+                return new Response(HttpStatusCode.BadRequest, "Invalid data", error);
+            }
             var userExits = await _userManager.FindByIdAsync(idUser);
             if (userExits == null)
             {
                 return new Response(HttpStatusCode.NotFound, "User doesn't exist!");
             }
             _mapper.Map(updateUser, userExits);
-            var result = await _userManager.UpdateAsync(userExits);
-            if (result.Succeeded)
+            var isSuccess = await _userManager.UpdateAsync(userExits);
+            if (isSuccess.Succeeded)
             {
                 return new Response(HttpStatusCode.NoContent, "Update user is success!", _mapper.Map<UpdateUser>(userExits));
             }

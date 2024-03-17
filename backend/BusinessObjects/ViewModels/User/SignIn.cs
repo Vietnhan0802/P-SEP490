@@ -6,9 +6,9 @@ namespace BusinessObjects.ViewModels.User
     {
         [Required(ErrorMessage = "Email is required!")]
         [StringLength(50)]
-        public string email { get; set; }
+        public string? email { get; set; }
         [Required(ErrorMessage = "Password is required!")]
         [DataType(DataType.Password)]
-        public string password { get; set; }
+        public string? password { get; set; }
     }
 }
