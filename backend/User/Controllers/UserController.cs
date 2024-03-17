@@ -277,7 +277,7 @@ namespace User.Controllers
             var result = await _userManager.UpdateAsync(userExits);
             if (result.Succeeded)
             {
-                return new Response(HttpStatusCode.NoContent, "Update user is success!", _mapper.Map<UpdateUser>(result));
+                return new Response(HttpStatusCode.NoContent, "Update user is success!", _mapper.Map<UpdateUser>(userExits));
             }
             else
             {

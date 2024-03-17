@@ -152,31 +152,6 @@ function Profile({ handleChangeImg }) {
         return "";
     }
   };
-  const handleUpdateUser = () => {
-    setIsEdit(!isEdit);
-    userInstance
-      .put(`/UpdateUser/${currentUserId}`, inputs, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
-      .then((res) => {
-        console.log(res?.data);
-      })
-      .catch((err) => {
-        console.log(err?.data);
-      });
-  };
-  const hanldeEdit = () => {
-    setIsEdit(!isEdit);
-  };
-  const handleChange = (event) => {
-    const { name, value, type, checked } = event.target;
-    setInputs((prevInputs) => ({
-      ...prevInputs,
-      [name]: type === "checkbox" ? checked : value,
-    }));
-  };
 
   const handleUpdateAppear = () => {
     setDisplay(true);
@@ -185,9 +160,6 @@ function Profile({ handleChangeImg }) {
   const hanldeSetTab = (tab) => {
     setTab(tab);
     setShowAllItems(!showAllItems);
-  };
-  const handleReportPopup = () => {
-    setActivePopup(!activePopup);
   };
   const handleFollow = () => {
     followInstance
@@ -201,12 +173,10 @@ function Profile({ handleChangeImg }) {
         }
       )
       .then((res) => {
-        console.log(res?.data?.result);
         setInputs((prevInputs) => ({
           ...prevInputs,
           isFollow: !inputs.isFollow,
         }));
-        setFollow(!follow);
         setFollow(!follow);
       })
       .catch((error) => {
@@ -241,7 +211,9 @@ function Profile({ handleChangeImg }) {
     }
     setTabs(tabsBasedOnRole);
   }, [user.role]); // Chỉ chạy lại khi user.role thay đổi
-
+  const reset = (value) => {
+    setResetAvatar(!resetAvatar)
+  }
   return (
     <>
       <Row className="mx-0 mt-3 pb-3">
@@ -295,23 +267,6 @@ function Profile({ handleChangeImg }) {
               </div>
             </div>
             <div className="fs-3 position-absolute top-0 end-0">
-              <ProfileReport trigger={activePopup} setTrigger={setActivePopup}>
-                <div className="bg-white profile-feedback">
-                  <h4 className="mt-2 mb-3 border-bottom">Submit feedback</h4>
-                  <p>Please enter your feedback below</p>
-                  <textarea
-                    name=""
-                    id=""
-                    cols="30"
-                    rows="10"
-                    placeholder="Is there something wrong with this user?"
-                    className="mt-2"
-                  ></textarea>
-                  <div className="d-flex justify-content-end">
-                    <button className="btn btn-secondary">Submit</button>
-                  </div>
-                </div>
-              </ProfileReport>
               <AccountReport />
             </div>
           </div>
@@ -326,21 +281,7 @@ function Profile({ handleChangeImg }) {
                   {currentUserId === userId ? (
                     <div className="edit-text-white btn-info btnr">
                       {currentUserId === userId ? (
-                        // <div className="edit-text-white btn-info btnr">
-                        //   {!isEdit && (
-                        //     <FiEdit
-                        //       onClick={() => hanldeEdit()}
-                        //       className="edit-icon mb-2 fs-2"
-                        //     />
-                        //   )}
-                        //   {isEdit && (
-                        //     <MdOutlineFileDownloadDone
-                        //       onClick={() => handleUpdateUser()}
-                        //       className="edit-icon mb-2 fs-2"
-                        //     />
-                        //   )}
-                        // </div>
-                        <UpdateInformationPu />
+                        <UpdateInformationPu value={inputs} id={currentUserId} reset={reset} />
                       ) : (
                         ""
                       )}
@@ -349,135 +290,46 @@ function Profile({ handleChangeImg }) {
                     ""
                   )}
                 </div>
-
                 <div className="col-md-6">
                   <label className="form-label">Full Name:</label>
-                  <input
-                    type="text"
-                    className="form-control bg-text"
-                    name="fullName"
-                    value={inputs.fullName}
-                    disabled={!isEdit}
-                    onChange={handleChange}
-                    aria-label="Full name"
-                  />
+                  <p className="form-control">{inputs.fullName}</p>
                 </div>
-
                 <div className="col-md-6">
                   <label className="form-label">
                     {inputs.role === "Business" ? "Establish date" : "Birthday"}
                   </label>
-                  <input
-                    type="date"
-                    name="date"
-                    value={inputs.date}
-                    disabled={!isEdit}
-                    onChange={handleChange}
-                    className="form-control bg-text"
-                    aria-label="Birthday"
-                  />
+                  <p className="form-control">{inputs.date}</p>
                 </div>
-
                 <div className="col-md-6">
                   <label className="form-label">Phone number</label>
-                  <input
-                    type="text"
-                    name="phoneNumber"
-                    value={inputs.phoneNumber}
-                    disabled={!isEdit}
-                    onChange={handleChange}
-                    className="form-control bg-text"
-                    aria-label="Phone number"
-                  />
+                  <p className="form-control">{inputs.phoneNumber}</p>
                 </div>
-
                 <div className="col-md-6">
                   {inputs.role !== "Business" && (
                     <div>
                       <label className="form-label">Gender:</label>
-                      <div className="form-control bg-text">
-                        {!isEdit ? (
-                          user.isMale ? (
-                            <p>Male</p>
-                          ) : (
-                            <p>Female</p>
-                          )
+                      <div className="form-control">
+                        {user.isMale ? (
+                          <p>Male</p>
                         ) : (
-                          <div className="checkbox-wrapper-13 bg-text">
-                            <label>
-                              <input
-                                id="c1-13"
-                                className="me-1"
-                                type="checkbox"
-                                checked={inputs.isMale}
-                                name="isMale"
-                                onChange={() =>
-                                  handleChange({
-                                    target: { name: "isMale", value: true },
-                                  })
-                                }
-                              />
-                              Male
-                            </label>
-
-                            <label className="ps-4">
-                              <input
-                                id="c1-13"
-                                className="me-1"
-                                type="checkbox"
-                                checked={!inputs.isMale}
-                                name="isMale"
-                                onChange={() =>
-                                  handleChange({
-                                    target: { name: "isMale", value: false },
-                                  })
-                                }
-                              />
-                              Female
-                            </label>
-                          </div>
-                        )}
+                          <p>Female</p>
+                        )
+                        }
                       </div>
                     </div>
                   )}
                 </div>
                 <div className="col-md-6">
                   <label className="form-label">Address:</label>
-                  <input
-                    type="text"
-                    name="address"
-                    className="form-control bg-text"
-                    value={inputs.address}
-                    disabled={!isEdit}
-                    onChange={handleChange}
-                  />
+                  <p className="form-control">{inputs.address}</p>
                 </div>
-
                 <div className="col-md-6">
                   <label className="form-label ">Tax:</label>
-                  <input
-                    type="number"
-                    name="tax"
-                    value={inputs.tax}
-                    disabled={!isEdit}
-                    onChange={handleChange}
-                    className="form-control bg-text"
-                    aria-label="Tax"
-                  />
+                  <p className="form-control">{inputs.tax}</p>
                 </div>
-
                 <div className="col-md-12 ">
                   <label className="form-label">Description:</label>
-                  <textarea
-                    type="text"
-                    name="description"
-                    value={inputs.description || ""}
-                    placeholder="Hope you will give us some description about yourselves"
-                    disabled={!isEdit}
-                    onChange={handleChange}
-                    className="form-control bg-text none-resize"
-                    aria-label="Description"
-                  />
+                  <p className="form-control">{inputs.description}</p>
                 </div>
               </div>
             </div>
@@ -507,9 +359,8 @@ function Profile({ handleChangeImg }) {
                 )}
                 {user.role === "Member" && tab === "degree" && (
                   <button
-                    className={`height-50 text-white btn-info btn ${
-                      tab === "degree" ? "active" : ""
-                    }`}
+                    className={`height-50 text-white btn-info btn ${tab === "degree" ? "active" : ""
+                      }`}
                     onClick={() => hanldeSetTab("degree")}
                   >
                     {showAllItems ? "Show Less" : "View All"}
@@ -518,9 +369,8 @@ function Profile({ handleChangeImg }) {
 
                 {user.role === "Admin" && tab === "blog" && (
                   <button
-                    className={`height-50 text-white btn-info btn ${
-                      tab === "blog" ? "active" : ""
-                    }`}
+                    className={`height-50 text-white btn-info btn ${tab === "blog" ? "active" : ""
+                      }`}
                     onClick={() => hanldeSetTab("blog")}
                   >
                     {" "}
@@ -529,9 +379,8 @@ function Profile({ handleChangeImg }) {
                 )}
                 {user.role === "Business" && tab === "post" && (
                   <button
-                    className={`height-50 text-white btn-info btn ${
-                      tab === "post" ? "active" : ""
-                    }`}
+                    className={`height-50 text-white btn-info btn ${tab === "post" ? "active" : ""
+                      }`}
                     onClick={() => hanldeSetTab("post")}
                   >
                     {" "}
@@ -540,9 +389,8 @@ function Profile({ handleChangeImg }) {
                 )}
                 {user.role !== "Admin" && tab === "project" && (
                   <button
-                    className={`height-50 text-white btn-info btn ${
-                      tab === "project" ? "active" : ""
-                    }`}
+                    className={`height-50 text-white btn-info btn ${tab === "project" ? "active" : ""
+                      }`}
                     onClick={() => hanldeSetTab("project")}
                   >
                     {" "}
@@ -554,9 +402,8 @@ function Profile({ handleChangeImg }) {
             <div>
               {user.role === "Member" && tab === "degree" && (
                 <div
-                  className={`degree tab-content ${
-                    showAllItems ? "scrollable" : ""
-                  }`}
+                  className={`degree tab-content ${showAllItems ? "scrollable" : ""
+                    }`}
                 >
                   {userDegree
                     .slice(0, showAllItems ? userDegree.length : 3)
