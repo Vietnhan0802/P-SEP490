@@ -289,37 +289,29 @@ namespace Project.Controllers
         [HttpGet("GetAllProjectInvites/{idUser}")]
         public async Task<Response> GetAllProjectInvites(string idUser)
         {
-            var projects = await _context.ProjectInfos.Where(x => x.idAccount == idUser).AsNoTracking().ToListAsync();
-            if (projects != null)
-            {
-                foreach (var project in projects)
-                {
-                    var projectInvites = await _context.ProjectMembers.Where(x => x.idProject == project.idProject && x.type == BusinessObjects.Enums.Project.Type.Invited)
+            var projectInvites = await _context.ProjectMembers.Where(x => x.idAccount == idUser && x.type == BusinessObjects.Enums.Project.Type.Invited && x.isAcept == null)
                                                                            .OrderByDescending(x => x.createdDate)
                                                                            .AsNoTracking()
                                                                            .ToListAsync();
-                    if (projectInvites != null)
+            if (projectInvites.Count != 0)
+            {
+                var result = _mapper.Map<List<ProjectMemberView>>(projectInvites);
+                foreach (var projectInvite in result)
+                {
+                    var project = await _context.ProjectInfos.FirstOrDefaultAsync(x => x.idProject == projectInvite.idProject);
+                    var infoUser = await GetNameUserCurrent(project.idAccount);
+                    projectInvite.fullName = infoUser.fullName;
+                    projectInvite.avatar = infoUser.avatar;
+                    projectInvite.nameProject = project.name;
+                    projectInvite.cvUrlFile = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, projectInvite.cvUrl);
+                    foreach (var position in projectInvites)
                     {
-                        return new Response(HttpStatusCode.NoContent, "Project invite doesn't exists!");
+                        projectInvite.namePosition = position.Position.namePosition;
                     }
-                    var result = _mapper.Map<List<ProjectMemberView>>(projectInvites);
-                    foreach (var projectInvite in result)
-                    {
-                        var infoUser = await GetNameUserCurrent(projectInvite.idAccount);
-                        projectInvite.fullName = infoUser.fullName;
-                        projectInvite.avatar = infoUser.avatar;
-                        projectInvite.nameProject = project.name;
-                        projectInvite.cvUrlFile = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, projectInvite.cvUrl);
-                        foreach (var position in projectInvites)
-                        {
-                            projectInvite.namePosition = position.Position.namePosition;
-                        }
-                    }
-                    return new Response(HttpStatusCode.OK, "Get all project invite is success!", result);
                 }
-                return new Response(HttpStatusCode.NoContent, "Get all project invite is empty!");
+                return new Response(HttpStatusCode.OK, "Get all project invite is success!", result);
             }
-            return new Response(HttpStatusCode.NoContent, "Get all project is empty!");
+            return new Response(HttpStatusCode.NoContent, "Get all project invite is empty!"); 
         }
 
         [HttpPost("CreateProjectApplication/{idUser}/{idProject}")]
