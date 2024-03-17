@@ -2,6 +2,7 @@
 using BusinessObjects.Entities.User;
 using BusinessObjects.Enums.User;
 using BusinessObjects.ViewModels.Follow;
+using BusinessObjects.ViewModels.Post;
 using BusinessObjects.ViewModels.Statistic;
 using BusinessObjects.ViewModels.User;
 using Commons.Helpers;
@@ -9,6 +10,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net;
@@ -17,6 +19,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
 using User.Services;
+using User.Validator;
 
 namespace User.Controllers
 {
@@ -317,10 +320,17 @@ namespace User.Controllers
         [HttpPost("SignUpMember")]
         public async Task<Response> SignUpMember(SignUpPerson signUpForPerson)
         {
-            var userExits = await _userManager.FindByEmailAsync(signUpForPerson.email);
+            var validator = new SignUpPersonValidator();
+            var validatorResult = validator.Validate(signUpForPerson);
+            var error = validatorResult.Errors.Select(x => x.ErrorMessage).ToList();
+            if (!validatorResult.IsValid)
+            {
+                return new Response(HttpStatusCode.BadRequest, "Invalid data", error);
+            }
+            var userExits = await _userManager.FindByEmailAsync(signUpForPerson.email!);
             if (userExits != null)
             {
-                return new Response(HttpStatusCode.Conflict, "User already exists!");
+                return new Response(HttpStatusCode.BadRequest, "User already exists!");
             }
 
             AppUser user = new AppUser()
@@ -337,10 +347,10 @@ namespace User.Controllers
                 createdDate = DateTime.Now,
                 SecurityStamp = Guid.NewGuid().ToString()
             };
-            var result = await _userManager.CreateAsync(user, signUpForPerson.password);
-            if (!result.Succeeded)
+            var isSuccess = await _userManager.CreateAsync(user, signUpForPerson.password!);
+            if (!isSuccess.Succeeded)
             {
-                return new Response(HttpStatusCode.BadRequest, "User failed to create! Please check and try again!");
+                return new Response(HttpStatusCode.BadRequest, "User create is fail! Please check and try again!");
             }
             if (await _roleManager.RoleExistsAsync(TypeUser.Member.ToString()))
             {
@@ -349,19 +359,26 @@ namespace User.Controllers
                 var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                 var confirmLink = Url.Action(nameof(ConfirmEmail), "User", new { token, email = user.Email }, Request.Scheme);
                 EmailRequest emailRequest = new EmailRequest();
-                emailRequest.ToEmail = user.Email;
+                emailRequest.ToEmail = user.Email!;
                 emailRequest.Subject = "Confirmation Email";
-                emailRequest.Body = GetHtmlContent(user.fullName, confirmLink!);
+                emailRequest.Body = GetHtmlContent(user.fullName!, confirmLink!);
                 await _emailService.SendEmailAsync(emailRequest);
-                return new Response(HttpStatusCode.NoContent, "User creates & sends email successfully!");
+                return new Response(HttpStatusCode.NoContent, "User create & send email is success!");
             }
-            return new Response(HttpStatusCode.BadRequest, "User failed to create!");
+            return new Response(HttpStatusCode.BadRequest, "User create is fail!");
         }
 
         [HttpPost("SignUpBusiness")]
         public async Task<Response> SignUpBusiness(SignUpBusiness signUpForBusiness)
         {
-            var userExits = await _userManager.FindByEmailAsync(signUpForBusiness.email);
+            var validator = new SignUpBusinessValidator();
+            var validatorResult = validator.Validate(signUpForBusiness);
+            var error = validatorResult.Errors.Select(x => x.ErrorMessage).ToList();
+            if (!validatorResult.IsValid)
+            {
+                return new Response(HttpStatusCode.BadRequest, "Invalid data", error);
+            }
+            var userExits = await _userManager.FindByEmailAsync(signUpForBusiness.email!);
             if (userExits != null)
             {
                 return new Response(HttpStatusCode.Conflict, "User already exists!");
@@ -380,7 +397,7 @@ namespace User.Controllers
                 createdDate = DateTime.Now,
                 SecurityStamp = Guid.NewGuid().ToString()
             };
-            var result = await _userManager.CreateAsync(user, signUpForBusiness.password);
+            var result = await _userManager.CreateAsync(user, signUpForBusiness.password!);
             if (!result.Succeeded)
             {
                 return new Response(HttpStatusCode.BadRequest, "User failed to create! Please check and try again!");
@@ -392,9 +409,9 @@ namespace User.Controllers
                 var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                 var confirmLink = Url.Action(nameof(ConfirmEmail), "User", new { token, email = user.Email }, Request.Scheme);
                 EmailRequest emailRequest = new EmailRequest();
-                emailRequest.ToEmail = user.Email;
+                emailRequest.ToEmail = user.Email!;
                 emailRequest.Subject = "Confirmation Email";
-                emailRequest.Body = GetHtmlContent(user.fullName, confirmLink!);
+                emailRequest.Body = GetHtmlContent(user.fullName!, confirmLink!);
                 await _emailService.SendEmailAsync(emailRequest);
                 return new Response(HttpStatusCode.NoContent, "User creates & sends email successfully!");
             }
