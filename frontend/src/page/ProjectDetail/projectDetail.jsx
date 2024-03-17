@@ -61,6 +61,8 @@ const projectVisibility = (visibility) => {
   }
 };
 function ProjectDetail() {
+  const sessionData = JSON.parse(sessionStorage.getItem("userSession")) || {};
+  const { role ,currentUserId} = sessionData;
   const location = useLocation();
   const [data, setData] = useState();
   const { idProject } = location.state || {};
@@ -109,7 +111,7 @@ function ProjectDetail() {
                     </p>
                   </div>
                 </div>
-                <UpdateProjectForm />
+                <UpdateProjectForm input={data} id={currentUserId}/>
               </div>
 
               <div className="status-block size-18">
@@ -144,9 +146,13 @@ function ProjectDetail() {
                 <p className="title fw-bold">Member</p>
               </div>
               <div className="d-flex align-items-center">
-                {" "}
-                <FormMember projectId={idProject} positionOption={data?.positionViews} />
-                <FormApply projectId={idProject} positionOption={data?.positionViews} />
+                {role === 'Business' &&
+                  <FormMember projectId={idProject} positionOption={data?.positionViews} />
+                }
+                {role === 'Member' &&
+                  <FormApply projectId={idProject} positionOption={data?.positionViews} />
+                }
+
               </div>
             </div>
             <table className="w-100">

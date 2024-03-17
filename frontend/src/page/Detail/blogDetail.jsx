@@ -431,8 +431,6 @@ function BlogDetail({value}) {
                               </Dropdown> : ""
                             }
                           </div>
-
-
                         </>
                       ))
                     ) : null}

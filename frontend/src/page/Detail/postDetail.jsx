@@ -15,7 +15,7 @@ import { Col, Row } from "react-bootstrap";
 import Follow from "../../components/follow";
 import SideBar from "../../components/sidebar";
 
-function PostDetail() {
+function PostDetail({value}) {
   const location = useLocation();
   const sessionData = JSON.parse(sessionStorage.getItem("userSession")) || {};
   const { currentUserId } = sessionData;
@@ -557,7 +557,7 @@ function PostDetail() {
         </div>
       </Col>
       <Col md={3}>
-        <Follow />
+        <Follow followValue={value}/>
       </Col>
     </Row>
   );
