@@ -81,8 +81,8 @@ export default function BusinessForm() {
             min="1900-01-01"
             max="2023-12-31"
             type="date"
-            name="birthday"
-            value={inputs.birthday || ""}
+            name="establishment"
+            value={inputs.establishment || ""}
             onChange={handleChange}
           />
         </div>

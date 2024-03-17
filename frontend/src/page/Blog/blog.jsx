@@ -230,7 +230,7 @@ function Blog({value}) {
                     <p className="mb-0">{item.createdDate}</p>
                   </div>
                 </div>
-                <Report />
+                <Report  id={currentUserId} idItem={item.id} type="blog"/>
               </div>
 
               <h3 className="mt-2">{item.title}</h3>
