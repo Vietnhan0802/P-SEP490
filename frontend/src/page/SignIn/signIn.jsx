@@ -49,7 +49,7 @@ export default function SignIn() {
     }
   };
 
-  const responseMessage = async (googleResponse) => {
+  const handleClickGG = async (googleResponse) => {
     try {
       console.log("Google login response:", googleResponse);
       const { credential } = googleResponse;
@@ -66,17 +66,17 @@ export default function SignIn() {
       const apiResponse = await userInstance.post(`/SignInGoogle/${email}`);
       if (apiResponse?.data?.status === "OK") {
         notifySuccess('Sign in successfully!');
-        const decode = jwtDecode(apiResponse?.data?.result.token);
+        const decodeJwt = jwtDecode(apiResponse?.data?.result.token);
         sessionStorage.setItem('userSession', JSON.stringify({
-          currentUserId: decode.Id,
-          userName: decode.FullName,
-          userEmail: decode.Email,
+          currentUserId: decodeJwt.Id,
+          userName: decodeJwt.FullName,
+          userEmail: decodeJwt.Email,
           token: apiResponse?.data?.result.token,
           role: apiResponse?.data?.result.role,
         }));
         // Broadcast the login event to other tabs
         const loginChannel = new BroadcastChannel('login_channel');
-        loginChannel.postMessage({ action: 'login', userSession: { userId: decode.Id, role: apiResponse?.data?.result.role } });
+        loginChannel.postMessage({ action: 'login', userSession: { userId: decodeJwt.Id, role: apiResponse?.data?.result.role } });
         navigate("/post", { state: { activeItem: 'post' } });
       } else {
         notifyError('Sign in failed!');
@@ -90,9 +90,6 @@ export default function SignIn() {
     console.error("Google login error:", error);
   };
 
-  const handleClickGG = () => {
-    // implementation details
-  };
   const handleClickFB = () => {
     // implementation details
   };
@@ -166,7 +163,7 @@ export default function SignIn() {
               </div>
               <div className="d-flex flex-row pt-3 pb-3">
                 <div className="d-flex col-6 google-btn justify-content-end">
-                <GoogleLogin onSuccess={responseMessage} onError={errorMessage} />
+                <GoogleLogin onSuccess={handleClickGG} onError={errorMessage} />
                   {/* <button
                     className="gray-border white-bg d-flex flex-row rounded-50 align-items-center justify-content-center"
                     type="button"
