@@ -95,7 +95,7 @@ namespace Blog.Controllers
         [HttpGet("GetAllBlogsTrend/{idUser}")]
         public async Task<Response> GetAllBlogsTrend(string idUser)
         {
-            var top10Blogs = await _context.Blogs.OrderByDescending(x => x.viewInDate).Take(10).ToListAsync();
+            var top10Blogs = await _context.Blogs.Where(x => x.isDeleted == false).OrderByDescending(x => x.viewInDate).Take(10).ToListAsync();
             var result = _mapper.Map<List<ViewBlog>>(top10Blogs);
             foreach ( var blog in result )
             {
