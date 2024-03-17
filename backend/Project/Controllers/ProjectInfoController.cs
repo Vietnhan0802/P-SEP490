@@ -252,7 +252,7 @@ namespace Project.Controllers
             {
                 foreach (var project in projects)
                 {
-                    var projectApplications = await _context.ProjectMembers.Where(x => x.idProject == project.idProject && x.type == BusinessObjects.Enums.Project.Type.Applied)
+                    var projectApplications = await _context.ProjectMembers.Where(x => x.idProject == project.idProject && x.type == BusinessObjects.Enums.Project.Type.Applied && x.isAcept == null)
                                                                            .OrderByDescending(x => x.createdDate)
                                                                            .AsNoTracking()
                                                                            .ToListAsync();
