@@ -5,7 +5,6 @@ import { CiSearch } from "react-icons/ci";
 import { BsChat } from "react-icons/bs";
 import { IoFlagOutline } from "react-icons/io5";
 import { FiEye } from "react-icons/fi";
-import ReportPopup from "../../components/Popup/reportPopup";
 import defaultAvatar from "../../images/common/default.png"
 
 import { postInstance, reportInstance } from "../../axios/axiosConfig"
@@ -39,7 +38,7 @@ function calculateTimeDifference(targetDate) {
     return days === 1 ? `${days} day ago` : `${hours} days ago`;
   }
 }
-function OwnPost() {
+function OwnPost({value}) {
 
   const sessionData = JSON.parse(sessionStorage.getItem('userSession')) || {};
   const { currentUserId } = sessionData;
@@ -51,6 +50,8 @@ function OwnPost() {
   const [popupContent, setPopupContent] = useState('');
   const [search, setSearch] = useState('');
   const [filterPost, setFilterPost] = useState([]);
+  const [showTrendList, setShowTrendList] = useState(false);
+  const [postListTrend, setPostListTrend] = useState([]);
   const createData = (id, createdDate, avatar, title, content, view, like, viewPostImages, fullName) => {
     return {
       id, createdDate, avatar, title, content, view, like, viewPostImages, fullName
@@ -110,6 +111,37 @@ function OwnPost() {
     );
     setFilterPost(filtered);
   }
+  useEffect(() => {
+    postInstance.get(`GetAllPostsTrend/${currentUserId}`)
+      .then((res) => {
+        const postList = res?.data?.result;
+        setPostListTrend([]);
+        postList.map((element) => {
+          const time = calculateTimeDifference(element.createdDate);
+          setPostListTrend((prevData) => [
+            ...prevData,
+            createData(
+              element.idPost,
+              time,
+              element.avatar,
+              element.title,
+              element.content,
+              element.view,
+              element.like,
+              element.viewPostImages,
+              element.fullName,
+              element.isLike
+            ),
+          ]);
+        });
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, [])
+  const toggleTrendList = () => {
+    setShowTrendList(!showTrendList);
+  };
   return (
     <Row className="pt-3 ms-0 me-0">
       <Col md={3} >
@@ -131,12 +163,12 @@ function OwnPost() {
             </div>
             <div className="d-flex flex-row align-items-center col-auto m-md-0-cus mt-2 p-0">
               <PostPu reset={reset} />
-              <button type="button" className="btn btn-info text-white">
-                Trend
+              <button type="button" className="btn btn-info text-white" onClick={toggleTrendList}>
+                {showTrendList ? 'ViewAll' : "Trend"}
               </button>
             </div>
           </div>
-          {(search ? filterPost : postList).map((item) => (
+          {(showTrendList ? postListTrend : (search ? filterPost : postList)).map((item) => (
             <div
               key={item.idPost}
               className={`post-item p-2 ${blogPopups[item.id] ? "position-relative" : ""
@@ -175,38 +207,12 @@ function OwnPost() {
                 </div>
                 <button className="view-btn btn" onClick={() => hanldeViewDetail(item.id)}>View Detail</button>
               </div>
-              {blogPopups[item.id] && (
-                <ReportPopup
-                  trigger={blogPopups[item.id]}
-                  setTrigger={(value) =>
-                    setBlogPopups((prev) => ({ ...prev, [item.id]: value }))
-                  }
-                >
-                  <div className="bg-white h-100 post-report">
-                    <h3 className="text-center border-bottom pb-2">Report</h3>
-                    <p>
-                      <b>Please fill in your feedback</b>
-                    </p>
-                    <textarea
-                      type="text"
-                      placeholder="What's wrong with this post"
-                      value={popupContent[item.id]}
-                      className="w-100 p-3"
-                      onChange={(event) => handlePopupContent(event, item.id)}
-                    />
-                    <div className="d-flex justify-content-end mt-2">
-                      <button className="btn btn-secondary "
-                        onClick={() => handleCreateReport(currentUserId, item.id, popupContent[item.id])}>Submit</button>
-                    </div>
-                  </div>
-                </ReportPopup>
-              )}
             </div>
           ))}
         </div>
       </Col>
       <Col md={3}>
-        <Follow />
+        <Follow followValue={value} />
       </Col>
     </Row>
   )

@@ -29,6 +29,7 @@ const createData = (
 function ProjectApplication() {
   const sessionData = JSON.parse(sessionStorage.getItem('userSession')) || {};
   const { currentUserId } = sessionData;
+  const [resetPage, setResetPage] = useState(true);
   const columns = React.useMemo(
     () => [
       {
@@ -71,15 +72,19 @@ function ProjectApplication() {
               rel="noopener noreferrer" // Improve security for opening new tabs
             > View CV
             </a>
-            <AcceptConfirm id={row.original.id} />
-            <RejectConfirm id={row.original.id} />
+            <AcceptConfirm id={row.original.id} reset={reset} />
+            <RejectConfirm id={row.original.id} reset={reset} />
           </div>
         ),
       },
     ],
     []
   );
-
+  const reset = (value) => {
+    if (value==='Success') {
+      setResetPage(!resetPage);
+    }
+  }
   const [applications, setApplications] = useState([]);
   useEffect(() => {
     projectInstance.get(`GetAllProjectApplications/${currentUserId}`)
@@ -88,8 +93,7 @@ function ProjectApplication() {
         setApplications(data.map((item) => createData(item.idProjectMember, item.fullName, item.email, item.namePosition, item.nameProject, item.avatar, item.cvUrlFile)));
       })
       .catch((error) => { console.error(error) });
-  }, []);
-  // const data = React.useMemo(() => getData(), []);
+  }, [resetPage]);
   return (
     <Row className="pt-3 ms-0 me-0">
       <Col md={3} >

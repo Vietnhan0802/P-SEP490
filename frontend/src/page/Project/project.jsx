@@ -10,9 +10,7 @@ import { Col, Row } from "react-bootstrap";
 import SideBar from "../../components/sidebar";
 import Follow from "../../components/follow";
 
-function Project() {
-  const sessionData = JSON.parse(sessionStorage.getItem('userSession')) || {};
-  const { role } = sessionData;
+function Project({value}) {
   const navigate = useNavigate();
   const [projects, setProjects] = useState([]);
   const [search, setSearch] = useState('');
@@ -94,7 +92,6 @@ function Project() {
                     >
                       Detail
                     </button>
-
                   </div>
                 </div>
               </div>
@@ -104,7 +101,7 @@ function Project() {
         </div>
       </Col>
       <Col md={3}>
-        <Follow />
+        <Follow followValue={value} />
       </Col>
     </Row>
   );

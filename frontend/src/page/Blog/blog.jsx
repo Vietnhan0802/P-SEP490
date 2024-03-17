@@ -38,7 +38,7 @@ function calculateTimeDifference(targetDate) {
     return days === 1 ? `${days} day ago` : `${hours} days ago`;
   }
 }
-function Blog() {
+function Blog({value}) {
   const createData = (
     id,
     createdDate,
@@ -72,6 +72,8 @@ function Blog() {
   const navigate = useNavigate();
   const [search, setSearch] = useState('');
   const [filterBlog, setFilterBlog] = useState([]);
+  const [blogListTrend, setBlogListTrend] = useState([]);
+  const [showTrendList, setShowTrendList] = useState(false);
   //_________________________________________________________//
 
   const hanldeViewDetail = (blogId) => {
@@ -115,13 +117,13 @@ function Blog() {
   // Handler function to update the state when the input changes
   useEffect(() => {
     blogInstance
-      .get(`GetAllBlogs/${currentUserId}`)
+      .get(`GetAllBlogsTrend/${currentUserId}`)
       .then((res) => {
         const blogList = res?.data?.result;
-        setData([]);
+        setBlogListTrend([]);
         blogList.map((element) => {
           const time = calculateTimeDifference(element.createdDate);
-          setData((prevData) => [
+          setBlogListTrend((prevData) => [
             ...prevData,
             createData(
               element.idBlog,
@@ -141,6 +143,35 @@ function Blog() {
         console.error(error);
       });
   }, [reset]);
+  useEffect(()=>{
+    blogInstance
+    .get(`GetAllBlogsTrend/${currentUserId}`)
+    .then((res) => {
+      const blogList = res?.data?.result;
+      setData([]);
+      blogList.map((element) => {
+        const time = calculateTimeDifference(element.createdDate);
+        setData((prevData) => [
+          ...prevData,
+          createData(
+            element.idBlog,
+            time,
+            element.title,
+            element.content,
+            element.view,
+            element.like,
+            element.viewBlogImages,
+            element.fullName,
+            element.isLike
+          ),
+        ]);
+      });
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+  },[])
+ 
   const resetBlog = (value) => {
     setReset(!reset);
   };
@@ -152,6 +183,9 @@ function Blog() {
     );
     setFilterBlog(filtered);
   }
+  const toggleTrendList = () => {
+    setShowTrendList(!showTrendList);
+  };
   return (
     <Row className="pt-3 ms-0 me-0">
       <Col md={3}>
@@ -173,13 +207,13 @@ function Blog() {
             <div className="d-flex flex-row align-items-center col-auto m-md-0-cus mt-2 p-0">
               {role === "Admin" ? <BlogPu resetBlog={resetBlog} /> : ""}
 
-              <button type="button" className="btn btn-info text-white">
-                Trend
+              <button type="button" className="btn btn-info text-white" onClick={toggleTrendList}>
+              {showTrendList ? 'ViewAll' : "Trend"}
               </button>
             </div>
           </div>
 
-          {(search ? filterBlog : data).map((item) => (
+          {(showTrendList ? blogListTrend : (search ? filterBlog : data)).map((item) => (
             <div
               key={item.idBlog}
               className={`blog-item p-2 ${blogPopups[item.id] ? "position-relative" : ""
@@ -235,7 +269,7 @@ function Blog() {
         </div>
       </Col>
       <Col md={3}>
-        <Follow />
+        <Follow followValue={value} />
       </Col>
     </Row>
   );

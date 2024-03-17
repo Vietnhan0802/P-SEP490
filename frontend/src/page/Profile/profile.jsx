@@ -35,7 +35,7 @@ function formatDateString(dateString) {
   // If dateString is empty, return an empty string
   return "";
 }
-function Profile({ handleChangeImg }) {
+function Profile({ handleChangeImg, value }) {
   const location = useLocation();
   // ````````````````````````````
   const [user, setUser] = useState({});
@@ -616,7 +616,7 @@ function Profile({ handleChangeImg }) {
           </section>
         </Col>
         <Col md={3}>
-          <Follow newFollow={follow} />
+          <Follow followValue={value} />
         </Col>
       </Row>
     </>
