@@ -2,14 +2,12 @@ import { Modal, Button } from "react-bootstrap";
 import { useState } from "react";
 import "./popup.scss";
 import { IoFlagOutline } from "react-icons/io5";
-function Report() {
+function Report({ id, idItem }) {
   const [show, setShow] = useState(false);
   const modalClose = () => setShow(false);
-  const modalShow = () => setShow(true);
-
   const [selectedOption, setSelectedOption] = useState("");
 
-  const handleChange = (event) => {
+  const handleChange = (event, content) => {
     // Add a small delay to allow for a smoother transition effect
     // when switching between options
     const value = event.target.value;
@@ -20,6 +18,14 @@ function Report() {
       }, 100); // Adjust delay timing as necessary for smoothness
     }
   };
+  const [report, setReport] = useState({
+    idReporter: '',
+    idPosted: '',
+    content: ''
+  })
+  const modalShow = () => { setShow(true); setReport((prev) => ({ ...prev, idReporter: id, idPosted: idItem })) };
+  console.log(report);
+
   const data = [
     {
       id: "hateAndHarassment",
@@ -90,7 +96,7 @@ function Report() {
               id={item.id}
               name="reportType"
               value={item.id}
-              onChange={handleChange}
+              onChange={() => handleChange(item.content)}
               checked={selectedOption === item.id}
             />
             <label htmlFor={item.id}>{item.title}</label>

@@ -272,7 +272,7 @@ function Post({value}) {
                     </div>
                   </div>
                 </div>
-                <Report />
+                <Report id={currentUserId} idItem={item.id} />
               </div>
               <h4 className="mt-2">{item.title}</h4>
 

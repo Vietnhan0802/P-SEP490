@@ -7,7 +7,6 @@ import defaultImage from "../../src/images/common/default.png";
 import { useNavigate } from "react-router-dom";
 
 function Follow({ followValue }) {
-  console.log(followValue)
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [following, setFollowing] = useState([]);
