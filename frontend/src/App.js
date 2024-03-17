@@ -94,8 +94,8 @@ function App() {
       <Routes>
         <Route path="/" element={<SignIn/>} />
         <Route path="/signup" element={<SignUp />} />
-        <Route path="/postdetail" element={<PostDetail/>} />
-        <Route path="/blogdetail" element={<BlogDetail />} />
+        <Route path="/postdetail" element={<PostDetail value={following}/>} />
+        <Route path="/blogdetail" element={<BlogDetail value={following}/>} />
         <Route path="/projectdetail" element={<ProjectDetail />} />
         <Route path="/dashboard" element={<DashBoard />} />
         <Route path="/post" element={<Post value={following}/>} />
