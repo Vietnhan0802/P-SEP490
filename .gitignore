@@ -401,6 +401,7 @@ backend/Project/Images/*.tiff
 backend/Project/Images/*.tif
 backend/Project/Images/*.webp
 backend/Project/Images/*.svg
+backend/Project/Images/*.pdf
 
 backend/User/Images/*.jpg
 backend/User/Images/*.jpeg
