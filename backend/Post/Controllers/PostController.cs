@@ -41,10 +41,10 @@ namespace Post.Controllers
             InteractionApiUrl = "https://localhost:7004/api/Interaction";
         }
 
-        [HttpPost("CreateNotificationComment/{idSender}/{idReceiver}/{idPost}")]
-        private async Task<IActionResult> CreateNotificationComment(string idSender, string idReceiver, Guid idPost)
+        [HttpPost("CreateNotificationPostComment/{idSender}/{idReceiver}/{idPost}")]
+        private async Task<IActionResult> CreateNotificationPostComment(string idSender, string idReceiver, Guid idPost)
         {
-            HttpResponseMessage response = await client.PostAsync($"{NotifyApiUrl}/CreateNotificationComment/{idSender}/{idReceiver}/{idPost}", null);
+            HttpResponseMessage response = await client.PostAsync($"{NotifyApiUrl}/CreateNotificationPostComment/{idSender}/{idReceiver}/{idPost}", null);
             if (response.IsSuccessStatusCode)
             {
                 return Ok("Create notification is successfully!");
@@ -417,7 +417,7 @@ namespace Post.Controllers
             
             await _context.PosttComments.AddAsync(postComment);
             await _context.SaveChangesAsync();
-            await CreateNotificationComment(idUser, post.idAccount, post.idPost);
+            await CreateNotificationPostComment(idUser, post.idAccount, post.idPost);
             return new Response(HttpStatusCode.OK, "Create post comment is success!", _mapper.Map<ViewPostComment>(postComment));
         }
 
