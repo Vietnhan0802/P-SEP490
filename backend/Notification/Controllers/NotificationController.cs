@@ -135,7 +135,7 @@ namespace Notification.Controllers
             return result;
         }
 
-        [HttpPost("CreateNotificationPostReply/{idSender}/{idReceiver}")]
+        [HttpPost("CreateNotificationPostReply/{idSender}/{idReceiver}/{idPost}")]
         public async Task<ViewNotification> CreateNotificationPostReply(string idSender, string idReceiver, Guid idPost)
         {
             Notificationn notification = new Notificationn()
