@@ -167,7 +167,7 @@ namespace Project.Controllers
             return new Response(HttpStatusCode.OK, "Get project is success!", result);
         }
 
-        [HttpGet("GetAllMemberInProject")]
+        [HttpGet("GetAllMemberInProject/{idProject}")]
         public async Task<Response> GetAllMemberInProject(Guid idProject)
         {
             var project = await _context.ProjectInfos.FirstOrDefaultAsync(x => x.idProject == idProject);
