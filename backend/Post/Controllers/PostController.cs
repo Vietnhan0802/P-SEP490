@@ -41,10 +41,32 @@ namespace Post.Controllers
             InteractionApiUrl = "https://localhost:7004/api/Interaction";
         }
 
+        [HttpPost("CreateNotificationPostLike/{idSender}/{idReceiver}/{idPost}")]
+        private async Task<IActionResult> CreateNotificationPostLike(string idSender, string idReceiver, Guid idPost)
+        {
+            HttpResponseMessage response = await client.PostAsync($"{NotifyApiUrl}/CreateNotificationPostLike/{idSender}/{idReceiver}/{idPost}", null);
+            if (response.IsSuccessStatusCode)
+            {
+                return Ok("Create notification is successfully!");
+            }
+            return BadRequest("Create notification is fail!");
+        }
+
         [HttpPost("CreateNotificationPostComment/{idSender}/{idReceiver}/{idPost}")]
         private async Task<IActionResult> CreateNotificationPostComment(string idSender, string idReceiver, Guid idPost)
         {
             HttpResponseMessage response = await client.PostAsync($"{NotifyApiUrl}/CreateNotificationPostComment/{idSender}/{idReceiver}/{idPost}", null);
+            if (response.IsSuccessStatusCode)
+            {
+                return Ok("Create notification is successfully!");
+            }
+            return BadRequest("Create notification is fail!");
+        }
+
+        [HttpPost("CreateNotificationPostReply/{idSender}/{idReceiver}/{idPost}")]
+        private async Task<IActionResult> CreateNotificationPostReply(string idSender, string idReceiver, Guid idPost)
+        {
+            HttpResponseMessage response = await client.PostAsync($"{NotifyApiUrl}/CreateNotificationPostReply/{idSender}/{idReceiver}/{idPost}", null);
             if (response.IsSuccessStatusCode)
             {
                 return Ok("Create notification is successfully!");
@@ -319,7 +341,7 @@ namespace Post.Controllers
             var postImages = await _context.PosttImages.Where(x => x.idPost == post.idPost).ToListAsync();
             var viewPost = _mapper.Map<ViewPost>(post);
             viewPost.ViewPostImages = _mapper.Map<List<ViewPostImage>>(postImages);
-            return new Response(HttpStatusCode.BadRequest, "Update post is success!", viewPost);
+            return new Response(HttpStatusCode.OK, "Update post is success!", viewPost);
         }
 
         [HttpDelete("RemovePost/{idPost}")]
@@ -331,8 +353,12 @@ namespace Post.Controllers
                 return new Response(HttpStatusCode.NotFound, "Post doesn't exist!");
             }
             post.isDeleted = true;
-            await _context.SaveChangesAsync();
-            return new Response(HttpStatusCode.NoContent, "Remove post is success!");
+            var isSuccess = await _context.SaveChangesAsync();
+            if (isSuccess > 0)
+            {
+                return new Response(HttpStatusCode.NoContent, "Remove post is success!");
+            }
+            return new Response(HttpStatusCode.BadRequest, "Remove post is fail!");
         }
 
         [HttpPost("LikeOrUnlikePost/{idUser}/{idPost}")]
@@ -348,13 +374,25 @@ namespace Post.Controllers
                     createdDate = DateTime.Now
                 };
                 await _context.PosttLikes.AddAsync(like);
+                var isSuccess = await _context.SaveChangesAsync();
+                if (isSuccess > 0)
+                {
+                    var post = await _context.Postts.FirstOrDefaultAsync(x => x.idPost == idPost);
+                    await CreateNotificationPostLike(idUser, post.idAccount, idPost);
+                    return new Response(HttpStatusCode.NoContent, "Like post is success!");
+                }
+                return new Response(HttpStatusCode.BadRequest, "Like post is fail!");
             }
             else
             {
                 _context.PosttLikes.Remove(existLike);
+                var isSuccess = await _context.SaveChangesAsync();
+                if (isSuccess > 0)
+                {
+                    return new Response(HttpStatusCode.NoContent, "Unlike post is success!");
+                }
+                return new Response(HttpStatusCode.BadRequest, "Unlike post is fail!");
             }
-            await _context.SaveChangesAsync();
-            return new Response(HttpStatusCode.NoContent, "Like or unlike post is success!");
         }
 
         /*------------------------------------------------------------BlogComment------------------------------------------------------------*/
@@ -416,9 +454,13 @@ namespace Post.Controllers
             };
             
             await _context.PosttComments.AddAsync(postComment);
-            await _context.SaveChangesAsync();
-            await CreateNotificationPostComment(idUser, post.idAccount, post.idPost);
-            return new Response(HttpStatusCode.OK, "Create post comment is success!", _mapper.Map<ViewPostComment>(postComment));
+            var isSuccess = await _context.SaveChangesAsync();
+            if (isSuccess > 0)
+            {
+                await CreateNotificationPostComment(idUser, post.idAccount, post.idPost);
+                return new Response(HttpStatusCode.OK, "Create post comment is success!", _mapper.Map<ViewPostComment>(postComment));
+            }
+            return new Response(HttpStatusCode.BadRequest, "Create post comment is fail!");
         }
 
         [HttpPut("UpdatePostComment/{idPostComment}/{content}")]
@@ -431,8 +473,12 @@ namespace Post.Controllers
             }
             postComment.content = content;
             _context.PosttComments.Update(postComment);
-            await _context.SaveChangesAsync();
-            return new Response(HttpStatusCode.OK, "Update post comment is success!", _mapper.Map<ViewPostComment>(postComment));
+            var isSuccess = await _context.SaveChangesAsync();
+            if (isSuccess > 0)
+            {
+                return new Response(HttpStatusCode.OK, "Update post comment is success!", _mapper.Map<ViewPostComment>(postComment));
+            }
+            return new Response(HttpStatusCode.BadRequest, "Update post comment is fail!");
         }
 
         [HttpDelete("RemovePostComment/{idPostComment}")]
@@ -444,8 +490,12 @@ namespace Post.Controllers
                 return new Response(HttpStatusCode.NotFound, "Post comment doesn't exist!");
             }
             postComment.isDeleted = true;
-            await _context.SaveChangesAsync();
-            return new Response(HttpStatusCode.NoContent, "Remove post comment is success!");
+            var isSuccess = await _context.SaveChangesAsync();
+            if (isSuccess > 0)
+            {
+                return new Response(HttpStatusCode.NoContent, "Remove post comment is success!");
+            }
+            return new Response(HttpStatusCode.BadRequest, "Remove post comment is fail!");
         }
 
         [HttpPost("LikeOrUnlikePostComment/{idUser}/{idPostComment}")]
@@ -461,13 +511,23 @@ namespace Post.Controllers
                     createdDate = DateTime.Now
                 };
                 await _context.PosttCommentLikes.AddAsync(like);
+                var isSuccess = await _context.SaveChangesAsync();
+                if (isSuccess > 0)
+                {
+                    return new Response(HttpStatusCode.NoContent, "Like post comment is success!");
+                }
+                return new Response(HttpStatusCode.BadRequest, "Like post comment is fail!");
             }
             else
             {
                 _context.PosttCommentLikes.Remove(existLike);
+                var isSuccess = await _context.SaveChangesAsync();
+                if (isSuccess > 0)
+                {
+                    return new Response(HttpStatusCode.NoContent, "Unlike post comment is success!");
+                }
+                return new Response(HttpStatusCode.BadRequest, "Unlike post comment is fail!");
             }
-            await _context.SaveChangesAsync();
-            return new Response(HttpStatusCode.NoContent, "Like or unlike post comment is success!");
         }
 
         /*------------------------------------------------------------BlogReply------------------------------------------------------------*/
@@ -489,8 +549,13 @@ namespace Post.Controllers
                 createdDate = DateTime.Now
             };
             await _context.PosttReplies.AddAsync(postReply);
-            await _context.SaveChangesAsync();
-            return new Response(HttpStatusCode.OK, "Create post reply is success!", _mapper.Map<ViewPostReply>(postReply));
+            var isSuccess =  await _context.SaveChangesAsync();
+            if (isSuccess > 0)
+            {
+                await CreateNotificationPostReply(idUser, postComment.idAccount, postComment.idPost);
+                return new Response(HttpStatusCode.OK, "Create post reply is success!", _mapper.Map<ViewPostReply>(postReply));
+            }
+            return new Response(HttpStatusCode.BadRequest, "Create post reply is fail!");
         }
 
         [HttpPut("UpdatePostReply/{idPostReply}/{content}")]
@@ -503,8 +568,12 @@ namespace Post.Controllers
             }
             postReply.content = content;
             _context.PosttReplies.Update(postReply);
-            await _context.SaveChangesAsync();
-            return new Response(HttpStatusCode.OK, "Update post reply is success!", _mapper.Map<ViewPostReply>(postReply));
+            var isSuccess = await _context.SaveChangesAsync();
+            if (isSuccess > 0)
+            {
+                return new Response(HttpStatusCode.NoContent, "Update post reply is success!", _mapper.Map<ViewPostReply>(postReply));
+            }
+            return new Response(HttpStatusCode.BadRequest, "Update post reply is fail!");
         }
 
         [HttpDelete("RemovePostReply/{idPostReply}")]
@@ -516,8 +585,12 @@ namespace Post.Controllers
                 return new Response(HttpStatusCode.NotFound, "Post reply doesn't exist!");
             }
             postReply.isDeleted = true;
-            await _context.SaveChangesAsync();
-            return new Response(HttpStatusCode.NoContent, "Remove post reply is success!");
+            var isSuccess = await _context.SaveChangesAsync();
+            if (isSuccess > 0)
+            {
+                return new Response(HttpStatusCode.NoContent, "Remove post reply is success!");
+            }
+            return new Response(HttpStatusCode.BadRequest, "Remove post reply is fail!");
         }
 
         [HttpPost("LikeOrUnlikePostReply/{idUser}/{idPostReply}")]
@@ -533,13 +606,23 @@ namespace Post.Controllers
                     createdDate = DateTime.Now
                 };
                 await _context.PosttReplyLikes.AddAsync(like);
+                var isSuccess = await _context.SaveChangesAsync();
+                if (isSuccess > 0)
+                {
+                    return new Response(HttpStatusCode.NoContent, "Like post reply is success!");
+                }
+                return new Response(HttpStatusCode.BadRequest, "Like post reply is fail!");
             }
             else
             {
                 _context.PosttReplyLikes.Remove(existLike);
+                var isSuccess = await _context.SaveChangesAsync();
+                if (isSuccess > 0)
+                {
+                    return new Response(HttpStatusCode.NoContent, "Unlike post reply is success!");
+                }
+                return new Response(HttpStatusCode.BadRequest, "Unlike post reply is fail!");
             }
-            await _context.SaveChangesAsync();
-            return new Response(HttpStatusCode.NoContent, "Like or unlike post reply is success!");
         }
     }
 }

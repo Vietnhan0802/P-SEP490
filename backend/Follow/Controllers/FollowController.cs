@@ -136,14 +136,24 @@ namespace Follow.Controllers
                     createdDate = DateTime.Now,
                 };
                 await _context.Followers.AddAsync(following);
-                await CreateNotificationFollow(idOwner, idAccount);
+                var isSuccess = await _context.SaveChangesAsync();
+                if (isSuccess > 0)
+                {
+                    await CreateNotificationFollow(idOwner, idAccount);
+                    return new Response(HttpStatusCode.NoContent, "Follow is success!");
+                }
+                return new Response(HttpStatusCode.NoContent, "Follow is fail!");
             }
             else
             {
                 _context.Followers.Remove(existFollow);
+                var isSuccess = await _context.SaveChangesAsync();
+                if (isSuccess > 0)
+                {
+                    return new Response(HttpStatusCode.NoContent, "Unfollow is success!");
+                }
+                return new Response(HttpStatusCode.NoContent, "Unfollow is fail!");
             }
-            await _context.SaveChangesAsync();
-            return new Response(HttpStatusCode.OK, "Follow or unfollow is success!");
         }
 
         [HttpGet("GetFollow/{idOwner}/{idAccount}")]
