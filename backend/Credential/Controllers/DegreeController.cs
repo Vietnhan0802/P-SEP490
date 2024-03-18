@@ -97,13 +97,13 @@ namespace Credential.Controllers
         [HttpPost("CreateDegree/{idUser}")]
         public async Task<Response> CreateDegree(string idUser, [FromForm] CreateUpdateDegree createUpdateDegree)
         {
-            var validator = new CreateDegreeValidator();
+            /*var validator = new CreateDegreeValidator();
             var validatorResult = validator.Validate(createUpdateDegree);
             var error = validatorResult.Errors.Select(x => x.ErrorMessage).ToList();
             if (!validatorResult.IsValid)
             {
                 return new Response(HttpStatusCode.BadRequest, "Invalid data", error);
-            }
+            }*/
             var file = await _saveImageService.SaveImage(createUpdateDegree.FileFile);
             var degree = _mapper.Map<Degree>(createUpdateDegree);
             degree.idAccount = idUser;
@@ -117,13 +117,13 @@ namespace Credential.Controllers
         [HttpPut("UpdateDegree/{idDegree}")]
         public async Task<Response> UpdateDegree(Guid idDegree, [FromForm] CreateUpdateDegree createUpdateDegree)
         {
-            var validator = new UpdateDegreeValidator();
+            /*var validator = new UpdateDegreeValidator();
             var validatorResult = validator.Validate(createUpdateDegree);
             var error = validatorResult.Errors.Select(x => x.ErrorMessage).ToList();
             if (!validatorResult.IsValid)
             {
                 return new Response(HttpStatusCode.BadRequest, "Invalid data", error);
-            }
+            }*/
             var degree = await _context.Degrees.FirstOrDefaultAsync(x => x.idDegree == idDegree);
             if (degree == null)
             {

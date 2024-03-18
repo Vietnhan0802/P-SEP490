@@ -235,13 +235,13 @@ namespace Post.Controllers
         [HttpPost("CreatePost/{idUser}/{idProject}")]
         public async Task<Response> CreatePost(string idUser, Guid idProject, [FromForm] CreateUpdatePost createUpdatePost)
         {
-            var validator = new CreateUpdatePostValidator();
+            /*var validator = new CreateUpdatePostValidator();
             var validatorResult = validator.Validate(createUpdatePost);
             var error = validatorResult.Errors.Select(x => x.ErrorMessage).ToList();
             if (!validatorResult.IsValid)
             {
                 return new Response(HttpStatusCode.BadRequest, "Invalid data", error);
-            }
+            }*/
             var post = _mapper.Map<Postt>(createUpdatePost);
             post.idAccount = idUser;
             post.idProject = idProject;
@@ -277,13 +277,13 @@ namespace Post.Controllers
         [HttpPut("UpdatePost/{idPost}")]
         public async Task<Response> UpdatePost(Guid idPost, [FromForm] CreateUpdatePost createUpdatePost)
         {
-            var validator = new CreateUpdatePostValidator();
+            /*var validator = new CreateUpdatePostValidator();
             var validatorResult = validator.Validate(createUpdatePost);
             var error = validatorResult.Errors.Select(x => x.ErrorMessage).ToList();
             if (!validatorResult.IsValid)
             {
                 return new Response(HttpStatusCode.BadRequest, "Invalid data", error);
-            }
+            }*/
             var post = await _context.Postts.FirstOrDefaultAsync(x => x.idPost == idPost);
             if (post == null)
             {
