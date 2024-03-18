@@ -1,46 +1,147 @@
 import { Modal, Button } from "react-bootstrap";
 import { useState } from "react";
-import { Row, Col } from "react-bootstrap";
 import { FiEdit } from "react-icons/fi";
 import "./UPF.scss";
 import { useRef } from "react";
-import TempImg from "../../images/project/Pro-3.png";
 import { IoCameraReverse } from "react-icons/io5";
+import CreatableSelect from 'react-select/creatable';
+import makeAnimated from 'react-select/animated';
+import { projectInstance } from "../../axios/axiosConfig";
+function UpdateProjectForm({ input, id }) {
 
-function UpdateProjectForm() {
+  const animatedComponents = makeAnimated();
   const [show, setShow] = useState(false);
-  const modalClose = () => setShow(false);
-  const modalShow = () => setShow(true);
+  const [project, setProject] = useState({});
+  const modalClose = () => { setChangeImage(false); setShow(false); };
+  const [positionOptions, setPositionOptions] = useState([]);
+  const [changeImage, setChangeImage] = useState(false);
+  const modalShow = () => {
+    setShow(true);
+    const positionOptions = input.positionViews.map(item => ({
+      value: item.namePosition,
+      label: item.namePosition
+    }));
+    setPositionOptions(positionOptions);
+    setProject({
+      name: input.name,
+      description: input.description,
+      avatar: input.avatar,
+      visibility: input.visibility,
+      process: input.process,
+      namePosition: positionOptions,
+      ImageFile: null,
+      ImageSrc: ''
+    });
+  };
+  const handleSelectChange = (selectedOptions) => {
+    setProject(prevState => ({
+      ...prevState,
+      namePosition: selectedOptions || [] // Use selected options or fallback to an empty array
+    }));
+  };
+  console.log(project);
   const handleClick = () => {
     fileInputRef.current.click();
   };
   const fileInputRef = useRef(null);
-  const projectStatus = (process) => {
-    switch (process) {
-      case 0:
-        return <div className="status preparing">Preparing</div>;
-      case 1:
-        return <div className="status process">Process</div>;
-      case 2:
-        return <div className="status done">Done</div>;
-      case 3:
-        return <div className="status pending">Pending</div>;
-      default:
-      // code block
+  const handleInputChange = (event) => {
+    const { name, value, type } = event.target;
+    if (type === "file") {
+      setChangeImage(true);
+      const file = event.target.files[0];
+
+      // Use FileReader to convert each file to base64
+      const base64String = readFileAsDataURL(file);
+
+      setProject((values) => ({
+        ...values,
+        avatar: file.name,
+        ImageFile: file,
+        ImageSrc: base64String,
+
+      }));
+      showPreview(event);
+    } else if (name === "namePosition") {
+      // Handle change for Select component
+      setProject((values) => ({
+        ...values,
+        [name]: value.map(option => option.value) // Store only values of selected options
+      }));
+    } else if (name === 'process' || name === 'visibility') {
+      setProject((values) => ({ ...values, [name]: parseInt(value) }));
+    } else {
+      setProject((values) => ({ ...values, [name]: value }));
+
     }
   };
-  const projectVisibility = (visibility) => {
-    switch (visibility) {
-      case 0:
-        return <div className="visibility private">Private</div>;
-      case 1:
-        return <div className="visibility public">Public</div>;
-      case 2:
-        return <div className="visibility hidden">Hidden</div>;
-
-      default:
-      // code block
+  const showPreview = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      let imageFile = e.target.files[0];
+      const reader = new FileReader();
+      reader.onload = (x) => {
+        setProject({
+          ...project,
+          avatar: imageFile.name,
+          ImageFile: imageFile,
+          ImageSrc: x.target.result,
+        });
+      };
+      reader.readAsDataURL(imageFile);
+    } else {
+      setProject({
+        ...project,
+        ImageFile: null,
+        ImageSrc: '',
+      });
     }
+  };
+  const readFileAsDataURL = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        resolve(event.target.result);
+      };
+      reader.onerror = (error) => {
+        reject(error);
+      };
+      reader.readAsDataURL(file);
+    });
+  };
+
+  console.log(project)
+  const handleUpdateProject = () => {
+    const formData = new FormData();
+    formData.append("name", project.name);
+    formData.append("description", project.description);
+    formData.append("avatar", project.avatar);
+    formData.append("process", parseInt(project.process));
+    formData.append("visibility", parseInt(project.visibility));
+    formData.append("ImageFile", project.ImageFile);
+    project.namePosition.forEach((position, index) => {
+      formData.append(
+        `namePosition[${index}]`,
+        position
+      );
+    });
+    projectInstance.put(`/UpdateProject/${id}`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+        accept: "application/json",
+      },
+    }).then(() => {
+      // reset("Success");
+      setProject({
+        name: '',
+        description: '',
+        avatar: '',
+        visibility: 1,
+        process: 1,
+        namePosition: [],
+        ImageFile: '',
+        ImageSrc: ''
+      });
+      setShow(false);
+    })
   };
   return (
     <div className="p-1 ">
@@ -53,7 +154,7 @@ function UpdateProjectForm() {
         <Modal.Body className="popup-body" id="form-update-project">
           <div className="row">
             <div className="col-6 image-container d-flex justify-content-center pos-re">
-              <img src={TempImg} alt="img" />
+              <img src={changeImage ? project.ImageSrc : project.avatar} alt="img" />
               <IoCameraReverse
                 className="update-img-btn"
                 onClick={handleClick}
@@ -63,70 +164,90 @@ function UpdateProjectForm() {
               <div className="form-row name">
                 <label>Project Name</label>
                 <textarea
-                  name=""
-                  id=""
+                  name="name"
                   className="form-control d-h-2"
+                  value={project.name}
+                  onChange={handleInputChange}
                 ></textarea>
               </div>
               <div className="status-block size-18">
                 <label htmlFor="" className="">
                   Project Status:
-                  {/* {projectStatus(data?.process)} */}
                   <select
+                    value={project.process}
                     id="projectStatus"
+                    name="process"
+                    onChange={handleInputChange}
                     className="status-select status preparing"
                   >
-                    <option value="preparing" className="status preparing">
+                    <option value={0} className="status preparing">
                       Preparing
                     </option>
-                    <option value="process" className="status process">
+                    <option value={1} className="status process">
                       Process
                     </option>
-                    <option value="pending" className="status pending">
+                    <option value={2} className="status pending">
                       Pending
                     </option>
-                    <option value="done" className="status done">
+                    <option value={3} className="status done">
                       Done
                     </option>
                   </select>
                 </label>
               </div>
+
+
               <div className="status-block size-18">
                 <label htmlFor="" className="">
                   Access Visibility:
-                  {/* {projectVisibility(data?.visibility)} */}
-                  {}
                   <select
+                    name="visibility"
+                    value={project.visibility}
                     id="accessVisibility"
                     className="visibility-select visibility public"
+                    onChange={handleInputChange}
                   >
-                    <option value="public" className="visibility public">
+                    <option value={0} className="visibility public">
                       Public
                     </option>
-                    <option value="private" className="visibility private">
+                    <option value={1} className="visibility private">
                       Private
                     </option>
-                    <option value="hidden" className="visibility hidden">
+                    <option value={2} className="visibility hidden">
                       Hidden
                     </option>
                   </select>
                 </label>
               </div>
+              <div className="d-flex align-items-center">
+                <label htmlFor="">Position: </label>
+                <CreatableSelect
+                  closeMenuOnSelect={false}
+                  components={animatedComponents}
+                  placeholder='Select all position needed in project'
+                  isMulti
+                  isClearable
+                  options={positionOptions}
+                  onChange={handleSelectChange} // Call handleSelectChange on change
+                  value={project.namePosition} // Pass selected options as value
+                />
+              </div>
               <div className="form-row description">
                 <label>Project Description</label>
                 <textarea
-                  name=""
+                  name="description"
                   id=""
                   className="form-control m-h-2"
+                  value={project.description}
+                  onChange={handleInputChange}
                 ></textarea>
               </div>
             </div>{" "}
             <input
               type="file"
               name="images"
-              // onChange={handleInputChange}
+              onChange={handleInputChange}
               className="form-control"
-              multiple
               ref={fileInputRef}
               style={{ display: "none" }} // Hide the input
             />
@@ -134,7 +255,7 @@ function UpdateProjectForm() {
         </Modal.Body>
 
         <Modal.Footer>
-          <Button variant="warning" onClick={modalClose}>
+          <Button variant="warning" onClick={handleUpdateProject}>
             Confirm
           </Button>
           <Button variant="secondary" onClick={modalClose}>

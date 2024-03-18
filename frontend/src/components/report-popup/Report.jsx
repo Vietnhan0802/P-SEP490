@@ -30,19 +30,22 @@ function Report({ id, idItem, type }) {
     setReport((prev) => ({ ...prev, idReporter: id, idPosted: idItem }));
     setReportType(type);
   };
-  if (reportType === 'post') {
-    reportInstance.post(`CreatePostReport/${report.idReporter}/${report.idPosted}/${report.content}`)
+  const handleCreateReport =()=>{
+    if (reportType === 'post') {
+      reportInstance.post(`CreatePostReport/${report.idReporter}/${report.idPosted}/${report.content}`)
+        .then((res) => { console.log(res?.data?.result) })
+        .catch((error) => { console.error(error) })
+    } else if (reportType === 'blog') {
+      reportInstance.post(`CreateBlogReport/${report.idReporter}/${report.idPosted}/${report.content}`)
+        .then((res) => { console.log(res?.data?.result) })
+        .catch((error) => { console.error(error) })
+    }else{
+      reportInstance.post(`CreateBlogReport/${report.idReporter}/${report.idPosted}/${report.content}`)
       .then((res) => { console.log(res?.data?.result) })
       .catch((error) => { console.error(error) })
-  } else if (reportType === 'blog') {
-    reportInstance.post(`CreateBlogReport/${report.idReporter}/${report.idPosted}/${report.content}`)
-      .then((res) => { console.log(res?.data?.result) })
-      .catch((error) => { console.error(error) })
-  }else{
-    reportInstance.post(`CreateBlogReport/${report.idReporter}/${report.idPosted}/${report.content}`)
-    .then((res) => { console.log(res?.data?.result) })
-    .catch((error) => { console.error(error) })
+    }
   }
+ 
   const data = [
     {
       id: "hateAndHarassment",
@@ -87,15 +90,7 @@ function Report({ id, idItem, type }) {
       removal of scam content and accounts. Choose this option if your
       report does not fit into any category.`
     }]
-  const modelSubmit = (event) => {
-    event.preventDefault();
-    if (!selectedOption) {
-      alert("Please select an option before submitting.");
-      return;
-    }
-    alert(`Report submitted for: ${selectedOption}`);
-    modalClose();
-  };
+
 
   return (
     <div className="p-1">
@@ -120,7 +115,6 @@ function Report({ id, idItem, type }) {
             <div className={`option-content ${selectedOption === item.id ? "open" : ""}`}>
               {selectedOption === item.id && (
                 <p dangerouslySetInnerHTML={{ __html: item.content }}>
-                  {/* {item.content} */}
                 </p>
               )}
             </div>
@@ -131,7 +125,7 @@ function Report({ id, idItem, type }) {
           <Button variant="secondary" onClick={modalClose}>
             Close
           </Button>
-          <Button variant="warning" onClick={modelSubmit}>
+          <Button variant="warning" onClick={handleCreateReport}>
             Submit
           </Button>
         </Modal.Footer>
