@@ -256,13 +256,13 @@ namespace Blog.Controllers
         [HttpPost("CreateBlog/{idUser}")]
         public async Task<Response> CreateBlog(string idUser, [FromForm] CreateUpdateBlog createUpdateBlog)
         {
-            var validator = new CreateUpdateBlogValidator();
+            /*var validator = new CreateUpdateBlogValidator();
             var validatorResult = validator.Validate(createUpdateBlog);
             var error = validatorResult.Errors.Select(x => x.ErrorMessage).ToList();
             if (!validatorResult.IsValid)
             {
                 return new Response(HttpStatusCode.BadRequest, "Invalid data", error);
-            }
+            }*/
             var blog = _mapper.Map<Blogg>(createUpdateBlog);
             blog.idAccount = idUser;
             blog.isDeleted = false;
@@ -297,13 +297,13 @@ namespace Blog.Controllers
         [HttpPut("UpdateBlog/{idBlog}")]
         public async Task<Response> UpdateBlog(Guid idBlog, [FromForm] CreateUpdateBlog createUpdateBlog)
         {
-            var validator = new CreateUpdateBlogValidator();
+            /*var validator = new CreateUpdateBlogValidator();
             var validatorResult = validator.Validate(createUpdateBlog);
             var error = validatorResult.Errors.Select(x => x.ErrorMessage).ToList();
             if (!validatorResult.IsValid)
             {
                 return new Response(HttpStatusCode.BadRequest, "Invalid data", error);
-            }
+            }*/
             var blog = await _context.Blogs.FirstOrDefaultAsync(x => x.idBlog == idBlog);
             if (blog == null)
             {
