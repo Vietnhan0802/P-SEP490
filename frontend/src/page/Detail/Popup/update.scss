@@ -1,6 +1,6 @@
 #form-update-project {
     .image-container {
-        max-height: 60vh;
+        height: 60vh;
         background-color: #f0f0f0;
         overflow: hidden;
     }
@@ -36,11 +36,10 @@
         margin: 10px;
         background-color: #f0f0f0;
         border-radius: 8px;
+        z-index: 10;
     }
 
-    .pos-re {
-        position: relative;
-    }
+
 
     .status,
     .visibility {

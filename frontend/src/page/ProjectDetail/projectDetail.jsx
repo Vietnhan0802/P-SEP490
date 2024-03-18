@@ -112,6 +112,7 @@ function ProjectDetail() {
                   </div>
                 </div>
                 <UpdateProjectForm input={data} id={data?.idProject}/>
+                
               </div>
 
               <div className="status-block size-18">

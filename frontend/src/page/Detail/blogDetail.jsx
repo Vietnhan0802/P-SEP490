@@ -14,6 +14,9 @@ import { useLocation } from "react-router-dom";
 import { Col, Row } from "react-bootstrap";
 import SideBar from "../../components/sidebar";
 import Follow from "../../components/follow";
+import Report from "../../components/report-popup/Report";
+import UpdateItem from "./Popup/UpdateItem";
+import DeleteItem from "./Popup/DeleteItem";
 function calculateTimeDifference(targetDate) {
   // Convert the target date string to a Date object
   const targetTime = new Date(targetDate).getTime();
@@ -39,7 +42,7 @@ function calculateTimeDifference(targetDate) {
     return days === 1 ? `${days} day ago` : `${hours} days ago`;
   }
 }
-function BlogDetail({value}) {
+function BlogDetail({ value }) {
 
   const sessionData = JSON.parse(sessionStorage.getItem("userSession")) || {};
   const { currentUserId } = sessionData;
@@ -57,6 +60,8 @@ function BlogDetail({value}) {
   const [updateReplyShow, setUpdateReplyShow] = useState(null);
   const [replyComment, setReplyComment] = useState(false);
   const [inputReply, setInputReply] = useState({});
+  const [display, setDisplay] = useState(false);
+  const [displayDelete, setDisplayDelete] = useState(false);
 
   //__________________________________________________________________//
 
@@ -260,7 +265,12 @@ function BlogDetail({value}) {
   }, []);
   //Translate time from SQL to normal 
   const dateTime = calculateTimeDifference(data.createdDate);
-
+  const handleUpdateBlog = () => {
+    setDisplay(true);
+  }
+  const handleDeleteBlog = () => {
+    setDisplayDelete(true);
+  }
   //Palce to log data to debug
   return (
     <Row className="pt-3 ms-0 me-0">
@@ -269,13 +279,65 @@ function BlogDetail({value}) {
       </Col>
       <Col md={6}>
         <div id="BlogDetail" className="p-3 mb-4">
-          <div className="d-flex align-items-center mb-2">
-            <img src={data.avatar} alt="profile" className="profile" />
-            <div className="ms-2">
-              <h6 className="mb-0">{data.fullName}</h6>
-              <p className="mb-0">{dateTime}</p>
+          <div className="d-flex align-items-between justify-content-between mb-2">
+            <div className="d-flex align-items-between">
+              <img src={data.avatar} alt="profile" className="profile" />
+              <div className="ms-2">
+                <h6 className="mb-0">{data.fullName}</h6>
+                <p className="mb-0">{dateTime}</p>
+              </div>
             </div>
+
+            {data?.idAccount === currentUserId ? (
+              <Dropdown>
+                <Dropdown.Toggle
+                  id="dropdown-basic"
+                  style={{ border: "none" }}
+                  className="bg-white border-none text-body"
+                ></Dropdown.Toggle>
+
+                <Dropdown.Menu style={{ minWidth: "auto" }}>
+                  <Dropdown.Item
+                    className="d-flex justify-content-center"
+                    onClick={() =>
+                      handleUpdateBlog()
+                    }
+                  >
+                    <GrUpdate />
+
+                  </Dropdown.Item>
+                  <Dropdown.Item
+                    className="d-flex justify-content-center"
+                    onClick={() =>
+                      handleDeleteBlog()
+                    }
+                  >
+                    <MdDelete />
+                  </Dropdown.Item>
+                  <Dropdown.Item
+                  >
+                    <Report />
+
+                  </Dropdown.Item>
+                </Dropdown.Menu>
+              </Dropdown>
+            ) : (
+              <Report />
+            )}
+
           </div>
+          <UpdateItem
+            show={display}
+            onClose={() => setDisplay(false)}
+            value={data}
+            type={'blog'}
+          />
+          <DeleteItem
+            show={displayDelete}
+            onClose={() => setDisplayDelete(false)}
+            value={data?.idBlog}
+            type={'blog'}
+          />
           <h3 className="fw-bold">{data.title}</h3>
           <p style={{ whiteSpace: 'pre-wrap' }}>
             {data.content}
@@ -300,12 +362,6 @@ function BlogDetail({value}) {
               onClick={() => handleLikeOrUnlikeBlog()}
             >
               <FaHeart className={`me-2 ${data.isLike ? 'red' : ''}`} /> {data.like}
-            </div>
-            <div
-              className="d-flex align-items-center me-3"
-            // onClick={() => handleReportClick(item.id)}
-            >
-              <IoFlagOutline />{" "}
             </div>
           </div>
           <p className="cmt fw-bold my-3">COMMENT</p>
@@ -442,7 +498,7 @@ function BlogDetail({value}) {
         </div>
       </Col>
       <Col md={3}>
-        <Follow followValue={value}/>
+        <Follow followValue={value} />
       </Col>
     </Row>
   );
