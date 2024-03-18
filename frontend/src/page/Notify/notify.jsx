@@ -41,12 +41,24 @@ function Notify() {
     switch(contentKey) {
       case 'content_notifollow':
         return t('content_notifollow');
+      case 'content_notipostlike':
+        return t('content_notipostlike');
+      case 'content_notipostcomment':
+        return t('content_notipostcomment');
+      case 'content_notipostreply':
+        return t('content_notipostreply');
+      case 'content_notiblog':
+        return t('content_notiblog');
+      case 'content_notiprojectapply':
+        return t('content_notiprojectapply');
+      case 'content_notiprojectinvite':
+        return t('content_notiprojectinvite');
       default:
         return t('unknown_content');
     }
   }
 
-  const handleNotifiClick = (idNotification, id, url, idUrl, ) => {
+  const handleNotifiClick = (idNotification, id, url, idUrl) => {
     notifyInstance.put(`ReadNotification/${idNotification}`)
       .then((res) => {
         const updateNotifi = notifications.map(notify => {
