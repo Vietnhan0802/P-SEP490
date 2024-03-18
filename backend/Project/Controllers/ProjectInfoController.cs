@@ -208,13 +208,13 @@ namespace Project.Controllers
         [HttpPut("UpdateProject/{idProject}")]
         public async Task<Response> UpdateProject(Guid idProject, [FromForm] ProjectInfoUpdate projectInfoUpdate)
         {
-            var validator = new ProjectUpdateValidator();
-            var validatorResult = validator.Validate(projectInfoUpdate);
-            var error = validatorResult.Errors.Select(x => x.ErrorMessage).ToList();
-            if (!validatorResult.IsValid)
-            {
-                return new Response(HttpStatusCode.BadRequest, "Invalid data", error);
-            }
+            // var validator = new ProjectUpdateValidator();
+            // var validatorResult = validator.Validate(projectInfoUpdate);
+            // var error = validatorResult.Errors.Select(x => x.ErrorMessage).ToList();
+            // if (!validatorResult.IsValid)
+            // {
+            //     return new Response(HttpStatusCode.BadRequest, "Invalid data", error);
+            // }
             var project = await _context.ProjectInfos.FirstOrDefaultAsync(p => p.idProject == idProject);
             if (project == null)
             {

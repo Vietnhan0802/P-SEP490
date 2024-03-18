@@ -27,7 +27,7 @@ function UpdateProjectForm({ input, id }) {
       description: input.description,
       avatar: input.avatar,
       visibility: input.visibility,
-      process:input.process,
+      process: input.process,
       namePosition: positionOptions,
       ImageFile: null,
       ImageSrc: ''
@@ -67,8 +67,11 @@ function UpdateProjectForm({ input, id }) {
         ...values,
         [name]: value.map(option => option.value) // Store only values of selected options
       }));
+    } else if (name === 'process' || name === 'visibility') {
+      setProject((values) => ({ ...values, [name]: parseInt(value) }));
     } else {
       setProject((values) => ({ ...values, [name]: value }));
+
     }
   };
   const showPreview = (e) => {
@@ -105,12 +108,15 @@ function UpdateProjectForm({ input, id }) {
       reader.readAsDataURL(file);
     });
   };
+
+  console.log(project)
   const handleUpdateProject = () => {
     const formData = new FormData();
     formData.append("name", project.name);
     formData.append("description", project.description);
     formData.append("avatar", project.avatar);
-    formData.append("visibility", project.visibility);
+    formData.append("process", parseInt(project.process));
+    formData.append("visibility", parseInt(project.visibility));
     formData.append("ImageFile", project.ImageFile);
     project.namePosition.forEach((position, index) => {
       formData.append(
@@ -130,7 +136,7 @@ function UpdateProjectForm({ input, id }) {
         description: '',
         avatar: '',
         visibility: 1,
-        process:1,
+        process: 1,
         namePosition: [],
         ImageFile: '',
         ImageSrc: ''
@@ -191,13 +197,11 @@ function UpdateProjectForm({ input, id }) {
                   </select>
                 </label>
               </div>
-             
+
 
               <div className="status-block size-18">
                 <label htmlFor="" className="">
                   Access Visibility:
-                  {/* {projectVisibility(data?.visibility)} */}
-                  { }
                   <select
                     name="visibility"
                     value={project.visibility}

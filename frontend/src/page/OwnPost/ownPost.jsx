@@ -47,27 +47,13 @@ function OwnPost({value}) {
   const [blogPopups, setBlogPopups] = useState({});
   const [postList, setPostList] = useState([])
   const [resetPage, setResetPage] = useState(false);
-  const [popupContent, setPopupContent] = useState('');
   const [search, setSearch] = useState('');
   const [filterPost, setFilterPost] = useState([]);
-  const [showTrendList, setShowTrendList] = useState(false);
-  const [postListTrend, setPostListTrend] = useState([]);
   const createData = (id, createdDate, avatar, title, content, view, like, viewPostImages, fullName) => {
     return {
       id, createdDate, avatar, title, content, view, like, viewPostImages, fullName
     }
   }
-
-  const handlePopupContent = (event, postId) => {
-    setPopupContent((prev) => ({ ...prev, [postId]: event.target.value }));
-    console.log(popupContent)
-  }
-  const handleCreateReport = (userId, postId, content) => {
-    reportInstance.post(`/CreatePostReport/${userId}/${postId}/${content}`)
-      .then((res) => { console.log(res?.data?.result) })
-      .catch((error) => { console.error(error) });
-  }
-
   useEffect(() => {
     postInstance.get(`GetPostByUser/${currentUserId}`)
       .then((res) => {
@@ -95,9 +81,6 @@ function OwnPost({value}) {
   const hanldeViewDetail = (postId) => {
     navigate('/postdetail', { state: { idPost: postId } });
   }
-  const handleReportClick = (postId) => {
-    setBlogPopups((prev) => ({ ...prev, [postId]: true }));
-  };
   const reset = (value) => {
     if (value) {
       setResetPage(value)
@@ -111,37 +94,6 @@ function OwnPost({value}) {
     );
     setFilterPost(filtered);
   }
-  useEffect(() => {
-    postInstance.get(`GetAllPostsTrend/${currentUserId}`)
-      .then((res) => {
-        const postList = res?.data?.result;
-        setPostListTrend([]);
-        postList.map((element) => {
-          const time = calculateTimeDifference(element.createdDate);
-          setPostListTrend((prevData) => [
-            ...prevData,
-            createData(
-              element.idPost,
-              time,
-              element.avatar,
-              element.title,
-              element.content,
-              element.view,
-              element.like,
-              element.viewPostImages,
-              element.fullName,
-              element.isLike
-            ),
-          ]);
-        });
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }, [])
-  const toggleTrendList = () => {
-    setShowTrendList(!showTrendList);
-  };
   return (
     <Row className="pt-3 ms-0 me-0">
       <Col md={3} >
@@ -163,12 +115,12 @@ function OwnPost({value}) {
             </div>
             <div className="d-flex flex-row align-items-center col-auto m-md-0-cus mt-2 p-0">
               <PostPu reset={reset} />
-              <button type="button" className="btn btn-info text-white" onClick={toggleTrendList}>
+              {/* <button type="button" className="btn btn-info text-white" onClick={toggleTrendList}>
                 {showTrendList ? 'ViewAll' : "Trend"}
-              </button>
+              </button> */}
             </div>
           </div>
-          {(showTrendList ? postListTrend : (search ? filterPost : postList)).map((item) => (
+          {(search ? filterPost : postList).map((item) => (
             <div
               key={item.idPost}
               className={`post-item p-2 ${blogPopups[item.id] ? "position-relative" : ""
@@ -197,12 +149,6 @@ function OwnPost({value}) {
                   </div>
                   <div className="d-flex align-items-center me-3">
                     <BsChat className="me-2" /> {item.comment}
-                  </div>
-                  <div
-                    className="d-flex align-items-center me-3"
-                    onClick={() => handleReportClick(item.id)}
-                  >
-                    <IoFlagOutline />{" "}
                   </div>
                 </div>
                 <button className="view-btn btn" onClick={() => hanldeViewDetail(item.id)}>View Detail</button>
