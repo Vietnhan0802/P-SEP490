@@ -8,8 +8,6 @@ namespace BusinessObjects.ViewModels.Blog
         public string? image { get; set; }
 
         [NotMapped]
-        public IFormFile ImageFile { get; set; }
-        [NotMapped]
-        public string ImageSrc { get; set; }
+        public IFormFile? ImageFile { get; set; }
     }
 }
