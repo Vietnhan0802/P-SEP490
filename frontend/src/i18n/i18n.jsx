@@ -23,8 +23,13 @@ const resources = {
             'title_noti': 'Notification',
             'viewnoti': 'All',
             'notread': 'Unseen',
-            'content_noti': 'has just started following you.',
-            'content_notipost': 'commented on one of your posts.',
+            'content_notifollow': 'has just started following you.',
+            'content_notipostlike': 'has liked for your post.',
+            'content_notipostcomment': 'commented on one of your post.',
+            'content_notipostreply': 'reply on one of your comment.',
+            'content_notiblog': 'commented on one of your blog.',
+            'content_notiprojectapply': 'has applied for your project.',
+            'content_notiprojectinvite': 'has invited your for project.',
 
             /**Translate dashboard */
             'managepost': 'Manage Post',
@@ -62,8 +67,13 @@ const resources = {
             'title_noti': 'Thông báo',
             'viewnoti': 'Tất cả',
             'notread': 'Chưa xem',
-            'content_noti': 'đã bắt đầu theo dõi bạn.',
-            'content_notipost': 'đã bình luận bài viết của bạn.',
+            'content_notifollow': 'đã bắt đầu theo dõi bạn.',
+            'content_notipostlike': 'đã thích bài viết của bạn.',
+            'content_notipostcomment': 'đã bình luận bài viết của bạn.',
+            'content_notipostreply': 'đã phản hồi bình luận của bạn.',
+            'content_notiblog': 'đã bình luận bài tin tức của bạn.',
+            'content_notiprojectapply': 'đã nộp đơn cho dự án của bạn.',
+            'content_notiprojectinvite': 'đã mời bạn tham gia dự án.',
 
             /**Translate dashboard */
             'managepost': 'Quản lý bài đăng',

@@ -40,10 +40,32 @@ namespace Blog.Controllers
             InteractionApiUrl = "https://localhost:7004/api/Interaction";
         }
 
-        [HttpPost("CreateNotificationBlogComment/{idSender}/{idReceiver}/{idPost}")]
+        [HttpPost("CreateNotificationBlogLike/{idSender}/{idReceiver}/{idBlog}")]
+        private async Task<IActionResult> CreateNotificationBlogLike(string idSender, string idReceiver, Guid idBlog)
+        {
+            HttpResponseMessage response = await client.PostAsync($"{NotifyApiUrl}/CreateNotificationBlogLike/{idSender}/{idReceiver}/{idBlog}", null);
+            if (response.IsSuccessStatusCode)
+            {
+                return Ok("Create notification is successfully!");
+            }
+            return BadRequest("Create notification is fail!");
+        }
+
+        [HttpPost("CreateNotificationBlogComment/{idSender}/{idReceiver}/{idBlog}")]
         private async Task<IActionResult> CreateNotificationComment(string idSender, string idReceiver, Guid idBlog)
         {
             HttpResponseMessage response = await client.PostAsync($"{NotifyApiUrl}/CreateNotificationBlogComment/{idSender}/{idReceiver}/{idBlog}", null);
+            if (response.IsSuccessStatusCode)
+            {
+                return Ok("Create notification is successfully!");
+            }
+            return BadRequest("Create notification is fail!");
+        }
+
+        [HttpPost("CreateNotificationBlogReply/{idSender}/{idReceiver}/{idBlog}")]
+        private async Task<IActionResult> CreateNotificationBlogReply(string idSender, string idReceiver, Guid idBlog)
+        {
+            HttpResponseMessage response = await client.PostAsync($"{NotifyApiUrl}/CreateNotificationBlogReply/{idSender}/{idReceiver}/{idBlog}", null);
             if (response.IsSuccessStatusCode)
             {
                 return Ok("Create notification is successfully!");
@@ -329,8 +351,12 @@ namespace Blog.Controllers
                 return new Response(HttpStatusCode.NotFound, "Blog doesn't exist!");
             }
             blog.isDeleted = true;
-            await _context.SaveChangesAsync();
-            return new Response(HttpStatusCode.NoContent, "Remove blog is success!");
+            var isSuccess =  await _context.SaveChangesAsync();
+            if (isSuccess > 0)
+            {
+                return new Response(HttpStatusCode.NoContent, "Remove blog is success!");
+            }
+            return new Response(HttpStatusCode.BadRequest, "Remove blog is fail!");
         }
 
         [HttpPost("LikeOrUnlikeBlog/{idUser}/{idBlog}")]
@@ -346,13 +372,25 @@ namespace Blog.Controllers
                     createdDate = DateTime.Now
                 };
                 await _context.BlogLikes.AddAsync(like);
+                var isSuccess = await _context.SaveChangesAsync();
+                if (isSuccess > 0)
+                {
+                    var blog = await _context.Blogs.FirstOrDefaultAsync(x => x.idBlog == idBlog);
+                    await CreateNotificationBlogLike(idUser, blog.idAccount, idBlog);
+                    return new Response(HttpStatusCode.NoContent, "Like blog is success!");
+                }
+                return new Response(HttpStatusCode.BadRequest, "Like blog is fail!");
             }
             else
             {
                 _context.BlogLikes.Remove(existLike);
+                var isSuccess = await _context.SaveChangesAsync();
+                if (isSuccess > 0)
+                {
+                    return new Response(HttpStatusCode.NoContent, "Unlike blog is success!");
+                }
+                return new Response(HttpStatusCode.BadRequest, "Unlike blog is fail!");
             }
-            await _context.SaveChangesAsync();
-            return new Response(HttpStatusCode.NoContent, "Like or unlike blog is success!");
         }
 
         //*------------------------------------------------------------BlogComment------------------------------------------------------------*//

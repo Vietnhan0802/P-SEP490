@@ -24,6 +24,7 @@ namespace Project.Controllers
         private readonly SaveImageService _saveImageService;
         private readonly HttpClient client;
 
+        public string NotifyApiUrl { get; }
         public string UserApiUrl { get; private set; }
 
         public ProjectInfoController(AppDBContext context, IMapper mapper, SaveImageService saveImageService)
@@ -34,7 +35,30 @@ namespace Project.Controllers
             client = new HttpClient();
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
             client.DefaultRequestHeaders.Accept.Add(contentType);
+            NotifyApiUrl = "https://localhost:7009/api/Notification";
             UserApiUrl = "https://localhost:7006/api/User";
+        }
+
+        [HttpPost("CreateNotificationProjectApply/{idSender}/{idReceiver}/{idPorject}")]
+        private async Task<IActionResult> CreateNotificationProjectApply(string idSender, string idReceiver, Guid idPorject)
+        {
+            HttpResponseMessage response = await client.PostAsync($"{NotifyApiUrl}/CreateNotificationProjectApply/{idSender}/{idReceiver}/{idPorject}", null);
+            if (response.IsSuccessStatusCode)
+            {
+                return Ok("Create notification is successfully!");
+            }
+            return BadRequest("Create notification is fail!");
+        }
+
+        [HttpPost("CreateNotificationProjectInvite/{idSender}/{idReceiver}/{idPorject}")]
+        private async Task<IActionResult> CreateNotificationProjectInvite(string idSender, string idReceiver, Guid idPorject)
+        {
+            HttpResponseMessage response = await client.PostAsync($"{NotifyApiUrl}/CreateNotificationProjectApply/{idSender}/{idReceiver}/{idPorject}", null);
+            if (response.IsSuccessStatusCode)
+            {
+                return Ok("Create notification is successfully!");
+            }
+            return BadRequest("Create notification is fail!");
         }
 
         [HttpGet("GetNameUserCurrent/{idUser}")]
@@ -165,6 +189,31 @@ namespace Project.Controllers
             var viewPosition = _mapper.Map<List<PositionView>>(positions);
             result.PositionViews = viewPosition;
             return new Response(HttpStatusCode.OK, "Get project is success!", result);
+        }
+
+        [HttpGet("GetAllMemberInProject/{idProject}")]
+        public async Task<Response> GetAllMemberInProject(Guid idProject)
+        {
+            var project = await _context.ProjectInfos.FirstOrDefaultAsync(x => x.idProject == idProject);
+            if (project == null)
+            {
+                return new Response(HttpStatusCode.NotFound, "Project doesn't exists!");
+            }
+            var members = await _context.ProjectMembers.Where(x => x.idProject == idProject).OrderByDescending(x => x.createdDate).ToListAsync();
+            if (members.Count > 0)
+            {
+                var result = _mapper.Map<List<ProjectMemberView>>(members);
+                foreach (var member in result)
+                {
+                    var infoUser = await GetNameUserCurrent(member.idAccount!);
+                    member.fullName = infoUser.fullName;
+                    member.avatar = infoUser.avatar;
+                    var postion = await _context.Positions.FirstOrDefaultAsync(x => x.idPosition == member.idPosition);
+                    member.namePosition = postion.namePosition;
+                }
+                return new Response(HttpStatusCode.OK, "Get member in project is success!", result);
+            }
+            return new Response(HttpStatusCode.BadRequest, "Get member in project is empty!");
         }
 
         [HttpPost("CreateProject/{idUser}")]
@@ -346,13 +395,13 @@ namespace Project.Controllers
         [HttpPost("CreateProjectApplication/{idUser}/{idProject}")]
         public async Task<Response> CreateProjectApplication(string idUser, Guid idProject, [FromForm] ProjectMemberCreateUpdate projectMemberCreateUpdate)
         {
-            var validator = new ProjectMemberValidator();
+            /*var validator = new ProjectMemberValidator();
             var validatorResult = validator.Validate(projectMemberCreateUpdate);
             var error = validatorResult.Errors.Select(x => x.ErrorMessage).ToList();
             if (!validatorResult.IsValid)
             {
                 return new Response(HttpStatusCode.BadRequest, "Invalid data", error);
-            }
+            }*/
             projectMemberCreateUpdate.cvUrl = await _saveImageService.SaveImage(projectMemberCreateUpdate.cvUrlFile);
             var projectApplication = _mapper.Map<ProjectMember>(projectMemberCreateUpdate);
             projectApplication.idAccount = idUser;
@@ -364,7 +413,8 @@ namespace Project.Controllers
             var isSuucess = await _context.SaveChangesAsync();
             if (isSuucess > 0)
             {
-                var project = await _context.ProjectInfos.FirstOrDefaultAsync(x => x.idProject == projectApplication.idProject);
+                var project = await _context.ProjectInfos.FirstOrDefaultAsync(x => x.idProject == idProject);
+                await CreateNotificationProjectApply(idUser, project.idAccount, idProject);
                 return new Response(HttpStatusCode.OK, "Create project application is success!", projectApplication);
             }
             return new Response(HttpStatusCode.BadRequest, "Create project application is fail!");
@@ -387,6 +437,8 @@ namespace Project.Controllers
             var isSuucess = await _context.SaveChangesAsync();
             if (isSuucess > 0)
             {
+                var project = await _context.ProjectInfos.FirstOrDefaultAsync(x => x.idProject == idProject);
+                await CreateNotificationProjectInvite(project.idAccount, idUser, idProject);
                 return new Response(HttpStatusCode.OK, "Create project invite is success!", projectApplication);
             }
             return new Response(HttpStatusCode.BadRequest, "Create project invite is fail!");
