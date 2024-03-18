@@ -109,7 +109,7 @@ namespace Post.Controllers
         [HttpGet("GetAllPostsTrend/{idUser}")]
         public async Task<Response> GetAllPostsTrend(string idUser)
         {
-            var top10Posts = await _context.Postts.OrderByDescending(x => x.viewInDate).Take(10).ToListAsync();
+            var top10Posts = await _context.Postts.Where(x => x.isDeleted == false).OrderByDescending(x => x.viewInDate).Take(10).ToListAsync();
             var result = _mapper.Map<List<ViewPost>>(top10Posts);
             foreach (var post in result)
             {
