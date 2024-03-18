@@ -37,6 +37,15 @@ function Notify() {
       })
   }, [currentUserId]);
 
+  function getContent(contentKey) {
+    switch(contentKey) {
+      case 'content_notifollow':
+        return t('content_notifollow');
+      default:
+        return t('unknown_content');
+    }
+  }
+
   const handleNotifiClick = (idNotification, id, url, idPost, idBlog) => {
     notifyInstance.put(`ReadNotification/${idNotification}`)
       .then((res) => {
@@ -80,7 +89,7 @@ function Notify() {
               <img src={item.avatar === "https://localhost:7006/Images/" ? defaultImage : item.avatar} alt="profile" className="profile" />
               <div className="ms-2 content">
                 <p className="mb-0">
-                  <span className="fw-bold">{item.nameSender}</span> {item.content === 'content_noti' ? t('content_noti') : t('content_notipost')}
+                  <span className="fw-bold">{item.nameSender}</span> {getContent(item.content)}
                 </p>
                 <p className={`mb-0 date ${item.isRead === false ? "notRead" : "read"
                   }`}>{item.timeAgo}</p>
