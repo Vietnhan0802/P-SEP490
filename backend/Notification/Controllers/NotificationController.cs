@@ -75,7 +75,7 @@ namespace Notification.Controllers
             {
                 idSender = idSender,
                 idReceiver = idReceiver,
-                content = "content_noti",
+                content = "content_notifollow",
                 isRead = false,
                 url = "Follow",
                 createdDate = DateTime.Now
@@ -90,8 +90,8 @@ namespace Notification.Controllers
             return result;
         }
 
-        [HttpPost("CreateNotificationComment/{idSender}/{idReceiver}/{idPost}")]
-        public async Task<ViewNotification> CreateNotificationComment(string idSender, string idReceiver, Guid idPost)
+        [HttpPost("CreateNotificationPostComment/{idSender}/{idReceiver}/{idPost}")]
+        public async Task<ViewNotification> CreateNotificationPostComment(string idSender, string idReceiver, Guid idPost)
         {
             Notificationn notification = new Notificationn()
             {
@@ -136,17 +136,40 @@ namespace Notification.Controllers
             return result;
         }
 
-        [HttpPost("CreateNotificationBlogComment/{idSender}/{idReceiver}/{idPost}")]
+        [HttpPost("CreateNotificationProjectApply/{idSender}/{idReceiver}/{idPorject}")]
         public async Task<ViewNotification> CreateNotificationProjectApply(string idSender, string idReceiver, Guid idPorject)
         {
             Notificationn notification = new Notificationn()
             {
                 idSender = idSender,
                 idReceiver = idReceiver,
-                content = "content_notiblog",
+                content = "content_notiprojectapply",
                 isRead = false,
-                idUrl = idBlog,
-                url = "BlogComment",
+                idUrl = idPorject,
+                url = "ProjectApply",
+                createdDate = DateTime.Now
+            };
+            await _context.Notifications.AddAsync(notification);
+            await _context.SaveChangesAsync();
+            var result = _mapper.Map<ViewNotification>(notification);
+            var infoUser = await GetNameUserCurrent(result.idSender!);
+            result.nameSender = infoUser.fullName;
+            result.avatar = infoUser.avatar;
+            result.content = $"{notification.content}";
+            return result;
+        }
+
+        [HttpPost("CreateNotificationProjectInvite/{idSender}/{idReceiver}/{idPorject}")]
+        public async Task<ViewNotification> CreateNotificationProjectInvite(string idSender, string idReceiver, Guid idPorject)
+        {
+            Notificationn notification = new Notificationn()
+            {
+                idSender = idSender,
+                idReceiver = idReceiver,
+                content = "content_notiprojectinvite",
+                isRead = false,
+                idUrl = idPorject,
+                url = "ProjectInvite",
                 createdDate = DateTime.Now
             };
             await _context.Notifications.AddAsync(notification);
