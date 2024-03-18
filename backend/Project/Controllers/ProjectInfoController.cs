@@ -167,6 +167,31 @@ namespace Project.Controllers
             return new Response(HttpStatusCode.OK, "Get project is success!", result);
         }
 
+        [HttpGet("GetAllMemberInProject/{idProject}")]
+        public async Task<Response> GetAllMemberInProject(Guid idProject)
+        {
+            var project = await _context.ProjectInfos.FirstOrDefaultAsync(x => x.idProject == idProject);
+            if (project == null)
+            {
+                return new Response(HttpStatusCode.NotFound, "Project doesn't exists!");
+            }
+            var members = await _context.ProjectMembers.Where(x => x.idProject == idProject).OrderByDescending(x => x.createdDate).ToListAsync();
+            if (members.Count > 0)
+            {
+                var result = _mapper.Map<List<ProjectMemberView>>(members);
+                foreach (var member in result)
+                {
+                    var infoUser = await GetNameUserCurrent(member.idAccount!);
+                    member.fullName = infoUser.fullName;
+                    member.avatar = infoUser.avatar;
+                    var postion = await _context.Positions.FirstOrDefaultAsync(x => x.idPosition == member.idPosition);
+                    member.namePosition = postion.namePosition;
+                }
+                return new Response(HttpStatusCode.OK, "Get member in project is success!", result);
+            }
+            return new Response(HttpStatusCode.BadRequest, "Get member in project is empty!");
+        }
+
         [HttpPost("CreateProject/{idUser}")]
         public async Task<Response> CreateProject(string idUser, [FromForm] ProjectInfoCreate projectInfoCreate)
         {
