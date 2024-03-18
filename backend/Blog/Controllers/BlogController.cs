@@ -23,6 +23,7 @@ namespace Blog.Controllers
         private readonly SaveImageService _saveImageService;
         private readonly HttpClient client;
 
+        public string NotifyApiUrl { get; }
         public string UserApiUrl { get; }
         public string InteractionApiUrl { get; }
 
@@ -34,8 +35,20 @@ namespace Blog.Controllers
             client = new HttpClient();
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
             client.DefaultRequestHeaders.Accept.Add(contentType);
+            NotifyApiUrl = "https://localhost:7009/api/Notification";
             UserApiUrl = "https://localhost:7006/api/User";
             InteractionApiUrl = "https://localhost:7004/api/Interaction";
+        }
+
+        [HttpPost("CreateNotificationBlogComment/{idSender}/{idReceiver}/{idPost}")]
+        private async Task<IActionResult> CreateNotificationComment(string idSender, string idReceiver, Guid idBlog)
+        {
+            HttpResponseMessage response = await client.PostAsync($"{NotifyApiUrl}/CreateNotificationBlogComment/{idSender}/{idReceiver}/{idBlog}", null);
+            if (response.IsSuccessStatusCode)
+            {
+                return Ok("Create notification is successfully!");
+            }
+            return BadRequest("Create notification is fail!");
         }
 
         [HttpGet("GetNameUserCurrent/{idUser}")]
@@ -401,6 +414,7 @@ namespace Blog.Controllers
             };
             await _context.BlogComments.AddAsync(blogComment);
             await _context.SaveChangesAsync();
+            await CreateNotificationComment(idUser, blog.idAccount, blog.idBlog);
             return new Response(HttpStatusCode.OK, "Create comment is success!", _mapper.Map<ViewBlogComment>(blogComment));
         }
 

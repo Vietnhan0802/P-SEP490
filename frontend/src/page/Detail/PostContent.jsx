@@ -1,15 +1,20 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import bootstrap from "bootstrap/dist/js/bootstrap.bundle.min";
 import { FaHeart } from "react-icons/fa";
-import { IoFlagOutline } from "react-icons/io5";
+import Dropdown from "react-bootstrap/Dropdown";
 import { FiEye } from "react-icons/fi";
 import { calculateTimeDifference } from "../Detail/helpers";
 import defaultAvatar from "../../images/common/default.png";
 import Report from "../../components/report-popup/Report";
-function PostContent({ data, handleLikeOrUnlikePost, viewProject }) {
+import { GrUpdate } from "react-icons/gr";
+import { MdDelete } from "react-icons/md";
+import UpdateItem from "./Popup/UpdateItem";
+function PostContent({ data, handleLikeOrUnlikePost, viewProject, userid }) {
   const handleViewproject = () => {
     viewProject(data?.idProject);
   };
+  const [display, setDisplay] = useState(false);
+
   const carouselRef = useRef(null);
   useEffect(() => {
     if (carouselRef.current) {
@@ -25,6 +30,13 @@ function PostContent({ data, handleLikeOrUnlikePost, viewProject }) {
       }
     };
   }, []);
+  const handleUpdatePost = (idPost) => {
+    setDisplay(true)
+  }
+  const handleDeletePost = (idPost) => {
+
+  }
+  console.log(display)
   return (
     <>
       <div className="d-flex  justify-content-between">
@@ -43,9 +55,47 @@ function PostContent({ data, handleLikeOrUnlikePost, viewProject }) {
             <p className="mb-0">{calculateTimeDifference(data?.createdDate)}</p>
           </div>
         </div>
-        <Report />
-      </div>
+        {true ? (
+          <Dropdown>
+            <Dropdown.Toggle
+              id="dropdown-basic"
+              style={{ border: "none" }}
+              className="bg-white border-none text-body"
+            ></Dropdown.Toggle>
 
+            <Dropdown.Menu style={{ minWidth: "auto" }}>
+              <Dropdown.Item
+                className="d-flex justify-content-center"
+                onClick={() =>
+                  handleUpdatePost()
+                }
+              >
+                <GrUpdate />
+
+              </Dropdown.Item>
+              <Dropdown.Item
+                className="d-flex justify-content-center"
+                onClick={() =>
+                  handleDeletePost(data.idPost)
+                }
+              >
+                <MdDelete />
+              </Dropdown.Item>
+              <Dropdown.Item
+              >
+                <Report />
+
+              </Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
+        ) : (
+          <Report />
+        )}
+
+      </div>
+      <UpdateItem
+        show={display}
+        onClose={() => setDisplay(!display)} />
       <p className="fs-4 fw-bold">{data?.title}</p>
       <p style={{ whiteSpace: "pre-wrap" }}>{data?.content}</p>
       <div></div>
