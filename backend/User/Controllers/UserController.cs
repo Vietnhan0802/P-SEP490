@@ -275,13 +275,13 @@ namespace User.Controllers
         [HttpPut("UpdateUser/{idUser}")]
         public async Task<Response> UpdateUser(string idUser, UpdateUser updateUser)
         {
-            var validator = new UpdateUserValidator();
+            /*var validator = new UpdateUserValidator();
             var validatorResult = validator.Validate(updateUser);
             var error = validatorResult.Errors.Select(x => x.ErrorMessage).ToList();
             if (!validatorResult.IsValid)
             {
                 return new Response(HttpStatusCode.BadRequest, "Invalid data", error);
-            }
+            }*/
             var userExits = await _userManager.FindByIdAsync(idUser);
             if (userExits == null)
             {
@@ -327,13 +327,13 @@ namespace User.Controllers
         [HttpPost("SignUpMember")]
         public async Task<Response> SignUpMember(SignUpPerson signUpForPerson)
         {
-            var validator = new SignUpPersonValidator();
+            /*var validator = new SignUpPersonValidator();
             var validatorResult = validator.Validate(signUpForPerson);
             var error = validatorResult.Errors.Select(x => x.ErrorMessage).ToList();
             if (!validatorResult.IsValid)
             {
                 return new Response(HttpStatusCode.BadRequest, "Invalid data", error);
-            }
+            }*/
             var userExits = await _userManager.FindByEmailAsync(signUpForPerson.email!);
             if (userExits != null)
             {
@@ -378,13 +378,13 @@ namespace User.Controllers
         [HttpPost("SignUpBusiness")]
         public async Task<Response> SignUpBusiness(SignUpBusiness signUpForBusiness)
         {
-            var validator = new SignUpBusinessValidator();
+            /*var validator = new SignUpBusinessValidator();
             var validatorResult = validator.Validate(signUpForBusiness);
             var error = validatorResult.Errors.Select(x => x.ErrorMessage).ToList();
             if (!validatorResult.IsValid)
             {
                 return new Response(HttpStatusCode.BadRequest, "Invalid data", error);
-            }
+            }*/
             var userExits = await _userManager.FindByEmailAsync(signUpForBusiness.email!);
             if (userExits != null)
             {

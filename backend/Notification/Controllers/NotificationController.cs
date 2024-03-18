@@ -90,19 +90,6 @@ namespace Notification.Controllers
             return result;
         }
 
-        [HttpPut("ReadNotification/{idNotification}")]
-        public async Task<IActionResult> ReadNotification(Guid idNotification)
-        {
-            var notifi = await _context.Notifications.FirstOrDefaultAsync(x => x.idNotification == idNotification);
-            if (notifi == null)
-            {
-                return NotFound();
-            }
-            notifi.isRead = true;
-            await _context.SaveChangesAsync();
-            return Ok(notifi);
-        }
-
         [HttpPost("CreateNotificationComment/{idSender}/{idReceiver}/{idPost}")]
         public async Task<ViewNotification> CreateNotificationComment(string idSender, string idReceiver, Guid idPost)
         {
@@ -124,6 +111,65 @@ namespace Notification.Controllers
             result.avatar = infoUser.avatar;
             result.content = $"{notification.content}";
             return result;
+        }
+
+        [HttpPost("CreateNotificationBlogComment/{idSender}/{idReceiver}/{idPost}")]
+        public async Task<ViewNotification> CreateNotificationBlogComment(string idSender, string idReceiver, Guid idBlog)
+        {
+            Notificationn notification = new Notificationn()
+            {
+                idSender = idSender,
+                idReceiver = idReceiver,
+                content = "content_notiblog",
+                isRead = false,
+                idUrl = idBlog,
+                url = "BlogComment",
+                createdDate = DateTime.Now
+            };
+            await _context.Notifications.AddAsync(notification);
+            await _context.SaveChangesAsync();
+            var result = _mapper.Map<ViewNotification>(notification);
+            var infoUser = await GetNameUserCurrent(result.idSender!);
+            result.nameSender = infoUser.fullName;
+            result.avatar = infoUser.avatar;
+            result.content = $"{notification.content}";
+            return result;
+        }
+
+        [HttpPost("CreateNotificationBlogComment/{idSender}/{idReceiver}/{idPost}")]
+        public async Task<ViewNotification> CreateNotificationProjectApply(string idSender, string idReceiver, Guid idPorject)
+        {
+            Notificationn notification = new Notificationn()
+            {
+                idSender = idSender,
+                idReceiver = idReceiver,
+                content = "content_notiblog",
+                isRead = false,
+                idUrl = idBlog,
+                url = "BlogComment",
+                createdDate = DateTime.Now
+            };
+            await _context.Notifications.AddAsync(notification);
+            await _context.SaveChangesAsync();
+            var result = _mapper.Map<ViewNotification>(notification);
+            var infoUser = await GetNameUserCurrent(result.idSender!);
+            result.nameSender = infoUser.fullName;
+            result.avatar = infoUser.avatar;
+            result.content = $"{notification.content}";
+            return result;
+        }
+
+        [HttpPut("ReadNotification/{idNotification}")]
+        public async Task<IActionResult> ReadNotification(Guid idNotification)
+        {
+            var notifi = await _context.Notifications.FirstOrDefaultAsync(x => x.idNotification == idNotification);
+            if (notifi == null)
+            {
+                return NotFound();
+            }
+            notifi.isRead = true;
+            await _context.SaveChangesAsync();
+            return Ok(notifi);
         }
     }
 }

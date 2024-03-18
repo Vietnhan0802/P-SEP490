@@ -170,13 +170,13 @@ namespace Project.Controllers
         [HttpPost("CreateProject/{idUser}")]
         public async Task<Response> CreateProject(string idUser, [FromForm] ProjectInfoCreate projectInfoCreate)
         {
-            var validator = new ProjectCreateValidator();
+            /*var validator = new ProjectCreateValidator();
             var validatorResult = validator.Validate(projectInfoCreate);
             var error = validatorResult.Errors.Select(x => x.ErrorMessage).ToList();
             if (!validatorResult.IsValid)
             {
                 return new Response(HttpStatusCode.BadRequest, "Invalid data", error);
-            }
+            }*/
             projectInfoCreate.avatar = await _saveImageService.SaveImage(projectInfoCreate.ImageFile);
             var project = _mapper.Map<ProjectInfo>(projectInfoCreate);
             project.idAccount = idUser;
@@ -208,20 +208,23 @@ namespace Project.Controllers
         [HttpPut("UpdateProject/{idProject}")]
         public async Task<Response> UpdateProject(Guid idProject, [FromForm] ProjectInfoUpdate projectInfoUpdate)
         {
-            var validator = new ProjectUpdateValidator();
+            /*var validator = new ProjectUpdateValidator();
             var validatorResult = validator.Validate(projectInfoUpdate);
             var error = validatorResult.Errors.Select(x => x.ErrorMessage).ToList();
             if (!validatorResult.IsValid)
             {
                 return new Response(HttpStatusCode.BadRequest, "Invalid data", error);
-            }
+            }*/
             var project = await _context.ProjectInfos.FirstOrDefaultAsync(p => p.idProject == idProject);
             if (project == null)
             {
                 return new Response(HttpStatusCode.NotFound, "Project doesn't exists!");
             }
-            _saveImageService.DeleteImage(project.avatar);
-            projectInfoUpdate.avatar = await _saveImageService.SaveImage(projectInfoUpdate.ImageFile);
+            if (projectInfoUpdate.ImageFile != null)
+            {
+                _saveImageService.DeleteImage(project.avatar);
+                projectInfoUpdate.avatar = await _saveImageService.SaveImage(projectInfoUpdate.ImageFile);
+            }
             _mapper.Map(projectInfoUpdate, project);
             var positionOld = await _context.Positions.Where(x => x.idProject == project.idProject).ToListAsync();
             foreach (var position in positionOld)
@@ -361,6 +364,7 @@ namespace Project.Controllers
             var isSuucess = await _context.SaveChangesAsync();
             if (isSuucess > 0)
             {
+                var project = await _context.ProjectInfos.FirstOrDefaultAsync(x => x.idProject == projectApplication.idProject);
                 return new Response(HttpStatusCode.OK, "Create project application is success!", projectApplication);
             }
             return new Response(HttpStatusCode.BadRequest, "Create project application is fail!");
