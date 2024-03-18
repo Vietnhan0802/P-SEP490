@@ -46,7 +46,7 @@ function Notify() {
     }
   }
 
-  const handleNotifiClick = (idNotification, id, url, idPost, idBlog) => {
+  const handleNotifiClick = (idNotification, id, url, idUrl, ) => {
     notifyInstance.put(`ReadNotification/${idNotification}`)
       .then((res) => {
         const updateNotifi = notifications.map(notify => {
@@ -59,9 +59,9 @@ function Notify() {
         if (url === 'Follow') {
           navigate('/profile', { state: { userId: id } });
         }else if (url === 'PostComment') {
-          navigate('/postdetail', { state: { idPost: idPost } });
+          navigate('/postdetail', { state: { idPost: idUrl } });
         } if (url === 'BlogComment') {
-          navigate('/blogdetail', { state: { idblog: idBlog } });
+          navigate('/blogdetail', { state: { idBlog: idUrl } });
         }
       })
       .catch((error) => {
@@ -84,7 +84,7 @@ function Notify() {
       </div>
       <div className="mt-3">
         {notifications.map((item) => (
-          <div className="d-flex align-items-center justify-content-between py-3 notification-item" onClick={() => handleNotifiClick(item.idNotification, item.idSender, item.url, item.idPost)}>
+          <div className="d-flex align-items-center justify-content-between py-3 notification-item" onClick={() => handleNotifiClick(item.idNotification, item.idSender, item.url, item.idUrl)}>
             <div className="d-flex align-items-center" key={item.idNotification}>
               <img src={item.avatar === "https://localhost:7006/Images/" ? defaultImage : item.avatar} alt="profile" className="profile" />
               <div className="ms-2 content">

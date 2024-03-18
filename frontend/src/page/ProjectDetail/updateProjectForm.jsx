@@ -95,7 +95,6 @@ function UpdateProjectForm({ input, id }) {
       });
     }
   };
-  console.log(project)
   const readFileAsDataURL = (file) => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -144,7 +143,6 @@ function UpdateProjectForm({ input, id }) {
       setShow(false);
     })
   };
-  console.log(project)
   return (
     <div className="p-1 ">
       <FiEdit onClick={modalShow} id="btn-update-project" />

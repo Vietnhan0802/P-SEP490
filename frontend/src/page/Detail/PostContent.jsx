@@ -9,7 +9,7 @@ import Report from "../../components/report-popup/Report";
 import { GrUpdate } from "react-icons/gr";
 import { MdDelete } from "react-icons/md";
 import UpdateItem from "./Popup/UpdateItem";
-function PostContent({ data, handleLikeOrUnlikePost, viewProject, userid }) {
+function PostContent({ data, handleLikeOrUnlikePost, viewProject, userId }) {
   const handleViewproject = () => {
     viewProject(data?.idProject);
   };
@@ -36,7 +36,7 @@ function PostContent({ data, handleLikeOrUnlikePost, viewProject, userid }) {
   const handleDeletePost = (idPost) => {
 
   }
-  console.log(display)
+  console.log(data)
   return (
     <>
       <div className="d-flex  justify-content-between">
@@ -55,7 +55,7 @@ function PostContent({ data, handleLikeOrUnlikePost, viewProject, userid }) {
             <p className="mb-0">{calculateTimeDifference(data?.createdDate)}</p>
           </div>
         </div>
-        {true ? (
+        {data?.idAccount === userId ? (
           <Dropdown>
             <Dropdown.Toggle
               id="dropdown-basic"
@@ -91,11 +91,13 @@ function PostContent({ data, handleLikeOrUnlikePost, viewProject, userid }) {
         ) : (
           <Report />
         )}
-
       </div>
       <UpdateItem
         show={display}
-        onClose={() => setDisplay(!display)} />
+        onClose={() => setDisplay(false)}
+        value={data}
+        type={'post'}
+      />
       <p className="fs-4 fw-bold">{data?.title}</p>
       <p style={{ whiteSpace: "pre-wrap" }}>{data?.content}</p>
       <div></div>
