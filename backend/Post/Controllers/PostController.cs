@@ -41,10 +41,10 @@ namespace Post.Controllers
             InteractionApiUrl = "https://localhost:7004/api/Interaction";
         }
 
-        [HttpPost("CreateNotificationPostLike/{idSender}/{idReceiver}/{idPost}")]
-        private async Task<IActionResult> CreateNotificationPostLike(string idSender, string idReceiver, Guid idPost)
+        [HttpPost("CreateNotificationPostLike/{idSender}/{idReceiver}/{idPost}/{like}")]
+        private async Task<IActionResult> CreateNotificationPostLike(string idSender, string idReceiver, Guid idPost, int like)
         {
-            HttpResponseMessage response = await client.PostAsync($"{NotifyApiUrl}/CreateNotificationPostLike/{idSender}/{idReceiver}/{idPost}", null);
+            HttpResponseMessage response = await client.PostAsync($"{NotifyApiUrl}/CreateNotificationPostLike/{idSender}/{idReceiver}/{idPost}/{like}", null);
             if (response.IsSuccessStatusCode)
             {
                 return Ok("Create notification is successfully!");
@@ -378,7 +378,8 @@ namespace Post.Controllers
                 if (isSuccess > 0)
                 {
                     var post = await _context.Postts.FirstOrDefaultAsync(x => x.idPost == idPost);
-                    await CreateNotificationPostLike(idUser, post.idAccount, idPost);
+                    var numberLike = await _context.PosttLikes.Where(x => x.idPost == idPost).CountAsync();
+                    await CreateNotificationPostLike(idUser, post.idAccount, idPost, numberLike);
                     return new Response(HttpStatusCode.NoContent, "Like post is success!");
                 }
                 return new Response(HttpStatusCode.BadRequest, "Like post is fail!");

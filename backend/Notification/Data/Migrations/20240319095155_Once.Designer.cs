@@ -12,7 +12,7 @@ using Notification.Data;
 namespace Notification.Data.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20240316143706_Once")]
+    [Migration("20240319095155_Once")]
     partial class Once
     {
         /// <inheritdoc />
@@ -33,6 +33,9 @@ namespace Notification.Data.Migrations
 
                     b.Property<string>("content")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("count")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("createdDate")
                         .HasColumnType("datetime2");

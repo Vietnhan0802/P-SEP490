@@ -12,6 +12,7 @@ namespace BusinessObjects.Entities.Notification
         public bool? isRead { get; set; }
         public Guid? idUrl { get; set; }
         public string? url { get; set; }
+        public int? count { get; set; }
         public DateTime createdDate { get; set; }
     }
 }
