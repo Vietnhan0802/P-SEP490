@@ -402,6 +402,10 @@ namespace Project.Controllers
             {
                 return new Response(HttpStatusCode.BadRequest, "Invalid data", error);
             }*/
+            var existApplication = await _context.ProjectMembers.FirstOrDefaultAsync(x => x.idProject == idProject && x.idAccount == idUser && x.type == BusinessObjects.Enums.Project.Type.Applied);
+            if (existApplication != null) {
+                return new Response(HttpStatusCode.BadRequest, "Project application is exist!");
+            }
             projectMemberCreateUpdate.cvUrl = await _saveImageService.SaveImage(projectMemberCreateUpdate.cvUrlFile);
             var projectApplication = _mapper.Map<ProjectMember>(projectMemberCreateUpdate);
             projectApplication.idAccount = idUser;
@@ -415,7 +419,7 @@ namespace Project.Controllers
             {
                 var project = await _context.ProjectInfos.FirstOrDefaultAsync(x => x.idProject == idProject);
                 await CreateNotificationProjectApply(idUser, project.idAccount, idProject);
-                return new Response(HttpStatusCode.OK, "Create project application is success!", projectApplication);
+                return new Response(HttpStatusCode.NoContent, "Create project application is success!");
             }
             return new Response(HttpStatusCode.BadRequest, "Create project application is fail!");
         }
@@ -423,6 +427,10 @@ namespace Project.Controllers
         [HttpPost("CreateProjectInvite/{idUser}")]
         public async Task<Response> CreateProjectInvite(string idUser,  Guid idProject, Guid idPosition)
         {
+            var existInvitation = await _context.ProjectMembers.FirstOrDefaultAsync(x => x.idProject == idProject && x.idAccount == idUser && x.type == BusinessObjects.Enums.Project.Type.Invited);
+            if (existInvitation != null) {
+                return new Response(HttpStatusCode.BadRequest, "Project invitation is exist!");
+            }
             ProjectMember projectApplication = new ProjectMember
             {
                 idPosition = idPosition,
@@ -439,7 +447,7 @@ namespace Project.Controllers
             {
                 var project = await _context.ProjectInfos.FirstOrDefaultAsync(x => x.idProject == idProject);
                 await CreateNotificationProjectInvite(project.idAccount, idUser, idProject);
-                return new Response(HttpStatusCode.OK, "Create project invite is success!", projectApplication);
+                return new Response(HttpStatusCode.NoContent, "Create project invite is success!");
             }
             return new Response(HttpStatusCode.BadRequest, "Create project invite is fail!");
         }
