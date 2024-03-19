@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import logoImg from "../../images/common/logo.png";
 import "../SignIn/signIn.scss";
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -26,12 +25,10 @@ function ResetPassword() {
     const name = event.target.name;
     const value = event.target.value;
     setInputs((values) => ({ ...values, [name]: value }));
-    console.log(inputs);
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log(inputs);
     try {
       const response = await userInstance.post(
         "/ResetPassword", { password: inputs.password, confirmPassword: inputs.confirmPassword, email: email, token: newToken }
@@ -75,13 +72,13 @@ function ResetPassword() {
   };
   return (
     <section
-      id="signInForm"
+  
       className="signIn-bg hV-100 d-flex align-items-center"
     >
       <div className="container">
-        <div className="d-flex form-shadow roundedL-28 roundedR-28 flex-column-reverse flex-lg-row">
-          <div className="col-lg-7 col roundedL-28 white-bg d-flex align-items-center">
-            <div className="h-auto w-100">
+        <div className="d-flex  m-auto mw-40" style={{ maxHeight: '90vh' }}>
+          <div className="col-12 col signin white-bg d-flex align-items-center">
+            <div className="h-auto w-100 py-4">
               <p className="SFU-bold size-40 blue2f text-center mb-3">
                 Reset Password
               </p>
@@ -130,19 +127,6 @@ function ResetPassword() {
                   />
                 </form>
               </div>
-            </div>
-          </div>
-          <div className="col roundedR-28 wc-bg SFU-reg white">
-            <div className="d-flex justify-content-center justify-content-lg-start">
-              <img className="pt-4 px-lg-3 pb-lg-5" src={logoImg} alt="logo" />
-            </div>
-            <div className="SFU-bold px-4 pb-3 pt-lg-5 mt-lg-5 text-center text-lg-start ">
-              <p className="size-40 d-lg-none">Welcome Back!</p>
-              <p className="d-none d-lg-block size-70">
-                Reset&nbsp;
-                <br />
-                PassWord!
-              </p>
             </div>
           </div>
         </div>
