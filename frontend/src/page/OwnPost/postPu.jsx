@@ -12,7 +12,7 @@ import {
   reportInstance,
 } from "../../axios/axiosConfig";
 
-function PostPu({reset}) {
+function PostPu({ reset }) {
   const [show, setShow] = useState(false);
   const [project, setProject] = useState();
   const modalClose = () => setShow(false);
@@ -26,6 +26,7 @@ function PostPu({reset}) {
     CreateUpdatePostImages: [], // new state for managing multiple images
     project: "",
   });
+  console.log(inputs)
   useEffect(() => {
     projectInstance
       .get("GetAllProjects")
@@ -60,11 +61,11 @@ function PostPu({reset}) {
     });
 
     postInstance.post(`/CreatePost/${currentUserId}/${inputs.project}`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          accept: "application/json",
-        },
-      })
+      headers: {
+        "Content-Type": "multipart/form-data",
+        accept: "application/json",
+      },
+    })
       .then((res) => {
 
         reset(!resetPage);
@@ -121,6 +122,7 @@ function PostPu({reset}) {
       setInputs((values) => ({ ...values, [name]: value }));
     }
   };
+  const fileTypes = ["JPG", "PNG", "GIF"];
   return (
     <div className="">
       <Button variant="m-0 btn btn-primary me-2" onClick={modalShow}>

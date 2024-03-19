@@ -38,7 +38,7 @@ function Notify() {
   }, [currentUserId]);
 
   function getContent(contentKey) {
-    switch(contentKey) {
+    switch (contentKey) {
       case 'content_notifollow':
         return t('content_notifollow');
       case 'content_notipostlike':
@@ -67,13 +67,23 @@ function Notify() {
           }
           return notify;
         });
+        console.log(url)
         setNotifications(updateNotifi);
-        if (url === 'Follow') {
-          navigate('/profile', { state: { userId: id } });
-        }else if (url === 'PostComment') {
-          navigate('/postdetail', { state: { idPost: idUrl } });
-        } if (url === 'BlogComment') {
-          navigate('/blogdetail', { state: { idBlog: idUrl } });
+        switch (url) {
+          case 'Follow':
+            return navigate('/profile', { state: { userId: id } });
+          case 'PostComment':
+          case 'PostLike':
+          case 'PostReply':
+            return navigate('/postdetail', { state: { idPost: idUrl } });
+          case 'BlogComment':
+          case 'BlogLike':
+          case 'BlogReply':
+            return navigate('/blogdetail', { state: { idBlog: idUrl } });
+          // case  :
+          // return ;
+          default:
+            return;
         }
       })
       .catch((error) => {

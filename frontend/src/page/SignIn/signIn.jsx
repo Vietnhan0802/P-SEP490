@@ -1,8 +1,5 @@
 import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import logoImg from "../../images/common/logo.png";
-import GGIcon from "../../images/common/gg-icon.png";
-import FBIcon from "../../images/common/fb-icon.png";
 import "../SignIn/signIn.scss";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -85,14 +82,11 @@ export default function SignIn() {
       console.error("Error during sign in:", error);
     }
   };
-  
+
   const errorMessage = (error) => {
     console.error("Google login error:", error);
   };
 
-  const handleClickFB = () => {
-    // implementation details
-  };
 
   return (
     <section
@@ -100,9 +94,9 @@ export default function SignIn() {
       className="signIn-bg hV-100 d-flex align-items-center"
     >
       <div className="container">
-        <div className="d-flex form-shadow roundedL-28 roundedR-28 flex-column-reverse flex-lg-row">
-          <div className="col-lg-7 col roundedL-28 white-bg pt-5 pb-5">
-            <p className="SFU-bold size-40 blue2f text-center py-lg-3 py-lg-5">
+        <div className="d-flex m-auto mw-40" style={{ maxHeight: '90vh' }}>
+          <div className="col-12 m-auto bg-white pt-sm-5 pb-md-5 signin px-lg-5 px-sm-3 w-100" >
+            <p className="SFU-bold size-40 blue2f text-center py-lg-3 py-lg-5 fs-xs-30">
               SIGN IN
             </p>
             <div className="form-area">
@@ -162,41 +156,11 @@ export default function SignIn() {
                 <div className="col line1"></div>
               </div>
               <div className="d-flex flex-row pt-3 pb-3">
-                <div className="d-flex col-6 google-btn justify-content-end">
-                <GoogleLogin onSuccess={handleClickGG} onError={errorMessage} />
-                  {/* <button
-                    className="gray-border white-bg d-flex flex-row rounded-50 align-items-center justify-content-center"
-                    type="button"
-                    onClick={handleClickGG}
-                  >
-                    <img src={GGIcon} alt="GGIcon" />
-                    <p>Google</p>
-                  </button> */}
-                </div>
-                <div className="d-flex col-6 facebook-btn">
-                  <button
-                    className="gray-border white-bg d-flex flex-row rounded-50 align-items-center justify-content-center"
-                    type="button"
-                    onClick={handleClickFB}
-                  >
-                    <img src={FBIcon} alt="FBIcon" />
-                    <p>Facebook</p>
-                  </button>
+                <div className="d-flex col-12 google-btn justify-content-center">
+                  <GoogleLogin onSuccess={handleClickGG} onError={errorMessage} />
+
                 </div>
               </div>
-            </div>
-          </div>
-          <div className="col roundedR-28 wc-bg SFU-reg white">
-            <div className="d-flex justify-content-center justify-content-lg-start">
-              <img className="pt-4 px-lg-3 pb-lg-5" src={logoImg} alt="logo" />
-            </div>
-            <div className="SFU-bold px-4 pb-3 pt-lg-5 mt-lg-5 text-center text-lg-start ">
-              <p className="size-40 d-lg-none">Welcome Back!</p>
-              <p className="d-none d-lg-block size-70">
-                Welcome&nbsp;
-                <br />
-                Back!
-              </p>
             </div>
           </div>
         </div>
