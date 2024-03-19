@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 
 function DeleteItem({ type, value, show, onClose }) {
     const navigate = useNavigate();
-    console.log(value)
     const handleConfirm = () => {
         if (type === 'post') {
             postInstance.delete(`/RemovePost/${value}`)

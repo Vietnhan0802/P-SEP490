@@ -227,6 +227,53 @@ function BlogDetail({ value }) {
         });
       });
   }
+  const handleLikeOrUnlikeBlogCmt = (idBlogComment) => {
+    setCommentList((prevCommentList) =>
+      prevCommentList.map((comment) => {
+        if (comment.idBlogComment === idBlogComment) {
+          // Update the like state and count for this comment
+          const isLiked = !comment.isLike;
+          const newLikeCount = isLiked ? comment.like + 1 : comment.like - 1;
+
+          // Return the updated comment object
+          return { ...comment, isLike: isLiked, like: newLikeCount };
+        }
+
+        // Return the comment object unchanged
+        return comment;
+      })
+    );
+    blogInstance
+      .post(`LikeOrUnlikeBlogComment/${currentUserId}/${idBlogComment}`)
+      .then(() => {
+        // No need to update the state here if you're doing optimistic updates
+      })
+      .catch((error) => {
+        // Revert the like state and count in case of an error
+        console.error(error);
+        setCommentList((prevCommentList) =>
+          prevCommentList.map((comment) => {
+            if (comment.idBlogComment === idBlogComment) {
+              // Revert to the previous like state and count for this comment
+              const revertedIsLiked = !comment.isLike;
+              const revertedLikeCount = revertedIsLiked
+                ? comment.like + 1
+                : comment.like - 1;
+
+              // Return the reverted comment object
+              return {
+                ...comment,
+                isLike: revertedIsLiked,
+                like: revertedLikeCount,
+              };
+            }
+
+            // Return the comment object unchanged
+            return comment;
+          })
+        );
+      });
+  }
   //Fetch data
   const memoizedBlogInstance = useMemo(() => {
     return blogInstance; // hoặc tạo một instance mới nếu cần
@@ -385,36 +432,50 @@ function BlogDetail({ value }) {
               >
                 <img src={item?.avatar === 'https://localhost:7006/Images/' ? avatarDefault : item?.avatar} alt="" className="profile" />
                 <div className="ms-3  w-100 ">
-                  <div className="d-flex  justify-content-between">
-                    <h6 className="mb-2 d-flex align-items-center h-40">
-                      {item.fullName}
-                    </h6>
-                    {item.idAccount === currentUserId ?
-                      <Dropdown>
-                        <Dropdown.Toggle id="dropdown-basic" style={{ border: 'none' }} className="bg-white border-none text-body">
-                        </Dropdown.Toggle>
+                  <div className="form-control">
+                    <div className="d-flex  justify-content-between">
+                      <h6 className="mb-2 d-flex align-items-center h-40">
+                        {item.fullName}
+                      </h6>
+                      {item.idAccount === currentUserId ?
+                        <Dropdown>
+                          <Dropdown.Toggle id="dropdown-basic" style={{ border: 'none' }} className="bg-white border-none text-body">
+                          </Dropdown.Toggle>
 
-                        <Dropdown.Menu style={{ minWidth: 'auto' }}>
-                          <Dropdown.Item onClick={() => handleUpdateCommentAppear(item.idBlogComment)}><GrUpdate /></Dropdown.Item>
-                          <Dropdown.Item onClick={() => handleDeleteComment(item.idBlogComment)}><MdDelete /></Dropdown.Item>
-                        </Dropdown.Menu>
-                      </Dropdown> : ""
-                    }
+                          <Dropdown.Menu style={{ minWidth: 'auto' }}>
+                            <Dropdown.Item onClick={() => handleUpdateCommentAppear(item.idBlogComment)}><GrUpdate /></Dropdown.Item>
+                            <Dropdown.Item onClick={() => handleDeleteComment(item.idBlogComment)}><MdDelete /></Dropdown.Item>
+                          </Dropdown.Menu>
+                        </Dropdown> : ""
+                      }
+                    </div>
+                    {updateShow !== item.idBlogComment ? (
+                      <div>
+                        <p className="mb-0">{item.content}</p>
+                        <div
+                          className="d-flex align-items-center me-3"
+                          onClick={() => handleLikeOrUnlikeBlogCmt(item.idBlogComment)}
+                        >
+                          <FaHeart className={`me-2 ${item?.isLike === true ? "red" : ""}`} />{" "}
+                          {item?.like}
+                        </div>
+                      </div>
+
+                    ) : (
+                      <>
+                        <input
+                          type="text"
+                          className="form-control"
+                          value={originalContent || item.content}
+                          onChange={(e) => handleUpdateInputComment(item.idBlogComment, e.target.value)}
+                        />
+                        <button onClick={() => handleUpdateCommentCancel(item.idBlogComment)} className="btn btn-informa">Cancel</button>
+                        <button onClick={() => handleUpdateComment(item.idBlogComment, item.content)}>Save</button>
+                      </>
+                    )}
                   </div>
-                  {updateShow !== item.idBlogComment ? (
-                    <p className="mb-0">{item.content}</p>
-                  ) : (
-                    <>
-                      <input
-                        type="text"
-                        className="form-control"
-                        value={originalContent || item.content}
-                        onChange={(e) => handleUpdateInputComment(item.idBlogComment, e.target.value)}
-                      />
-                      <button onClick={() => handleUpdateCommentCancel(item.idBlogComment)}>Cancel</button>
-                      <button onClick={() => handleUpdateComment(item.idBlogComment, item.content)}>Save</button>
-                    </>
-                  )}
+
+
                   <div className="rep d-flex w-100" >
                     <div className={`d-flex justify-content-between w-100 align-items-center ${viewReply !== item.idBlogComment ? 'justify-content-end' : "justify-content-between"}`}>
                       {viewReply !== item.idBlogComment ?
