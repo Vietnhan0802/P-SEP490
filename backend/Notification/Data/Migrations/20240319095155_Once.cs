@@ -22,6 +22,7 @@ namespace Notification.Data.Migrations
                     isRead = table.Column<bool>(type: "bit", nullable: true),
                     idUrl = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     url = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    count = table.Column<int>(type: "int", nullable: true),
                     createdDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
