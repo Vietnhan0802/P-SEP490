@@ -117,10 +117,11 @@ function UpdateProjectForm({ input, id }) {
     formData.append("process", parseInt(project.process));
     formData.append("visibility", parseInt(project.visibility));
     formData.append("ImageFile", project.ImageFile);
+    console.log()
     project.namePosition.forEach((position, index) => {
       formData.append(
         `namePosition[${index}]`,
-        position
+        position.value
       );
     });
     projectInstance.put(`/UpdateProject/${id}`, formData, {

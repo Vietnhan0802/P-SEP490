@@ -67,6 +67,8 @@ function ProjectDetail() {
   const location = useLocation();
   const [data, setData] = useState();
   const { idProject } = location.state || {};
+  console.log(idProject)
+
   useEffect(() => {
     projectInstance.get(`/GetProjectById/${idProject}`)
       .then((res) => {

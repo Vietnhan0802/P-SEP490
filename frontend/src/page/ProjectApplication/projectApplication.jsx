@@ -81,7 +81,7 @@ function ProjectApplication() {
     []
   );
   const reset = (value) => {
-    if (value==='Success') {
+    if (value === 'Success') {
       setResetPage(!resetPage);
     }
   }
@@ -104,6 +104,7 @@ function ProjectApplication() {
           id="projectApplication"
           className=" bg-light text-dark border-8 py-2"
         >
+
           <main className="container ">
             <div className="">
               <Table columns={columns} data={applications} />
