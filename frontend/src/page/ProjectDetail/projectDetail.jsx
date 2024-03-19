@@ -10,6 +10,7 @@ import FormApply from "./FormApply";
 import { projectInstance } from "../../axios/axiosConfig";
 import UpdateProjectForm from "./updateProjectForm";
 import { useLocation, useNavigate } from "react-router-dom";
+import DeletePopup from "./Popup/DeletePopup";
 
 const formatDate = (timestamp) => {
   const months = [
@@ -62,7 +63,7 @@ const projectVisibility = (visibility) => {
 };
 function ProjectDetail() {
   const sessionData = JSON.parse(sessionStorage.getItem("userSession")) || {};
-  const { role ,currentUserId} = sessionData;
+  const { role, currentUserId } = sessionData;
   const location = useLocation();
   const [data, setData] = useState();
   const { idProject } = location.state || {};
@@ -111,8 +112,11 @@ function ProjectDetail() {
                     </p>
                   </div>
                 </div>
-                <UpdateProjectForm input={data} id={data?.idProject}/>
-                
+                <div className="d-flex ">
+                  <UpdateProjectForm input={data} id={data?.idProject} />
+                  <DeletePopup className='ms-3' id={data?.idProject} />
+                </div>
+
               </div>
 
               <div className="status-block size-18">
