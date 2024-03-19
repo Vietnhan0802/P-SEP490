@@ -1,6 +1,5 @@
 import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import logoImg from "../../images/common/logo.png";
 import GGIcon from "../../images/common/gg-icon.png";
 import FBIcon from "../../images/common/fb-icon.png";
 import "../SignUp/signUp.scss";
@@ -45,8 +44,8 @@ export default function SignIn() {
       className="signIn-bg hV-100 d-flex align-items-center"
     >
       <div className="container">
-        <div className="d-flex form-shadow roundedL-28 roundedR-28 flex-column-reverse flex-lg-row">
-          <div className="col-lg-7 col roundedL-28 white-bg pt-2 pb-4  position-relative">
+        <div className="d-flex form-shadow roundedL-28 roundedR-28 flex-column-reverse flex-lg-row" style={{maxHeight:'90vh'}}>
+          <div className="col-12 col roundedL-28 white-bg pt-2 pb-4  position-relative">
             <IoMdArrowRoundBack className="position-absolute" size={48} style={{ top: '20px', left: '20px' }} onClick={returnSignIn} />
             <p className="SFU-bold size-40 blue2f text-center py-lg-3 py-lg-5">
               SIGN UP
@@ -99,19 +98,6 @@ export default function SignIn() {
                   </button>
                 </div>
               </div>
-            </div>
-          </div>
-          <div className="col roundedR-28 wc-bg SFU-reg white">
-            <div className="d-flex justify-content-center justify-content-lg-start">
-              <img className="pt-4 px-lg-3 pb-lg-5" src={logoImg} alt="logo" />
-            </div>
-            <div className="SFU-bold px-4 pb-3 pt-lg-5 mt-lg-5 text-center text-lg-start ">
-              <p className="size-40 d-lg-none">Welcome Back!</p>
-              <p className="d-none d-lg-block size-70">
-                Hello new&nbsp;
-                <br />
-                User
-              </p>
             </div>
           </div>
         </div>
