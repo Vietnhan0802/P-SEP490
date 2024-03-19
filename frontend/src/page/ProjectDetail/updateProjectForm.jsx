@@ -108,16 +108,23 @@ function UpdateProjectForm({ input, id }) {
     });
   };
 
-  console.log(project)
   const handleUpdateProject = () => {
+
     const formData = new FormData();
     formData.append("name", project.name);
     formData.append("description", project.description);
-    formData.append("avatar", project.avatar);
     formData.append("process", parseInt(project.process));
     formData.append("visibility", parseInt(project.visibility));
-    formData.append("ImageFile", project.ImageFile);
-    console.log()
+    // Check if ImageFile is null before appending it to formData
+    if (project.ImageFile) {
+      formData.append("avatar", project.avatar); // Keep this if you want to send the avatar name
+      formData.append("ImageFile", project.ImageFile);
+    } else {
+      // If ImageFile is null, explicitly set avatar to null in the formData
+      // This depends on your backend's handling. If it expects an 'avatar' field even when null, uncomment the next line.
+      // formData.append("avatar", null);
+      // You might not need to append a null ImageFile, depending on how your backend handles absent fields.
+    }
     project.namePosition.forEach((position, index) => {
       formData.append(
         `namePosition[${index}]`,
@@ -208,11 +215,11 @@ function UpdateProjectForm({ input, id }) {
                     className="visibility-select visibility public"
                     onChange={handleInputChange}
                   >
-                    <option value={0} className="visibility public">
-                      Public
-                    </option>
-                    <option value={1} className="visibility private">
+                    <option value={0} className="visibility private">
                       Private
+                    </option>
+                    <option value={1} className="visibility public">
+                      Public
                     </option>
                     <option value={2} className="visibility hidden">
                       Hidden

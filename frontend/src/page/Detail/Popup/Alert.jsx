@@ -1,12 +1,12 @@
 import React from 'react'
 import { Modal, Button } from "react-bootstrap";
-function Alert({ show, onClose, message }) {
+function AlertProject({ show, onClose, message }) {
     console.log(1)
     return (
         <div className="p-1">
             <Modal show={show} onHide={onClose}>
                 <Modal.Header closeButton>
-                    <Modal.Title>Confirmation Box</Modal.Title>
+                    <Modal.Title>Alert Box</Modal.Title>
                 </Modal.Header>
 
                 <Modal.Body className="popup-body" id="">
@@ -23,4 +23,4 @@ function Alert({ show, onClose, message }) {
     )
 }
 
-export default Alert
+export default AlertProject

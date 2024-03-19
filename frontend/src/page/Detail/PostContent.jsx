@@ -12,7 +12,8 @@ import UpdateItem from "./Popup/UpdateItem";
 import DeleteItem from "./Popup/DeleteItem";
 import { useNavigate } from "react-router-dom";
 import { projectInstance } from "../../axios/axiosConfig";
-import { Alert } from "react-bootstrap";
+import AlertProject from "./Popup/Alert";
+
 function PostContent({ data, handleLikeOrUnlikePost, viewProject, userId }) {
   const navigate = useNavigate();
 
@@ -47,6 +48,8 @@ function PostContent({ data, handleLikeOrUnlikePost, viewProject, userId }) {
     // First, check if the project with the given ID exists.
     projectInstance.get(`GetProjectById/${data.idProject}`)
       .then((res) => {
+        console.log(res?.data?.result);
+        console.log(res?.data?.result?.visibility === 0)
         if (res?.data?.result !== null && res?.data?.result?.visibility === 0) {
           // If the project exists, get all members of the project.
           projectInstance.get(`GetAllMemberInProject/${data.idProject}`)
@@ -70,6 +73,7 @@ function PostContent({ data, handleLikeOrUnlikePost, viewProject, userId }) {
         } else if (res?.data?.result !== null && res?.data?.result?.visibility === 1) {
           navigate('/projectdetail', { state: { idProject: data.idProject } });
         } else {
+          console.log(1)
           setDisplayAlert(true);
           setMessage('This Project is no longer exist.')
         }
@@ -145,10 +149,7 @@ function PostContent({ data, handleLikeOrUnlikePost, viewProject, userId }) {
         value={data?.idPost}
         type={'post'}
       />
-      <Alert
-        show={displayAlert}
-        onClose={() => setDisplayAlert(false)}
-        message={message} />
+
       <p className="fs-4 fw-bold">{data?.title}</p>
       <p style={{ whiteSpace: "pre-wrap" }}>{data?.content}</p>
       <div></div>
@@ -170,7 +171,10 @@ function PostContent({ data, handleLikeOrUnlikePost, viewProject, userId }) {
             </div>
           ))}
         </div>
-
+        <AlertProject
+          show={displayAlert}
+          onClose={() => setDisplayAlert(false)}
+          message={message} />
         {data?.viewPostImages?.length > 1 && (
           <>
             <button
