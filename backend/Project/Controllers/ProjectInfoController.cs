@@ -53,7 +53,7 @@ namespace Project.Controllers
         [HttpPost("CreateNotificationProjectInvite/{idSender}/{idReceiver}/{idPorject}")]
         private async Task<IActionResult> CreateNotificationProjectInvite(string idSender, string idReceiver, Guid idPorject)
         {
-            HttpResponseMessage response = await client.PostAsync($"{NotifyApiUrl}/CreateNotificationProjectApply/{idSender}/{idReceiver}/{idPorject}", null);
+            HttpResponseMessage response = await client.PostAsync($"{NotifyApiUrl}/CreateNotificationProjectInvite/{idSender}/{idReceiver}/{idPorject}", null);
             if (response.IsSuccessStatusCode)
             {
                 return Ok("Create notification is successfully!");
