@@ -30,7 +30,7 @@ function Report({ id, idItem, type }) {
     setReport((prev) => ({ ...prev, idReporter: id, idPosted: idItem }));
     setReportType(type);
   };
-  const handleCreateReport =()=>{
+  const handleCreateReport = () => {
     if (reportType === 'post') {
       reportInstance.post(`CreatePostReport/${report.idReporter}/${report.idPosted}/${report.content}`)
         .then((res) => { console.log(res?.data?.result) })
@@ -39,13 +39,13 @@ function Report({ id, idItem, type }) {
       reportInstance.post(`CreateBlogReport/${report.idReporter}/${report.idPosted}/${report.content}`)
         .then((res) => { console.log(res?.data?.result) })
         .catch((error) => { console.error(error) })
-    }else{
+    } else {
       reportInstance.post(`CreateBlogReport/${report.idReporter}/${report.idPosted}/${report.content}`)
-      .then((res) => { console.log(res?.data?.result) })
-      .catch((error) => { console.error(error) })
+        .then((res) => { console.log(res?.data?.result) })
+        .catch((error) => { console.error(error) })
     }
   }
- 
+
   const data = [
     {
       id: "hateAndHarassment",
@@ -94,7 +94,7 @@ function Report({ id, idItem, type }) {
 
   return (
     <div className="p-1">
-      <IoFlagOutline onClick={modalShow} className="ReportBtn" />
+      <IoFlagOutline onClick={modalShow} className="ReportBtn" size={28} />
 
       <Modal show={show} onHide={modalClose}>
         <Modal.Header closeButton>

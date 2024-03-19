@@ -9,11 +9,13 @@ import Report from "../../components/report-popup/Report";
 import { GrUpdate } from "react-icons/gr";
 import { MdDelete } from "react-icons/md";
 import UpdateItem from "./Popup/UpdateItem";
+import DeleteItem from "./Popup/DeleteItem";
 function PostContent({ data, handleLikeOrUnlikePost, viewProject, userId }) {
   const handleViewproject = () => {
     viewProject(data?.idProject);
   };
   const [display, setDisplay] = useState(false);
+  const [displayDelete, setDisplayDelete] = useState(false);
 
   const carouselRef = useRef(null);
   useEffect(() => {
@@ -30,11 +32,11 @@ function PostContent({ data, handleLikeOrUnlikePost, viewProject, userId }) {
       }
     };
   }, []);
-  const handleUpdatePost = (idPost) => {
-    setDisplay(true)
+  const handleUpdatePost = () => {
+    setDisplay(true);
   }
-  const handleDeletePost = (idPost) => {
-
+  const handleDeletePost = () => {
+    setDisplayDelete(true);
   }
   console.log(data)
   return (
@@ -70,16 +72,16 @@ function PostContent({ data, handleLikeOrUnlikePost, viewProject, userId }) {
                   handleUpdatePost()
                 }
               >
-                <GrUpdate />
+                <GrUpdate size={28}/>
 
               </Dropdown.Item>
               <Dropdown.Item
                 className="d-flex justify-content-center"
                 onClick={() =>
-                  handleDeletePost(data.idPost)
+                  handleDeletePost()
                 }
               >
-                <MdDelete />
+                <MdDelete  size={28}/>
               </Dropdown.Item>
               <Dropdown.Item
               >
@@ -96,6 +98,12 @@ function PostContent({ data, handleLikeOrUnlikePost, viewProject, userId }) {
         show={display}
         onClose={() => setDisplay(false)}
         value={data}
+        type={'post'}
+      />
+      <DeleteItem
+        show={displayDelete}
+        onClose={() => setDisplayDelete(false)}
+        value={data?.idPost}
         type={'post'}
       />
       <p className="fs-4 fw-bold">{data?.title}</p>
