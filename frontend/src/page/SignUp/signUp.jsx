@@ -8,11 +8,13 @@ import "../SignUp/signUp.scss";
 import { useState } from "react";
 import PersonForm from "./PersonForm";
 import BusinessForm from "./BusinessForm";
-import { userInstance } from "../../axios/axiosConfig";
+import { IoMdArrowRoundBack } from "react-icons/io";
+import { useNavigate } from "react-router-dom";
 
 export default function SignIn() {
   const [showForm1, setShowForm1] = useState(true);
   const [showForm2, setShowForm2] = useState(false);
+  const navigate = useNavigate();
 
   const handleFormClick = (formNumber) => {
     // Reset the visibility of both forms
@@ -27,16 +29,12 @@ export default function SignIn() {
     }
   };
   const handleClickGG = () => {
-    
-    // const clientId = "901410740401-3e5cucjupfa8ehj4a1v1ehbvu5qi2o5g.apps.googleusercontent.com";
-    // const redirectUri = "YOUR_FRONTEND_REDIRECT_URI";
-    // const scope = "email profile openid";
-    // const responseType = "code";
 
-    // const googleUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=${responseType}&scope=${scope}`;
-    // window.location.href = googleUrl;
-    // implementation details
+
   };
+  const returnSignIn = () => {
+    navigate('/');
+  }
   const handleClickFB = () => {
     // implementation details
   };
@@ -48,24 +46,23 @@ export default function SignIn() {
     >
       <div className="container">
         <div className="d-flex form-shadow roundedL-28 roundedR-28 flex-column-reverse flex-lg-row">
-          <div className="col-lg-7 col roundedL-28 white-bg pt-2 pb-4">
+          <div className="col-lg-7 col roundedL-28 white-bg pt-2 pb-4  position-relative">
+            <IoMdArrowRoundBack className="position-absolute" size={48} style={{ top: '20px', left: '20px' }} onClick={returnSignIn} />
             <p className="SFU-bold size-40 blue2f text-center py-lg-3 py-lg-5">
               SIGN UP
             </p>
             <div className="d-flex justify-content-around mb-3">
               <button
                 onClick={() => handleFormClick(1)}
-                className={`gray-border white-bg d-flex w-25 flex-row rounded-50 align-items-center justify-content-center ${
-                  showForm1 === true ? "active-item" : ""
-                }`}
+                className={`gray-border white-bg d-flex w-25 flex-row rounded-50 align-items-center justify-content-center ${showForm1 === true ? "active-item" : ""
+                  }`}
               >
                 User
               </button>
               <button
                 onClick={() => handleFormClick(2)}
-                className={`gray-border white-bg d-flex w-25 flex-row rounded-50 align-items-center justify-content-center ${
-                  showForm2 === true ? "active-item" : ""
-                }`}
+                className={`gray-border white-bg d-flex w-25 flex-row rounded-50 align-items-center justify-content-center ${showForm2 === true ? "active-item" : ""
+                  }`}
               >
                 Business
               </button>
