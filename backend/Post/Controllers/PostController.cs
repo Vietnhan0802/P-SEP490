@@ -426,7 +426,7 @@ namespace Post.Controllers
                     var isLikeReply = await _context.PosttReplyLikes.FirstOrDefaultAsync(x => x.idAccount == idUser);
                     if (isLikeReply != null)
                     {
-                        comment.isLike = true;
+                        reply.isLike = true;
                     }
                     var infoUserReply = await GetNameUserCurrent(reply.idAccount!);
                     reply.fullName = infoUserReply.fullName;
