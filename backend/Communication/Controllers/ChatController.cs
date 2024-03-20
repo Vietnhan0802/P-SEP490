@@ -6,6 +6,8 @@ using Communication.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
+using System.Net.Http.Headers;
+using System.Text.Json;
 
 namespace Communication.Controllers
 {
@@ -16,12 +18,33 @@ namespace Communication.Controllers
         private readonly AppDBContext _context;
         private readonly IMapper _mapper;
         private readonly ChatHub _chatHub;
+        private readonly HttpClient client;
+
+        public string UserApiUrl { get; }
 
         public ChatController(AppDBContext context, IMapper mapper, ChatHub chatHub)
         {
             _context = context;
             _mapper = mapper;
             _chatHub = chatHub;
+            client = new HttpClient();
+            var contentType = new MediaTypeWithQualityHeaderValue("application/json");
+            client.DefaultRequestHeaders.Accept.Add(contentType);
+            UserApiUrl = "https://localhost:7006/api/User";
+        }
+
+        [HttpGet("GetNameUserCurrent/{idUser}")]
+        private async Task<ViewUser> GetNameUserCurrent(string idUser)
+        {
+            HttpResponseMessage response = await client.GetAsync($"{UserApiUrl}/GetNameUser/{idUser}");
+            string strData = await response.Content.ReadAsStringAsync();
+            var option = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true,
+            };
+            var user = JsonSerializer.Deserialize<ViewUser>(strData, option);
+
+            return user!;
         }
 
         /*------------------------------------------------------------Conversation------------------------------------------------------------*/
@@ -31,12 +54,18 @@ namespace Communication.Controllers
         {
             var conversations = await _context.Conversations.Where(x => (x.idAccount1 == idCurrentUser && x.isDeletedBySender == false) 
                                                                      || (x.idAccount2 == idCurrentUser && x.isDeletedByReceiver == false)).ToListAsync();
-            if (conversations == null)
+            if (conversations.Count > 0)
             {
-                return new Response(HttpStatusCode.NoContent, "Conversation doesn't empty!");
+                var result = _mapper.Map<List<ViewConversation>>(conversations);
+                foreach (var conversation in result)
+                {
+                    var infoUser = await GetNameUserCurrent(conversation.idAccount2);
+                    conversation.fullName = infoUser.fullName;
+                    conversation.avatar = infoUser.avatar;
+                }
+                return new Response(HttpStatusCode.OK, "Getall conversations is success!", result);
             }
-            var result = _mapper.Map<ViewConversation>(conversations);
-            return new Response(HttpStatusCode.OK, "Getall conversations is success!", result);
+            return new Response(HttpStatusCode.NoContent, "Conversation doesn't empty!");
         }
 
         [HttpPost("CreateConversation/{idCurrentUser}/{idReceiver}")]

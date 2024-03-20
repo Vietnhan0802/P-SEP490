@@ -15,7 +15,8 @@ import { FaRegFolder } from "react-icons/fa";
 import { FaRegImage } from "react-icons/fa6";
 import { FaLink } from "react-icons/fa6";
 import { LuSmile } from "react-icons/lu";
-//import * as signalR from '@microsoft/signalR';
+import { chatInstance } from "../../axios/axiosConfig";
+import * as signalR from "@microsoft/signalr";
 function Chat() {
   const chatList = [
     { id: 1, name: "Nolan Bator", img: Nolan, text: "Justin Schleifer" },
@@ -59,64 +60,64 @@ function Chat() {
     },
   ];
 
-  // const sessionData = JSON.parse(sessionStorage.getItem("userSession")) || {};
-  // const { currentUserId } = sessionData;
+  const sessionData = JSON.parse(sessionStorage.getItem("userSession")) || {};
+  const { currentUserId } = sessionData;
 
-  // const [connection, setConnection] = useState(null);
+  const [connection, setConnection] = useState(null);
 
-  // useEffect(() => {
-  //   const newConnection = new signalR.HubConnectionBuilder()
-  //     .withUrl('https://localhost:7001/chathub')
-  //     .withAutomaticReconnect()
-  //     .build();
+  useEffect(() => {
+    const newConnection = new signalR.HubConnectionBuilder()
+      .withUrl('https://localhost:7001/chathub')
+      .withAutomaticReconnect()
+      .build();
 
-  //   setConnection(newConnection);
-  // }, []);
+    setConnection(newConnection);
+  }, []);
 
-  // useEffect(() => {
-  //   if (connection) {
-  //     connection.start()
-  //       .then(() => {
-  //         console.log('SignalR Connected');
+  useEffect(() => {
+    if (connection) {
+      connection.start()
+        .then(() => {
+          console.log('SignalR Connected');
 
-  //         // Đăng ký các phương thức xử lý sự kiện SignalR
-  //         connection.on('ReceiveMessage', (message) => {
-  //           // Xử lý nhận tin nhắn
-  //           console.log('Received message:', message);
-  //         });
+          // Đăng ký các phương thức xử lý sự kiện SignalR
+          connection.on('ReceiveMessage', (message) => {
+            // Xử lý nhận tin nhắn
+            console.log('Received message:', message);
+          });
 
-  //         connection.on('RecallMessage', (messageId) => {
-  //           // Xử lý thu hồi tin nhắn
-  //           console.log('Recalled message:', messageId);
-  //         });
+          connection.on('RecallMessage', (messageId) => {
+            // Xử lý thu hồi tin nhắn
+            console.log('Recalled message:', messageId);
+          });
 
-  //         // Đăng ký các sự kiện khác nếu cần
-  //       })
-  //       .catch(error => {
-  //         console.log('SignalR Connection Error: ', error);
-  //       });
-  //   }
-  // }, [connection]);
+          // Đăng ký các sự kiện khác nếu cần
+        })
+        .catch(error => {
+          console.log('SignalR Connection Error: ', error);
+        });
+    }
+  }, [connection]);
 
-  // const sendMessage = async (idCurrentUser, idReceiver, idConversation, content) => {
-  //   try {
-  //     const response = await axios.post(`/api/Chat/SendMessage/${idCurrentUser}/${idReceiver}/${idConversation}`, { content });
-  //     // Xử lý kết quả trả về từ API nếu cần
-  //     console.log(response.data);
-  //   } catch (error) {
-  //     console.error('Error sending message:', error);
-  //   }
-  // };
+  const sendMessage = async (idCurrentUser, idReceiver, idConversation, content) => {
+    try {
+      const response = await axios.post(`/api/Chat/SendMessage/${idCurrentUser}/${idReceiver}/${idConversation}`, { content });
+      // Xử lý kết quả trả về từ API nếu cần
+      console.log(response.data);
+    } catch (error) {
+      console.error('Error sending message:', error);
+    }
+  };
   
-  // const deleteMessage = async (idMessage, idCurrentUser) => {
-  //   try {
-  //     const response = await axios.delete(`/api/Chat/DeleteMessage/${idMessage}/${idCurrentUser}`);
-  //     // Xử lý kết quả trả về từ API nếu cần
-  //     console.log(response.data);
-  //   } catch (error) {
-  //     console.error('Error deleting message:', error);
-  //   }
-  // };
+  const deleteMessage = async (idMessage, idCurrentUser) => {
+    try {
+      const response = await axios.delete(`/api/Chat/DeleteMessage/${idMessage}/${idCurrentUser}`);
+      // Xử lý kết quả trả về từ API nếu cần
+      console.log(response.data);
+    } catch (error) {
+      console.error('Error deleting message:', error);
+    }
+  };
   return (
 
       <Row className="m-3"  style={{ height: "calc(100vh - 97px)",paddingBottom:"16px" }}>
