@@ -6,6 +6,7 @@ using BusinessObjects.ViewModels.User;
 using Commons.Helpers;
 using Credential.Data;
 using Credential.Validator;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
@@ -16,6 +17,7 @@ namespace Credential.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [EnableCors("AllowSpecificOrigins")]
     public class DegreeController : ControllerBase
     {
         private readonly AppDBContext _context;
