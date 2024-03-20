@@ -66,6 +66,7 @@ function ProjectDetail() {
   const { role, currentUserId } = sessionData;
   const location = useLocation();
   const [data, setData] = useState();
+  const [resetProject, setResetProject] = useState(false);
   const [projectMembers, setProjectMembers] = useState([]);
   const [reset, setReset] = useState(false);
   const { idProject } = location.state || {};
@@ -86,7 +87,7 @@ function ProjectDetail() {
       .catch((error) => {
         console.error(error);
       });
-  }, []);
+  }, [resetProject]);
   useEffect(() => {
     projectInstance.get(`/GetAllMemberInProject/${idProject}`)
       .then((res) => {
@@ -97,6 +98,10 @@ function ProjectDetail() {
         console.error(error);
       });
   }, [reset]);
+  const resetPage = (value) => {
+    if (value === 'Success')
+      setResetProject(!resetProject)
+  }
   return (
     <Row className="pt-3 ms-0 me-0 pb-3">
       <Col md={3}>
@@ -135,7 +140,7 @@ function ProjectDetail() {
                 </div>
                 {data?.idAccount === currentUserId &&
                   <div className="d-flex ">
-                    <UpdateProjectForm input={data} id={data?.idProject} />
+                    <UpdateProjectForm input={data} id={data?.idProject} resetPage={resetPage} />
                     <DeletePopup className='ms-3' id={data?.idProject} />
                   </div>}
 
