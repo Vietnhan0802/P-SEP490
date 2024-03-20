@@ -59,7 +59,7 @@ function UpdateInformationPu({ value, id, reset }) {
 
   return (
     <div className="p-1">
-      <FiEdit onClick={modalShow} id="btn-update-project" />
+      <FiEdit onClick={modalShow} size={28} />
 
       <Modal show={show} onHide={modalClose} id="update-infomation">
         <Modal.Header closeButton>
