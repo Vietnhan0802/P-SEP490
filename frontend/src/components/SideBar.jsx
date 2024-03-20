@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Cookies from "js-cookie";
 import "../scss/sidebar.scss";
+import { FaUserPlus } from "react-icons/fa";
 import { GoPencil } from "react-icons/go";
 import { FiBookOpen } from "react-icons/fi";
 import { TbFloatLeft } from "react-icons/tb";
@@ -48,12 +49,12 @@ function SideBar() {
       text: "Project Application",
       userRole: "business",
     },
-    // {
-    //   id: "verification",
-    //   icon: <FaRegCircleCheck />,
-    //   text: "Send Verification",
-    //   userRole: "business",
-    // },
+    {
+      id: "invitation",
+      icon: <FaUserPlus />,
+      text: "Project Invitation",
+      userRole: "business",
+    },
     {
       id: "currentproject",
       icon: <MdOutlineSimCardDownload />,

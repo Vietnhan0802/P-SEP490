@@ -66,7 +66,18 @@ function ProjectDetail() {
   const { role, currentUserId } = sessionData;
   const location = useLocation();
   const [data, setData] = useState();
+  const [projectMembers, setProjectMembers] = useState([]);
+  const [reset, setReset] = useState(false);
   const { idProject } = location.state || {};
+  console.log(idProject)
+  const handleRemoveMember = (id) => {
+    projectInstance.delete(`RemoveMember/${idProject}/${id}`)
+      .then((res) => {
+        console.log(res?.data?.result);
+        setReset(!reset);
+      })
+      .then((error) => { console.error(error) });
+  }
   useEffect(() => {
     projectInstance.get(`/GetProjectById/${idProject}`)
       .then((res) => {
@@ -76,8 +87,18 @@ function ProjectDetail() {
         console.error(error);
       });
   }, []);
+  useEffect(() => {
+    projectInstance.get(`/GetAllMemberInProject/${idProject}`)
+      .then((res) => {
+        console.log(res?.data?.result);
+        setProjectMembers(res?.data?.result);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, [reset]);
   return (
-    <Row className="pt-3 ms-0 me-0 mb-2">
+    <Row className="pt-3 ms-0 me-0 pb-3">
       <Col md={3}>
         <SideBar />
       </Col>
@@ -112,10 +133,12 @@ function ProjectDetail() {
                     </p>
                   </div>
                 </div>
-                <div className="d-flex ">
-                  <UpdateProjectForm input={data} id={data?.idProject} />
-                  <DeletePopup className='ms-3' id={data?.idProject} />
-                </div>
+                {data?.idAccount === currentUserId &&
+                  <div className="d-flex ">
+                    <UpdateProjectForm input={data} id={data?.idProject} />
+                    <DeletePopup className='ms-3' id={data?.idProject} />
+                  </div>}
+
 
               </div>
 
@@ -160,80 +183,46 @@ function ProjectDetail() {
 
               </div>
             </div>
-            <table className="w-100">
-              <thead>
-                <tr>
-                  <th className="w-20 py-3">User Name</th>
-                  <th className="w-10 py-3 text-center">Date</th>
-                  <th className="w-60 py-3">Description</th>
-                  <th className="w-10 py-3 text-center">Remove</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td className="w-20 py-3">
-                    <div className="d-flex align-items-center">
-                      <img src={avatar} className="member-img" alt="avatar" />
-                      <p className="ps-3">Olivia Rhye</p>
-                    </div>
-                  </td>
-                  <td className="w-20 py-3 text-center">21 Jan 2024</td>
-                  <td className="w-60 py-3">
-                    Lack of relevant and substantial information
-                  </td>
-                  <td className="w-10 py-3 text-center  yellow-icon">
-                    <IoPersonRemove />
-                  </td>
-                </tr>
-                <tr>
-                  <td className="w-20 py-3">
-                    <div className="d-flex align-items-center">
-                      <img src={avatar} className="member-img" alt="avatar" />
-                      <p className="ps-3">Olivia Rhye</p>
-                    </div>
-                  </td>
-                  <td className="w-20 py-3 text-center">21 Jan 2024</td>
-                  <td className="w-60 py-3">
-                    Lack of relevant and substantial information
-                  </td>
-                  <td className="w-10 py-3 text-center  yellow-icon">
-                    <IoPersonRemove />
-                  </td>
-                </tr>
+            <div className="member">
+              <div className="members-table-container">
+                <table className="w-100">
+                  <thead>
+                    <tr>
+                      <th className="w-20 py-3">Full-Name</th>
+                      <th className="w-10 py-3 text-center">Date</th>
+                      <th className="w-60 py-3">Position</th>
+                      <th className="w-10 py-3 text-center">Remove</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {projectInstance.length > 0 ?
 
-                <tr>
-                  <td className="w-20 py-3">
-                    <div className="d-flex align-items-center">
-                      <img src={avatar} className="member-img" alt="avatar" />
-                      <p className="ps-3">Olivia Rhye</p>
-                    </div>
-                  </td>
-                  <td className="w-20 py-3 text-center">21 Jan 2024</td>
-                  <td className="w-60 py-3">
-                    Lack of relevant and substantial information
-                  </td>
-                  <td className="w-10 py-3 text-center  yellow-icon">
-                    <IoPersonRemove />
-                  </td>
-                </tr>
-                <tr>
-                  <td className="w-20 py-3">
-                    <div className="d-flex align-items-center">
-                      <img src={avatar} className="member-img" alt="avatar" />
-                      <p className="ps-3">Olivia Rhye</p>
-                    </div>
-                  </td>
-                  <td className="w-20 py-3 text-center">21 Jan 2024</td>
-                  <td className="w-60 py-3">
-                    Lack of relevant and substantial information
-                  </td>
-                  <td className="w-10 py-3 text-center  yellow-icon">
-                    <IoPersonRemove />
-                  </td>
-                </tr>
-              </tbody>
+                      projectMembers?.map((member) => (
+                        <tr key={member.idProjectMeber}>
+                          <td className="w-20 py-3">
+                            <div className="d-flex align-items-center">
+                              <img src={member.avatar} className="member-img" alt="avatar" />
+                              <p className="ps-3">{member.fullName}</p>
+                            </div>
+                          </td>
+                          <td className="w-20 py-3 text-center">{formatDate(member.createdDate)}</td>
+                          <td className="w-60 py-3">
+                            {member.namePosition}
+                          </td>
+                          <td className="w-10 py-3 text-center  yellow-icon">
+                            <IoPersonRemove onClick={() => handleRemoveMember(member.idAccount)} />
+                          </td>
+                        </tr>
+                      )) : <tr> {/* Add a single row for the message */}
+                        <td colSpan="4" className="text-center py-3"> {/* Use colspan="4" because there are 4 columns */}
+                          There is no member in this project
+                        </td>
+                      </tr>}
+                  </tbody>
 
-            </table>
+                </table>
+              </div>
+            </div>
           </div>
         </div>
       </Col>

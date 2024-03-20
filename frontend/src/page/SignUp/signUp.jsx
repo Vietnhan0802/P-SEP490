@@ -44,10 +44,10 @@ export default function SignIn() {
       className="signIn-bg hV-100 d-flex align-items-center"
     >
       <div className="container">
-        <div className="d-flex form-shadow roundedL-28 roundedR-28 flex-column-reverse flex-lg-row" style={{maxHeight:'90vh'}}>
-          <div className="col-12 col roundedL-28 white-bg pt-2 pb-4  position-relative">
+        <div className="d-flex signup-mw-40  m-auto align-items-center form-shadow  flex-column-reverse flex-lg-row" style={{ maxHeight: '90vh' }}>
+          <div className="col-12 col signin bg-white pt-2 pb-4  position-relative">
             <IoMdArrowRoundBack className="position-absolute" size={48} style={{ top: '20px', left: '20px' }} onClick={returnSignIn} />
-            <p className="SFU-bold size-40 blue2f text-center py-lg-3 py-lg-5">
+            <p className="SFU-bold size-40 blue2f text-center py-lg-3">
               SIGN UP
             </p>
             <div className="d-flex justify-content-around mb-3">
@@ -70,11 +70,11 @@ export default function SignIn() {
               {showForm1 && <PersonForm />}
               {showForm2 && <BusinessForm />}
               <div className="row justify-content-center align-items-center pt-2">
-                <div className="col line1"></div>
-                <div className="col-5 col-lg-4 col-md-4 col-sm-4 text-center size-20">
+
+                <div className="col-5 col-12 text-center size-20">
                   Sign up with
                 </div>
-                <div className="col line1"></div>
+
               </div>
               <div className="d-flex flex-row pt-3 pb-3">
                 <div className="d-flex col-6 google-btn justify-content-end">

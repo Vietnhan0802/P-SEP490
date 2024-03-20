@@ -9,7 +9,7 @@ function RejectConfirm({ id, reset }) {
   const modalClose = () => setShow(false);
   const modalShow = () => setShow(true);
   const handleConfirm = () => {
-    projectInstance.put(`AcceptProjectApplication/${idMember}`)
+    projectInstance.put(`DenyProjectApplication/${idMember}`)
       .then((res) => {
         setShow(false);
         reset('Success');
