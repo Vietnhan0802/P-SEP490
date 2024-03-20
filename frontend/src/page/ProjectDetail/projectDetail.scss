@@ -1,4 +1,15 @@
 #projectDetail {
+  .members-table-container {
+    max-height: 500px; // Adjust based on your needs
+    overflow-y: auto; // Enable vertical scrolling
+    overflow-x: hidden; // Hide horizontal scrolling if not needed
+  }
+  
+  // Ensure the table layout is fixed to match column widths
+  table {
+    table-layout: fixed;
+    width: 100%;
+  }
   .image-container {
     max-height: 60vh;
     /* Hoặc bất kỳ chiều cao nào bạn muốn */

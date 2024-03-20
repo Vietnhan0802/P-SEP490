@@ -10,13 +10,19 @@ import { GrUpdate } from "react-icons/gr";
 import { MdDelete } from "react-icons/md";
 import UpdateItem from "./Popup/UpdateItem";
 import DeleteItem from "./Popup/DeleteItem";
+import { useNavigate } from "react-router-dom";
+import { projectInstance } from "../../axios/axiosConfig";
+import AlertProject from "./Popup/Alert";
+
 function PostContent({ data, handleLikeOrUnlikePost, viewProject, userId }) {
-  const handleViewproject = () => {
-    viewProject(data?.idProject);
-  };
+  const navigate = useNavigate();
+
   const [display, setDisplay] = useState(false);
   const [displayDelete, setDisplayDelete] = useState(false);
-
+  const [displayAlert, setDisplayAlert] = useState(false);
+  const [message, setMessage] = useState('');
+  const sessionData = JSON.parse(sessionStorage.getItem("userSession")) || {};
+  const { currentUserId } = sessionData;
   const carouselRef = useRef(null);
   useEffect(() => {
     if (carouselRef.current) {
@@ -38,7 +44,44 @@ function PostContent({ data, handleLikeOrUnlikePost, viewProject, userId }) {
   const handleDeletePost = () => {
     setDisplayDelete(true);
   }
-  console.log(data)
+  const handleViewProject = () => {
+    // First, check if the project with the given ID exists.
+    projectInstance.get(`GetProjectById/${data.idProject}`)
+      .then((res) => {
+        console.log(res?.data?.result);
+        console.log(res?.data?.result?.visibility === 0)
+        if (res?.data?.result !== null && res?.data?.result?.visibility === 0) {
+          // If the project exists, get all members of the project.
+          projectInstance.get(`GetAllMemberInProject/${data.idProject}`)
+            .then((res) => {
+              if (res?.data?.result) {
+                const memberList = res.data.result;
+                // Check if the current user is among the project members.
+                const isMember = memberList.some((item) => item.idAccount === currentUserId);
+                // If the current user is a member, navigate to the project detail page.
+                if (isMember) {
+                  navigate('/projectdetail', { state: { idProject: data.idProject } });
+                }
+              } else {
+                setDisplayAlert(true);
+                setMessage('You can not access to this Project');
+              }
+            })
+            .catch((error) => {
+              console.error("Error fetching project members:", error);
+            });
+        } else if (res?.data?.result !== null && res?.data?.result?.visibility === 1) {
+          navigate('/projectdetail', { state: { idProject: data.idProject } });
+        } else {
+          console.log(1)
+          setDisplayAlert(true);
+          setMessage('This Project is no longer exist.')
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching project:", error);
+      });
+  };
   return (
     <>
       <div className="d-flex  justify-content-between">
@@ -72,7 +115,7 @@ function PostContent({ data, handleLikeOrUnlikePost, viewProject, userId }) {
                   handleUpdatePost()
                 }
               >
-                <GrUpdate size={28}/>
+                <GrUpdate size={28} />
 
               </Dropdown.Item>
               <Dropdown.Item
@@ -81,7 +124,7 @@ function PostContent({ data, handleLikeOrUnlikePost, viewProject, userId }) {
                   handleDeletePost()
                 }
               >
-                <MdDelete  size={28}/>
+                <MdDelete size={28} />
               </Dropdown.Item>
               <Dropdown.Item
               >
@@ -106,6 +149,7 @@ function PostContent({ data, handleLikeOrUnlikePost, viewProject, userId }) {
         value={data?.idPost}
         type={'post'}
       />
+
       <p className="fs-4 fw-bold">{data?.title}</p>
       <p style={{ whiteSpace: "pre-wrap" }}>{data?.content}</p>
       <div></div>
@@ -127,7 +171,10 @@ function PostContent({ data, handleLikeOrUnlikePost, viewProject, userId }) {
             </div>
           ))}
         </div>
-
+        <AlertProject
+          show={displayAlert}
+          onClose={() => setDisplayAlert(false)}
+          message={message} />
         {data?.viewPostImages?.length > 1 && (
           <>
             <button
@@ -165,7 +212,7 @@ function PostContent({ data, handleLikeOrUnlikePost, viewProject, userId }) {
           </>
         )}
       </div>
-      <button className="btn btn-outline-info mt-3" onClick={handleViewproject}>
+      <button className="btn btn-outline-info mt-3" onClick={handleViewProject}>
         View Project
       </button>
 
