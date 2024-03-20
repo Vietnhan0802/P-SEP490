@@ -78,7 +78,6 @@ function UpdateInformationPu({ value, id, reset }) {
           />
 
           <label className="mt-2">
-            {1 === "1" ? "Establish date" : "Birthday"}
             {user?.role === "Business" ? "Establish date" : "Birthday"}
           </label>
           <input

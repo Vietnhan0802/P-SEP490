@@ -41,9 +41,10 @@ const projectStatus = (process) => {
     case 1:
       return <div>Process</div>;
     case 2:
-      return <div>Done</div>;
-    case 3:
       return <div>Pending</div>;
+    case 3:
+      return <div>Done</div>;
+
     default:
     // code block
   }

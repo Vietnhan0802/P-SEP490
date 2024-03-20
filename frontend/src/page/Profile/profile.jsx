@@ -27,6 +27,7 @@ import UpdateInformationPu from "./UpdateInformationPu";
 import PdfViewer from "../../components/PdfViewer/PdfViewer";
 import { BsThreeDots } from "react-icons/bs";
 import { MdVerified } from "react-icons/md";
+import ChangePass from "./ChangePass";
 function formatDateString(dateString) {
   // Check if the dateString is not empty
   if (dateString) {
@@ -73,6 +74,7 @@ function Profile({ handleChangeImg, value }) {
     following: 0,
     isFollow: true,
     role: "",
+    email: ""
   });
   const [userPost, setUserPost] = useState([]);
   const [userProject, setUserProject] = useState([]);
@@ -84,6 +86,7 @@ function Profile({ handleChangeImg, value }) {
       .then((res) => {
         setUser(res?.data?.result);
         const user = res?.data?.result;
+        console.log(user);
         if (user.role === "Admin") {
           setTab("blog");
         } else if (user.role === "Business") {
@@ -106,6 +109,7 @@ function Profile({ handleChangeImg, value }) {
           following: user?.following,
           isFollow: user?.isFollow,
           role: user?.role,
+          email: user?.email
         });
         if (user.role === "Business") {
           postInstance
@@ -300,10 +304,10 @@ function Profile({ handleChangeImg, value }) {
               <div className="row g-3">
                 <div className="d-flex flex-row justify-content-between">
                   {" "}
-                  <h4 className="">Contact detail</h4>
+                  <h4>Contact detail</h4>
                   {currentUserId === userId ? (
                     <div className="edit-text-white btn-info btnr">
-                      {currentUserId === userId && role === 'Business' ? (
+                      {currentUserId === userId ? (
                         <Dropdown>
                           <Dropdown.Toggle
                             as={Button}
@@ -318,13 +322,17 @@ function Profile({ handleChangeImg, value }) {
                             >
                               <UpdateInformationPu value={inputs} id={currentUserId} reset={reset} />
                             </Dropdown.Item>
+                            {role === 'Business' &&
+                              <Dropdown.Item>
+                                <MdVerified size={28} />
+                              </Dropdown.Item>}
+
                             <Dropdown.Item>
-                              <MdVerified size={28} />
+                              <ChangePass email={inputs.email} />
                             </Dropdown.Item>
                           </Dropdown.Menu>
                         </Dropdown>
-                      ) : (
-                        <UpdateInformationPu value={inputs} id={currentUserId} reset={reset} />
+                      ) : (""
                       )}
                     </div>
                   ) : (
