@@ -15,7 +15,8 @@ import { FaRegFolder } from "react-icons/fa";
 import { FaRegImage } from "react-icons/fa6";
 import { FaLink } from "react-icons/fa6";
 import { LuSmile } from "react-icons/lu";
-//import * as signalR from '@microsoft/signalR';
+import { chatInstance } from "../../axios/axiosConfig";
+import * as signalR from "@microsoft/signalr";
 function Chat() {
   const chatList = [
     { id: 1, name: "Nolan Bator", img: Nolan, text: "Justin Schleifer" },

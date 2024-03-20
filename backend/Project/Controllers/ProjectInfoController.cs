@@ -275,6 +275,9 @@ namespace Project.Controllers
                     }
                     projectInfoUpdate.avatar = await _saveImageService.SaveImage(projectInfoUpdate.ImageFile);
                 }
+                if (projectInfoUpdate.ImageFile == null){
+                    projectInfoUpdate.avatar = project.avatar;
+                }
                 if (projectInfoUpdate.namePosition != null)
                 {
                     if (project.Positions != null)
@@ -370,6 +373,48 @@ namespace Project.Controllers
             return new Response(HttpStatusCode.NoContent, "Get all project is empty!");
         }
 
+        [HttpGet("GetAllSendInvites")]
+        public async Task<Response> GetAllSendInvites(string idUser)
+        {
+            var projects = await _context.ProjectInfos.Where(x => x.idAccount == idUser).AsNoTracking().ToListAsync();
+            if (projects.Count != 0)
+            {
+                List<ProjectMemberView> allProjectInvites = new List<ProjectMemberView>();
+                foreach (var project in projects)
+                {
+                    var sendInvites = await _context.ProjectMembers.Where(x => x.idProject == project.idProject && x.type == BusinessObjects.Enums.Project.Type.Invited && x.isAcept == null)
+                                                                           .OrderByDescending(x => x.createdDate)
+                                                                           .AsNoTracking()
+                                                                           .ToListAsync();
+                    if (sendInvites.Count != 0)
+                    {
+                        var result = _mapper.Map<List<ProjectMemberView>>(sendInvites);
+                        foreach (var sendInvite in result)
+                        {
+                            var infoUser = await GetNameUserCurrent(project.idAccount);
+                            sendInvite.fullName = infoUser.fullName;
+                            sendInvite.email = infoUser.email;
+                            sendInvite.avatar = infoUser.avatar;
+                            sendInvite.nameProject = project.name;
+                            sendInvite.cvUrlFile = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, sendInvite.cvUrl);
+                            var positionName = await _context.Positions.Where(x => x.idProject == sendInvite.idProject).AsNoTracking().ToListAsync();
+                            foreach (var position in positionName)
+                            {
+                                sendInvite.namePosition = position.namePosition;
+                            }
+                        }
+                        allProjectInvites.AddRange(result);
+                    }
+                }
+                if (allProjectInvites.Count != 0)
+                {
+                    return new Response(HttpStatusCode.NoContent, "Get all send invite is success!", allProjectInvites);
+                }
+                return new Response(HttpStatusCode.NoContent, "Get all send invite is empty!");
+            }
+            return new Response(HttpStatusCode.NoContent, "Get all project is empty!");
+        }
+
         [HttpGet("GetAllProjectInvites/{idUser}")]
         public async Task<Response> GetAllProjectInvites(string idUser)
         {
@@ -396,6 +441,34 @@ namespace Project.Controllers
                 return new Response(HttpStatusCode.OK, "Get all project invite is success!", result);
             }
             return new Response(HttpStatusCode.NoContent, "Get all project invite is empty!"); 
+        }
+
+        [HttpGet("GetAllSendApplications")]
+        public async Task<Response> GetAllSendApplications(string idUser)
+        {
+            var projectApplications = await _context.ProjectMembers.Where(x => x.idAccount == idUser && x.type == BusinessObjects.Enums.Project.Type.Applied && x.isAcept == null)
+                                                                           .OrderByDescending(x => x.createdDate)
+                                                                           .AsNoTracking()
+                                                                           .ToListAsync();
+            if (projectApplications.Count != 0)
+            {
+                var result = _mapper.Map<List<ProjectMemberView>>(projectApplications);
+                foreach (var projectApplication in result)
+                {
+                    var project = await _context.ProjectInfos.FirstOrDefaultAsync(x => x.idProject == projectApplication.idProject);
+                    var infoUser = await GetNameUserCurrent(project.idAccount);
+                    projectApplication.fullName = infoUser.fullName;
+                    projectApplication.avatar = infoUser.avatar;
+                    projectApplication.nameProject = project.name;
+                    projectApplication.cvUrlFile = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, projectApplication.cvUrl);
+                    foreach (var position in projectApplications)
+                    {
+                        projectApplication.namePosition = position.Position.namePosition;
+                    }
+                }
+                return new Response(HttpStatusCode.OK, "Get all send apply is success!", result);
+            }
+            return new Response(HttpStatusCode.NoContent, "Get all send apply is empty!");
         }
 
         [HttpPost("CreateProjectApplication/{idUser}/{idProject}")]

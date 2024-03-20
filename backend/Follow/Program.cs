@@ -13,17 +13,17 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
- builder.Services.AddCors(options =>
-    {
-        options.AddPolicy("AllowSpecificOrigins",
-            builder =>
-            {
-                builder.WithOrigins("http://localhost:3000")
-                       .AllowAnyHeader()
-                       .AllowAnyMethod()
-                       .AllowCredentials(); // Allow credentials
-            });
-    });
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowSpecificOrigins",
+        builder =>
+        {
+            builder.WithOrigins("http://localhost:3000")
+                    .AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .AllowCredentials(); // Allow credentials
+        });
+});
 
 var app = builder.Build();
 
