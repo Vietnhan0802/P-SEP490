@@ -8,7 +8,7 @@ function PdfViewer(props) {
     function onDocumentLoadSuccess({ numPages }) {
         setNumPages(numPages);
     }
-    console.log(props.pdfFile);
+    
     return (
         <div>
             <Document file={props.pdfFile} onLoadSuccess={onDocumentLoadSuccess}>
