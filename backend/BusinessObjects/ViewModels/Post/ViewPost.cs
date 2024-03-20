@@ -13,7 +13,7 @@
         public int viewInDate { get; set; }
         public int? report { get; set; }
         public int like { get; set; }
-        public bool isLike { get; set; }
+        public bool isLike { get; set; } = false;
         public bool isBlock { get; set; }
         public bool isDeleted { get; set; }
         public DateTime createdDate { get; set; }
