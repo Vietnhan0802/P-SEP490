@@ -26,7 +26,18 @@
 #profile {
   background-color: var(--header_background) !important;
   color: var(--header_search_text);
-
+  .dropdown-toggle::after {
+    display: none;
+    border-color: none;
+  }
+  .btn:hover {
+    border-color: transparent;
+    background-color: transparent;
+  }
+  .btn-check:checked+.btn, .btn.active, .btn.show, .btn:first-child:active, :not(.btn-check)+.btn:active {
+    border-color: transparent;
+    background-color: transparent;
+  }
   .text-white {
     color: white;
   }

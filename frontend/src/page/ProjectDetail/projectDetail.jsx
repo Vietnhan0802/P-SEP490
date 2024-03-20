@@ -37,13 +37,13 @@ const formatDate = (timestamp) => {
 const projectStatus = (process) => {
   switch (process) {
     case 0:
-      return <div className="status preparing">Preparing</div>;
+      return <div>Preparing</div>;
     case 1:
-      return <div className="status process">Process</div>;
+      return <div>Process</div>;
     case 2:
-      return <div className="status done">Done</div>;
+      return <div>Done</div>;
     case 3:
-      return <div className="status pending">Pending</div>;
+      return <div>Pending</div>;
     default:
     // code block
   }
@@ -51,11 +51,11 @@ const projectStatus = (process) => {
 const projectVisibility = (visibility) => {
   switch (visibility) {
     case 0:
-      return <div className="visibility private">Private</div>;
+      return <div>Private</div>;
     case 1:
-      return <div className="visibility public">Public</div>;
+      return <div>Public</div>;
     case 2:
-      return <div className="visibility hidden">Hidden</div>;
+      return <div>Hidden</div>;
 
     default:
     // code block
@@ -66,6 +66,7 @@ function ProjectDetail() {
   const { role, currentUserId } = sessionData;
   const location = useLocation();
   const [data, setData] = useState();
+  const [resetProject, setResetProject] = useState(false);
   const [projectMembers, setProjectMembers] = useState([]);
   const [reset, setReset] = useState(false);
   const { idProject } = location.state || {};
@@ -86,7 +87,7 @@ function ProjectDetail() {
       .catch((error) => {
         console.error(error);
       });
-  }, []);
+  }, [resetProject]);
   useEffect(() => {
     projectInstance.get(`/GetAllMemberInProject/${idProject}`)
       .then((res) => {
@@ -97,6 +98,10 @@ function ProjectDetail() {
         console.error(error);
       });
   }, [reset]);
+  const resetPage = (value) => {
+    if (value === 'Success')
+      setResetProject(!resetProject)
+  }
   return (
     <Row className="pt-3 ms-0 me-0 pb-3">
       <Col md={3}>
@@ -135,26 +140,38 @@ function ProjectDetail() {
                 </div>
                 {data?.idAccount === currentUserId &&
                   <div className="d-flex ">
-                    <UpdateProjectForm input={data} id={data?.idProject} />
+                    <UpdateProjectForm input={data} id={data?.idProject} resetPage={resetPage} />
                     <DeletePopup className='ms-3' id={data?.idProject} />
                   </div>}
 
 
               </div>
 
-              <div className="status-block size-18">
-                <label htmlFor="" className="">
-                  Project Status:
-                  {projectStatus(data?.process)}
-                </label>
+              <div className="status-block size-18 d-flex">
+                <div>
+                  <p>
+                    Project Status:
+                  </p>
+                  <p>
+                    Access Visibility:
+                  </p>
+                </div>
+                <div>
+                  <p>
+                    {projectStatus(data?.process)}
+                  </p>
+                  <p>
+                    {projectVisibility(data?.visibility)}
+                  </p>
+                </div>
               </div>
               <div className="status-block size-18">
-                <label htmlFor="" className="">
-                  Access Visibility:
-                  {projectVisibility(data?.visibility)}
-                </label>
-              </div>
 
+              </div>
+              <div >
+                <p className="description fw-bold">Position: </p>
+                {data?.positionViews.map((position) => (<p className="ps-3">{position.namePosition}</p>))}
+              </div>
               <div className="process-bar">
                 <MultiStepProgressBar page={data?.process} />
               </div>
@@ -163,10 +180,7 @@ function ProjectDetail() {
           <div className="description-cover">
             <p className="description fw-bold ps-3">Description</p>
             <p className="description-text ps-3">{data?.description}</p>
-            <div className="description-text">
-              <p className="description fw-bold ps-3 ">Position: </p>
-              {data?.positionViews.map((position) => (<p className="ps-3">{position.namePosition}</p>))}
-            </div>
+
           </div>
           <div className="member px-3">
             <div className="d-flex justify-content-between">

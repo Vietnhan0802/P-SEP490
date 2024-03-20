@@ -1,9 +1,9 @@
 import React, { useEffect, useMemo, useState } from "react";
 import "./detail.scss";
 import defaultAvatar from "../../images/common/default.png";
-
+import Button from 'react-bootstrap/Button';
 import avatarDefault from "../../images/common/default.png";
-
+import { IoSettingsSharp } from "react-icons/io5";
 import { VscSend } from "react-icons/vsc";
 import { postInstance, userInstance } from "../../axios/axiosConfig";
 import Dropdown from "react-bootstrap/Dropdown";
@@ -15,7 +15,7 @@ import { Col, Row } from "react-bootstrap";
 import Follow from "../../components/follow";
 import SideBar from "../../components/sidebar";
 import { FaHeart } from "react-icons/fa";
-
+import { BsThreeDots } from "react-icons/bs";
 function PostDetail({ value }) {
   const location = useLocation();
   const sessionData = JSON.parse(sessionStorage.getItem("userSession")) || {};
@@ -425,10 +425,13 @@ function PostDetail({ value }) {
                       {item.idAccount === currentUserId ? (
                         <Dropdown>
                           <Dropdown.Toggle
-                            id="dropdown-basic"
-                            style={{ border: "none" }}
-                            className="bg-white border-none text-body"
-                          ></Dropdown.Toggle>
+                            as={Button}
+                            variant="white"
+                            className="border-none text-body"
+                           
+                          >
+                            <BsThreeDots   />
+                          </Dropdown.Toggle>
 
                           <Dropdown.Menu style={{ minWidth: "auto" }}>
                             <Dropdown.Item
@@ -466,7 +469,7 @@ function PostDetail({ value }) {
                       <>
                         <input
                           type="text"
-                          className="form-control"
+                          className="form-control mb-2"
                           value={originalContent || item.content}
                           onChange={(e) =>
                             handleUpdateInputComment(
@@ -476,6 +479,7 @@ function PostDetail({ value }) {
                           }
                         />
                         <button
+                        className="btn btn-outline-primary"
                           onClick={() =>
                             handleUpdateCommentCancel(item.idPostComment)
                           }
@@ -483,6 +487,7 @@ function PostDetail({ value }) {
                           Cancel
                         </button>
                         <button
+                        className="ms-3 btn btn-outline-info"
                           onClick={() =>
                             handleUpdateComment(item.idPostComment, item.content)
                           }
@@ -603,7 +608,7 @@ function PostDetail({ value }) {
                                 <div>
                                   <input
                                     type="text"
-                                    className="form-control"
+                                    className="form-control mb-2"
                                     value={reply.content}
                                     onChange={(e) =>
                                       handleUpdateInputReplyComment(
@@ -613,6 +618,7 @@ function PostDetail({ value }) {
                                     }
                                   />
                                   <button
+                                    className="btn btn-outline-primary"
                                     onClick={() =>
                                       handleUpdateReplyCancel(
                                         reply.idPostReply
@@ -622,6 +628,7 @@ function PostDetail({ value }) {
                                     Cancel
                                   </button>
                                   <button
+                                    className=" ms-3 btn btn-outline-info"
                                     onClick={() =>
                                       handleUpdateReply(
                                         reply.idPostReply,
@@ -640,7 +647,9 @@ function PostDetail({ value }) {
                                   id="dropdown-basic"
                                   style={{ border: "none" }}
                                   className="bg-white border-none text-body"
-                                ></Dropdown.Toggle>
+                                >
+                                  <BsThreeDots  />
+                                </Dropdown.Toggle>
 
                                 <Dropdown.Menu style={{ minWidth: "auto" }}>
                                   <Dropdown.Item

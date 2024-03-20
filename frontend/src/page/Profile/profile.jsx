@@ -6,8 +6,8 @@ import "../Profile/project.scss";
 import "../Profile/switchbtn.scss";
 import degree from "../../images/common/degree.png";
 import Follow from "../../components/follow";
-import { Col, Row } from "react-bootstrap";
-import ProfileReport from "../../components/Popup/ProfileReport";
+import { Button, Col, Dropdown, Row } from "react-bootstrap";
+import { pdfjs } from 'react-pdf';
 import defaultImage from "../../images/common/default.png";
 import {
   blogInstance,
@@ -24,6 +24,9 @@ import DegreePu from "./degreePu";
 import UpdateAvatarPu from "./UpdateAvatarPu";
 import Report from "../../components/report-popup/Report";
 import UpdateInformationPu from "./UpdateInformationPu";
+import PdfViewer from "../../components/PdfViewer/PdfViewer";
+import { BsThreeDots } from "react-icons/bs";
+import { MdVerified } from "react-icons/md";
 function formatDateString(dateString) {
   // Check if the dateString is not empty
   if (dateString) {
@@ -36,6 +39,14 @@ function formatDateString(dateString) {
   return "";
 }
 function Profile({ handleChangeImg, value }) {
+
+  //-----------------------------
+  pdfjs.GlobalWorkerOptions.workerSrc = new URL(
+    'pdfjs-dist/build/pdf.worker.min.js',
+    import.meta.url,
+  ).toString();
+  // ````````````````````````````
+
   const navigate = useNavigate();
   const location = useLocation();
   // ````````````````````````````
@@ -43,7 +54,7 @@ function Profile({ handleChangeImg, value }) {
   const [follow, setFollow] = useState(true);
   const [tab, setTab] = useState("");
   const sessionData = JSON.parse(sessionStorage.getItem("userSession")) || {};
-  const { currentUserId } = sessionData;
+  const { role, currentUserId } = sessionData;
   const { userId } = location.state || {};
   const [resetAvatar, setResetAvatar] = useState(true);
   const [resetDegree, setResetDegree] = useState(true);
@@ -213,7 +224,7 @@ function Profile({ handleChangeImg, value }) {
   const reset = (value) => {
     setResetAvatar(!resetAvatar)
   }
-  const navigateChat =()=>{
+  const navigateChat = () => {
     navigate('/chat');
   }
   return (
@@ -292,10 +303,28 @@ function Profile({ handleChangeImg, value }) {
                   <h4 className="">Contact detail</h4>
                   {currentUserId === userId ? (
                     <div className="edit-text-white btn-info btnr">
-                      {currentUserId === userId ? (
-                        <UpdateInformationPu value={inputs} id={currentUserId} reset={reset} />
+                      {currentUserId === userId && role === 'Business' ? (
+                        <Dropdown>
+                          <Dropdown.Toggle
+                            as={Button}
+                            variant="white"
+                            className="border-none text-body"
+                          >
+                            <BsThreeDots size={28} />
+                          </Dropdown.Toggle>
+
+                          <Dropdown.Menu style={{ minWidth: "auto" }}>
+                            <Dropdown.Item
+                            >
+                              <UpdateInformationPu value={inputs} id={currentUserId} reset={reset} />
+                            </Dropdown.Item>
+                            <Dropdown.Item>
+                              <MdVerified size={28} />
+                            </Dropdown.Item>
+                          </Dropdown.Menu>
+                        </Dropdown>
                       ) : (
-                        ""
+                        <UpdateInformationPu value={inputs} id={currentUserId} reset={reset} />
                       )}
                     </div>
                   ) : (
@@ -444,6 +473,7 @@ function Profile({ handleChangeImg, value }) {
                             View Detail
                           </a>
                         </div>
+                        <PdfViewer pdfFile={item.fileSrc} />
                       </div>
                     ))}
                 </div>
@@ -623,6 +653,7 @@ function Profile({ handleChangeImg, value }) {
                   </div>
                 </div>
               )}
+
               {/* PrijectTab of business profile */}
             </div>
           </section>

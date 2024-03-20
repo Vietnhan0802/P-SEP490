@@ -7,7 +7,7 @@ import { IoCameraReverse } from "react-icons/io5";
 import CreatableSelect from 'react-select/creatable';
 import makeAnimated from 'react-select/animated';
 import { projectInstance } from "../../axios/axiosConfig";
-function UpdateProjectForm({ input, id }) {
+function UpdateProjectForm({ input, id, resetPage }) {
 
   const animatedComponents = makeAnimated();
   const [show, setShow] = useState(false);
@@ -137,7 +137,7 @@ function UpdateProjectForm({ input, id }) {
         accept: "application/json",
       },
     }).then(() => {
-      // reset("Success");
+      resetPage("Success");
       setProject({
         name: '',
         description: '',
