@@ -264,42 +264,48 @@ namespace Project.Controllers
             {
                 return new Response(HttpStatusCode.BadRequest, "Invalid data", error);
             }*/
-            var project = await _context.ProjectInfos.FirstOrDefaultAsync(p => p.idProject == idProject);
-            if (project == null)
+            var project = await _context.ProjectInfos.Include(x => x.Positions).FirstOrDefaultAsync(p => p.idProject == idProject);
+            if (project != null)
             {
-                return new Response(HttpStatusCode.NotFound, "Project doesn't exists!");
-            }
-            if (projectInfoUpdate.ImageFile != null)
-            {
-                _saveImageService.DeleteImage(project.avatar);
-                projectInfoUpdate.avatar = await _saveImageService.SaveImage(projectInfoUpdate.ImageFile);
-            }
-            _mapper.Map(projectInfoUpdate, project);
-            var positionOld = await _context.Positions.Where(x => x.idProject == project.idProject).ToListAsync();
-            foreach (var position in positionOld)
-            {
-                _context.Positions.Remove(position);
-            }
-            foreach (var position in projectInfoUpdate.namePosition)
-            {
-                Position newPosition = new Position()
+                if (projectInfoUpdate.ImageFile != null)
                 {
-                    idProject = project.idProject,
-                    namePosition = position
-                };
-                await _context.Positions.AddAsync(newPosition);
+                    if (project.avatar != null)
+                    {
+                        _saveImageService.DeleteImage(project.avatar);
+                    }
+                    projectInfoUpdate.avatar = await _saveImageService.SaveImage(projectInfoUpdate.ImageFile);
+                }
+                if (projectInfoUpdate.namePosition != null)
+                {
+                    if (project.Positions != null)
+                    {
+                        _context.Positions.RemoveRange(project.Positions);
+                        await _context.SaveChangesAsync();
+                    }
+                    foreach (var position in projectInfoUpdate.namePosition)
+                    {
+                        Position newPosition = new Position()
+                        {
+                            idProject = project.idProject,
+                            namePosition = position
+                        };
+                        await _context.Positions.AddAsync(newPosition);
+                        await _context.SaveChangesAsync();
+                    }
+                }
+                _mapper.Map(projectInfoUpdate, project);
+                var isSuccess = await _context.SaveChangesAsync();
+                if (isSuccess > 0)
+                {
+                    var result = _mapper.Map<ProjectInfoView>(project);
+                    var positionNew = await _context.Positions.Where(x => x.idProject == project.idProject).ToListAsync();
+                    var viewPosition = _mapper.Map<List<PositionView>>(positionNew);
+                    result.PositionViews = viewPosition;
+                    return new Response(HttpStatusCode.OK, "Update project is success!", result);
+                }
+                return new Response(HttpStatusCode.BadRequest, "Update project is fail!");
             }
-            _context.ProjectInfos.Update(project);
-            var isSuccess = await _context.SaveChangesAsync();
-            if (isSuccess > 0)
-            {
-                var result = _mapper.Map<ProjectInfoView>(project);
-                var positionNew = await _context.Positions.Where(x => x.idProject == project.idProject).ToListAsync();
-                var viewPosition = _mapper.Map<List<PositionView>>(positionNew);
-                result.PositionViews = viewPosition;
-                return new Response(HttpStatusCode.OK, "Update project is success!", result);
-            }
-            return new Response(HttpStatusCode.BadRequest, "Update project is fail!");
+            return new Response(HttpStatusCode.BadRequest, "Project doesn't exists!");
         }
 
         [HttpDelete("RemoveProject/{idProject}")]
