@@ -13,6 +13,8 @@ import DeleteItem from "./Popup/DeleteItem";
 import { useNavigate } from "react-router-dom";
 import { projectInstance } from "../../axios/axiosConfig";
 import AlertProject from "./Popup/Alert";
+import { Button } from "react-bootstrap";
+import { BsThreeDots } from "react-icons/bs";
 
 function PostContent({ data, handleLikeOrUnlikePost, viewProject, userId }) {
   const navigate = useNavigate();
@@ -103,10 +105,17 @@ function PostContent({ data, handleLikeOrUnlikePost, viewProject, userId }) {
         {data?.idAccount === userId ? (
           <Dropdown>
             <Dropdown.Toggle
-              id="dropdown-basic"
-              style={{ border: "none" }}
-              className="bg-white border-none text-body"
-            ></Dropdown.Toggle>
+            as={Button}
+              variant="white"
+              className="border-none text-body"
+              style={{
+                "&::after": {
+                  content: "",
+                  border: "none",
+                },
+              }}
+            >
+              <BsThreeDots  size={28} /></Dropdown.Toggle>
 
             <Dropdown.Menu style={{ minWidth: "auto" }}>
               <Dropdown.Item

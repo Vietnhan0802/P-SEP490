@@ -12,7 +12,13 @@
     width: 40px;
     height: 40px;
   }
-
+  .dropdown-toggle::after {
+    display: none;
+    border-color: none;
+  }
+  .btn-check:checked+.btn, .btn.active, .btn.show, .btn:first-child:active, :not(.btn-check)+.btn:active {
+    border-color: transparent;
+  }
   .reply-cmt {
     margin: 8px 13px;
   }
@@ -50,7 +56,7 @@
   .rep {
     display: flex;
     justify-content: space-between;
-    color: #20BECB;
+    color: #20becb;
   }
 }
 

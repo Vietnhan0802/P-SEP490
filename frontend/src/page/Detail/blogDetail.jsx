@@ -1,14 +1,13 @@
 import React, { useEffect, useState, useMemo } from "react";
 import "./detail.scss";
 import avatarDefault from "../../images/common/default.png";
-import { IoFlagOutline } from "react-icons/io5";
 import { FiEye } from "react-icons/fi";
 import { VscSend } from "react-icons/vsc";
 import { blogInstance, userInstance } from "../../axios/axiosConfig";
 import { FaHeart } from "react-icons/fa";
 import { GrUpdate } from "react-icons/gr";
 import { MdDelete } from "react-icons/md";
-import Cookies from "js-cookie";
+import { BsThreeDots } from "react-icons/bs";
 import Dropdown from 'react-bootstrap/Dropdown';
 import { useLocation } from "react-router-dom";
 import { Col, Row } from "react-bootstrap";
@@ -274,6 +273,74 @@ function BlogDetail({ value }) {
         );
       });
   }
+  const handleLikeOrUnlikeBlogReply = (idBlogReply) => {
+    setCommentList((prevCommentList) =>
+      prevCommentList.map((comment) => {
+        if (comment.viewBlogReplies) {
+          const updatedReplies = comment.viewBlogReplies.map((reply) => {
+            if (reply.idBlogReply === idBlogReply) {
+              // Update the like state and count for this reply
+              const isLiked = !reply.isLike;
+              const newLikeCount = isLiked ? reply.like + 1 : reply.like - 1;
+
+              // Return the updated reply object
+              return { ...reply, isLike: isLiked, like: newLikeCount };
+            }
+
+            // Return the reply object unchanged
+            return reply;
+          });
+
+          // Return the comment with updated replies
+          return { ...comment, viewBlogReplies: updatedReplies };
+        }
+
+        // Return the comment object unchanged
+        return comment;
+      })
+    );
+
+    blogInstance
+      .post(`LikeOrUnlikeBlogReply/${currentUserId}/${idBlogReply}`)
+      .then(() => {
+        // No need to update the state here if you're doing optimistic updates
+      })
+      .catch((error) => {
+        // Revert the like state and count in case of an error
+        console.error(error);
+        setCommentList((prevCommentList) =>
+          prevCommentList.map((comment) => {
+            if (comment.viewBlogReplies) {
+              const revertedReplies = comment.viewBlogReplies.map((reply) => {
+                if (reply.idBlogReply === idBlogReply) {
+                  // Revert to the previous like state and count for this reply
+                  const revertedIsLiked = !reply.isLike;
+                  const revertedLikeCount = revertedIsLiked
+                    ? reply.like + 1
+                    : reply.like - 1;
+
+                  // Return the reverted reply object
+                  return {
+                    ...reply,
+                    isLike: revertedIsLiked,
+                    like: revertedLikeCount,
+                  };
+                }
+
+                // Return the reply object unchanged
+                return reply;
+              });
+
+              // Return the comment with reverted replies
+              return { ...comment, viewBlogReplies: revertedReplies };
+            }
+
+            // Return the comment object unchanged
+            return comment;
+          })
+        );
+      });
+  };
   //Fetch data
   const memoizedBlogInstance = useMemo(() => {
     return blogInstance; // hoặc tạo một instance mới nếu cần
@@ -341,7 +408,9 @@ function BlogDetail({ value }) {
                   id="dropdown-basic"
                   style={{ border: "none" }}
                   className="bg-white border-none text-body"
-                ></Dropdown.Toggle>
+                >
+                  <BsThreeDots size={28} />
+                </Dropdown.Toggle>
 
                 <Dropdown.Menu style={{ minWidth: "auto" }}>
                   <Dropdown.Item
@@ -440,6 +509,7 @@ function BlogDetail({ value }) {
                       {item.idAccount === currentUserId ?
                         <Dropdown>
                           <Dropdown.Toggle id="dropdown-basic" style={{ border: 'none' }} className="bg-white border-none text-body">
+                            <BsThreeDots />
                           </Dropdown.Toggle>
 
                           <Dropdown.Menu style={{ minWidth: 'auto' }}>
@@ -465,12 +535,12 @@ function BlogDetail({ value }) {
                       <>
                         <input
                           type="text"
-                          className="form-control"
+                          className="form-control mb-2"
                           value={originalContent || item.content}
                           onChange={(e) => handleUpdateInputComment(item.idBlogComment, e.target.value)}
                         />
-                        <button onClick={() => handleUpdateCommentCancel(item.idBlogComment)} className="btn btn-informa">Cancel</button>
-                        <button onClick={() => handleUpdateComment(item.idBlogComment, item.content)}>Save</button>
+                        <button className="btn btn-outline-primary" onClick={() => handleUpdateCommentCancel(item.idBlogComment)}>Cancel</button>
+                        <button className="btn btn-outline-info ms-3" onClick={() => handleUpdateComment(item.idBlogComment, item.content)}>Save</button>
                       </>
                     )}
                   </div>
@@ -523,22 +593,33 @@ function BlogDetail({ value }) {
                                 {reply.fullName}
                               </h6>
                               {updateReplyShow !== reply.idBlogReply ?
-                                <p className="mb-0">{reply.content}</p> :
+                                <div>
+                                  <p className="mb-0">{reply.content}</p>
+                                  <div
+                                    className="d-flex align-items-center me-3"
+                                    onClick={() => handleLikeOrUnlikeBlogReply(reply.idBlogReply)}
+                                  >
+                                    <FaHeart className={`me-2 ${reply?.isLike === true ? "red" : ""}`} />{" "}
+                                    {reply?.like}
+                                  </div>
+                                </div>
+                                :
                                 <div>
                                   <input
                                     type="text"
-                                    className="form-control"
+                                    className="form-control mb-2"
                                     value={reply.content}
                                     onChange={(e) => handleUpdateInputReplyComment(reply.idBlogReply, e.target.value)}
                                   />
-                                  <button onClick={() => handleUpdateReplyCancel(reply.idBlogReply)}>Cancel</button>
-                                  <button onClick={() => handleUpdateReply(reply.idBlogReply, reply.content)}>Save</button>
+                                  <button className="btn btn-outline-primary" onClick={() => handleUpdateReplyCancel(reply.idBlogReply)}>Cancel</button>
+                                  <button className="ms-3 btn btn-outline-info"onClick={() => handleUpdateReply(reply.idBlogReply, reply.content)}>Save</button>
                                 </div>
                               }
                             </div>
                             {reply.idAccount === currentUserId ?
                               <Dropdown style={{ width: 'auto' }}>
                                 <Dropdown.Toggle id="dropdown-basic" style={{ border: 'none' }} className="bg-white border-none text-body">
+                                <BsThreeDots />
                                 </Dropdown.Toggle>
 
                                 <Dropdown.Menu style={{ minWidth: 'auto' }}>
