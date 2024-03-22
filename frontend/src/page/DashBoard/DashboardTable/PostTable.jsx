@@ -163,7 +163,6 @@ export default function PostTable({ value }) {
   const [searchTerm, setSearchTerm] = React.useState('');
   React.useEffect(() => {
     // id, name, email, date, title, description, report, status
-
     const fetchedPostRows = value.map(element => (
       createData(
         element.idPost,
@@ -178,8 +177,7 @@ export default function PostTable({ value }) {
     )
     );
     setUserRows(fetchedPostRows);
-
-  }, []);
+  }, [value]);
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
     setOrder(isAsc ? "desc" : "asc");

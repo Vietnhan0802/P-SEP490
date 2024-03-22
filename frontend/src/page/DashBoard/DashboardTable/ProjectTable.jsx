@@ -11,16 +11,14 @@ import TableRow from "@mui/material/TableRow";
 import TableSortLabel from "@mui/material/TableSortLabel";
 import Paper from "@mui/material/Paper";
 import { visuallyHidden } from "@mui/utils";
-import avatar from "../../../images/common/Avatar.png";
 import { IoSearchOutline } from "react-icons/io5";
 import "../DashboardTable/table.scss";
 import { GoDotFill } from "react-icons/go";
-import { postInstance } from "../../../axios/axiosConfig";
-function createData(id, avatar, fullName, title, content, date, report, isBlock) {
+function createData(id, avatar, name, fullName, description, date, process, visibility) {
   const time = formatDate(date);
   return {
-    id, avatar, fullName, title, content, time, report, isBlock
-  };
+    id, avatar, name, fullName, description, time, process, visibility
+  }
 }
 
 const formatDate = (timestamp) => {
@@ -89,13 +87,13 @@ const headCells = [
   },
   {
     id: "report",
-    numeric: true,
+    numeric: false,
     disablePadding: false,
     label: "Report",
   },
   {
     id: "Status",
-    numeric: true,
+    numeric: false,
     disablePadding: false,
     label: "Status",
   },
@@ -103,11 +101,8 @@ const headCells = [
 
 function EnhancedTableHead(props) {
   const {
-    onSelectAllClick,
     order,
     orderBy,
-    numSelected,
-    rowCount,
     onRequestSort,
   } = props;
   const createSortHandler = (property) => (event) => {
@@ -145,43 +140,37 @@ function EnhancedTableHead(props) {
 }
 
 EnhancedTableHead.propTypes = {
-  numSelected: PropTypes.number.isRequired,
   onRequestSort: PropTypes.func.isRequired,
-  onSelectAllClick: PropTypes.func.isRequired,
   order: PropTypes.oneOf(["asc", "desc"]).isRequired,
   orderBy: PropTypes.string.isRequired,
   rowCount: PropTypes.number.isRequired,
 };
 
-export default function ProjectTable() {
+export default function ProjectTable({ value }) {
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("calories");
   const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const [postRows, setUserRows] = React.useState([]);
+  const [projectRows, setProjectRows] = React.useState([]);
   const [searchTerm, setSearchTerm] = React.useState('');
   React.useEffect(() => {
-    postInstance.get(`GetAllposts/${currentUserId}`)
-      .then((res) => {
-        // id, name, email, date, title, description, report, status
-        const fetchedPostRows = res.data.result.map(element => (
-          createData(
-            element.idPost,
-            element.avatar,
-            element.fullName,
-            element.title,
-            element.content,
-            element.createdDate,
-            element.report,
-            element.isBlock,
-          )
-        )
-        );
-        setUserRows(fetchedPostRows);
-      })
-      .catch((err) => { console.log(err) })
-  }, []);
+    const fetchedProjectRows = value.map(element => (
+      createData(
+        element.idProject,
+        element.avatarUser,
+        element.name,
+        element.fullName,
+        element.description,
+        element.createdDate,
+        element.process,
+        element.visibility
+      )
+    )
+    );
+    setProjectRows(fetchedProjectRows)
+    console.log(fetchedProjectRows);
+  }, [value]);
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
@@ -192,7 +181,7 @@ export default function ProjectTable() {
   };
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelected = postRows.map((n) => n.id);
+      const newSelected = projectRows.map((n) => n.id);
       setSelected(newSelected);
       return;
     }
@@ -215,19 +204,19 @@ export default function ProjectTable() {
     return rows.filter(
       (row) =>
         (row.fullName && row.fullName.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (row.name && row.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
         (row.title && row.title.toLowerCase().includes(searchTerm.toLowerCase())) ||
-        (row.content && row.content.toLowerCase().includes(searchTerm.toLowerCase())) ||
-        (row.time && row.time.toLowerCase().includes(searchTerm.toLowerCase())) ||
-        (row.report && row.report.toString().includes(searchTerm))
+        (row.description && row.description.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (row.time && row.time.toLowerCase().includes(searchTerm.toLowerCase()))
     );
   };
   const visibleRows = React.useMemo(
     () =>
       stableSort(
-        filterRows(postRows, searchTerm),
+        filterRows(projectRows, searchTerm),
         getComparator(order, orderBy)
       ).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage),
-    [order, orderBy, page, rowsPerPage, postRows, searchTerm]
+    [order, orderBy, page, rowsPerPage, projectRows, searchTerm]
   );
 
   return (
@@ -253,7 +242,7 @@ export default function ProjectTable() {
               orderBy={orderBy}
               onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
-              rowCount={postRows.length}
+              rowCount={projectRows.length}
             />
             <TableBody>
               {visibleRows.map((row, index) => {
@@ -297,22 +286,12 @@ export default function ProjectTable() {
                     </TableCell>
                     <TableCell align="left">
                       <p style={{ fontSize: "16px", fontWeight: "500" }}>
-                        {row.title}
+                        {row.name}
                       </p>
-                      <p className="blur ellipsis" style={{ maxWidth: '300px' }}>{row.content}</p>
+                      <p className="blur ellipsis" style={{ maxWidth: '300px' }}>{row.description}</p>
                     </TableCell>
-                    <TableCell align="right">{row.report}</TableCell>
-                    <TableCell align="right">
-                      <div className="d-flex align-items-center justify-content-end">
-                        <div
-                          className={`block-box ${row.isBlock ? "active-block" : ""
-                            }`}
-                        >
-                          <GoDotFill className="me-1 dot" />
-                          {row.isBlock ? 'Block' : 'Unblock'}
-                        </div>
-                      </div>
-                    </TableCell>
+                    <TableCell align="left">{row.process}</TableCell>
+                    <TableCell align="left">{row.visibility}</TableCell>
                   </TableRow>
                 );
               })}
@@ -322,7 +301,7 @@ export default function ProjectTable() {
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={postRows.length}
+          count={projectRows.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}

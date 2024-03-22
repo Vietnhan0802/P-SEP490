@@ -62,7 +62,7 @@ function DashBoard() {
       case "verify":
         return <VerifyTable />;
       case "project":
-        return <ProjectTable valuer={projectList}/>;
+        return <ProjectTable value={projectList} />;
       default:
         return null;
     }
@@ -156,7 +156,7 @@ function DashBoard() {
                     }`}>
                     <div className="mb-1 fs-12">Manage Project</div>
                     <div className="d-flex justify-content-between">
-                      <p className="fs-24 fw-bold">63 Project</p>
+                      <p className="fs-24 fw-bold">{projectList.length} Project</p>
                     </div>
                     <hr style={{ margin: "0.5rem 0" }} />
                     <p
