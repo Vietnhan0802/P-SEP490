@@ -11,7 +11,28 @@ import { useNavigate } from "react-router-dom";
 import { Col, Row } from "react-bootstrap";
 import SideBar from "../../components/sidebar";
 import Follow from "../../components/follow";
+const formatDate = (timestamp) => {
+  const months = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
+  const date = new Date(timestamp);
+  const day = date.getDate();
+  const month = months[date.getMonth()];
+  const year = date.getFullYear();
 
+  return `${day} ${month} ${year}`;
+};
 function OwnProject({ value }) {
   const sessionData = JSON.parse(sessionStorage.getItem('userSession')) || {};
   const { role, currentUserId } = sessionData;
@@ -25,11 +46,19 @@ function OwnProject({ value }) {
   };
 
   useEffect(() => {
-    projectInstance.get(`GetProjectByUser/${currentUserId}`)
+    if (role === 'Member') {
+      projectInstance.get(`GetProjectByMember/${currentUserId}`)
       .then((res) => {
         setProjects(res?.data?.result);
       })
       .catch((error) => { console.error(error) })
+    } else {
+      projectInstance.get(`GetProjectByUser/${currentUserId}`)
+        .then((res) => {
+          setProjects(res?.data?.result);
+        })
+        .catch((error) => { console.error(error) })
+    }
   }, [resetProject])
   const reset = (value) => {
     if (value === "Success") {
@@ -71,7 +100,7 @@ function OwnProject({ value }) {
             </div>
           </div>
 
-          {(search ? filterProjects : projects).map((item) => (
+          {(search ? filterProjects : projects)?.map((item) => (
             <div className="p-2 card bg-white p-6 rounded-lg w-96 mb-4" key={item.idProject}>
               <div className="image-container d-flex justify-content-center">
                 <img
@@ -98,7 +127,7 @@ function OwnProject({ value }) {
                     <div className="left-30 d-flex flex-column justify-content-center">
                       <div className="size-20 SFU-heavy d-flex">{item.fullName}</div>
                       <div className="size-14 SFU-reg text-gray-600 d-flex">
-                        Date Create: {item.createdDate}
+                        Date Create: {formatDate(item.createdDate)}
                       </div>
                     </div>
                   </div>

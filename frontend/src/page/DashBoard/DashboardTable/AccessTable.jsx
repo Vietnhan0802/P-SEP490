@@ -132,7 +132,7 @@ EnhancedTableHead.propTypes = {
   rowCount: PropTypes.number.isRequired,
 };
 
-export default function AccessTable() {
+export default function AccessTable({ value }) {
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("calories");
   const [selected, setSelected] = React.useState([]);
@@ -145,7 +145,7 @@ export default function AccessTable() {
     setSearchTerm(e.target.value);
   };
   const filterRows = (rows, searchTerm) => {
-    return rows.filter(
+    return rows?.filter(
       (row) =>
         (row.name && row.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
         (row.email && row.email.toLowerCase().includes(searchTerm.toLowerCase())) ||
@@ -178,24 +178,21 @@ export default function AccessTable() {
   // Avoid a layout jump when reaching the last page with empty rows.
   const [userRows, setUserRows] = React.useState([]);
   React.useEffect(() => {
-    userInstance.get('GetAllUsers')
-      .then((res) => {
-        const fetchedUserRows = res.data.result.map(element => (
-          createData(
-            element.id,
-            element.imageSrc,
-            element.fullName,
-            element.email,
-            element.role,
-            element.description,
-            element.isBlock
-          )
-        ));
-        console.log(res.data.result)
-        setUserRows(fetchedUserRows);
-      })
-      .catch((err) => { console.log(err) })
-  }, [resetData]);
+
+    const fetchedUserRows = value?.map(element => (
+      createData(
+        element.id,
+        element.imageSrc,
+        element.fullName,
+        element.email,
+        element.role,
+        element.description,
+        element.isBlock
+      )
+    ));
+    setUserRows(fetchedUserRows);
+
+  }, []);
 
   const visibleRows = React.useMemo(
     () =>

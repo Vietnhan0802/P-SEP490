@@ -153,7 +153,7 @@ EnhancedTableHead.propTypes = {
   rowCount: PropTypes.number.isRequired,
 };
 
-export default function PostTable({ value }) {
+export default function ProjectTable() {
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("calories");
   const [selected, setSelected] = React.useState([]);
@@ -162,23 +162,25 @@ export default function PostTable({ value }) {
   const [postRows, setUserRows] = React.useState([]);
   const [searchTerm, setSearchTerm] = React.useState('');
   React.useEffect(() => {
-    // id, name, email, date, title, description, report, status
-
-    const fetchedPostRows = value.map(element => (
-      createData(
-        element.idPost,
-        element.avatar,
-        element.fullName,
-        element.title,
-        element.content,
-        element.createdDate,
-        element.report,
-        element.isBlock,
-      )
-    )
-    );
-    setUserRows(fetchedPostRows);
-
+    postInstance.get(`GetAllposts/${currentUserId}`)
+      .then((res) => {
+        // id, name, email, date, title, description, report, status
+        const fetchedPostRows = res.data.result.map(element => (
+          createData(
+            element.idPost,
+            element.avatar,
+            element.fullName,
+            element.title,
+            element.content,
+            element.createdDate,
+            element.report,
+            element.isBlock,
+          )
+        )
+        );
+        setUserRows(fetchedPostRows);
+      })
+      .catch((err) => { console.log(err) })
   }, []);
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";

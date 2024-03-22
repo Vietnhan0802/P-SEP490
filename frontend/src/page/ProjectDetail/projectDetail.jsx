@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./projectDetail.scss";
 import { IoPersonRemove } from "react-icons/io5";
 import { Row, Col } from "react-bootstrap";
-import avatar from "../../images/common/Avatar.png";
+import defaultAvatar from "../../images/common/default.png";
 import MultiStepProgressBar from "../../components/MultiStepProgressBar";
 import FormMember from "./formMember";
 import SideBar from "../../components/sidebar";
@@ -11,6 +11,7 @@ import { projectInstance } from "../../axios/axiosConfig";
 import UpdateProjectForm from "./updateProjectForm";
 import { useLocation, useNavigate } from "react-router-dom";
 import DeletePopup from "./Popup/DeletePopup";
+import RemoveMember from "./Popup/RemoveMember";
 
 const formatDate = (timestamp) => {
   const months = [
@@ -72,14 +73,7 @@ function ProjectDetail() {
   const [reset, setReset] = useState(false);
   const { idProject } = location.state || {};
   console.log(idProject)
-  const handleRemoveMember = (id) => {
-    projectInstance.delete(`RemoveMember/${idProject}/${id}`)
-      .then((res) => {
-        console.log(res?.data?.result);
-        setReset(!reset);
-      })
-      .then((error) => { console.error(error) });
-  }
+
   useEffect(() => {
     projectInstance.get(`/GetProjectById/${idProject}`)
       .then((res) => {
@@ -192,7 +186,7 @@ function ProjectDetail() {
                 {role === 'Business' &&
                   <FormMember projectId={idProject} positionOption={data?.positionViews} />
                 }
-                {role === 'Member' &&
+                {role === 'Member' && data?.process !== 3 &&
                   <FormApply projectId={idProject} positionOption={data?.positionViews} />
                 }
 
@@ -210,13 +204,13 @@ function ProjectDetail() {
                     </tr>
                   </thead>
                   <tbody>
-                    {projectInstance.length > 0 ?
+                    {projectMembers?.length > 0 ?
 
                       projectMembers?.map((member) => (
                         <tr key={member.idProjectMeber}>
                           <td className="w-20 py-3">
                             <div className="d-flex align-items-center">
-                              <img src={member.avatar} className="member-img" alt="avatar" />
+                              <img src={member.avatar === 'https://localhost:7006/Images/' ? defaultAvatar : member.avatar} className="member-img" alt="avatar" />
                               <p className="ps-3">{member.fullName}</p>
                             </div>
                           </td>
@@ -225,7 +219,7 @@ function ProjectDetail() {
                             {member.namePosition}
                           </td>
                           <td className="w-10 py-3 text-center  yellow-icon">
-                            <IoPersonRemove onClick={() => handleRemoveMember(member.idAccount)} />
+                            <RemoveMember id={member.idAccount} project={idProject}/>
                           </td>
                         </tr>
                       )) : <tr> {/* Add a single row for the message */}
