@@ -35,7 +35,7 @@ namespace Interaction.Controllers
         }
 
         [HttpGet("GetNameUserCurrent/{idUser}")]
-        private async Task<string> GetNameUserCurrent(string idUser)
+        private async Task<ViewUser> GetNameUserCurrent(string idUser)
         {
             HttpResponseMessage response = await client.GetAsync($"{UserApiUrl}/GetNameUser/{idUser}");
             string strData = await response.Content.ReadAsStringAsync();
@@ -43,9 +43,9 @@ namespace Interaction.Controllers
             {
                 PropertyNameCaseInsensitive = true,
             };
-            var user = JsonSerializer.Deserialize<string>(strData, option);
+            var user = JsonSerializer.Deserialize<ViewUser>(strData, option);
 
-            return user!;
+            return user;
         }
 
         /*------------------------------------------------------------Verification------------------------------------------------------------*/
@@ -61,7 +61,8 @@ namespace Interaction.Controllers
             var result = _mapper.Map<List<ViewVerification>>(verifications);
             foreach (var verification in result)
             {
-                verification.fullName = await GetNameUserCurrent(verification.idAccount!);
+                var infoUser = await GetNameUserCurrent(verification.idAccount!);
+                verification.fullName = infoUser.fullName;
             }
             return new Response(HttpStatusCode.OK, "Getall verifications is success!", result);
         }
@@ -77,7 +78,8 @@ namespace Interaction.Controllers
             var result = _mapper.Map<List<ViewVerification>>(verifications);
             foreach (var verification in result)
             {
-                verification.fullName = await GetNameUserCurrent(verification.idAccount!);
+                var infoUser = await GetNameUserCurrent(verification.idAccount!);
+                verification.fullName = infoUser.fullName;
             }
             return new Response(HttpStatusCode.OK, "Getall verifications is success!", result);
         }
@@ -142,8 +144,10 @@ namespace Interaction.Controllers
             var result = _mapper.Map<List<ViewAccountReport>>(accountReports);
             foreach (var accountReport in result)
             {
-                accountReport.nameReporter = await GetNameUserCurrent(accountReport.idReporter!);
-                accountReport.nameReported = await GetNameUserCurrent(accountReport.idReported!);
+                var infoReporter = await GetNameUserCurrent(accountReport.idReporter!);
+                accountReport.nameReporter = infoReporter.fullName;
+                var infoReported = await GetNameUserCurrent(accountReport.idReported!);
+                accountReport.nameReported = infoReported.fullName;
             }
             return new Response(HttpStatusCode.OK, "Getall account report is success!", result);
         }
@@ -159,8 +163,10 @@ namespace Interaction.Controllers
             var result = _mapper.Map<List<ViewAccountReport>>(accountReports);
             foreach (var accountReport in result)
             {
-                accountReport.idReporter = await GetNameUserCurrent(accountReport.idReporter!);
-                accountReport.idReported = await GetNameUserCurrent(accountReport.idReported!);
+                var infoReporter = await GetNameUserCurrent(accountReport.idReporter!);
+                accountReport.nameReporter = infoReporter.fullName;
+                var infoReported = await GetNameUserCurrent(accountReport.idReported!);
+                accountReport.nameReported = infoReported.fullName;
             }
             return new Response(HttpStatusCode.OK, "Getall account report is success!", result);
         }
@@ -234,7 +240,8 @@ namespace Interaction.Controllers
             var result = _mapper.Map<List<ViewPostReport>>(postReports);
             foreach (var postReport in result)
             {
-                postReport.idReporter = await GetNameUserCurrent(postReport.idReporter!);
+                var infoUser =  await GetNameUserCurrent(postReport.idReporter!);
+                postReport.idReporter = infoUser.fullName;
             }
             return new Response(HttpStatusCode.OK, "Getall post report is success!", result);
         }
@@ -250,7 +257,8 @@ namespace Interaction.Controllers
             var result = _mapper.Map<List<ViewPostReport>>(postReports);
             foreach (var postReport in result)
             {
-                postReport.idReporter = await GetNameUserCurrent(postReport.idReporter!);
+                var infoUser = await GetNameUserCurrent(postReport.idReporter!);
+                postReport.idReporter = infoUser.fullName;
             }
             return new Response(HttpStatusCode.OK, "Getall post report is success!", result);
         }
@@ -324,7 +332,8 @@ namespace Interaction.Controllers
             var result = _mapper.Map<List<ViewBlogReport>>(blogReports);
             foreach (var blogReport in result)
             {
-                blogReport.idReporter = await GetNameUserCurrent(blogReport.idReporter!);
+                var infoUser = await GetNameUserCurrent(blogReport.idReporter!);
+                blogReport.idReporter = infoUser.fullName;
             }
             return new Response(HttpStatusCode.OK, "Getall blog report is success!", result);
         }
@@ -340,7 +349,8 @@ namespace Interaction.Controllers
             var result = _mapper.Map<List<ViewBlogReport>>(blogReports);
             foreach (var blogReport in result)
             {
-                blogReport.idReporter = await GetNameUserCurrent(blogReport.idReporter!);
+                var infoUser = await GetNameUserCurrent(blogReport.idReporter!);
+                blogReport.idReporter = infoUser.fullName;
             }
             return new Response(HttpStatusCode.OK, "Getall blog report is success!", result);
         }
