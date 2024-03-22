@@ -153,7 +153,7 @@ EnhancedTableHead.propTypes = {
   rowCount: PropTypes.number.isRequired,
 };
 
-export default function PostTable({value}) {
+export default function ProjectTable() {
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("calories");
   const [selected, setSelected] = React.useState([]);
@@ -165,9 +165,7 @@ export default function PostTable({value}) {
     postInstance.get(`GetAllposts/${currentUserId}`)
       .then((res) => {
         // id, name, email, date, title, description, report, status
-        const results = res?.data?.result;
-        value(results?.length);
-        const fetchedPostRows = results.map(element => (
+        const fetchedPostRows = res.data.result.map(element => (
           createData(
             element.idPost,
             element.avatar,

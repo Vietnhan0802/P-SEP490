@@ -90,6 +90,7 @@ function ProjectInviation() {
         projectInstance.get(`GetAllProjectInvites/${currentUserId}`)
             .then((res) => {
                 const data = res?.data?.result;
+                console.log(data)
                 setInvivtation(data.map((item) => createData(item.idProjectMember, item.fullName, item.email, item.namePosition, item.nameProject, item.avatar, item.cvUrlFile)));
             })
             .catch((error) => { console.error(error) });

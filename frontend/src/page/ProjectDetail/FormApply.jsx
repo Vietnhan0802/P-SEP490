@@ -59,7 +59,7 @@ function FormApply({ projectId, positionOption }) {
         accept: "application/json",
       },
     })
-      .then((res) => { console.log(res?.data?.result); })
+      .then((res) => { console.log(res?.data?.result); setShow(false); })
       .catch((error) => { console.error(error) });
   };
   return (

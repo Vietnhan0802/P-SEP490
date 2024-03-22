@@ -2,15 +2,35 @@ import React, { useEffect, useRef } from "react";
 import "../OwnProject/ownProject.scss";
 import avatar from "../../images/common/default.png";
 import { CiSearch } from "react-icons/ci";
-
 import { useState } from "react";
 import { projectInstance } from "../../axios/axiosConfig";
 import { useNavigate } from "react-router-dom";
 import { Col, Row } from "react-bootstrap";
 import SideBar from "../../components/sidebar";
 import Follow from "../../components/follow";
+const formatDate = (timestamp) => {
+  const months = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
+  const date = new Date(timestamp);
+  const day = date.getDate();
+  const month = months[date.getMonth()];
+  const year = date.getFullYear();
 
-function Project({value}) {
+  return `${day} ${month} ${year}`;
+};
+function Project({ value }) {
   const navigate = useNavigate();
   const [projects, setProjects] = useState([]);
   const [search, setSearch] = useState('');
@@ -41,19 +61,19 @@ function Project({value}) {
       </Col>
       <Col md={6}>
         <div id="own_project">
-          
-            <div className="bg-white p-2 d-flex flex-grid align-items-center justify-content-between row m-0 form mb-3">
-              <div className="d-flex project-search align-items-center position-relative col">
-                <CiSearch className="" />
-                <input
-                  type="text"
-                  placeholder={"Search"}
-                  value={search}
-                  onChange={handleSearch}
-                  className="search-box size-20 w-100"
-                />
-              </div>
+
+          <div className="bg-white p-2 d-flex flex-grid align-items-center justify-content-between row m-0 form mb-3">
+            <div className="d-flex project-search align-items-center position-relative col">
+              <CiSearch className="" />
+              <input
+                type="text"
+                placeholder={"Search"}
+                value={search}
+                onChange={handleSearch}
+                className="search-box size-20 w-100"
+              />
             </div>
+          </div>
 
           {(search ? filterProjects : projects).map((item) => (
             <div className="p-2 card bg-white p-6 rounded-lg w-96 mb-4" key={item.idProject}>
@@ -82,7 +102,7 @@ function Project({value}) {
                     <div className="left-30 d-flex flex-column justify-content-center">
                       <div className="size-20 SFU-heavy d-flex">{item.fullName}</div>
                       <div className="size-14 SFU-reg text-gray-600 d-flex">
-                        Date Create: {item.createdDate}
+                        Date Create: {formatDate(item.createdDate)}
                       </div>
                     </div>
                   </div>
