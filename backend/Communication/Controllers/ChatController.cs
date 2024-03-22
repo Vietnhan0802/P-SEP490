@@ -3,7 +3,9 @@ using BusinessObjects.Entities.Communication;
 using BusinessObjects.ViewModels.Communication;
 using BusinessObjects.ViewModels.User;
 using Communication.Data;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
 using System.Net.Http.Headers;
@@ -13,16 +15,17 @@ namespace Communication.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [EnableCors("AllowSpecificOrigins")]
     public class ChatController : ControllerBase
     {
         private readonly AppDBContext _context;
         private readonly IMapper _mapper;
-        private readonly ChatHub _chatHub;
+        private readonly IHubContext<ChatHub> _chatHub;
         private readonly HttpClient client;
 
         public string UserApiUrl { get; }
 
-        public ChatController(AppDBContext context, IMapper mapper, ChatHub chatHub)
+        public ChatController(AppDBContext context, IMapper mapper, IHubContext<ChatHub> chatHub)
         {
             _context = context;
             _mapper = mapper;
@@ -49,8 +52,8 @@ namespace Communication.Controllers
 
         /*------------------------------------------------------------Conversation------------------------------------------------------------*/
 
-        [HttpGet("GeConversationsByUser/{idCurrentUser}")]
-        public async Task<Response> GeConversationsByUser(string idCurrentUser)
+        [HttpGet("GetConversationsByUser/{idCurrentUser}")]
+        public async Task<Response> GetConversationsByUser(string idCurrentUser)
         {
             var conversations = await _context.Conversations.Where(x => (x.idAccount1 == idCurrentUser && x.isDeletedBySender == false) 
                                                                      || (x.idAccount2 == idCurrentUser && x.isDeletedByReceiver == false)).ToListAsync();
@@ -63,7 +66,7 @@ namespace Communication.Controllers
                     conversation.fullName = infoUser.fullName;
                     conversation.avatar = infoUser.avatar;
                 }
-                return new Response(HttpStatusCode.OK, "Getall conversations is success!", result);
+                return new Response(HttpStatusCode.OK, "Get all conversations is success!", result);
             }
             return new Response(HttpStatusCode.NoContent, "Conversation doesn't empty!");
         }
@@ -85,7 +88,7 @@ namespace Communication.Controllers
                 await _context.Conversations.AddAsync(conversation);
                 await _context.SaveChangesAsync();
                 var result = _mapper.Map<ViewConversation>(conversation);
-                await _chatHub.StartConversation(idCurrentUser, idReceiver);
+                await _chatHub.Clients.User(idReceiver).SendAsync("StartConversation", idCurrentUser);
                 return new Response(HttpStatusCode.OK, "Create conversation is success!", result);
             }
             return new Response(HttpStatusCode.NoContent, "Conversation had been existed!");
@@ -135,7 +138,7 @@ namespace Communication.Controllers
                                             || (x.idReceiver == idCurrentUser && x.isDeletedByReceiver == false)).ToList();
             }
             var result = _mapper.Map<List<ViewMessage>>(messages);
-            await _chatHub.GetMessages(result);
+            //await _chatHub.GetMessages(result);
             return new Response(HttpStatusCode.NoContent, "Conversation had been existed!", result);
         }
 
@@ -155,7 +158,7 @@ namespace Communication.Controllers
             await _context.Messages.AddAsync(message);
             await _context.SaveChangesAsync();
             var result = _mapper.Map<ViewMessage>(message);
-            await _chatHub.SendMessage(idCurrentUser, idReceiver, result);
+            //await _chatHub.SendMessage(idCurrentUser, idReceiver, result);
             return new Response(HttpStatusCode.OK, "Send message is success!", result);
         }
 
@@ -189,7 +192,7 @@ namespace Communication.Controllers
             }
             message.isRecall = true;
             await _context.SaveChangesAsync();
-            await _chatHub.RecallMessage(idCurrentUser, idMessage);
+            //await _chatHub.RecallMessage(idCurrentUser, idMessage);
             return new Response(HttpStatusCode.OK, "Recall message is success!");
         }
     }
