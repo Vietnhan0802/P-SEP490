@@ -87,7 +87,7 @@ function ProjectInviation() {
     }
     const [invitation, setInvivtation] = useState([]);
     useEffect(() => {
-        projectInstance.get(`GetAllProjectInvites/${currentUserId}`)
+        projectInstance.get(`GetAllSendInvites/${currentUserId}`)
             .then((res) => {
                 const data = res?.data?.result;
                 setInvivtation(data.map((item) => createData(item.idProjectMember, item.fullName, item.email, item.namePosition, item.nameProject, item.avatar, item.cvUrlFile)));

@@ -373,7 +373,7 @@ namespace Project.Controllers
             return new Response(HttpStatusCode.NoContent, "Get all project is empty!");
         }
 
-        [HttpGet("GetAllSendInvites")]
+        [HttpGet("GetAllSendInvites/{idUser}")]
         public async Task<Response> GetAllSendInvites(string idUser)
         {
             var projects = await _context.ProjectInfos.Where(x => x.idAccount == idUser).AsNoTracking().ToListAsync();
@@ -391,17 +391,14 @@ namespace Project.Controllers
                         var result = _mapper.Map<List<ProjectMemberView>>(sendInvites);
                         foreach (var sendInvite in result)
                         {
-                            var infoUser = await GetNameUserCurrent(project.idAccount);
+                            var infoUser = await GetNameUserCurrent(sendInvite.idAccount);
                             sendInvite.fullName = infoUser.fullName;
                             sendInvite.email = infoUser.email;
                             sendInvite.avatar = infoUser.avatar;
                             sendInvite.nameProject = project.name;
                             sendInvite.cvUrlFile = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, sendInvite.cvUrl);
-                            var positionName = await _context.Positions.Where(x => x.idProject == sendInvite.idProject).AsNoTracking().ToListAsync();
-                            foreach (var position in positionName)
-                            {
-                                sendInvite.namePosition = position.namePosition;
-                            }
+                            var positionName = await _context.Positions.FirstOrDefaultAsync(x => x.idPosition == sendInvite.idPosition);
+                            sendInvite.namePosition = positionName.namePosition;
                         }
                         allProjectInvites.AddRange(result);
                     }
