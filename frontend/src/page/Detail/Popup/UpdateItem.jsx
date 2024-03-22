@@ -138,7 +138,7 @@ function UpdateItem({ show, onClose, value, type }) {
         <div className="">
             <Modal show={show} onHide={onClose} id="cus-w">
                 <Modal.Header closeButton>
-                    <Modal.Title>Update post</Modal.Title>
+                    <Modal.Title>Update {type === 'post' ? 'post':'blog'}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body className="popup-body" id="form-update-project">
                     <div className="row">
