@@ -105,6 +105,28 @@ namespace Project.Controllers
         [HttpGet("GetAllProjects")]
         public async Task<Response> GetAllProjects()
         {
+            var projects = await _context.ProjectInfos.Where(x => x.isDeleted == false).OrderByDescending(x => x.createdDate).ToListAsync();
+            if (projects == null)
+            {
+                return new Response(HttpStatusCode.NoContent, "Project list is empty!");
+            }
+            var result = _mapper.Map<List<ProjectInfoView>>(projects);
+            foreach (var project in result)
+            {
+                var infoUser = await GetNameUserCurrent(project.idAccount!);
+                project.fullName = infoUser.fullName;
+                project.avatarUser = infoUser.avatar;
+                project.avatar = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, project.avatar);
+                var positions = await _context.Positions.Where(x => x.idProject == project.idProject).ToListAsync();
+                var viewPosition = _mapper.Map<List<PositionView>>(positions);
+                project.PositionViews = viewPosition;
+            }
+            return new Response(HttpStatusCode.OK, "Get project list is success!", result);
+        }
+
+        [HttpGet("GetAllPublicProjects")]
+        public async Task<Response> GetAllPublicProjects()
+        {
             var projects = await _context.ProjectInfos.Where(x => x.isDeleted == false && x.visibility == BusinessObjects.Enums.Project.Visibility.Public).OrderByDescending(x => x.createdDate).ToListAsync();
             if (projects == null)
             {
@@ -175,7 +197,7 @@ namespace Project.Controllers
         [HttpGet("GetProjectById/{idProject}")]
         public async Task<Response> GetProjectById(Guid idProject)
         {
-            var project = await _context.ProjectInfos.FirstOrDefaultAsync(x => x.idProject == idProject);
+            var project = await _context.ProjectInfos.FirstOrDefaultAsync(x => x.idProject == idProject && x.isDeleted == false);
             if (project == null)
             {
                 return new Response(HttpStatusCode.NotFound, "Project doesn't exists!");
@@ -566,10 +588,44 @@ namespace Project.Controllers
             return new Response(HttpStatusCode.OK, "Deny project application is fail!");
         }
 
-        [HttpDelete("RemoveMember/{idProject}/{idAccount}")]
-        public async Task<Response> RemoveMember(Guid idProject, string idAccount)
+        [HttpDelete("RemoveApply/{idProjectMember}")]
+        public async Task<Response> RemoveApply(Guid idProjectMember)
         {
-            var member = await _context.ProjectMembers.FirstOrDefaultAsync(x => x.idAccount == idAccount && x.idProject == idProject);
+            var member = await _context.ProjectMembers.FirstOrDefaultAsync(x => x.idProjectMember == idProjectMember && x.type == BusinessObjects.Enums.Project.Type.Applied && x.isAcept == null); ;
+            if (member == null)
+            {
+                return new Response(HttpStatusCode.NotFound, "Apply doesn't exists!");
+            }
+            _context.ProjectMembers.Remove(member);
+            var isSuccess = await _context.SaveChangesAsync();
+            if (isSuccess > 0)
+            {
+                return new Response(HttpStatusCode.NoContent, "Remove apply is success!");
+            }
+            return new Response(HttpStatusCode.BadRequest, "Remove apply is fail!");
+        }
+
+        [HttpDelete("RemoveInvite/{idProjectMember}")]
+        public async Task<Response> RemoveInvite(Guid idProjectMember)
+        {
+            var member = await _context.ProjectMembers.FirstOrDefaultAsync(x => x.idProjectMember == idProjectMember && x.type == BusinessObjects.Enums.Project.Type.Invited && x.isAcept == null);
+            if (member == null)
+            {
+                return new Response(HttpStatusCode.NotFound, "Invite doesn't exists!");
+            }
+            _context.ProjectMembers.Remove(member);
+            var isSuccess = await _context.SaveChangesAsync();
+            if (isSuccess > 0)
+            {
+                return new Response(HttpStatusCode.NoContent, "Remove invite is success!");
+            }
+            return new Response(HttpStatusCode.BadRequest, "Remove invite is fail!");
+        }
+
+        [HttpDelete("RemoveMember/{idProject}/{idAccount}")]
+        public async Task<Response> RemoveMember(Guid idProjectMember)
+        {
+            var member = await _context.ProjectMembers.FirstOrDefaultAsync(x => x.idProjectMember == idProjectMember && x.isAcept == true);
             if (member == null)
             {
                 return new Response(HttpStatusCode.NotFound, "Member doesn't exists!");
