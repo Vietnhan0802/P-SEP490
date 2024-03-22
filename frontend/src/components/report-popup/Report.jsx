@@ -33,16 +33,24 @@ function Report({ id, idItem, type }) {
   const handleCreateReport = () => {
     if (reportType === 'post') {
       reportInstance.post(`CreatePostReport/${report.idReporter}/${report.idPosted}/${report.content}`)
-        .then((res) => { console.log(res?.data?.result);
-         })
+        .then((res) => {
+          console.log(res?.data?.result);
+          setShow(false);
+        })
         .catch((error) => { console.error(error) })
     } else if (reportType === 'blog') {
       reportInstance.post(`CreateBlogReport/${report.idReporter}/${report.idPosted}/${report.content}`)
-        .then((res) => { console.log(res?.data?.result) })
+        .then((res) => {
+          console.log(res?.data?.result);
+          setShow(false);
+        })
         .catch((error) => { console.error(error) })
     } else {
       reportInstance.post(`CreateBlogReport/${report.idReporter}/${report.idPosted}/${report.content}`)
-        .then((res) => { console.log(res?.data?.result) })
+        .then((res) => {
+          console.log(res?.data?.result);
+          setShow(false);
+        })
         .catch((error) => { console.error(error) })
     }
   }

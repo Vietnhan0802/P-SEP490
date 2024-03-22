@@ -50,8 +50,6 @@ function PostContent({ data, handleLikeOrUnlikePost, viewProject, userId }) {
     // First, check if the project with the given ID exists.
     projectInstance.get(`GetProjectById/${data.idProject}`)
       .then((res) => {
-        console.log(res?.data?.result);
-        console.log(res?.data?.result?.visibility === 0)
         if (res?.data?.result !== null && res?.data?.result?.visibility === 0) {
           // If the project exists, get all members of the project.
           projectInstance.get(`GetAllMemberInProject/${data.idProject}`)

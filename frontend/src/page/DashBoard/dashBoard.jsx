@@ -13,34 +13,56 @@ import VerifyTable from "./DashboardTable/VerifyTable";
 import { useTranslation } from 'react-i18next';
 import SideBar from "../../components/sidebar";
 import ProjectTable from "./DashboardTable/ProjectTable";
+import { blogInstance, postInstance, projectInstance, userInstance } from "../../axios/axiosConfig";
 function DashBoard() {
   const { t } = useTranslation()
   const [activeTab, setActiveTab] = useState("post");
-  const [number, setNumber] = useState({});
+  const [postList, setPostList] = useState([]);
+  const [blogList, setBlogList] = useState([]);
+  const [accessList, setAccessList] = useState([]);
+  const [projectList, setProjectList] = useState([]);
+  const sessionData = JSON.parse(sessionStorage.getItem("userSession")) || {};
+  const { currentUserId } = sessionData;
   // const value = 13;
   const handleTabClick = (tab) => {
     setActiveTab(tab);
   };
-  const value = (value) => {
-    if (value) setNumber((prev) => ({ ...prev, 'post': value }));
-  }
-  const blogLength = (value) => {
-    if (value) setNumber((prev) => ({ ...prev, 'blog': value }));
-  }
+  React.useEffect(() => {
+    postInstance.get(`GetAllposts/${currentUserId}`)
+      .then((res) => {
+        setPostList(res?.data?.result);
+      })
+      .catch((err) => { console.log(err) });
+    userInstance.get('GetAllUsers')
+      .then((res) => {
+        setAccessList(res?.data?.result);
+      })
+      .catch((err) => { console.log(err) });
+    blogInstance.get(`GetAllBlogs/${currentUserId}`)
+      .then((res) => {
+        setBlogList(res?.data?.result);
+      })
+      .catch((err) => { console.log(err) });
+    projectInstance.get(`GetAllProjects`)
+      .then((res) => {
+        setProjectList(res?.data?.result);
+      })
+      .catch((err) => { console.log(err) });
+  }, []);
   const renderTable = () => {
     switch (activeTab) {
       case "post":
-        return <PostTable value={value} />;
+        return <PostTable value={postList} />;
       case "blog":
-        return <BlogTable value={blogLength} />;
+        return <BlogTable value={blogList} />;
       case "access":
-        return <AccessTable />;
+        return <AccessTable value={accessList} />;
       case "report":
         return <ReportTable />;
       case "verify":
         return <VerifyTable />;
       case "project":
-        return <ProjectTable />;
+        return <ProjectTable valuer={projectList}/>;
       default:
         return null;
     }
@@ -62,7 +84,7 @@ function DashBoard() {
                   >
                     <div className="mb-1 fs-12">{t('managepost')}</div>
                     <div className="d-flex justify-content-between">
-                      <p className="fs-24 fw-bold">{number['post']} {t('post')}</p>
+                      <p className="fs-24 fw-bold">{postList?.length} {t('post')}</p>
                     </div>
                     <hr style={{ margin: "0.5rem 0" }} />
                     <p
@@ -80,7 +102,7 @@ function DashBoard() {
                     }`}>
                     <div className="mb-1 fs-12">{t('manageaccess')}</div>
                     <div className="d-flex justify-content-between">
-                      <p className="fs-24 fw-bold">63 {t('newaccess')}</p>
+                      <p className="fs-24 fw-bold">{accessList?.length} {t('newaccess')}</p>
                     </div>
                     <hr style={{ margin: "0.5rem 0" }} />
                     <p
@@ -98,7 +120,7 @@ function DashBoard() {
                     }`}>
                     <div className="mb-1 fs-12">{t('manageblog')}</div>
                     <div className="d-flex justify-content-between">
-                      <p className="fs-24 fw-bold">63 {t('newblog')}</p>
+                      <p className="fs-24 fw-bold">{blogList?.length} {t('blog')}</p>
                     </div>
                     <hr style={{ margin: "0.5rem 0" }} />
                     <p

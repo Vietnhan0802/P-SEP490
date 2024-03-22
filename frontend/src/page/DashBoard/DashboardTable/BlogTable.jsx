@@ -147,7 +147,7 @@ EnhancedTableHead.propTypes = {
   rowCount: PropTypes.number.isRequired,
 };
 
-export default function BlogTable() {
+export default function BlogTable({ value }) {
 
 
   const sessionData = JSON.parse(sessionStorage.getItem("userSession")) || {};
@@ -200,9 +200,8 @@ export default function BlogTable() {
   // Avoid a layout jump when reaching the last page with empty rows.
   const [blogRows, setUserRows] = React.useState([]);
   React.useEffect(() => {
-    blogInstance.get(`GetAllBlogs/${currentUserId}`)
-      .then((res) => {
-        const fetchedBlogRows = res.data.result.map(element => (
+
+        const fetchedBlogRows = value?.map(element => (
           createData(
             element.idBlog,
             element.avatar,
@@ -216,8 +215,8 @@ export default function BlogTable() {
         )
         );
         setUserRows(fetchedBlogRows);
-      })
-      .catch((err) => { console.log(err) })
+
+
   }, []);
   const visibleRows = React.useMemo(
     () =>

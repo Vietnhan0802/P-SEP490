@@ -40,7 +40,7 @@ function Project({ value }) {
   };
 
   useEffect(() => {
-    projectInstance.get('GetAllProjects')
+    projectInstance.get('GetAllPublicProjects')
       .then((res) => {
         setProjects(res?.data?.result)
       })
