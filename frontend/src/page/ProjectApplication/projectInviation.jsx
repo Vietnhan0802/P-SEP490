@@ -87,7 +87,7 @@ function ProjectInviation() {
     }
     const [invitation, setInvivtation] = useState([]);
     useEffect(() => {
-        projectInstance.get(`GetAllProjectInvites/${currentUserId}`)
+        projectInstance.get(`GetAllSendInvites/${currentUserId}`)
             .then((res) => {
                 const data = res?.data?.result;
                 console.log(data)
