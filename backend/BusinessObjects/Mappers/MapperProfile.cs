@@ -59,6 +59,7 @@ namespace BusinessObjects.Mappers
             CreateMap<ProjectInfo, ProjectInfoCreate>().ReverseMap();
             CreateMap<ProjectInfo, ProjectInfoUpdate>().ReverseMap();
             CreateMap<ProjectInfo, ProjectInfoView>().ReverseMap();
+            CreateMap<ProjectMember, ProjectInfoView>().ReverseMap();
             CreateMap<ProjectMember, ProjectMemberView>().ReverseMap();
             CreateMap<ProjectMember, ProjectMemberCreateUpdate>().ReverseMap();
 

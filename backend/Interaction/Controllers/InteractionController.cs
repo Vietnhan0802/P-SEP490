@@ -83,16 +83,16 @@ namespace Interaction.Controllers
         [HttpPost("CreateVerification/{idUser}")]
         public async Task<Response> CreateVerification(string idUser)
         {
-            if (ModelState.IsValid)
+            Verification verification = new Verification()
             {
-                Verification verification = new Verification()
-                {
-                    idAccount = idUser,
-                    status = Status.Waiting,
-                    createdDate = DateTime.Now
-                };
-                await _context.Verifications.AddAsync(verification);
-                await _context.SaveChangesAsync();
+                idAccount = idUser,
+                status = Status.Waiting,
+                createdDate = DateTime.Now
+            };
+            await _context.Verifications.AddAsync(verification);
+            var isSuccess = await _context.SaveChangesAsync();
+            if (isSuccess > 0)
+            {
                 return new Response(HttpStatusCode.OK, "Create verification is success!", _mapper.Map<ViewVerification>(verification));
             }
             return new Response(HttpStatusCode.BadRequest, "Create verification is fail!");
@@ -116,82 +116,64 @@ namespace Interaction.Controllers
                 verification!.status = Status.Deny;
                 verification.confirmedDate = DateTime.Now;
             }
-            var result = await _context.SaveChangesAsync();
-            if (result > 0)
+            var isSuccess = await _context.SaveChangesAsync();
+            if (isSuccess > 0)
             {
                 return new Response(HttpStatusCode.OK, "Update status is success!", _mapper.Map<ViewVerification>(verification));
             }
-            else
-            {
-                return new Response(HttpStatusCode.BadRequest, "Update status is fail!");
-            }
+            return new Response(HttpStatusCode.BadRequest, "Update status is fail!");
         }
 
         /*------------------------------------------------------------AccountReport------------------------------------------------------------*/
 
-        /*[HttpGet("GetAllAccountReport")]
+        [HttpGet("GetAllAccountReport")]
         public async Task<Response> GetAllAccountReport(Status status)
         {
             var accountReports = await _context.AccountReports.OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
             if (accountReports.Count > 0)
             {
-                if (status)
+                if (status == Status.Waiting)
+                {
+                    accountReports = accountReports.Where(x => x.status == Status.Waiting).ToList();
+                }
+                else if (status == Status.Accept)
+                {
+                    accountReports = accountReports.Where(x => x.status == Status.Accept).ToList();
+                }
+                else if (status == Status.Deny)
+                {
+                    accountReports = accountReports.Where(x => x.status == Status.Deny).ToList();
+                }
+                var result = _mapper.Map<List<ViewAccountReport>>(accountReports);
+                foreach (var accountReport in result)
+                {
+                    var infoReporter = await GetNameUserCurrent(accountReport.idReporter!);
+                    accountReport.nameReporter = infoReporter.fullName;
+                    accountReport.avatarReporter = infoReporter.avatar;
+                    var infoReported = await GetNameUserCurrent(accountReport.idReported!);
+                    accountReport.nameReported = infoReported.fullName;
+                    accountReport.avatarReported = infoReported.avatar;
+                }
+                return new Response(HttpStatusCode.OK, "Get all account report is success!", result);
             }
-        }*/
-
-        [HttpGet("GetAllAccountReportsWaiting")]
-        public async Task<Response> GetAllAccountReportsWaiting()
-        {
-            var accountReports = await _context.AccountReports.Where(x => x.status == Status.Waiting).OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
-            if (accountReports == null)
-            {
-                return new Response(HttpStatusCode.NoContent, "Account report doesn't empty!");
-            }
-            var result = _mapper.Map<List<ViewAccountReport>>(accountReports);
-            foreach (var accountReport in result)
-            {
-                var infoReporter = await GetNameUserCurrent(accountReport.idReporter!);
-                accountReport.nameReporter = infoReporter.fullName;
-                var infoReported = await GetNameUserCurrent(accountReport.idReported!);
-                accountReport.nameReported = infoReported.fullName;
-            }
-            return new Response(HttpStatusCode.OK, "Getall account report is success!", result);
-        }
-
-        [HttpGet("GetAllAccountReportsAcceptOrDeny")]
-        public async Task<Response> GetAllAccountReportsAcceptOrDeny()
-        {
-            var accountReports = await _context.AccountReports.Where(x => x.status == Status.Accept || x.status == Status.Deny).OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
-            if (accountReports == null)
-            {
-                return new Response(HttpStatusCode.NoContent, "Account report doesn't empty!");
-            }
-            var result = _mapper.Map<List<ViewAccountReport>>(accountReports);
-            foreach (var accountReport in result)
-            {
-                var infoReporter = await GetNameUserCurrent(accountReport.idReporter!);
-                accountReport.nameReporter = infoReporter.fullName;
-                var infoReported = await GetNameUserCurrent(accountReport.idReported!);
-                accountReport.nameReported = infoReported.fullName;
-            }
-            return new Response(HttpStatusCode.OK, "Getall account report is success!", result);
+            return new Response(HttpStatusCode.NoContent, "Get all account report is empty!");
         }
 
         [HttpPost("CreateAccountReport/{idReporter}/{idReported}/{content}")]
         public async Task<Response> CreateAccountReport(string idReporter, string idReported, string content)
         {
-            if (ModelState.IsValid)
+            AccountReport accountReport = new AccountReport()
             {
-                AccountReport accountReport = new AccountReport()
-                {
-                    idReporter = idReporter,
-                    idReported = idReported,
-                    content = content,
-                    status = Status.Waiting,
-                    createdDate = DateTime.Now
-                };
-                await _context.AccountReports.AddAsync(accountReport);
-                await _context.SaveChangesAsync();
+                idReporter = idReporter,
+                idReported = idReported,
+                content = content,
+                status = Status.Waiting,
+                createdDate = DateTime.Now
+            };
+            await _context.AccountReports.AddAsync(accountReport);
+            var isSuccess = await _context.SaveChangesAsync();
+            if (isSuccess > 0)
+            {
                 return new Response(HttpStatusCode.OK, "Create account report is success!", _mapper.Map<ViewAccountReport>(accountReport));
             }
             return new Response(HttpStatusCode.BadRequest, "Create account report is fail!");
@@ -215,15 +197,12 @@ namespace Interaction.Controllers
                 accountReport!.status = Status.Deny;
                 accountReport.confirmedDate = DateTime.Now;
             }
-            var result = await _context.SaveChangesAsync();
-            if (result > 0)
+            var isSuccess = await _context.SaveChangesAsync();
+            if (isSuccess > 0)
             {
                 return new Response(HttpStatusCode.OK, "Update status is success!", _mapper.Map<ViewAccountReport>(accountReport));
             }
-            else
-            {
-                return new Response(HttpStatusCode.BadRequest, "Update status is fail!");
-            }
+            return new Response(HttpStatusCode.BadRequest, "Update status is fail!");
         }
 
         /*------------------------------------------------------------PostReport------------------------------------------------------------*/
@@ -235,55 +214,51 @@ namespace Interaction.Controllers
             return postReports;
         }
 
-        [HttpGet("GetAllPostReportsWaiting")]
-        public async Task<Response> GetAllPostReportsWaiting()
+        [HttpGet("GetAllPostReport")]
+        public async Task<Response> GetAllPostReport(Status status)
         {
-            var postReports = await _context.PostReports.Where(x => x.status == Status.Waiting).OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
-            if (postReports == null)
+            var postReports = await _context.PostReports.OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
+            if (postReports.Count > 0)
             {
-                return new Response(HttpStatusCode.NoContent, "Post report doesn't empty!");
+                if (status == Status.Waiting)
+                {
+                    postReports = postReports.Where(x => x.status == Status.Waiting).ToList();
+                }
+                else if (status == Status.Accept)
+                {
+                    postReports = postReports.Where(x => x.status == Status.Accept).ToList();
+                }
+                else if (status == Status.Deny)
+                {
+                    postReports = postReports.Where(x => x.status == Status.Deny).ToList();
+                }
+                var result = _mapper.Map<List<ViewPostReport>>(postReports);
+                foreach (var postReport in result)
+                {
+                    var infoReporter = await GetNameUserCurrent(postReport.idReporter!);
+                    postReport.nameReporter = infoReporter.fullName;
+                    postReport.avatarReporter = infoReporter.avatar;
+                }
+                return new Response(HttpStatusCode.OK, "Get all post report is success!", result);
             }
-            var result = _mapper.Map<List<ViewPostReport>>(postReports);
-            foreach (var postReport in result)
-            {
-                var infoUser =  await GetNameUserCurrent(postReport.idReporter!);
-                postReport.idReporter = infoUser.fullName;
-            }
-            return new Response(HttpStatusCode.OK, "Getall post report is success!", result);
-        }
-
-        [HttpGet("GetAllPostReportsAcceptOrDeny")]
-        public async Task<Response> GetAllPostReportsAcceptOrDeny()
-        {
-            var postReports = await _context.PostReports.Where(x => x.status == Status.Accept || x.status == Status.Deny).OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
-            if (postReports == null)
-            {
-                return new Response(HttpStatusCode.NoContent, "Post report doesn't empty!");
-            }
-            var result = _mapper.Map<List<ViewPostReport>>(postReports);
-            foreach (var postReport in result)
-            {
-                var infoUser = await GetNameUserCurrent(postReport.idReporter!);
-                postReport.idReporter = infoUser.fullName;
-            }
-            return new Response(HttpStatusCode.OK, "Getall post report is success!", result);
+            return new Response(HttpStatusCode.NoContent, "Get all post report is empty!");
         }
 
         [HttpPost("CreatePostReport/{idReporter}/{idPosted}/{content}")]
         public async Task<Response> CreatePostReport(string idReporter, Guid idPosted, string content)
         {
-            if (ModelState.IsValid)
+            PostReport postReport = new PostReport()
             {
-                PostReport postReport = new PostReport()
-                {
-                    idReporter = idReporter,
-                    idPosted = idPosted,
-                    content = content,
-                    status = Status.Waiting,
-                    createdDate = DateTime.Now
-                };
-                await _context.PostReports.AddAsync(postReport);
-                await _context.SaveChangesAsync();
+                idReporter = idReporter,
+                idPosted = idPosted,
+                content = content,
+                status = Status.Waiting,
+                createdDate = DateTime.Now
+            };
+            await _context.PostReports.AddAsync(postReport);
+            var isSuccess = await _context.SaveChangesAsync();
+            if (isSuccess > 0)
+            {
                 return new Response(HttpStatusCode.OK, "Create post report is success!", _mapper.Map<ViewPostReport>(postReport));
             }
             return new Response(HttpStatusCode.BadRequest, "Create post report is fail!");
@@ -312,10 +287,7 @@ namespace Interaction.Controllers
             {
                 return new Response(HttpStatusCode.OK, "Update status is success!", _mapper.Map<ViewPostReport>(postReport));
             }
-            else
-            {
-                return new Response(HttpStatusCode.BadRequest, "Update status is fail!");
-            }
+            return new Response(HttpStatusCode.BadRequest, "Update status is fail!");
         }
 
         /*------------------------------------------------------------BlogReport------------------------------------------------------------*/
@@ -327,55 +299,51 @@ namespace Interaction.Controllers
             return blogReports;
         }
 
-        [HttpGet("GetAllBlogReportsWaiting")]
-        public async Task<Response> GetAllBlogReportsWaiting()
+        [HttpGet("GetAllBlogReport")]
+        public async Task<Response> GetAllBlogReport(Status status)
         {
-            var blogReports = await _context.BlogReports.Where(x => x.status == Status.Waiting).OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
-            if (blogReports == null)
+            var blogReports = await _context.BlogReports.OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
+            if (blogReports.Count > 0)
             {
-                return new Response(HttpStatusCode.NoContent, "Blog report doesn't empty!");
+                if (status == Status.Waiting)
+                {
+                    blogReports = blogReports.Where(x => x.status == Status.Waiting).ToList();
+                }
+                else if (status == Status.Accept)
+                {
+                    blogReports = blogReports.Where(x => x.status == Status.Accept).ToList();
+                }
+                else if (status == Status.Deny)
+                {
+                    blogReports = blogReports.Where(x => x.status == Status.Deny).ToList();
+                }
+                var result = _mapper.Map<List<ViewBlogReport>>(blogReports);
+                foreach (var blogReport in result)
+                {
+                    var infoReporter = await GetNameUserCurrent(blogReport.idReporter!);
+                    blogReport.nameReporter = infoReporter.fullName;
+                    blogReport.avatarReporter = infoReporter.avatar;
+                }
+                return new Response(HttpStatusCode.OK, "Get all blog report is success!", result);
             }
-            var result = _mapper.Map<List<ViewBlogReport>>(blogReports);
-            foreach (var blogReport in result)
-            {
-                var infoUser = await GetNameUserCurrent(blogReport.idReporter!);
-                blogReport.idReporter = infoUser.fullName;
-            }
-            return new Response(HttpStatusCode.OK, "Getall blog report is success!", result);
-        }
-
-        [HttpGet("GetAllBlogReportsAcceptOrDeny")]
-        public async Task<Response> GetAllBlogReportsAcceptOrDeny()
-        {
-            var blogReports = await _context.BlogReports.Where(x => x.status == Status.Accept || x.status == Status.Deny).OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
-            if (blogReports == null)
-            {
-                return new Response(HttpStatusCode.NoContent, "Blog report doesn't empty!");
-            }
-            var result = _mapper.Map<List<ViewBlogReport>>(blogReports);
-            foreach (var blogReport in result)
-            {
-                var infoUser = await GetNameUserCurrent(blogReport.idReporter!);
-                blogReport.idReporter = infoUser.fullName;
-            }
-            return new Response(HttpStatusCode.OK, "Getall blog report is success!", result);
+            return new Response(HttpStatusCode.NoContent, "Get all blog report is empty!");
         }
 
         [HttpPost("CreateBlogReport/{idReporter}/{idBloged}/{content}")]
         public async Task<Response> CreateBlogReport(string idReporter, Guid idBloged, string content)
         {
-            if (ModelState.IsValid)
+            BlogReport blogReport = new BlogReport()
             {
-                BlogReport blogReport = new BlogReport()
-                {
-                    idReporter = idReporter,
-                    idBloged = idBloged,
-                    content = content,
-                    status = Status.Waiting,
-                    createdDate = DateTime.Now
-                };
-                await _context.BlogReports.AddAsync(blogReport);
-                await _context.SaveChangesAsync();
+                idReporter = idReporter,
+                idBloged = idBloged,
+                content = content,
+                status = Status.Waiting,
+                createdDate = DateTime.Now
+            };
+            await _context.BlogReports.AddAsync(blogReport);
+            var isSuccess = await _context.SaveChangesAsync();
+            if (isSuccess > 0)
+            {
                 return new Response(HttpStatusCode.OK, "Create blog report is success!", _mapper.Map<ViewBlogReport>(blogReport));
             }
             return new Response(HttpStatusCode.BadRequest, "Create blog report is fail!");
@@ -404,10 +372,7 @@ namespace Interaction.Controllers
             {
                 return new Response(HttpStatusCode.OK, "Update status is success!", _mapper.Map<ViewBlogReport>(blogReport));
             }
-            else
-            {
-                return new Response(HttpStatusCode.BadRequest, "Update status is fail!");
-            }
+            return new Response(HttpStatusCode.BadRequest, "Update status is fail!");
         }
     }
 }
