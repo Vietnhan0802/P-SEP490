@@ -13,7 +13,21 @@ import VerifyTable from "./DashboardTable/VerifyTable";
 import { useTranslation } from 'react-i18next';
 import SideBar from "../../components/sidebar";
 import ProjectTable from "./DashboardTable/ProjectTable";
-import { blogInstance, postInstance, projectInstance, userInstance } from "../../axios/axiosConfig";
+import { blogInstance, postInstance, projectInstance, reportInstance, userInstance } from "../../axios/axiosConfig";
+
+function ReportCount(count1 = 0, count2 = 0, count3 = 0) {
+  const totalReports = count1 + count2 + count3;
+  console.log(totalReports)
+  console.log(count1)
+  console.log(count2)
+  console.log(count3)
+  if (totalReports > 0) {
+    return <p className="fs-24 fw-bold">{totalReports} Report</p>;
+  } else {
+    // Optionally, return something to indicate no reports
+    return <p>No reports</p>; // Or <p>No reports</p>;
+  }
+}
 function DashBoard() {
   const { t } = useTranslation()
   const [activeTab, setActiveTab] = useState("post");
@@ -21,6 +35,9 @@ function DashBoard() {
   const [blogList, setBlogList] = useState([]);
   const [accessList, setAccessList] = useState([]);
   const [projectList, setProjectList] = useState([]);
+  const [accountReportList, setAccountReportList] = useState([]);
+  const [blogReportList, setBlogReportList] = useState([]);
+  const [portReportList, setPostReportList] = useState([]);
   const sessionData = JSON.parse(sessionStorage.getItem("userSession")) || {};
   const { currentUserId } = sessionData;
   // const value = 13;
@@ -48,6 +65,21 @@ function DashBoard() {
         setProjectList(res?.data?.result);
       })
       .catch((err) => { console.log(err) });
+    reportInstance.get(`GetAllAccountReport`)
+      .then((res) => {
+        setAccountReportList(res?.data?.result);
+      })
+      .catch((err) => { console.log(err) });
+    reportInstance.get(`GetAllBlogReport`)
+      .then((res) => {
+        setBlogReportList(res?.data?.result);
+      })
+      .catch((err) => { console.log(err) });
+    reportInstance.get(`GetAllPostReport`)
+      .then((res) => {
+        setPostReportList(res?.data?.result);
+      })
+      .catch((err) => { console.log(err) });
   }, []);
   const renderTable = () => {
     switch (activeTab) {
@@ -58,7 +90,10 @@ function DashBoard() {
       case "access":
         return <AccessTable value={accessList} />;
       case "report":
-        return <ReportTable />;
+        return <ReportTable 
+        accountValue={accountReportList} 
+        postValue={portReportList} 
+        blogValue={blogReportList} />;
       case "verify":
         return <VerifyTable />;
       case "project":
@@ -138,7 +173,7 @@ function DashBoard() {
                     }`}>
                     <div className="mb-1 fs-12">{t('managereport')}</div>
                     <div className="d-flex justify-content-between">
-                      <p className="fs-24 fw-bold">63 {t('newreport')}</p>
+                      <p className="fs-24 fw-bold">{ReportCount(accountReportList?.length, blogReportList?.length, portReportList?.length)}</p>
                     </div>
                     <hr style={{ margin: "0.5rem 0" }} />
                     <p

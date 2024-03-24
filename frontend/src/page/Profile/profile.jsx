@@ -32,6 +32,7 @@ import { Viewer } from '@react-pdf-viewer/core';
 // Import the styles
 import '@react-pdf-viewer/core/lib/styles/index.css';
 import { Worker } from '@react-pdf-viewer/core';
+import Verification from "./Verification";
 function formatDateString(dateString) {
   // Check if the dateString is not empty
   if (dateString) {
@@ -143,7 +144,7 @@ function Profile({ handleChangeImg, value }) {
           credentialInstance
             .get(`/GetDegreeByUser/${userId}`, {
               headers: {
-                accept: 'application/pdf'
+                accept: 'application/json'
               }
             })
             .then((res) => {
@@ -326,11 +327,11 @@ function Profile({ handleChangeImg, value }) {
                             >
                               <UpdateInformationPu value={inputs} id={currentUserId} reset={reset} />
                             </Dropdown.Item>
-                            {role === 'Business' &&
+                            {(role === 'Business' || role === 'Member') &&
                               <Dropdown.Item>
-                                <MdVerified size={28} />
-                              </Dropdown.Item>}
-
+                                <Verification id={currentUserId}/>
+                              </Dropdown.Item>
+                            }
                             <Dropdown.Item>
                               <ChangePass email={inputs.email} />
                             </Dropdown.Item>
@@ -491,7 +492,7 @@ function Profile({ handleChangeImg, value }) {
                                 height: '750px',
                               }}
                             >
-                              <Viewer fileUrl='../../images/Coursera7E23T9HJWD36.pdf'
+                              <Viewer fileUrl={item.fileSrc}
                                />
                             </div>
                           </Worker> */}

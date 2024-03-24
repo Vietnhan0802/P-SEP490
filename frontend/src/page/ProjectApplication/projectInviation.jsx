@@ -67,7 +67,14 @@ function ProjectInviation() {
                 accessor: "status",
                 Cell: ({ row }) => (
                     <div >
-                        <CancelItem id={row.original.id} reset={reset} />
+                        {role === 'Business' ?
+
+                            <CancelItem id={row.original.id} reset={reset} />
+                            :
+                            <div className='d-flex'>
+                                <AcceptConfirm id={row.original.id} reset={reset} />
+                                <RejectConfirm id={row.original.id} reset={reset} />
+                            </div>}
                     </div>
                 ),
             },

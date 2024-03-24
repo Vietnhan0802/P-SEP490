@@ -94,8 +94,8 @@ function ProjectDetail() {
       });
   }, [reset]);
   const resetPage = (value) => {
-    if (value === 'Success')
-      setResetProject(!resetProject)
+    console.log(value ==='Success')
+    if (value === 'Success') setResetProject(!resetProject);
   }
   return (
     <Row className="pt-3 ms-0 me-0 pb-3">
@@ -207,7 +207,7 @@ function ProjectDetail() {
                     {projectMembers?.length > 0 ?
 
                       projectMembers?.map((member) => (
-                        <tr key={member.idProjectMeber}>
+                        <tr key={member.idProjectMember}>
                           <td className="w-20 py-3">
                             <div className="d-flex align-items-center">
                               <img src={member.avatar === 'https://localhost:7006/Images/' ? defaultAvatar : member.avatar} className="member-img" alt="avatar" />
@@ -219,7 +219,7 @@ function ProjectDetail() {
                             {member.namePosition}
                           </td>
                           <td className="w-10 py-3 text-center  yellow-icon">
-                            <RemoveMember id={member.idAccount} project={idProject}/>
+                            <RemoveMember id={member.idProjectMember} project={idProject} resetPage={resetPage} />
                           </td>
                         </tr>
                       )) : <tr> {/* Add a single row for the message */}
