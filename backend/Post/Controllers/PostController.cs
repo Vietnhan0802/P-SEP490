@@ -259,6 +259,22 @@ namespace Post.Controllers
             return new Response(HttpStatusCode.OK, "Get post is success!", result);
         }
 
+        [HttpGet("GetTitlePost/{idPost}")]
+        public async Task<ActionResult<ViewPost>> GetTitlePost(Guid idPost)
+        {
+            var post = await _context.Postts.FindAsync(idPost);
+            if (post == null)
+            {
+                return NotFound("Post doesn't exist!");
+            }
+            var result = new
+            {
+                title = post.title,
+                content = post.content
+            };
+            return Ok(result);
+        }
+
         [HttpPost("CreatePost/{idUser}/{idProject}")]
         public async Task<Response> CreatePost(string idUser, Guid idProject, [FromForm] CreateUpdatePost createUpdatePost)
         {

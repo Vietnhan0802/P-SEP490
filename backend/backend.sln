@@ -19,7 +19,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Interaction", "Interaction\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Project", "Project\Project.csproj", "{F8077231-D02B-493C-84CC-2EC8C0F7B142}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Communication", "Communication\Communication.csproj", "{47F2AB64-D548-4C75-B562-F4751D90FED2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommunicationService", "Communication\CommunicationService.csproj", "{47F2AB64-D548-4C75-B562-F4751D90FED2}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Notification", "Notification\Notification.csproj", "{A5256695-C110-4F6A-9CD6-36955E4D5518}"
 EndProject
@@ -27,7 +27,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Follow", "Follow\Follow.csp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Post", "Post\Post.csproj", "{063EAE2A-26D5-4ED4-A4B2-840DDC51FF21}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Blog", "Blog\Blog.csproj", "{DE242B79-A036-4DC5-BA5C-6CEAF314C301}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlogService", "Blog\BlogService.csproj", "{DE242B79-A036-4DC5-BA5C-6CEAF314C301}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Statics", "Statics\Statics.csproj", "{5DDC9670-BEBE-4C9C-A4EF-9DE94360848A}"
 EndProject
