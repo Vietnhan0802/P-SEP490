@@ -7,7 +7,6 @@ import "../Profile/switchbtn.scss";
 import degree from "../../images/common/degree.png";
 import Follow from "../../components/follow";
 import { Button, Col, Dropdown, Row } from "react-bootstrap";
-import { pdfjs } from 'react-pdf';
 import defaultImage from "../../images/common/default.png";
 import {
   blogInstance,
@@ -24,10 +23,15 @@ import DegreePu from "./degreePu";
 import UpdateAvatarPu from "./UpdateAvatarPu";
 import Report from "../../components/report-popup/Report";
 import UpdateInformationPu from "./UpdateInformationPu";
-import PdfViewer from "../../components/PdfViewer/PdfViewer";
 import { BsThreeDots } from "react-icons/bs";
 import { MdVerified } from "react-icons/md";
 import ChangePass from "./ChangePass";
+// Import the main component
+import { Viewer } from '@react-pdf-viewer/core';
+
+// Import the styles
+import '@react-pdf-viewer/core/lib/styles/index.css';
+import { Worker } from '@react-pdf-viewer/core';
 function formatDateString(dateString) {
   // Check if the dateString is not empty
   if (dateString) {
@@ -41,11 +45,6 @@ function formatDateString(dateString) {
 }
 function Profile({ handleChangeImg, value }) {
 
-  //-----------------------------
-  pdfjs.GlobalWorkerOptions.workerSrc = new URL(
-    'pdfjs-dist/build/pdf.worker.min.js',
-    import.meta.url,
-  ).toString();
   // ````````````````````````````
 
   const navigate = useNavigate();
@@ -141,7 +140,11 @@ function Profile({ handleChangeImg, value }) {
         }
         if (user.role === "Member") {
           credentialInstance
-            .get(`/GetDegreeByUser/${userId}`)
+            .get(`/GetDegreeByUser/${userId}`, {
+              headers: {
+                accept: 'application/json'
+              }
+            })
             .then((res) => {
               setUserDegree(res?.data?.result);
             })
@@ -480,8 +483,19 @@ function Profile({ handleChangeImg, value }) {
                           >
                             View Detail
                           </a>
+                          <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
+                            <div
+                              style={{
+                                border: '1px solid rgba(0, 0, 0, 0.3)',
+                                height: '750px',
+                              }}
+                            >
+                              <Viewer fileUrl={item.fileSrc} httpHeaders={{
+                                'Authorization': 'Bearer xxxxxx',
+                              }} withCredentials={true} />
+                            </div>
+                          </Worker>
                         </div>
-                        <PdfViewer pdfFile={item.fileSrc} />
                       </div>
                     ))}
                 </div>

@@ -5,12 +5,15 @@ import { IoPersonAdd } from "react-icons/io5";
 import { CiSearch } from "react-icons/ci";
 import Select from 'react-select'
 import { projectInstance, userInstance } from "../../axios/axiosConfig";
+import defaultAvatar from '../../images/common/default.png'
 function createData(id, avatar, fullName, email, role) {
   return { id, avatar, fullName, email, role }
 }
 function FormMember({ projectId, positionOption }) {
   const [show, setShow] = useState(false);
   const [users, setUsers] = useState([]);
+  const [search, setSearch] = useState('');
+  const [filterUsers, setFilterUsers] = useState([]);
   const optionsList = positionOption?.map((item) => {
     return {
       value: item.idPosition,
@@ -48,10 +51,20 @@ function FormMember({ projectId, positionOption }) {
       positionId: invite.positionId
     };
     projectInstance.post(`CreateProjectInvite/${postData.userId}?idProject=${postData.idProject}&idPosition=${postData.positionId}`)
-      .then((res) => { console.log(res?.data?.result); })
+      .then((res) => { console.log(res?.data?.result); setShow(false); })
       .catch((error) => { console.error(error) });
   };
-
+  const handleSearch = (event) => {
+    const userText = event.target.value;
+    setSearch(userText);
+    if (userText.trim() === '') {
+      // Show all users if search text is empty
+      setFilterUsers(users);
+    } else {
+      const userTextLowerCase = userText.toLowerCase();
+      setFilterUsers(users.filter((item) => item.fullName.toLowerCase().includes(userTextLowerCase)));
+    }
+  }
 
   return (
     <div className="p-1">
@@ -61,7 +74,7 @@ function FormMember({ projectId, positionOption }) {
           <p>Invite member</p>
         </div>
       </Button>
-      <Modal show={show} onHide={modalClose}>
+      <Modal show={show} onHide={modalClose} id='form-member'>
         <Modal.Header closeButton>
           <Modal.Title>Add member</Modal.Title>
         </Modal.Header>
@@ -72,29 +85,31 @@ function FormMember({ projectId, positionOption }) {
               <CiSearch className="" />
               <input
                 type="text"
+                value={search}
+                onChange={handleSearch}
                 placeholder={"Search"}
                 className="search-box size-20"
               />
             </div>
           </div>
           <div className="result size-20">
-            {users.map((user) => (
+            {(search ? filterUsers : users).map((user) => (
               <div className="result-member mb-3 d-flex align-items-center justify-content-between mb-2">
                 <div className="d-flex align-items-center">
                   <div className="member-avatar">
-                    <img src={user.avatar} alt="avatar" />
+                    <img src={user.avatar === "https://localhost:7006/Images/" ? defaultAvatar : user.avatar} alt="avatar" />
                   </div>
                   <div className="ms-2 member-name d-flex flex-column justify-content-center">
                     <div className="name size-22">{user.fullName}</div>
                     <div className="email">{user.email}</div>
                   </div>
                 </div>
-                <div>
+                <div className="d-flex align-items-center">
                   <Select
                     options={optionsList}
                     onChange={(selectedOption) => handlePositionChange(selectedOption, user.id)}
                   />
-                  <button className="btn btn-info" onClick={() => handleInvite(user.id)}>Invite</button>
+                  <button className="btn btn-info ms-3" onClick={() => handleInvite(user.id)}>Invite</button>
                 </div>
               </div>))}
           </div>

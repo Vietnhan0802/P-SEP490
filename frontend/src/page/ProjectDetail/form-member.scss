@@ -1,3 +1,10 @@
+#form-member.modal-dialog{
+    max-width: 700px;
+    .result{
+        max-height: 500px;
+        overflow-y: auto;
+    }
+}
 #member-search {
     .btn-scale {
         height: 100%;
