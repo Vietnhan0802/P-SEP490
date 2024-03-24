@@ -3,6 +3,7 @@ using Blog.Data;
 using Blog.Validator;
 using BusinessObjects.Entities.Blog;
 using BusinessObjects.ViewModels.Blog;
+using BusinessObjects.ViewModels.Post;
 using BusinessObjects.ViewModels.Statistic;
 using BusinessObjects.ViewModels.User;
 using Commons.Helpers;
@@ -251,6 +252,22 @@ namespace Blog.Controllers
             blog.viewInDate++;
             await _context.SaveChangesAsync();
             return new Response(HttpStatusCode.OK, "Get blog is success!", result);
+        }
+
+        [HttpGet("GetTitleBlog/{idBlog}")]
+        public async Task<ActionResult<ViewBlog>> GetTitleBlog(Guid idBlog)
+        {
+            var blog = await _context.Blogs.FindAsync(idBlog);
+            if (blog == null)
+            {
+                return NotFound("Blog doesn't exist!");
+            }
+            var result = new
+            {
+                title = blog.title,
+                content = blog.content
+            };
+            return Ok(result);
         }
 
         [HttpPost("CreateBlog/{idUser}")]

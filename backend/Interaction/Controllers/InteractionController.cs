@@ -1,11 +1,11 @@
 ﻿using AutoMapper;
 using BusinessObjects.Entities.Interaction;
 using BusinessObjects.Enums.Interaction.Verification;
+using BusinessObjects.ViewModels.Blog;
 using BusinessObjects.ViewModels.Interaction;
+using BusinessObjects.ViewModels.Post;
 using BusinessObjects.ViewModels.User;
 using Interaction.Data;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
@@ -22,6 +22,8 @@ namespace Interaction.Controllers
         private readonly IMapper _mapper;
         private readonly HttpClient client;
 
+        public string BlogApiUrl { get; }
+        public string PostApiUrl { get; }
         public string UserApiUrl { get; }
 
         public InteractionController(AppDBContext context, IMapper mapper)
@@ -31,7 +33,37 @@ namespace Interaction.Controllers
             client = new HttpClient();
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
             client.DefaultRequestHeaders.Accept.Add(contentType);
+            BlogApiUrl = "https://localhost:7007/api/Blog";
+            PostApiUrl = "https://localhost:7008/api/Post";
             UserApiUrl = "https://localhost:7006/api/User";
+        }
+
+        [HttpGet("GetTitleBlog/{idBlog}")]
+        private async Task<ViewBlog> GetTitleBlog(Guid idBlog)
+        {
+            HttpResponseMessage response = await client.GetAsync($"{BlogApiUrl}/GetTitleBlog/{idBlog}");
+            string strData = await response.Content.ReadAsStringAsync();
+            var option = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true,
+            };
+            var blog = JsonSerializer.Deserialize<ViewBlog>(strData, option);
+
+            return blog;
+        }
+
+        [HttpGet("GetTitlePost/{idPost}")]
+        private async Task<ViewPost> GetTitlePost(Guid idPost)
+        {
+            HttpResponseMessage response = await client.GetAsync($"{PostApiUrl}/GetTitlePost/{idPost}");
+            string strData = await response.Content.ReadAsStringAsync();
+            var option = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true,
+            };
+            var post = JsonSerializer.Deserialize<ViewPost>(strData, option);
+
+            return post;
         }
 
         [HttpGet("GetNameUserCurrent/{idUser}")]
@@ -115,7 +147,7 @@ namespace Interaction.Controllers
         /*------------------------------------------------------------AccountReport------------------------------------------------------------*/
 
         [HttpGet("GetAllAccountReport")]
-        public async Task<Response> GetAllAccountReport(Status status)
+        public async Task<Response> GetAllAccountReport()
         {
             var accountReports = await _context.AccountReports.OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
             if (accountReports.Count > 0)
@@ -191,7 +223,7 @@ namespace Interaction.Controllers
         }
 
         [HttpGet("GetAllPostReport")]
-        public async Task<Response> GetAllPostReport(Status status)
+        public async Task<Response> GetAllPostReport()
         {
             var postReports = await _context.PostReports.OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
             if (postReports.Count > 0)
@@ -199,9 +231,9 @@ namespace Interaction.Controllers
                 var result = _mapper.Map<List<ViewPostReport>>(postReports);
                 foreach (var postReport in result)
                 {
-                    var infoReporter = await GetNameUserCurrent(postReport.idReporter!);
-                    postReport.nameReporter = infoReporter.fullName;
-                    postReport.avatarReporter = infoReporter.avatar;
+                    var infoPost = await GetTitlePost(postReport.idPosted);
+                    postReport.titlePost = infoPost.title;
+                    postReport.contentPost = infoPost.content;
                 }
                 return new Response(HttpStatusCode.OK, "Get all post report is success!", result);
             }
@@ -264,7 +296,7 @@ namespace Interaction.Controllers
         }
 
         [HttpGet("GetAllBlogReport")]
-        public async Task<Response> GetAllBlogReport(Status status)
+        public async Task<Response> GetAllBlogReport()
         {
             var blogReports = await _context.BlogReports.OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
             if (blogReports.Count > 0)
@@ -272,9 +304,9 @@ namespace Interaction.Controllers
                 var result = _mapper.Map<List<ViewBlogReport>>(blogReports);
                 foreach (var blogReport in result)
                 {
-                    var infoReporter = await GetNameUserCurrent(blogReport.idReporter!);
-                    blogReport.nameReporter = infoReporter.fullName;
-                    blogReport.avatarReporter = infoReporter.avatar;
+                    var infoBlog = await GetTitleBlog(blogReport.idBloged!);
+                    blogReport.titleBlog = infoBlog.title;
+                    blogReport.contentBlog = infoBlog.content;
                 }
                 return new Response(HttpStatusCode.OK, "Get all blog report is success!", result);
             }
