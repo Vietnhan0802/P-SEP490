@@ -203,6 +203,11 @@ namespace Post.Controllers
             var result = _mapper.Map<List<ViewPost>>(posts);
             foreach (var post in result)
             {
+                post.report = await GetAllReportPost();
+                if (post.report >= 3)
+                {
+                    post.isBlock = true;
+                }
                 post.like = await _context.PosttLikes.Where(x => x.idPost == post.idPost).CountAsync();
                 var isLike = await _context.PosttLikes.FirstOrDefaultAsync(x => x.idAccount == idUser && x.idPost == post.idPost);
                 if (isLike != null)
