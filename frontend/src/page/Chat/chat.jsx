@@ -28,8 +28,8 @@ function Chat() {
   useEffect(() => {
     chatInstance.get(`GetConversationsByUser/${currentUserId}`)
     .then((res) => {
-      setConversations(res?.data.result);
-      console.log(res?.data.result);
+      setConversations(res.data.result);
+      console.log(res.data.result);
     })
     .catch((error) => {
       console.error(error);
@@ -56,7 +56,7 @@ function Chat() {
                     <img src={item.avatar === "https://localhost:7006/Images/" ? defaultImage : item.avatar} alt="" className="avatar" />
                     <div className="ms-2">
                       <p className="mb-0 name">{item.fullName}</p>
-                      <p className="mb-0 text">{item.text}</p>
+                      <p className="mb-0 text">This is a text</p>
                     </div>
                   </div>
                   <div className="d-flex align-items-center">
