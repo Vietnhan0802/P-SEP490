@@ -80,7 +80,6 @@ function OwnProject({ value }) {
       </Col>
       <Col md={6}>
         <div id="own_project">
-
           <div className="bg-white p-2 d-flex flex-grid align-items-center justify-content-between row m-0 form mb-3">
             <div className="d-flex project-search align-items-center position-relative col">
               <CiSearch className="" />
@@ -109,8 +108,6 @@ function OwnProject({ value }) {
                   alt="Laptop with developer items spread around"
                 />
               </div>
-
-
               <div className="mt-2 ">
                 <h2 className="text-xl SFU-bold">{item.name}</h2>
                 <p className="text-gray-600 SFU-reg">

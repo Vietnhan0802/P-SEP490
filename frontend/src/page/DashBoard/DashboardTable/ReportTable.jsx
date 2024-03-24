@@ -91,15 +91,6 @@ const rows = [
     "Productivity app",
     "Description of the current content"
   ),
-  //   createData(5, "Gingerbread", 356, 16.0, 49, 3.9),
-  //   createData(6, "Honeycomb", 408, 3.2, 87, 6.5),
-  //   createData(7, "Ice cream sandwich", 237, 9.0, 37, 4.3),
-  //   createData(8, "Jelly Bean", 375, 0.0, 94, 0.0),
-  //   createData(9, "KitKat", 518, 26.0, 65, 7.0),
-  //   createData(10, "Lollipop", 392, 0.2, 98, 0.0),
-  //   createData(11, "Marshmallow", 318, 0, 81, 2.0),
-  //   createData(12, "Nougat", 360, 19.0, 9, 37.0),
-  //   createData(13, "Oreo", 437, 18.0, 63, 4.0),
 ];
 
 function descendingComparator(a, b, orderBy) {
@@ -154,6 +145,13 @@ const headCells = [
     disablePadding: false,
     label: "Post Title",
     for: "reportPost",
+  },
+  {
+    id: "title",
+    numeric: false,
+    disablePadding: false,
+    label: "Blog Title",
+    for: "reportBlog",
   },
 
   {
@@ -222,20 +220,35 @@ function EnhancedTableHead(props) {
 }
 
 EnhancedTableHead.propTypes = {
-  numSelected: PropTypes.number.isRequired,
   onRequestSort: PropTypes.func.isRequired,
-  onSelectAllClick: PropTypes.func.isRequired,
   order: PropTypes.oneOf(["asc", "desc"]).isRequired,
   orderBy: PropTypes.string.isRequired,
   rowCount: PropTypes.number.isRequired,
 };
 
-export default function ReportTable() {
+export default function ReportTable({ accountValue, postValue, blogValue }) {
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("calories");
   const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
+
+  React.useEffect(() => {
+    const fetchedPostRows = accountValue?.map(element => (
+      createData(
+        element.idPost,
+        element.avatar,
+        element.fullName,
+        element.title,
+        element.content,
+        element.createdDate,
+        element.report,
+        element.isBlock,
+      )
+    )
+    );
+    // setUserRows(fetchedPostRows);
+  }, []);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -299,20 +312,26 @@ export default function ReportTable() {
           <div className="d-flex justify-content-between align-items-center">
             <div onClick={() => handledActiveReport("reportPost")}>
               <p
-                className={`report-post ${
-                  activeReport === "reportPost" ? "active-report" : ""
-                }`}
+                className={`report-post ${activeReport === "reportPost" ? "active-report" : ""
+                  }`}
               >
                 Report Post
               </p>
             </div>
             <div onClick={() => handledActiveReport("reportAccount")}>
               <p
-                className={`report-account ${
-                  activeReport === "reportAccount" ? "active-report" : ""
-                }`}
+                className={`report-account ${activeReport === "reportAccount" ? "active-report" : ""
+                  }`}
               >
                 Report Account
+              </p>
+            </div>
+            <div onClick={() => handledActiveReport("reportBlog")}>
+              <p
+                className={`report-blog ${activeReport === "reportBlog" ? "active-report" : ""
+                  }`}
+              >
+                Report Blog
               </p>
             </div>
           </div>
@@ -333,14 +352,12 @@ export default function ReportTable() {
             {activeReport === "reportPost" ? (
               <TableBody>
                 {visibleRows.map((row, index) => {
-                  const isItemSelected = isSelected(row.id);
                   const labelId = `enhanced-table-checkbox-${index}`;
 
                   return (
                     <TableRow
                       hover
                       role="checkbox"
-                      aria-checked={isItemSelected}
                       tabIndex={-1}
                       key={row.id}
                       sx={{ cursor: "pointer" }}
@@ -386,7 +403,7 @@ export default function ReportTable() {
                               <GoDotFill className="me-1" />
                               Deny
                             </div>
-                            <div  className="accept">
+                            <div className="accept">
                               <GoDotFill className="me-1" />
                               Block
                             </div>
@@ -438,23 +455,22 @@ export default function ReportTable() {
                         </div>
                       </TableCell>
                       <TableCell align="left" className="blur">
-                      <p
-                        className={`${
-                          row.type === "Business" ? "business" : "user"
-                        }`}
-                      >{row.type}</p>
+                        <p
+                          className={`${row.type === "Business" ? "business" : "user"
+                            }`}
+                        >{row.type}</p>
                       </TableCell>
                       <TableCell align="left">
                         <p className="blur">{row.description}</p>
                       </TableCell>
                       <TableCell align="right">
-                      <div className="d-flex align-items-center justify-content-end">
+                        <div className="d-flex align-items-center justify-content-end">
                           <div className="d-flex justify-content-center">
                             <div className="deny">
                               <GoDotFill className="me-1" />
                               Deny
                             </div>
-                            <div  className="accept">
+                            <div className="accept">
                               <GoDotFill className="me-1" />
                               Block
                             </div>
