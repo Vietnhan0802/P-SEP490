@@ -28,7 +28,7 @@ const createData = (
 
 function ProjectApplication() {
   const sessionData = JSON.parse(sessionStorage.getItem('userSession')) || {};
-  const { currentUserId } = sessionData;
+  const { currentUserId, role } = sessionData;
   const [resetPage, setResetPage] = useState(true);
   const columns = React.useMemo(
     () => [
@@ -87,12 +87,22 @@ function ProjectApplication() {
   }
   const [applications, setApplications] = useState([]);
   useEffect(() => {
-    projectInstance.get(`GetAllProjectApplications/${currentUserId}`)
+    if(role==='Business'){
+      projectInstance.get(`GetAllProjectApplications/${currentUserId}`)
       .then((res) => {
         const data = res?.data?.result;
         setApplications(data.map((item) => createData(item.idProjectMember, item.fullName, item.email, item.namePosition, item.nameProject, item.avatar, item.cvUrlFile)));
       })
       .catch((error) => { console.error(error) });
+    }else{
+      projectInstance.get(`GetAllSendApplications/${currentUserId}`)
+      .then((res) => {
+        const data = res?.data?.result;
+        setApplications(data.map((item) => createData(item.idProjectMember, item.fullName, item.email, item.namePosition, item.nameProject, item.avatar, item.cvUrlFile)));
+      })
+      .catch((error) => { console.error(error) });
+    }
+
   }, [resetPage]);
   return (
     <Row className="pt-3 ms-0 me-0">

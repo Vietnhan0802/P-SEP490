@@ -138,11 +138,12 @@ function Profile({ handleChangeImg, value }) {
               console.log(error);
             });
         }
+
         if (user.role === "Member") {
           credentialInstance
             .get(`/GetDegreeByUser/${userId}`, {
               headers: {
-                accept: 'application/json'
+                accept: 'application/pdf'
               }
             })
             .then((res) => {
@@ -483,18 +484,17 @@ function Profile({ handleChangeImg, value }) {
                           >
                             View Detail
                           </a>
-                          <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
+                          {/* <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
                             <div
                               style={{
                                 border: '1px solid rgba(0, 0, 0, 0.3)',
                                 height: '750px',
                               }}
                             >
-                              <Viewer fileUrl={item.fileSrc} httpHeaders={{
-                                'Authorization': 'Bearer xxxxxx',
-                              }} withCredentials={true} />
+                              <Viewer fileUrl='../../images/Coursera7E23T9HJWD36.pdf'
+                               />
                             </div>
-                          </Worker>
+                          </Worker> */}
                         </div>
                       </div>
                     ))}

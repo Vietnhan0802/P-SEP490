@@ -67,7 +67,7 @@ namespace Credential.Controllers
             return new Response(HttpStatusCode.OK, "Get all degree success!", result);
         }
 
-        [HttpGet("GetDegreeByUser/{idUser}")]
+        [HttpGet("GetDegreeByUser/{idUser}")] 
         public async Task<Response> GetDegreeByUser(string idUser)
         {
             var degrees = await _context.Degrees.Where(x => x.idAccount == idUser).OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
