@@ -56,7 +56,7 @@ namespace Communication.Controllers
         public async Task<Response> GetConversationsByUser(string idCurrentUser)
         {
             var conversations = await _context.Conversations.Where(x => (x.idAccount1 == idCurrentUser && x.isDeletedBySender == false) 
-                                                                     || (x.idAccount2 == idCurrentUser && x.isDeletedByReceiver == false)).ToListAsync();
+                                                                     || (x.idAccount2 == idCurrentUser && x.isDeletedByReceiver == false)).OrderByDescending(x => x.createdDate).ToListAsync();
             if (conversations.Count > 0)
             {
                 var result = _mapper.Map<List<ViewConversation>>(conversations);

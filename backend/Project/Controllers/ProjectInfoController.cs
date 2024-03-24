@@ -437,7 +437,7 @@ namespace Project.Controllers
         [HttpGet("GetAllProjectInvites/{idUser}")]
         public async Task<Response> GetAllProjectInvites(string idUser)
         {
-            var projectInvites = await _context.ProjectMembers.Where(x => x.idAccount == idUser && x.type == BusinessObjects.Enums.Project.Type.Invited && x.isAcept == null)
+            var projectInvites = await _context.ProjectMembers.Include(x => x.Position).Where(x => x.idAccount == idUser && x.type == BusinessObjects.Enums.Project.Type.Invited && x.isAcept == null)
                                                                            .OrderByDescending(x => x.createdDate)
                                                                            .AsNoTracking()
                                                                            .ToListAsync();
@@ -462,10 +462,10 @@ namespace Project.Controllers
             return new Response(HttpStatusCode.NoContent, "Get all project invite is empty!"); 
         }
 
-        [HttpGet("GetAllSendApplications")]
+        [HttpGet("GetAllSendApplications/{idUser}")]
         public async Task<Response> GetAllSendApplications(string idUser)
         {
-            var projectApplications = await _context.ProjectMembers.Where(x => x.idAccount == idUser && x.type == BusinessObjects.Enums.Project.Type.Applied && x.isAcept == null)
+            var projectApplications = await _context.ProjectMembers.Include(x => x.Position).Where(x => x.idAccount == idUser && x.type == BusinessObjects.Enums.Project.Type.Applied && x.isAcept == null)
                                                                            .OrderByDescending(x => x.createdDate)
                                                                            .AsNoTracking()
                                                                            .ToListAsync();

@@ -50,38 +50,34 @@ namespace Interaction.Controllers
 
         /*------------------------------------------------------------Verification------------------------------------------------------------*/
 
-        [HttpGet("GetAllVerificationsWaiting")]
-        public async Task<Response> GetAllVerificationsWaiting()
+        [HttpGet("GetAllVerification")]
+        public async Task<Response> GetAllVerification(Status status)
         {
-            var verifications = await _context.Verifications.Where(x => x.status == Status.Waiting).OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
-            if (verifications == null)
+            var verifications = await _context.Verifications.OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
+            if (verifications.Count > 0)
             {
-                return new Response(HttpStatusCode.NoContent, "Verifications doesn't empty!");
+                if (status == Status.Waiting)
+                {
+                    verifications = verifications.Where(x => x.status == Status.Waiting).ToList();
+                }
+                else if (status == Status.Accept)
+                {
+                    verifications = verifications.Where(x => x.status == Status.Accept).ToList();
+                }
+                else if (status == Status.Deny)
+                {
+                    verifications = verifications.Where(x => x.status == Status.Deny).ToList();
+                }
+                var result = _mapper.Map<List<ViewVerification>>(verifications);
+                foreach (var verification in result)
+                {
+                    var infoUser = await GetNameUserCurrent(verification.idAccount!);
+                    verification.fullName = infoUser.fullName;
+                    verification.avatar = infoUser.avatar;
+                }
+                return new Response(HttpStatusCode.OK, "Get all verifications is success!", result);
             }
-            var result = _mapper.Map<List<ViewVerification>>(verifications);
-            foreach (var verification in result)
-            {
-                var infoUser = await GetNameUserCurrent(verification.idAccount!);
-                verification.fullName = infoUser.fullName;
-            }
-            return new Response(HttpStatusCode.OK, "Getall verifications is success!", result);
-        }
-
-        [HttpGet("GetAllVerificationsAcceptOrDeny")]
-        public async Task<Response> GetAllVerificationsAcceptOrDeny()
-        {
-            var verifications = await _context.Verifications.Where(x => x.status == Status.Accept || x.status == Status.Deny).OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
-            if (verifications == null)
-            {
-                return new Response(HttpStatusCode.NoContent, "Verifications doesn't empty!");
-            }
-            var result = _mapper.Map<List<ViewVerification>>(verifications);
-            foreach (var verification in result)
-            {
-                var infoUser = await GetNameUserCurrent(verification.idAccount!);
-                verification.fullName = infoUser.fullName;
-            }
-            return new Response(HttpStatusCode.OK, "Getall verifications is success!", result);
+            return new Response(HttpStatusCode.NoContent, "Get all verifications is empty!");
         }
 
         [HttpPost("CreateVerification/{idUser}")]
@@ -132,6 +128,16 @@ namespace Interaction.Controllers
         }
 
         /*------------------------------------------------------------AccountReport------------------------------------------------------------*/
+
+        /*[HttpGet("GetAllAccountReport")]
+        public async Task<Response> GetAllAccountReport(Status status)
+        {
+            var accountReports = await _context.AccountReports.OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
+            if (accountReports.Count > 0)
+            {
+                if (status)
+            }
+        }*/
 
         [HttpGet("GetAllAccountReportsWaiting")]
         public async Task<Response> GetAllAccountReportsWaiting()
