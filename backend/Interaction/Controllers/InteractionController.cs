@@ -51,23 +51,11 @@ namespace Interaction.Controllers
         /*------------------------------------------------------------Verification------------------------------------------------------------*/
 
         [HttpGet("GetAllVerification")]
-        public async Task<Response> GetAllVerification(Status status)
+        public async Task<Response> GetAllVerification()
         {
             var verifications = await _context.Verifications.OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
             if (verifications.Count > 0)
             {
-                if (status == Status.Waiting)
-                {
-                    verifications = verifications.Where(x => x.status == Status.Waiting).ToList();
-                }
-                else if (status == Status.Accept)
-                {
-                    verifications = verifications.Where(x => x.status == Status.Accept).ToList();
-                }
-                else if (status == Status.Deny)
-                {
-                    verifications = verifications.Where(x => x.status == Status.Deny).ToList();
-                }
                 var result = _mapper.Map<List<ViewVerification>>(verifications);
                 foreach (var verification in result)
                 {
@@ -132,18 +120,6 @@ namespace Interaction.Controllers
             var accountReports = await _context.AccountReports.OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
             if (accountReports.Count > 0)
             {
-                if (status == Status.Waiting)
-                {
-                    accountReports = accountReports.Where(x => x.status == Status.Waiting).ToList();
-                }
-                else if (status == Status.Accept)
-                {
-                    accountReports = accountReports.Where(x => x.status == Status.Accept).ToList();
-                }
-                else if (status == Status.Deny)
-                {
-                    accountReports = accountReports.Where(x => x.status == Status.Deny).ToList();
-                }
                 var result = _mapper.Map<List<ViewAccountReport>>(accountReports);
                 foreach (var accountReport in result)
                 {
@@ -220,18 +196,6 @@ namespace Interaction.Controllers
             var postReports = await _context.PostReports.OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
             if (postReports.Count > 0)
             {
-                if (status == Status.Waiting)
-                {
-                    postReports = postReports.Where(x => x.status == Status.Waiting).ToList();
-                }
-                else if (status == Status.Accept)
-                {
-                    postReports = postReports.Where(x => x.status == Status.Accept).ToList();
-                }
-                else if (status == Status.Deny)
-                {
-                    postReports = postReports.Where(x => x.status == Status.Deny).ToList();
-                }
                 var result = _mapper.Map<List<ViewPostReport>>(postReports);
                 foreach (var postReport in result)
                 {
@@ -305,18 +269,6 @@ namespace Interaction.Controllers
             var blogReports = await _context.BlogReports.OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
             if (blogReports.Count > 0)
             {
-                if (status == Status.Waiting)
-                {
-                    blogReports = blogReports.Where(x => x.status == Status.Waiting).ToList();
-                }
-                else if (status == Status.Accept)
-                {
-                    blogReports = blogReports.Where(x => x.status == Status.Accept).ToList();
-                }
-                else if (status == Status.Deny)
-                {
-                    blogReports = blogReports.Where(x => x.status == Status.Deny).ToList();
-                }
                 var result = _mapper.Map<List<ViewBlogReport>>(blogReports);
                 foreach (var blogReport in result)
                 {
