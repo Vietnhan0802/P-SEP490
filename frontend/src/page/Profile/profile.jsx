@@ -24,7 +24,6 @@ import UpdateAvatarPu from "./UpdateAvatarPu";
 import Report from "../../components/report-popup/Report";
 import UpdateInformationPu from "./UpdateInformationPu";
 import { BsThreeDots } from "react-icons/bs";
-import { MdVerified } from "react-icons/md";
 import ChangePass from "./ChangePass";
 // Import the main component
 import { Viewer } from '@react-pdf-viewer/core';
@@ -323,8 +322,7 @@ function Profile({ handleChangeImg, value }) {
                           </Dropdown.Toggle>
 
                           <Dropdown.Menu style={{ minWidth: "auto" }}>
-                            <Dropdown.Item
-                            >
+                            <Dropdown.Item>
                               <UpdateInformationPu value={inputs} id={currentUserId} reset={reset} />
                             </Dropdown.Item>
                             {(role === 'Business' || role === 'Member') &&
