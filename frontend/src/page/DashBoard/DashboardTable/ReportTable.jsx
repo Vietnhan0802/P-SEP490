@@ -16,7 +16,17 @@ import { IoSearchOutline } from "react-icons/io5";
 import "../DashboardTable/table.scss";
 import { GoDotFill } from "react-icons/go";
 
-function createData(id, name, email, date, title, description) {
+function createPostData(id, name, email, date, title, description) {
+  return {
+    id,
+    name,
+    email,
+    date,
+    title,
+    description,
+  };
+}
+function createBlogData(id, name, email, date, title, description) {
   return {
     id,
     name,
@@ -58,41 +68,6 @@ const accountRows = [
     "Description of the current content"
   ),
 ];
-const rows = [
-  createData(
-    1,
-    "Olivia Rhye",
-    "example@gmail,com",
-    "21 Jan 2024",
-    "Content curating app",
-    "Description of the current content"
-  ),
-  createData(
-    2,
-    "Adison Schleifer",
-    "example@gmail,com",
-    "21 Jan 2024",
-    "Design software",
-    "Description of the current content"
-  ),
-  createData(
-    3,
-    "Martin George",
-    "example@gmail,com",
-    "21 Jan 2024",
-    "Data prediction",
-    "Description of the current content"
-  ),
-  createData(
-    4,
-    "Zaire Herwitz",
-    "example@gmail,com",
-    "21 Jan 2024",
-    "Productivity app",
-    "Description of the current content"
-  ),
-];
-
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
     return -1;
@@ -227,28 +202,273 @@ EnhancedTableHead.propTypes = {
 };
 
 export default function ReportTable({ accountValue, postValue, blogValue }) {
+
+  function renderPostTable() {
+    return (
+      <TableBody>
+        {visibleRows.map((row, index) => {
+          const labelId = `enhanced-table-checkbox-${index}`;
+          return (
+            <TableRow
+              hover
+              role="checkbox"
+              tabIndex={-1}
+              key={row.id}
+              sx={{ cursor: "pointer" }}
+              className="my-2"
+            >
+              <TableCell
+                component="th"
+                id={labelId}
+                scope="row"
+                padding="none"
+              >
+                <div className="ms-2 my-2 d-flex align-items-center">
+                  <img
+                    className="me-2"
+                    src={avatar}
+                    alt=""
+                    style={{
+                      width: "40px",
+                      height: "40px",
+                      borderRadius: "50%",
+                    }}
+                  />
+                  <div>
+                    {row.name}
+                    <br></br>
+                    {row.email}
+                  </div>
+                </div>
+              </TableCell>
+              <TableCell align="left" className="blur">
+                {row.date}
+              </TableCell>
+              <TableCell align="left">
+                <p style={{ fontSize: "16px", fontWeight: "500" }}>
+                  {row.title}
+                </p>
+                <p className="blur">{row.description}</p>
+              </TableCell>
+              <TableCell align="right">
+                <div className="d-flex align-items-center justify-content-end">
+                  <div className="d-flex justify-content-center">
+                    <div className="deny">
+                      <GoDotFill className="me-1" />
+                      Deny
+                    </div>
+                    <div className="accept">
+                      <GoDotFill className="me-1" />
+                      Block
+                    </div>
+                  </div>
+                </div>
+              </TableCell>
+            </TableRow>
+          );
+        })}
+      </TableBody>
+    );
+  }
+
+  function renderAccountTable() {
+    return (
+      <TableBody>
+        {visibleAccountRows.map((row, index) => {
+          const isItemSelected = isSelected(row.id);
+          const labelId = `enhanced-table-checkbox-${index}`;
+
+          return (
+            <TableRow
+              hover
+              role="checkbox"
+              aria-checked={isItemSelected}
+              tabIndex={-1}
+              key={row.id}
+              sx={{ cursor: "pointer" }}
+              className="my-2"
+            >
+              <TableCell
+                component="th"
+                id={labelId}
+                scope="row"
+                padding="none"
+              >
+                <div className="ms-2 my-2 d-flex align-items-center">
+                  <img
+                    className="me-2"
+                    src={avatar}
+                    alt=""
+                    style={{
+                      width: "40px",
+                      height: "40px",
+                      borderRadius: "50%",
+                    }}
+                  />
+                  <div>
+                    {row.name}
+                    <br></br>
+                    {row.email}
+                  </div>
+                </div>
+              </TableCell>
+              <TableCell align="left" className="blur">
+                <p
+                  className={`${row.type === "Business" ? "business" : "user"
+                    }`}
+                >{row.type}</p>
+              </TableCell>
+              <TableCell align="left">
+                <p className="blur">{row.description}</p>
+              </TableCell>
+              <TableCell align="right">
+                <div className="d-flex align-items-center justify-content-end">
+                  <div className="d-flex justify-content-center">
+                    <div className="deny">
+                      <GoDotFill className="me-1" />
+                      Deny
+                    </div>
+                    <div className="accept">
+                      <GoDotFill className="me-1" />
+                      Block
+                    </div>
+                  </div>
+                </div>
+              </TableCell>
+            </TableRow>
+          );
+        })}
+      </TableBody>
+    );
+  }
+
+  function renderBlogTable() {
+    return (
+      <TableBody>
+        {visibleBlogRows.map((row, index) => {
+           const labelId = `enhanced-table-checkbox-${index}`;
+           return (
+             <TableRow
+               hover
+               role="checkbox"
+               tabIndex={-1}
+               key={row.id}
+               sx={{ cursor: "pointer" }}
+               className="my-2"
+             >
+               <TableCell
+                 component="th"
+                 id={labelId}
+                 scope="row"
+                 padding="none"
+               >
+                 <div className="ms-2 my-2 d-flex align-items-center">
+                   <img
+                     className="me-2"
+                     src={avatar}
+                     alt=""
+                     style={{
+                       width: "40px",
+                       height: "40px",
+                       borderRadius: "50%",
+                     }}
+                   />
+                   <div>
+                     {row.name}
+                     <br></br>
+                     {row.email}
+                   </div>
+                 </div>
+               </TableCell>
+               <TableCell align="left" className="blur">
+                 {row.date}
+               </TableCell>
+               <TableCell align="left">
+                 <p style={{ fontSize: "16px", fontWeight: "500" }}>
+                   {row.title}
+                 </p>
+                 <p className="blur">{row.description}</p>
+               </TableCell>
+               <TableCell align="right">
+                 <div className="d-flex align-items-center justify-content-end">
+                   <div className="d-flex justify-content-center">
+                     <div className="deny">
+                       <GoDotFill className="me-1" />
+                       Deny
+                     </div>
+                     <div className="accept">
+                       <GoDotFill className="me-1" />
+                       Block
+                     </div>
+                   </div>
+                 </div>
+               </TableCell>
+             </TableRow>
+           );
+        })}
+      </TableBody>
+    );
+  }
+
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("calories");
   const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-
+  const [accountRow, setAccountRow] = React.useState([]);
+  const [postRow, setPostRow] = React.useState([]);
+  const [blogRow, setBlogRow] = React.useState([]);
   React.useEffect(() => {
-    const fetchedPostRows = accountValue?.map(element => (
-      createData(
-        element.idPost,
-        element.avatar,
-        element.fullName,
-        element.title,
-        element.content,
-        element.createdDate,
-        element.report,
-        element.isBlock,
+    if (accountValue) {
+      const fetchedAccountRows = accountValue?.map(element => (
+        createAccountData(
+          element.idPost,
+          element.avatar,
+          element.fullName,
+          element.title,
+          element.content,
+          element.createdDate,
+          element.report,
+          element.isBlock,
+        )
       )
-    )
-    );
-    // setUserRows(fetchedPostRows);
-  }, []);
+      );
+      setAccountRow(fetchedAccountRows);
+    }
+    if (postValue) {
+      const fetchedPostRows = postValue?.map(element => (
+        createPostData(
+          element.idPost,
+          element.avatar,
+          element.fullName,
+          element.title,
+          element.content,
+          element.createdDate,
+          element.report,
+          element.isBlock,
+        )
+      )
+      );
+      setPostRow(fetchedPostRows);
+    }
+    if (blogValue) {
+      const fetchedBlogRows = blogValue?.map(element => (
+        createBlogData(
+          element.idPost,
+          element.avatar,
+          element.fullName,
+          element.title,
+          element.content,
+          element.createdDate,
+          element.report,
+          element.isBlock,
+        )
+      )
+      );
+      setBlogRow(fetchedBlogRows);
+    }
+
+  }, [accountValue, postValue, blogValue]);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -256,14 +476,7 @@ export default function ReportTable({ accountValue, postValue, blogValue }) {
     setOrderBy(property);
   };
 
-  const handleSelectAllClick = (event) => {
-    if (event.target.checked) {
-      const newSelected = rows.map((n) => n.id);
-      setSelected(newSelected);
-      return;
-    }
-    setSelected([]);
-  };
+
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -280,11 +493,11 @@ export default function ReportTable({ accountValue, postValue, blogValue }) {
 
   const visibleRows = React.useMemo(
     () =>
-      stableSort(rows, getComparator(order, orderBy)).slice(
+      stableSort(postRow, getComparator(order, orderBy)).slice(
         page * rowsPerPage,
         page * rowsPerPage + rowsPerPage
       ),
-    [order, orderBy, page, rowsPerPage]
+    [order, orderBy, page, rowsPerPage, postRow]
   );
   const visibleAccountRows = React.useMemo(
     () =>
@@ -292,7 +505,15 @@ export default function ReportTable({ accountValue, postValue, blogValue }) {
         page * rowsPerPage,
         page * rowsPerPage + rowsPerPage
       ),
-    [order, orderBy, page, rowsPerPage]
+    [order, orderBy, page, rowsPerPage,]
+  );
+  const visibleBlogRows = React.useMemo(
+    () =>
+      stableSort(blogRow, getComparator(order, orderBy)).slice(
+        page * rowsPerPage,
+        page * rowsPerPage + rowsPerPage
+      ),
+    [order, orderBy, page, rowsPerPage, blogRow]
   );
   const [activeReport, setActiveReport] = React.useState("reportPost");
   const handledActiveReport = (report) => {
@@ -336,158 +557,27 @@ export default function ReportTable({ accountValue, postValue, blogValue }) {
             </div>
           </div>
         </div>
-
-        <div className="line"></div>
         <TableContainer>
           <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
             <EnhancedTableHead
               numSelected={selected.length}
               order={order}
               orderBy={orderBy}
-              onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
-              rowCount={rows.length}
+              rowCount={accountRow.length || blogRow.length || postRow.length}
               activeReport={activeReport}
             />
-            {activeReport === "reportPost" ? (
-              <TableBody>
-                {visibleRows.map((row, index) => {
-                  const labelId = `enhanced-table-checkbox-${index}`;
-
-                  return (
-                    <TableRow
-                      hover
-                      role="checkbox"
-                      tabIndex={-1}
-                      key={row.id}
-                      sx={{ cursor: "pointer" }}
-                      className="my-2"
-                    >
-                      <TableCell
-                        component="th"
-                        id={labelId}
-                        scope="row"
-                        padding="none"
-                      >
-                        <div className="ms-2 my-2 d-flex align-items-center">
-                          <img
-                            className="me-2"
-                            src={avatar}
-                            alt=""
-                            style={{
-                              width: "40px",
-                              height: "40px",
-                              borderRadius: "50%",
-                            }}
-                          />
-                          <div>
-                            {row.name}
-                            <br></br>
-                            {row.email}
-                          </div>
-                        </div>
-                      </TableCell>
-                      <TableCell align="left" className="blur">
-                        {row.date}
-                      </TableCell>
-                      <TableCell align="left">
-                        <p style={{ fontSize: "16px", fontWeight: "500" }}>
-                          {row.title}
-                        </p>
-                        <p className="blur">{row.description}</p>
-                      </TableCell>
-                      <TableCell align="right">
-                        <div className="d-flex align-items-center justify-content-end">
-                          <div className="d-flex justify-content-center">
-                            <div className="deny">
-                              <GoDotFill className="me-1" />
-                              Deny
-                            </div>
-                            <div className="accept">
-                              <GoDotFill className="me-1" />
-                              Block
-                            </div>
-                          </div>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-            ) : (
-              <TableBody>
-                {visibleAccountRows.map((row, index) => {
-                  const isItemSelected = isSelected(row.id);
-                  const labelId = `enhanced-table-checkbox-${index}`;
-
-                  return (
-                    <TableRow
-                      hover
-                      role="checkbox"
-                      aria-checked={isItemSelected}
-                      tabIndex={-1}
-                      key={row.id}
-                      sx={{ cursor: "pointer" }}
-                      className="my-2"
-                    >
-                      <TableCell
-                        component="th"
-                        id={labelId}
-                        scope="row"
-                        padding="none"
-                      >
-                        <div className="ms-2 my-2 d-flex align-items-center">
-                          <img
-                            className="me-2"
-                            src={avatar}
-                            alt=""
-                            style={{
-                              width: "40px",
-                              height: "40px",
-                              borderRadius: "50%",
-                            }}
-                          />
-                          <div>
-                            {row.name}
-                            <br></br>
-                            {row.email}
-                          </div>
-                        </div>
-                      </TableCell>
-                      <TableCell align="left" className="blur">
-                        <p
-                          className={`${row.type === "Business" ? "business" : "user"
-                            }`}
-                        >{row.type}</p>
-                      </TableCell>
-                      <TableCell align="left">
-                        <p className="blur">{row.description}</p>
-                      </TableCell>
-                      <TableCell align="right">
-                        <div className="d-flex align-items-center justify-content-end">
-                          <div className="d-flex justify-content-center">
-                            <div className="deny">
-                              <GoDotFill className="me-1" />
-                              Deny
-                            </div>
-                            <div className="accept">
-                              <GoDotFill className="me-1" />
-                              Block
-                            </div>
-                          </div>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-            )}
+            {activeReport === "reportPost"
+              ? renderPostTable()
+              : activeReport === "reportAccount"
+                ? renderAccountTable()
+                : renderBlogTable()}
           </Table>
         </TableContainer>
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={rows.length}
+          count={accountRow.length || blogRow.length || postRow.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}

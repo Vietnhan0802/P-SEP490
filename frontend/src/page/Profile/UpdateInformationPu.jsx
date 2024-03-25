@@ -1,6 +1,11 @@
 import { Modal, Button } from "react-bootstrap";
 import { useEffect, useState } from "react";
+import moment from 'moment';
+import 'react-date-picker/dist/DatePicker.css';
+import 'react-calendar/dist/Calendar.css';
+import DatePicker from 'react-date-picker';
 import "../../components/report-popup/popup.scss";
+import "../Profile/check-box.scss";
 import { FiEdit } from "react-icons/fi";
 import { userInstance } from "../../axios/axiosConfig";
 function UpdateInformationPu({ value, id, reset }) {
@@ -19,6 +24,7 @@ function UpdateInformationPu({ value, id, reset }) {
 
   const modalClose = () => setShow(false);
   const modalShow = () => {
+
     setUser({
       userName: value?.userName,
       fullName: value?.fullName,
@@ -32,7 +38,7 @@ function UpdateInformationPu({ value, id, reset }) {
     });
     setShow(true);
   };
-
+  console.log(user)
   const handleChange = (event) => {
     const { name, value, type, checked } = event.target;
     setUser((prevInputs) => ({
@@ -58,7 +64,7 @@ function UpdateInformationPu({ value, id, reset }) {
   };
 
   return (
-    <div className="p-1">
+    <div className="p-1" id="">
       <FiEdit onClick={modalShow} size={28} />
 
       <Modal show={show} onHide={modalClose} id="update-infomation">
@@ -80,15 +86,10 @@ function UpdateInformationPu({ value, id, reset }) {
           <label className="mt-2">
             {user?.role === "Business" ? "Establish date" : "Birthday"}
           </label>
-          <input
-            type="date"
-            name="date"
+          <DatePicker
             value={user?.date}
-            onChange={handleChange}
-            className="form-control"
-            aria-label="Birthday"
-          />
-
+            onChange={(date) => { setUser((prev) => ({ ...prev, date: moment(date).format('YYYY-MM-DD') })) }}
+            className="form-control" />
           <label className="mt-2">Phone number</label>
           <input
             type="text"
@@ -119,7 +120,6 @@ function UpdateInformationPu({ value, id, reset }) {
                     />
                     Male
                   </label>
-
                   <label className="ps-4">
                     <input
                       id="c1-13"
@@ -136,7 +136,6 @@ function UpdateInformationPu({ value, id, reset }) {
                     Female
                   </label>
                 </div>
-
               </div>
             </div>
           )}
