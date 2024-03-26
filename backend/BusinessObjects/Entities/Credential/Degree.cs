@@ -6,7 +6,7 @@ namespace BusinessObjects.Entities.Credential
     {
         [Key]
         public Guid idDegree { get; set; }
-        public string? idAccount { get; set; }
+        public string idAccount { get; set; }
         public string? name { get; set; }
         public string? institution { get; set; }
         public string? file { get; set; }

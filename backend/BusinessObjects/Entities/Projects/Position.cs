@@ -8,6 +8,6 @@ namespace BusinessObjects.Entities.Projects
         public Guid idPosition { get; set; }
         public Guid idProject { get; set; }
         public string? namePosition { get; set; }
-        public ProjectInfo? ProjectInfo { get; set; }
+        public Project? Project { get; set; }
     }
 }
