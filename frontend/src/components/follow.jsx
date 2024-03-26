@@ -10,7 +10,7 @@ function Follow({ followValue }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [following, setFollowing] = useState([]);
-  useEffect(()=>{setFollowing(followValue)},[])
+  useEffect(()=>{setFollowing(followValue)},[followValue])
 
   const handleAvatarclick = (value) => {
     navigate('/profile', { state: { userId: value } });
@@ -19,7 +19,7 @@ function Follow({ followValue }) {
     <div className="follow position-relative">
       <div>
         <p className="text">{t('following')}</p>
-        {following.length > 0 ? following.map((item) => (
+        {following?.length > 0 ? following?.map((item) => (
           <div className="follow-user d-flex align-items-center mb-2" key={item.idAccount} onClick={() => handleAvatarclick(item.idAccount)}>
             <div className="follow-avata-box">
               <img src={item.avatar === "https://localhost:7006/Images/" ? defaultImage : item.avatar} alt="user" className="user-image" />
@@ -31,7 +31,7 @@ function Follow({ followValue }) {
             </div>
           </div>)) : <p>You are not following anyone yet!</p>}
       </div>
-      {following.length > 10 ? <button className="btn border mt-3 fw-bold">
+      {following?.length > 10 ? <button className="btn border mt-3 fw-bold">
         <LuDot className="me-1 dot fs-3" />
         {t('viewfollow')}
       </button> : ''}

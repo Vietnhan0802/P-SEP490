@@ -48,10 +48,10 @@ function OwnProject({ value }) {
   useEffect(() => {
     if (role === 'Member') {
       projectInstance.get(`GetProjectByMember/${currentUserId}`)
-      .then((res) => {
-        setProjects(res?.data?.result);
-      })
-      .catch((error) => { console.error(error) })
+        .then((res) => {
+          setProjects(res?.data?.result);
+        })
+        .catch((error) => { console.error(error) })
     } else {
       projectInstance.get(`GetProjectByUser/${currentUserId}`)
         .then((res) => {
@@ -92,7 +92,8 @@ function OwnProject({ value }) {
               />
             </div>
             <div className="d-flex flex-row align-items-center col-auto m-md-0-cus mt-2 p-0">
-              {role === "Business" ? (<CreateProject reset={reset} />
+              {role === "Business" ? (
+                <CreateProject reset={reset} />
               ) : (
                 ""
               )}

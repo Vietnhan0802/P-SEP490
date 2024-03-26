@@ -25,6 +25,7 @@ import Report from "../../components/report-popup/Report";
 import UpdateInformationPu from "./UpdateInformationPu";
 import { BsThreeDots } from "react-icons/bs";
 import ChangePass from "./ChangePass";
+import { FiEdit } from "react-icons/fi";
 // Import the main component
 import { Viewer } from '@react-pdf-viewer/core';
 
@@ -60,6 +61,7 @@ function Profile({ handleChangeImg, value }) {
   const [resetDegree, setResetDegree] = useState(true);
   const [showAllItems, setShowAllItems] = useState(false);
   const [display, setDisplay] = useState(false);
+  const [updateDisplay, setUpdateDisplay] = useState(false);
   const [inputs, setInputs] = useState({
     userName: "",
     fullName: "",
@@ -235,6 +237,9 @@ function Profile({ handleChangeImg, value }) {
   const navigateChat = () => {
     navigate('/chat');
   }
+  const handleEditInfor = () => {
+    setUpdateDisplay(true);
+  }
   return (
     <>
       <Row className="mx-0 mt-3 pb-3">
@@ -303,6 +308,8 @@ function Profile({ handleChangeImg, value }) {
           </div>
         </Col>
         <Col md={6}>
+          <UpdateInformationPu value={inputs} id={currentUserId} reset={reset} show={updateDisplay} onClose={() => setUpdateDisplay(false)} />
+
           <div id="profile">
             <div className="bg-secondary-soft p-3  rounded">
               <div className="row g-3">
@@ -323,11 +330,11 @@ function Profile({ handleChangeImg, value }) {
 
                           <Dropdown.Menu style={{ minWidth: "auto" }}>
                             <Dropdown.Item>
-                              <UpdateInformationPu value={inputs} id={currentUserId} reset={reset} />
+                              <FiEdit onClick={handleEditInfor} size={28} />
                             </Dropdown.Item>
                             {(role === 'Business' || role === 'Member') &&
                               <Dropdown.Item>
-                                <Verification id={currentUserId}/>
+                                <Verification id={currentUserId} />
                               </Dropdown.Item>
                             }
                             <Dropdown.Item>
@@ -342,6 +349,7 @@ function Profile({ handleChangeImg, value }) {
                     ""
                   )}
                 </div>
+
                 <div className="col-md-6">
                   <label className="form-label">Full Name:</label>
                   <p className="form-control">{inputs.fullName}</p>
@@ -367,6 +375,8 @@ function Profile({ handleChangeImg, value }) {
                           <p>Female</p>
                         )
                         }
+                        <UpdateInformationPu value={inputs} id={currentUserId} reset={reset} />
+
                       </div>
                     </div>
                   )}
