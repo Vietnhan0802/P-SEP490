@@ -40,6 +40,7 @@ namespace User.Data
                     PhoneNumber = "0949180802",
                     tax = "1234567890",
                     address = "Bến Tre",
+                    avatar = "default.png",
                     description = "Admin quản lý trang web công nghệ kết nối, tập trung và hiệu quả trong việc duy trì và phát triển nền tảng, không lãng phí thời gian vào những cuộc trò chuyện vô nghĩa.",
                     isVerified = true,
                     isBlock = false,

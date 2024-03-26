@@ -142,7 +142,7 @@ namespace ProjectService.Controllers
                 var infoUser = await GetInfoUser(project.idAccount!);
                 project.fullName = infoUser.fullName;
                 project.avatarUser = infoUser.avatar;
-                project.avatar = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, project.avatar);
+                project.avatarSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, project.avatar);
                 var positions = await _context.Positions.Where(x => x.idProject == project.idProject).ToListAsync();
                 var viewPosition = _mapper.Map<List<PositionView>>(positions);
                 project.PositionViews = viewPosition;
@@ -166,7 +166,7 @@ namespace ProjectService.Controllers
                     var inforUser = await GetInfoUser(project.idAccount);
                     projectMember.fullName = inforUser.fullName;
                     projectMember.avatarUser = inforUser.avatar;
-                    projectMember.avatar = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, projectMember.avatar);
+                    projectMember.avatarSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, projectMember.avatar);
                     var positions = await _context.Positions.Where(x => x.idProject == project.idProject).ToListAsync();
                     var viewPosition = _mapper.Map<List<PositionView>>(positions);
                     projectMember.PositionViews = viewPosition;
@@ -190,7 +190,7 @@ namespace ProjectService.Controllers
                 var infoUser = await GetInfoUser(project.idAccount!);
                 project.fullName = infoUser.fullName;
                 project.avatarUser = infoUser.avatar;
-                project.avatar = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, project.avatar);
+                project.avatarSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, project.avatar);
                 var positions = await _context.Positions.Where(x => x.idProject == project.idProject).ToListAsync();
                 var viewPosition = _mapper.Map<List<PositionView>>(positions);
                 project.PositionViews = viewPosition;
@@ -210,7 +210,7 @@ namespace ProjectService.Controllers
             var infoUser = await GetInfoUser(result.idAccount!);
             result.fullName = infoUser.fullName;
             result.avatarUser = infoUser.avatar;
-            result.avatar = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, result.avatar);
+            result.avatarSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, result.avatar);
             var positions = await _context.Positions.Where(x => x.idProject == project.idProject).ToListAsync();
             var viewPosition = _mapper.Map<List<PositionView>>(positions);
             result.PositionViews = viewPosition;
