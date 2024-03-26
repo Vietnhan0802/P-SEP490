@@ -35,6 +35,7 @@ namespace Credential.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("idAccount")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("institution")

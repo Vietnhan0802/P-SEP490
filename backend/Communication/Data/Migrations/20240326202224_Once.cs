@@ -16,10 +16,10 @@ namespace Communication.Data.Migrations
                 columns: table => new
                 {
                     idConversation = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    idAccount1 = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    idAccount2 = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    isDeletedBySender = table.Column<bool>(type: "bit", nullable: true),
-                    isDeletedByReceiver = table.Column<bool>(type: "bit", nullable: true),
+                    idAccount1 = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    idAccount2 = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    isDeletedBySender = table.Column<bool>(type: "bit", nullable: false),
+                    isDeletedByReceiver = table.Column<bool>(type: "bit", nullable: false),
                     createdDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
@@ -33,12 +33,12 @@ namespace Communication.Data.Migrations
                 {
                     idMessage = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     idConversation = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    idSender = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    isDeletedBySender = table.Column<bool>(type: "bit", nullable: true),
-                    idReceiver = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    isDeletedByReceiver = table.Column<bool>(type: "bit", nullable: true),
+                    idSender = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    isDeletedBySender = table.Column<bool>(type: "bit", nullable: false),
+                    idReceiver = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    isDeletedByReceiver = table.Column<bool>(type: "bit", nullable: false),
                     content = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    isRecall = table.Column<bool>(type: "bit", nullable: true),
+                    isRecall = table.Column<bool>(type: "bit", nullable: false),
                     createdDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>

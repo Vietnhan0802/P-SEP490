@@ -12,7 +12,7 @@ using NotificationService.Data;
 namespace NotificationService.Data.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20240326194352_Once")]
+    [Migration("20240326202409_Once")]
     partial class Once
     {
         /// <inheritdoc />
