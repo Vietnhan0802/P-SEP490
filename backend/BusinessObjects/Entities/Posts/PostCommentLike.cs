@@ -1,14 +1,14 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace BusinessObjects.Entities.Post
+namespace BusinessObjects.Entities.Posts
 {
-    public class PosttCommentLike
+    public class PostCommentLike
     {
         [Key]
         public Guid idPostCommentLike { get; set; }
-        public string? idAccount { get; set; }
+        public string idAccount { get; set; }
         public Guid idPostComment { get; set; }
         public DateTime createdDate { get; set; }
-        public PosttComment? PosttComment { get; set; }
+        public PostComment? PostComment { get; set; }
     }
 }

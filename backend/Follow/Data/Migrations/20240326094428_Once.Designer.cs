@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Follow.Data.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20240117143818_Once")]
+    [Migration("20240326094428_Once")]
     partial class Once
     {
         /// <inheritdoc />
@@ -25,9 +25,9 @@ namespace Follow.Data.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("BusinessObjects.Entities.Follow.Follower", b =>
+            modelBuilder.Entity("BusinessObjects.Entities.Follow.FollowList", b =>
                 {
-                    b.Property<Guid>("idFollower")
+                    b.Property<Guid>("idFollowList")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
@@ -42,9 +42,9 @@ namespace Follow.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("idFollower");
+                    b.HasKey("idFollowList");
 
-                    b.ToTable("Followers");
+                    b.ToTable("FollowLists");
                 });
 #pragma warning restore 612, 618
         }

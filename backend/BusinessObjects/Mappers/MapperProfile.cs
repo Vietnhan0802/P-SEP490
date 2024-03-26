@@ -5,7 +5,7 @@ using BusinessObjects.Entities.Credential;
 using BusinessObjects.Entities.Follow;
 using BusinessObjects.Entities.Interaction;
 using BusinessObjects.Entities.Notification;
-using BusinessObjects.Entities.Post;
+using BusinessObjects.Entities.Posts;
 using BusinessObjects.Entities.Projects;
 using BusinessObjects.Entities.User;
 using BusinessObjects.ViewModels.Blog;
@@ -48,12 +48,12 @@ namespace BusinessObjects.Mappers
 
             CreateMap<Notificationn, ViewNotification>().ReverseMap();
 
-            CreateMap<Postt, CreateUpdatePost>().ReverseMap();
-            CreateMap<Postt, CreateUpdatePostImage>().ReverseMap();
-            CreateMap<Postt, ViewPost>().ReverseMap();
-            CreateMap<PosttImage, ViewPostImage>().ReverseMap();
-            CreateMap<PosttComment, ViewPostComment>().ReverseMap();
-            CreateMap<PosttReply, ViewPostReply>().ReverseMap();
+            CreateMap<Post, CreateUpdatePost>().ReverseMap();
+            CreateMap<Post, CreateUpdatePostImage>().ReverseMap();
+            CreateMap<Post, ViewPost>().ReverseMap();
+            CreateMap<PostImage, ViewPostImage>().ReverseMap();
+            CreateMap<PostComment, ViewPostComment>().ReverseMap();
+            CreateMap<PostReply, ViewPostReply>().ReverseMap();
 
             CreateMap<Position, PositionView>().ReverseMap();
             CreateMap<ProjectInfo, ProjectInfoCreate>().ReverseMap();
@@ -64,7 +64,7 @@ namespace BusinessObjects.Mappers
             CreateMap<ProjectMember, ProjectMemberCreateUpdate>().ReverseMap();
 
             CreateMap<Blog, ViewStatistic>().ReverseMap();
-            CreateMap<Postt, ViewStatistic>().ReverseMap();
+            CreateMap<Post, ViewStatistic>().ReverseMap();
             CreateMap<ProjectInfo, ViewStatistic>().ReverseMap();
             CreateMap<Account, ViewStatistic>().ReverseMap();
 

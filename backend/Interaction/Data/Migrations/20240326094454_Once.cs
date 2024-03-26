@@ -16,8 +16,8 @@ namespace Interaction.Data.Migrations
                 columns: table => new
                 {
                     idAccountReport = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    idReporter = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    idReported = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    idReporter = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    idReported = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     content = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     status = table.Column<int>(type: "int", nullable: true),
                     createdDate = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -33,8 +33,8 @@ namespace Interaction.Data.Migrations
                 columns: table => new
                 {
                     idBlogReport = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    idReporter = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    idBloged = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    idReporter = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    idBloged = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     status = table.Column<int>(type: "int", nullable: true),
                     content = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     createdDate = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -50,8 +50,8 @@ namespace Interaction.Data.Migrations
                 columns: table => new
                 {
                     idPostReport = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    idReporter = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    idPosted = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    idReporter = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    idPosted = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     status = table.Column<int>(type: "int", nullable: true),
                     content = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     createdDate = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -67,7 +67,7 @@ namespace Interaction.Data.Migrations
                 columns: table => new
                 {
                     idVerification = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    idAccount = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    idAccount = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     status = table.Column<int>(type: "int", nullable: true),
                     createdDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     confirmedDate = table.Column<DateTime>(type: "datetime2", nullable: true)

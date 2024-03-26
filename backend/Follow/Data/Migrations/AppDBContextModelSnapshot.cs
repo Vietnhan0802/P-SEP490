@@ -22,9 +22,9 @@ namespace Follow.Data.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("BusinessObjects.Entities.Follow.Follower", b =>
+            modelBuilder.Entity("BusinessObjects.Entities.Follow.FollowList", b =>
                 {
-                    b.Property<Guid>("idFollower")
+                    b.Property<Guid>("idFollowList")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
@@ -39,9 +39,9 @@ namespace Follow.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("idFollower");
+                    b.HasKey("idFollowList");
 
-                    b.ToTable("Followers");
+                    b.ToTable("FollowLists");
                 });
 #pragma warning restore 612, 618
         }

@@ -1,6 +1,6 @@
-﻿using Post.Data;
+﻿using PostService.Data;
 
-namespace Post
+namespace PostService
 {
     public class PostScheduledJobs
     {
@@ -13,7 +13,7 @@ namespace Post
 
         public void ResetViewInDateDaily()
         {
-            var posts = _context.Postts.ToList();
+            var posts = _context.Posts.ToList();
             foreach (var post in posts)
             {
                 post.viewInDate = 0;

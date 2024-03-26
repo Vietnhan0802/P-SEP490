@@ -1,6 +1,4 @@
-﻿using BusinessObjects.Entities.Post;
-
-namespace BusinessObjects.ViewModels.Post
+﻿namespace BusinessObjects.ViewModels.Post
 {
     public class ViewPostComment
     {

@@ -5,14 +5,14 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Post.Data;
+using PostService.Data;
 
 #nullable disable
 
-namespace Post.Data.Migrations
+namespace PostService.Data.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20240306075347_Once")]
+    [Migration("20240326094517_Once")]
     partial class Once
     {
         /// <inheritdoc />
@@ -20,12 +20,12 @@ namespace Post.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.15")
+                .HasAnnotation("ProductVersion", "7.0.17")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("BusinessObjects.Entities.Post.Postt", b =>
+            modelBuilder.Entity("BusinessObjects.Entities.Posts.Post", b =>
                 {
                     b.Property<Guid>("idPost")
                         .ValueGeneratedOnAdd()
@@ -37,10 +37,8 @@ namespace Post.Data.Migrations
                     b.Property<DateTime>("createdDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("exp")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("idAccount")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("idProject")
@@ -51,9 +49,6 @@ namespace Post.Data.Migrations
 
                     b.Property<bool>("isDeleted")
                         .HasColumnType("bit");
-
-                    b.Property<string>("major")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("title")
                         .HasColumnType("nvarchar(max)");
@@ -66,10 +61,10 @@ namespace Post.Data.Migrations
 
                     b.HasKey("idPost");
 
-                    b.ToTable("Postts");
+                    b.ToTable("Posts");
                 });
 
-            modelBuilder.Entity("BusinessObjects.Entities.Post.PosttComment", b =>
+            modelBuilder.Entity("BusinessObjects.Entities.Posts.PostComment", b =>
                 {
                     b.Property<Guid>("idPostComment")
                         .ValueGeneratedOnAdd()
@@ -82,6 +77,7 @@ namespace Post.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("idAccount")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("idPost")
@@ -94,10 +90,10 @@ namespace Post.Data.Migrations
 
                     b.HasIndex("idPost");
 
-                    b.ToTable("PosttComments");
+                    b.ToTable("PostComments");
                 });
 
-            modelBuilder.Entity("BusinessObjects.Entities.Post.PosttCommentLike", b =>
+            modelBuilder.Entity("BusinessObjects.Entities.Posts.PostCommentLike", b =>
                 {
                     b.Property<Guid>("idPostCommentLike")
                         .ValueGeneratedOnAdd()
@@ -107,6 +103,7 @@ namespace Post.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("idAccount")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("idPostComment")
@@ -116,10 +113,10 @@ namespace Post.Data.Migrations
 
                     b.HasIndex("idPostComment");
 
-                    b.ToTable("PosttCommentLikes");
+                    b.ToTable("PostCommentLikes");
                 });
 
-            modelBuilder.Entity("BusinessObjects.Entities.Post.PosttImage", b =>
+            modelBuilder.Entity("BusinessObjects.Entities.Posts.PostImage", b =>
                 {
                     b.Property<Guid>("idPostImage")
                         .ValueGeneratedOnAdd()
@@ -138,10 +135,10 @@ namespace Post.Data.Migrations
 
                     b.HasIndex("idPost");
 
-                    b.ToTable("PosttImages");
+                    b.ToTable("PostImages");
                 });
 
-            modelBuilder.Entity("BusinessObjects.Entities.Post.PosttLike", b =>
+            modelBuilder.Entity("BusinessObjects.Entities.Posts.PostLike", b =>
                 {
                     b.Property<Guid>("idPostLike")
                         .ValueGeneratedOnAdd()
@@ -151,6 +148,7 @@ namespace Post.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("idAccount")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("idPost")
@@ -160,10 +158,10 @@ namespace Post.Data.Migrations
 
                     b.HasIndex("idPost");
 
-                    b.ToTable("PosttLikes");
+                    b.ToTable("PostLikes");
                 });
 
-            modelBuilder.Entity("BusinessObjects.Entities.Post.PosttReply", b =>
+            modelBuilder.Entity("BusinessObjects.Entities.Posts.PostReply", b =>
                 {
                     b.Property<Guid>("idPostReply")
                         .ValueGeneratedOnAdd()
@@ -176,6 +174,7 @@ namespace Post.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("idAccount")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("idPostComment")
@@ -188,10 +187,10 @@ namespace Post.Data.Migrations
 
                     b.HasIndex("idPostComment");
 
-                    b.ToTable("PosttReplies");
+                    b.ToTable("PostReplys");
                 });
 
-            modelBuilder.Entity("BusinessObjects.Entities.Post.PosttReplyLike", b =>
+            modelBuilder.Entity("BusinessObjects.Entities.Posts.PostReplyLike", b =>
                 {
                     b.Property<Guid>("idPostReplyLike")
                         .ValueGeneratedOnAdd()
@@ -201,6 +200,7 @@ namespace Post.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("idAccount")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("idPostReply")
@@ -210,94 +210,94 @@ namespace Post.Data.Migrations
 
                     b.HasIndex("idPostReply");
 
-                    b.ToTable("PosttReplyLikes");
+                    b.ToTable("PostReplyLikes");
                 });
 
-            modelBuilder.Entity("BusinessObjects.Entities.Post.PosttComment", b =>
+            modelBuilder.Entity("BusinessObjects.Entities.Posts.PostComment", b =>
                 {
-                    b.HasOne("BusinessObjects.Entities.Post.Postt", "Postt")
-                        .WithMany("PosttComments")
+                    b.HasOne("BusinessObjects.Entities.Posts.Post", "Post")
+                        .WithMany("PostComments")
                         .HasForeignKey("idPost")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Postt");
+                    b.Navigation("Post");
                 });
 
-            modelBuilder.Entity("BusinessObjects.Entities.Post.PosttCommentLike", b =>
+            modelBuilder.Entity("BusinessObjects.Entities.Posts.PostCommentLike", b =>
                 {
-                    b.HasOne("BusinessObjects.Entities.Post.PosttComment", "PosttComment")
-                        .WithMany("PosttCommentLikes")
+                    b.HasOne("BusinessObjects.Entities.Posts.PostComment", "PostComment")
+                        .WithMany("PostCommentLikes")
                         .HasForeignKey("idPostComment")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("PosttComment");
+                    b.Navigation("PostComment");
                 });
 
-            modelBuilder.Entity("BusinessObjects.Entities.Post.PosttImage", b =>
+            modelBuilder.Entity("BusinessObjects.Entities.Posts.PostImage", b =>
                 {
-                    b.HasOne("BusinessObjects.Entities.Post.Postt", "Postt")
-                        .WithMany("PosttImages")
+                    b.HasOne("BusinessObjects.Entities.Posts.Post", "Post")
+                        .WithMany("PostImages")
                         .HasForeignKey("idPost")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Postt");
+                    b.Navigation("Post");
                 });
 
-            modelBuilder.Entity("BusinessObjects.Entities.Post.PosttLike", b =>
+            modelBuilder.Entity("BusinessObjects.Entities.Posts.PostLike", b =>
                 {
-                    b.HasOne("BusinessObjects.Entities.Post.Postt", "Postt")
-                        .WithMany("PosttLikes")
+                    b.HasOne("BusinessObjects.Entities.Posts.Post", "Post")
+                        .WithMany("PostLikes")
                         .HasForeignKey("idPost")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Postt");
+                    b.Navigation("Post");
                 });
 
-            modelBuilder.Entity("BusinessObjects.Entities.Post.PosttReply", b =>
+            modelBuilder.Entity("BusinessObjects.Entities.Posts.PostReply", b =>
                 {
-                    b.HasOne("BusinessObjects.Entities.Post.PosttComment", "PosttComment")
-                        .WithMany("PosttReplies")
+                    b.HasOne("BusinessObjects.Entities.Posts.PostComment", "PostComment")
+                        .WithMany("PostReplies")
                         .HasForeignKey("idPostComment")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("PosttComment");
+                    b.Navigation("PostComment");
                 });
 
-            modelBuilder.Entity("BusinessObjects.Entities.Post.PosttReplyLike", b =>
+            modelBuilder.Entity("BusinessObjects.Entities.Posts.PostReplyLike", b =>
                 {
-                    b.HasOne("BusinessObjects.Entities.Post.PosttReply", "PosttReply")
-                        .WithMany("PosttReplyLikes")
+                    b.HasOne("BusinessObjects.Entities.Posts.PostReply", "PostReply")
+                        .WithMany("PostReplyLikes")
                         .HasForeignKey("idPostReply")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("PosttReply");
+                    b.Navigation("PostReply");
                 });
 
-            modelBuilder.Entity("BusinessObjects.Entities.Post.Postt", b =>
+            modelBuilder.Entity("BusinessObjects.Entities.Posts.Post", b =>
                 {
-                    b.Navigation("PosttComments");
+                    b.Navigation("PostComments");
 
-                    b.Navigation("PosttImages");
+                    b.Navigation("PostImages");
 
-                    b.Navigation("PosttLikes");
+                    b.Navigation("PostLikes");
                 });
 
-            modelBuilder.Entity("BusinessObjects.Entities.Post.PosttComment", b =>
+            modelBuilder.Entity("BusinessObjects.Entities.Posts.PostComment", b =>
                 {
-                    b.Navigation("PosttCommentLikes");
+                    b.Navigation("PostCommentLikes");
 
-                    b.Navigation("PosttReplies");
+                    b.Navigation("PostReplies");
                 });
 
-            modelBuilder.Entity("BusinessObjects.Entities.Post.PosttReply", b =>
+            modelBuilder.Entity("BusinessObjects.Entities.Posts.PostReply", b =>
                 {
-                    b.Navigation("PosttReplyLikes");
+                    b.Navigation("PostReplyLikes");
                 });
 #pragma warning restore 612, 618
         }

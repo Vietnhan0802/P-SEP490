@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Interaction.Data.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20240228095225_Once")]
+    [Migration("20240326094454_Once")]
     partial class Once
     {
         /// <inheritdoc />
@@ -41,9 +41,11 @@ namespace Interaction.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("idReported")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("idReporter")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("status")
@@ -69,10 +71,11 @@ namespace Interaction.Data.Migrations
                     b.Property<DateTime?>("createdDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid?>("idBloged")
+                    b.Property<Guid>("idBloged")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("idReporter")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("status")
@@ -98,10 +101,11 @@ namespace Interaction.Data.Migrations
                     b.Property<DateTime?>("createdDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid?>("idPosted")
+                    b.Property<Guid>("idPosted")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("idReporter")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("status")
@@ -125,6 +129,7 @@ namespace Interaction.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("idAccount")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("status")
