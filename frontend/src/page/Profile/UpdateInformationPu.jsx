@@ -6,25 +6,16 @@ import 'react-calendar/dist/Calendar.css';
 import DatePicker from 'react-date-picker';
 import "../../components/report-popup/popup.scss";
 import "../Profile/check-box.scss";
+import Select from 'react-select'
 import { FiEdit } from "react-icons/fi";
 import { userInstance } from "../../axios/axiosConfig";
-function UpdateInformationPu({ value, id, reset }) {
-  const [user, setUser] = useState({
-    userName: '',
-    fullName: '',
-    date: '',
-    isMale: '',
-    phoneNumber: '',
-    tax: '',
-    address: '',
-    description: '', role: ''
-  });
+function UpdateInformationPu({ value, id, reset, show, onClose }) {
+  const [user, setUser] = useState({});
 
-  const [show, setShow] = useState(false);
 
-  const modalClose = () => setShow(false);
-  const modalShow = () => {
+  const modalClose = () => onClose();
 
+  useEffect(() => {
     setUser({
       userName: value?.userName,
       fullName: value?.fullName,
@@ -36,9 +27,12 @@ function UpdateInformationPu({ value, id, reset }) {
       description: value?.description,
       role: value.role
     });
-    setShow(true);
-  };
-  console.log(user)
+  }, [value]
+  )
+  const options = [
+    { value: true, label: 'Male' },
+    { value: false, label: 'Female' }
+  ]
   const handleChange = (event) => {
     const { name, value, type, checked } = event.target;
     setUser((prevInputs) => ({
@@ -46,7 +40,7 @@ function UpdateInformationPu({ value, id, reset }) {
       [name]: type === "checkbox" ? checked : value,
     }));
   };
-
+  console.log(user)
   const modelSubmit = (event) => {
     userInstance.put(`UpdateUser/${id}`, {
       userName: user.userName,
@@ -62,16 +56,18 @@ function UpdateInformationPu({ value, id, reset }) {
       .catch((error) => { console.error(error) })
     modalClose();
   };
-
+  const handlePositionChange = (selectedOption) => {
+    setUser(prevState => ({
+      ...prevState,
+      isMale: selectedOption.value
+    }));
+  };
   return (
     <div className="p-1" id="">
-      <FiEdit onClick={modalShow} size={28} />
-
       <Modal show={show} onHide={modalClose} id="update-infomation">
         <Modal.Header closeButton>
           <Modal.Title>Update Information</Modal.Title>
         </Modal.Header>
-
         <Modal.Body className="popup-body report-popup " id="report-body">
           <label className="mt-2">Full Name:</label>
           <input
@@ -81,8 +77,8 @@ function UpdateInformationPu({ value, id, reset }) {
             value={user?.fullName}
             onChange={handleChange}
             aria-label="Full name"
+            required
           />
-
           <label className="mt-2">
             {user?.role === "Business" ? "Establish date" : "Birthday"}
           </label>
@@ -98,13 +94,20 @@ function UpdateInformationPu({ value, id, reset }) {
             onChange={handleChange}
             className="form-control"
             aria-label="Phone number"
+            required
           />
+
           {user.role !== "Business" && (
             <div>
               <label className="mt-2">Gender:</label>
               <div className="">
-
-                <div className="checkbox-wrapper-13 bg-text">
+                <Select
+                  isSearchable={false}
+                  defaultValue={user?.isMale ? options[0] : options[1]}
+                  options={options}
+                  onChange={(selectedOption) => handlePositionChange(selectedOption)}
+                />
+                {/* <div className="checkbox-wrapper-13 bg-text">
                   <label>
                     <input
                       id="c1-13"
@@ -135,7 +138,7 @@ function UpdateInformationPu({ value, id, reset }) {
                     />
                     Female
                   </label>
-                </div>
+                </div> */}
               </div>
             </div>
           )}
@@ -147,6 +150,7 @@ function UpdateInformationPu({ value, id, reset }) {
             value={user?.address}
             onChange={handleChange}
             aria-label="Address"
+            required
           />
           <label className="mt-2 ">Tax:</label>
           <input
@@ -156,6 +160,7 @@ function UpdateInformationPu({ value, id, reset }) {
             value={user?.tax}
             onChange={handleChange}
             aria-label="Tax"
+            required
           />
 
           <label className="mt-2">Description:</label>
@@ -168,6 +173,7 @@ function UpdateInformationPu({ value, id, reset }) {
             style={{ maxHeight: '200px' }}
             className="form-control"
             aria-label="Description"
+
           />
         </Modal.Body>
 

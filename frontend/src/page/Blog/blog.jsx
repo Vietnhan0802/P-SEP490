@@ -213,7 +213,7 @@ function Blog({value}) {
             </div>
           </div>
 
-          {(showTrendList ? blogListTrend : (search ? filterBlog : data)).map((item) => (
+          {(showTrendList ? blogListTrend : (search ? filterBlog : data))?.map((item) => (
             <div
               key={item.idBlog}
               className={`blog-item p-2 ${blogPopups[item.id] ? "position-relative" : ""

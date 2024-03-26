@@ -244,7 +244,7 @@ function Post({value}) {
             </div>
           </div>
 
-          {(showTrendList ? postListTrend : (search ? filterPost : postList)).map((item) => (
+          {(showTrendList ? postListTrend : (search ? filterPost : postList))?.map((item) => (
             <div
               key={item.id}
               className={`pos-rel post-item mt-2 p-2 ${blogPopups[item.id] ? "position-relative" : ""
