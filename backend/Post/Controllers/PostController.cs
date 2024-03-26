@@ -92,19 +92,6 @@ namespace Post.Controllers
             return null;
         }
 
-        [HttpGet("GetAllReportPost")]
-        private async Task<int> GetAllReportPost()
-        {
-            HttpResponseMessage response = await client.GetAsync($"{InteractionApiUrl}/GetAllPostReportsAccept");
-            string strData = await response.Content.ReadAsStringAsync();
-            var option = new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true,
-            };
-            var postReport = JsonSerializer.Deserialize<int>(strData, option);
-            return postReport;
-        }
-
         /*------------------------------------------------------------Statistic------------------------------------------------------------*/
 
         [HttpGet("GetPostStatistic")]
@@ -139,7 +126,6 @@ namespace Post.Controllers
             var result = _mapper.Map<List<ViewPost>>(top10Posts);
             foreach (var post in result)
             {
-                post.report = await GetAllReportPost();
                 post.like = await _context.PosttLikes.Where(x => x.idPost == post.idPost).CountAsync();
                 var isLike = await _context.PosttLikes.FirstOrDefaultAsync(x => x.idAccount == idUser && x.idPost == post.idPost);
                 if (isLike != null)
@@ -171,11 +157,6 @@ namespace Post.Controllers
             var result = _mapper.Map<List<ViewPost>>(posts);
             foreach (var post in result)
             {
-                post.report = await GetAllReportPost();
-                if (post.report >= 3)
-                {
-                    post.isBlock = true;
-                }
                 post.like = await _context.PosttLikes.Where(x => x.idPost == post.idPost).CountAsync();
                 var isLike = await _context.PosttLikes.FirstOrDefaultAsync(x => x.idAccount == idUser && x.idPost == post.idPost);
                 if (isLike != null)
@@ -207,11 +188,6 @@ namespace Post.Controllers
             var result = _mapper.Map<List<ViewPost>>(posts);
             foreach (var post in result)
             {
-                post.report = await GetAllReportPost();
-                if (post.report >= 3)
-                {
-                    post.isBlock = true;
-                }
                 post.like = await _context.PosttLikes.Where(x => x.idPost == post.idPost).CountAsync();
                 var isLike = await _context.PosttLikes.FirstOrDefaultAsync(x => x.idAccount == idUser && x.idPost == post.idPost);
                 if (isLike != null)

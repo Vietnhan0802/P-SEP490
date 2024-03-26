@@ -11,7 +11,6 @@
         public string? content { get; set; }
         public int view { get; set; }
         public int viewInDate { get; set; }
-        public int? report { get; set; }
         public int like { get; set; }
         public bool isLike { get; set; } = false;
         public bool isBlock { get; set; }
