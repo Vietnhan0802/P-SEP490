@@ -2,11 +2,10 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace User.Data
 {
-    public class AppDBContext : IdentityDbContext<AppUser>
+    public class AppDBContext : IdentityDbContext<Account>
     {
 
         public AppDBContext(DbContextOptions<AppDBContext> options) : base(options) {}
@@ -24,23 +23,25 @@ namespace User.Data
                 new IdentityRole { Name = "Member", ConcurrencyStamp = "2", NormalizedName = "Member" },
                 new IdentityRole { Name = "Business", ConcurrencyStamp = "3", NormalizedName = "Business" });
 
-            var hasher = new PasswordHasher<AppUser>();
+            var hasher = new PasswordHasher<Account>();
 
-            builder.Entity<AppUser>().HasData(
-                new AppUser
+            builder.Entity<Account>().HasData(
+                new Account
                 {
                     Id = "b80546cd-f4df-4a46-842e-22d3f9018ce3",
-                    UserName = "admin@gmail.com",
-                    NormalizedUserName = "ADMIN@GMAIL.COM",
-                    Email = "admin@gmail.com",
-                    NormalizedEmail = "ADMIN@GMAIL.COM",
+                    UserName = "PEITCS.admin@gmail.com",
+                    NormalizedUserName = "PEITCS.ADMIN@GMAIL.COM",
+                    Email = "PEITCS.admin@gmail.com",
+                    NormalizedEmail = "PEITCS.ADMIN@GMAIL.COM",
                     EmailConfirmed = true,
-                    fullName = "Đầu bự vô địch",
+                    fullName = "PEITCS",
+                    date = new DateTime(2002, 8, 18),
                     isMale = true,
                     PhoneNumber = "0949180802",
                     tax = "1234567890",
                     address = "Bến Tre",
-                    description = "Tao là admin! Web này tao là bố!",
+                    description = "Admin quản lý trang web công nghệ kết nối, tập trung và hiệu quả trong việc duy trì và phát triển nền tảng, không lãng phí thời gian vào những cuộc trò chuyện vô nghĩa.",
+                    isVerified = true,
                     isBlock = false,
                     createdDate = DateTime.Now,
                     LockoutEnabled = true,

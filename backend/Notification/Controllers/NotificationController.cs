@@ -33,18 +33,22 @@ namespace Notification.Controllers
             UserApiUrl = "https://localhost:7006/api/User";
         }
 
-        [HttpGet("GetNameUserCurrent/{idUser}")]
-        private async Task<ViewUser> GetNameUserCurrent(string idUser)
+        [HttpGet("GetInfoUser/{idUser}")]
+        private async Task<ViewUser> GetInfoUser(string idUser)
         {
-            HttpResponseMessage response = await client.GetAsync($"{UserApiUrl}/GetNameUser/{idUser}");
-            string strData = await response.Content.ReadAsStringAsync();
-            var option = new JsonSerializerOptions
+            HttpResponseMessage response = await client.GetAsync($"{UserApiUrl}/GetInfoUser/{idUser}");
+            if (response.IsSuccessStatusCode)
             {
-                PropertyNameCaseInsensitive = true,
-            };
-            var user = JsonSerializer.Deserialize<ViewUser>(strData, option);
+                string strData = await response.Content.ReadAsStringAsync();
+                var option = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true,
+                };
+                var user = JsonSerializer.Deserialize<ViewUser>(strData, option);
 
-            return user!;
+                return user;
+            }
+            return null;
         }
 
         /*------------------------------------------------------------Notification------------------------------------------------------------*/
@@ -60,7 +64,7 @@ namespace Notification.Controllers
             var result = _mapper.Map<List<ViewNotification>>(notifications);
             foreach (var notification in result)
             {
-                var infoUser = await GetNameUserCurrent(notification.idSender!);
+                var infoUser = await GetInfoUser(notification.idSender!);
                 notification.nameSender = infoUser.fullName;
                 notification.avatar = infoUser.avatar;
             }
@@ -84,7 +88,7 @@ namespace Notification.Controllers
             await _context.Notifications.AddAsync(notification);
             await _context.SaveChangesAsync();
             var result = _mapper.Map<ViewNotification>(notification);
-            var infoUser = await GetNameUserCurrent(result.idSender!);
+            var infoUser = await GetInfoUser(result.idSender!);
             result.nameSender = infoUser.fullName;
             result.avatar = infoUser.avatar;
             result.content = $"{notification.content}";
@@ -113,7 +117,7 @@ namespace Notification.Controllers
                 await _context.Notifications.AddAsync(newNotification);
                 await _context.SaveChangesAsync();
                 var resultc = _mapper.Map<ViewNotification>(newNotification);
-                var infoUserc = await GetNameUserCurrent(resultc.idSender!);
+                var infoUserc = await GetInfoUser(resultc.idSender!);
                 resultc.nameSender = infoUserc.fullName;
                 resultc.avatar = infoUserc.avatar;
                 return resultc;
@@ -124,7 +128,7 @@ namespace Notification.Controllers
             _context.Notifications.Update(notification);
             await _context.SaveChangesAsync();
             var result = _mapper.Map<ViewNotification>(notification);
-            var infoUser = await GetNameUserCurrent(result.idSender!);
+            var infoUser = await GetInfoUser(result.idSender!);
             result.nameSender = infoUser.fullName;
             result.avatar = infoUser.avatar;
             return result;
@@ -146,7 +150,7 @@ namespace Notification.Controllers
             await _context.Notifications.AddAsync(notification);
             await _context.SaveChangesAsync();
             var result = _mapper.Map<ViewNotification>(notification);
-            var infoUser = await GetNameUserCurrent(result.idSender!);
+            var infoUser = await GetInfoUser(result.idSender!);
             result.nameSender = infoUser.fullName;
             result.avatar = infoUser.avatar;
             result.content = $"{notification.content}";
@@ -169,7 +173,7 @@ namespace Notification.Controllers
             await _context.Notifications.AddAsync(notification);
             await _context.SaveChangesAsync();
             var result = _mapper.Map<ViewNotification>(notification);
-            var infoUser = await GetNameUserCurrent(result.idSender!);
+            var infoUser = await GetInfoUser(result.idSender!);
             result.nameSender = infoUser.fullName;
             result.avatar = infoUser.avatar;
             result.content = $"{notification.content}";
@@ -194,7 +198,7 @@ namespace Notification.Controllers
             await _context.Notifications.AddAsync(notification);
             await _context.SaveChangesAsync();
             var result = _mapper.Map<ViewNotification>(notification);
-            var infoUser = await GetNameUserCurrent(result.idSender!);
+            var infoUser = await GetInfoUser(result.idSender!);
             result.nameSender = infoUser.fullName;
             result.avatar = infoUser.avatar;
             result.content = $"{notification.content}";
@@ -217,7 +221,7 @@ namespace Notification.Controllers
             await _context.Notifications.AddAsync(notification);
             await _context.SaveChangesAsync();
             var result = _mapper.Map<ViewNotification>(notification);
-            var infoUser = await GetNameUserCurrent(result.idSender!);
+            var infoUser = await GetInfoUser(result.idSender!);
             result.nameSender = infoUser.fullName;
             result.avatar = infoUser.avatar;
             result.content = $"{notification.content}";
@@ -240,7 +244,7 @@ namespace Notification.Controllers
             await _context.Notifications.AddAsync(notification);
             await _context.SaveChangesAsync();
             var result = _mapper.Map<ViewNotification>(notification);
-            var infoUser = await GetNameUserCurrent(result.idSender!);
+            var infoUser = await GetInfoUser(result.idSender!);
             result.nameSender = infoUser.fullName;
             result.avatar = infoUser.avatar;
             result.content = $"{notification.content}";
@@ -265,7 +269,7 @@ namespace Notification.Controllers
             await _context.Notifications.AddAsync(notification);
             await _context.SaveChangesAsync();
             var result = _mapper.Map<ViewNotification>(notification);
-            var infoUser = await GetNameUserCurrent(result.idSender!);
+            var infoUser = await GetInfoUser(result.idSender!);
             result.nameSender = infoUser.fullName;
             result.avatar = infoUser.avatar;
             result.content = $"{notification.content}";
@@ -288,7 +292,7 @@ namespace Notification.Controllers
             await _context.Notifications.AddAsync(notification);
             await _context.SaveChangesAsync();
             var result = _mapper.Map<ViewNotification>(notification);
-            var infoUser = await GetNameUserCurrent(result.idSender!);
+            var infoUser = await GetInfoUser(result.idSender!);
             result.nameSender = infoUser.fullName;
             result.avatar = infoUser.avatar;
             result.content = $"{notification.content}";

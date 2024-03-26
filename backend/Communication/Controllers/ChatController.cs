@@ -36,18 +36,22 @@ namespace Communication.Controllers
             UserApiUrl = "https://localhost:7006/api/User";
         }
 
-        [HttpGet("GetNameUserCurrent/{idUser}")]
-        private async Task<ViewUser> GetNameUserCurrent(string idUser)
+        [HttpGet("GetInfoUser/{idUser}")]
+        private async Task<ViewUser> GetInfoUser(string idUser)
         {
-            HttpResponseMessage response = await client.GetAsync($"{UserApiUrl}/GetNameUser/{idUser}");
-            string strData = await response.Content.ReadAsStringAsync();
-            var option = new JsonSerializerOptions
+            HttpResponseMessage response = await client.GetAsync($"{UserApiUrl}/GetInfoUser/{idUser}");
+            if (response.IsSuccessStatusCode)
             {
-                PropertyNameCaseInsensitive = true,
-            };
-            var user = JsonSerializer.Deserialize<ViewUser>(strData, option);
+                string strData = await response.Content.ReadAsStringAsync();
+                var option = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true,
+                };
+                var user = JsonSerializer.Deserialize<ViewUser>(strData, option);
 
-            return user!;
+                return user;
+            }
+            return null;
         }
 
         /*------------------------------------------------------------Conversation------------------------------------------------------------*/
@@ -62,7 +66,7 @@ namespace Communication.Controllers
                 var result = _mapper.Map<List<ViewConversation>>(conversations);
                 foreach (var conversation in result)
                 {
-                    var infoUser = await GetNameUserCurrent(conversation.idAccount2);
+                    var infoUser = await GetInfoUser(conversation.idAccount2);
                     conversation.fullName = infoUser.fullName;
                     conversation.avatar = infoUser.avatar;
                 }

@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using BusinessObjects.Entities.Follow;
 using BusinessObjects.ViewModels.Follow;
-using BusinessObjects.ViewModels.Notification;
 using BusinessObjects.ViewModels.User;
 using Follow.Data;
 using Microsoft.AspNetCore.Cors;
@@ -36,6 +35,8 @@ namespace Follow.Controllers
             UserApiUrl = "https://localhost:7006/api/User";
         }
 
+        /*------------------------------------------------------------CallAPI------------------------------------------------------------*/
+
         [HttpPost("CreateNotificationFollow/{idSender}/{idReceiver}")]
         private async Task<IActionResult> CreateNotificationFollow(string idSender, string idReceiver)
         {
@@ -47,95 +48,109 @@ namespace Follow.Controllers
             return BadRequest("Create notification is fail!");
         }
 
-        [HttpGet("GetNameUserCurrent/{idUser}")]
-        private async Task<ViewUser> GetNameUserCurrent(string idUser)
+        [HttpGet("GetInfoUser/{idUser}")]
+        private async Task<ViewUser> GetInfoUser(string idUser)
         {
-            HttpResponseMessage response = await client.GetAsync($"{UserApiUrl}/GetNameUser/{idUser}");
-            string strData = await response.Content.ReadAsStringAsync();
-            var option = new JsonSerializerOptions
+            HttpResponseMessage response = await client.GetAsync($"{UserApiUrl}/GetInfoUser/{idUser}");
+            if (response.IsSuccessStatusCode)
             {
-                PropertyNameCaseInsensitive = true,
-            };
-            var user = JsonSerializer.Deserialize<ViewUser>(strData, option);
+                string strData = await response.Content.ReadAsStringAsync();
+                var option = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true,
+                };
+                var user = JsonSerializer.Deserialize<ViewUser>(strData, option);
 
-            return user!;
+                return user;
+            }
+            return null;
         }
 
-        //*------------------------------------------------------------Follow------------------------------------------------------------*//
+        /*------------------------------------------------------------HaveBeenCalled------------------------------------------------------------*/
 
         [HttpGet("GetTotalFollowings/{idOwner}")]
         public async Task<int> GetTotalFollowings(string idOwner)
         {
-            var totalFollowing = await _context.Followers.CountAsync(x => x.idOwner == idOwner);
-            return totalFollowing;
+            var totalFollowing = await _context.FollowLists.CountAsync(x => x.idOwner == idOwner);
+            if (totalFollowing > 0)
+            {
+                return totalFollowing;
+            }
+            return 0;
         }
 
         [HttpGet("GetTotalFollowers/{idOwner}")]
         public async Task<int> GetTotalFollowers(string idOwner)
         {
-            var totalFollower = await _context.Followers.CountAsync(x => x.idAccount == idOwner);
-            return totalFollower;
+            var totalFollower = await _context.FollowLists.CountAsync(x => x.idAccount == idOwner);
+            if (totalFollower > 0)
+            {
+                return totalFollower;
+            }
+            return 0;
         }
+
+        //*------------------------------------------------------------Follow------------------------------------------------------------*//
 
         [HttpGet("GetAllFollowings/{idOwner}")]
         public async Task<Response> GetAllFollowings(string idOwner)
         {
-            var followings = await _context.Followers
+            var followings = await _context.FollowLists
                 .Where(x => x.idOwner == idOwner)
                 .OrderByDescending(x => x.createdDate)
                 .AsNoTracking()
                 .ToListAsync();
-            if (followings == null)
+            if (followings.Count > 0)
             {
-                return new Response(HttpStatusCode.NotFound, "Followings doesn't exists!");
+                var result = _mapper.Map<List<FollowingView>>(followings);
+                foreach (var following in result)
+                {
+                    var infoUser = await GetInfoUser(following.idAccount!);
+                    following.emailAccount = infoUser.email;
+                    following.fullNameAccount = infoUser.fullName;
+                    following.avatarAccount = infoUser.avatar;
+                }
+                return new Response(HttpStatusCode.OK, "Get followings list is success!", result);
             }
-            var result = _mapper.Map<List<FollowingView>>(followings);
-            foreach (var following in result)
-            {
-                var infoUser = await GetNameUserCurrent(following.idAccount!);
-                following.email = infoUser.email;
-                following.fullName = infoUser.fullName;
-                following.avatar = infoUser.avatar;
-            }
-            return new Response(HttpStatusCode.OK, "Get all followings is success!", result);            
+            return new Response(HttpStatusCode.NotFound, "Followings list is empty!");
         }
 
         [HttpGet("GetAllFollowers/{idOwner}")]
         public async Task<Response> GetAllFollowers(string idOwner)
         {
-            var followers = await _context.Followers
+            var followers = await _context.FollowLists
                 .Where(x => x.idAccount == idOwner)
                 .OrderByDescending(x => x.createdDate)
                 .AsNoTracking()
                 .ToListAsync();
-            if (followers == null)
+            if (followers.Count > 0)
             {
-                return new Response(HttpStatusCode.NotFound, "Followers doesn't exists!");
+                var result = _mapper.Map<List<FollowingView>>(followers);
+                foreach (var follower in result)
+                {
+                    var infoUser = await GetInfoUser(follower.idOwner!);
+                    follower.emailOwner = infoUser.email;
+                    follower.fullNameOwner = infoUser.fullName;
+                    follower.avatarOwner = infoUser.avatar;
+                }
+                return new Response(HttpStatusCode.OK, "Get followers list is success!", result);
             }
-            var result = _mapper.Map<List<FollowingView>>(followers);
-            foreach (var follower in result)
-            {
-                var infoUser = await GetNameUserCurrent(follower.idOwner!);
-                follower.email = infoUser.email;
-                follower.fullName = infoUser.fullName;
-                follower.avatar = infoUser.avatar;
-            }
-            return new Response(HttpStatusCode.OK, "Get followers is success!", result);
+            return new Response(HttpStatusCode.NotFound, "Followers list is empty!");
         }
 
         [HttpPost("FollowOrUnfollow/{idOwner}/{idAccount}")]
         public async Task<Response> FollowOrUnfollow(string idOwner, string idAccount)
         {
-            var existFollow = await _context.Followers.FirstOrDefaultAsync(x => x.idAccount == idAccount && x.idOwner == idOwner);
+            var existFollow = await _context.FollowLists.FirstOrDefaultAsync(x => x.idAccount == idAccount && x.idOwner == idOwner);
             if (existFollow == null)
             {
-                Follower following = new Follower()
+                FollowList following = new FollowList()
                 {
                     idOwner = idOwner,
                     idAccount = idAccount,
                     createdDate = DateTime.Now,
                 };
-                await _context.Followers.AddAsync(following);
+                await _context.FollowLists.AddAsync(following);
                 var isSuccess = await _context.SaveChangesAsync();
                 if (isSuccess > 0)
                 {
@@ -146,7 +161,7 @@ namespace Follow.Controllers
             }
             else
             {
-                _context.Followers.Remove(existFollow);
+                _context.FollowLists.Remove(existFollow);
                 var isSuccess = await _context.SaveChangesAsync();
                 if (isSuccess > 0)
                 {
@@ -159,7 +174,7 @@ namespace Follow.Controllers
         [HttpGet("GetFollow/{idOwner}/{idAccount}")]
         public async Task<ActionResult<FollowingView>> CheckFollower(string idOwner, string idAccount)
         {
-            var follow = await _context.Followers.FirstOrDefaultAsync(x => x.idOwner == idOwner && x.idAccount == idAccount);
+            var follow = await _context.FollowLists.FirstOrDefaultAsync(x => x.idOwner == idOwner && x.idAccount == idAccount);
             if (follow == null)
             {
                 return NotFound("Follow or unfollow is success!");

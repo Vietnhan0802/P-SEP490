@@ -1,8 +1,6 @@
 using BusinessObjects.Entities.User;
 using BusinessObjects.Mappers;
 using Commons.Helpers;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Identity;
@@ -23,7 +21,7 @@ builder.Services.AddScoped<SaveImageService>();
 builder.Services.AddAutoMapper(typeof(MapperProfile));
 builder.Services.AddDbContext<AppDBContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("AppDB")));
 
-builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
+builder.Services.AddIdentity<Account, IdentityRole>(options =>
 {
     options.Password.RequiredLength = 1;
     options.Password.RequireNonAlphanumeric = false;
@@ -33,17 +31,6 @@ builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
 })
     .AddEntityFrameworkStores<AppDBContext>()
     .AddDefaultTokenProviders();
-
-/*builder.Services.AddCors(options =>
-{
-    options.AddPolicy("CorsPolicy", policy =>
-    {
-        policy.AllowAnyMethod()
-              .AllowAnyMethod()
-              .WithOrigins("https://localhost:3000")
-              .AllowCredentials();
-    });
-});*/
 
 builder.Services.AddAuthentication(options =>
 {
@@ -107,7 +94,10 @@ app.UseRouting();
 
 app.UseCors(options =>
 {
-    options.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin();
+    options.WithOrigins("http://localhost:3000")
+           .AllowAnyMethod()
+           .AllowAnyHeader()
+           .AllowCredentials();
 });
 
 app.UseAuthentication();

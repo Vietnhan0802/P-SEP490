@@ -38,47 +38,74 @@ namespace Interaction.Controllers
             UserApiUrl = "https://localhost:7006/api/User";
         }
 
-        [HttpGet("GetTitleBlog/{idBlog}")]
-        private async Task<ViewBlog> GetTitleBlog(Guid idBlog)
-        {
-            HttpResponseMessage response = await client.GetAsync($"{BlogApiUrl}/GetTitleBlog/{idBlog}");
-            string strData = await response.Content.ReadAsStringAsync();
-            var option = new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true,
-            };
-            var blog = JsonSerializer.Deserialize<ViewBlog>(strData, option);
+        /*------------------------------------------------------------CallAPI------------------------------------------------------------*/
 
-            return blog;
+        [HttpGet("GetInfoBlog/{idBlog}")]
+        private async Task<ViewBlog> GetInfoBlog(Guid idBlog)
+        {
+            HttpResponseMessage response = await client.GetAsync($"{BlogApiUrl}/GetInfoBlog/{idBlog}");
+            if (response.IsSuccessStatusCode)
+            {
+                string strData = await response.Content.ReadAsStringAsync();
+                var option = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true,
+                };
+                var blog = JsonSerializer.Deserialize<ViewBlog>(strData, option);
+
+                return blog;
+            }
+            return null;
         }
 
         [HttpGet("GetTitlePost/{idPost}")]
         private async Task<ViewPost> GetTitlePost(Guid idPost)
         {
             HttpResponseMessage response = await client.GetAsync($"{PostApiUrl}/GetTitlePost/{idPost}");
-            string strData = await response.Content.ReadAsStringAsync();
-            var option = new JsonSerializerOptions
+            if (response.IsSuccessStatusCode)
             {
-                PropertyNameCaseInsensitive = true,
-            };
-            var post = JsonSerializer.Deserialize<ViewPost>(strData, option);
+                string strData = await response.Content.ReadAsStringAsync();
+                var option = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true,
+                };
+                var post = JsonSerializer.Deserialize<ViewPost>(strData, option);
 
-            return post;
+                return post;
+            }
+            return null;
         }
 
-        [HttpGet("GetNameUserCurrent/{idUser}")]
-        private async Task<ViewUser> GetNameUserCurrent(string idUser)
+        [HttpGet("GetInfoUser/{idUser}")]
+        private async Task<ViewUser> GetInfoUser(string idUser)
         {
-            HttpResponseMessage response = await client.GetAsync($"{UserApiUrl}/GetNameUser/{idUser}");
-            string strData = await response.Content.ReadAsStringAsync();
-            var option = new JsonSerializerOptions
+            HttpResponseMessage response = await client.GetAsync($"{UserApiUrl}/GetInfoUser/{idUser}");
+            if (response.IsSuccessStatusCode)
             {
-                PropertyNameCaseInsensitive = true,
-            };
-            var user = JsonSerializer.Deserialize<ViewUser>(strData, option);
+                string strData = await response.Content.ReadAsStringAsync();
+                var option = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true,
+                };
+                var user = JsonSerializer.Deserialize<ViewUser>(strData, option);
 
-            return user;
+                return user;
+            }
+            return null;
         }
+
+        [HttpPut("BlockUser/{idUser}")]
+        private async Task<IActionResult> BlockUser(string idUser)
+        {
+            HttpResponseMessage response = await client.PutAsync($"{UserApiUrl}/BlockUser/{idUser}", null);
+            if (response.IsSuccessStatusCode)
+            {
+                return Ok("Block user is success!");
+            }
+            return BadRequest("Block user is fail");
+        }
+
+        /*------------------------------------------------------------HaveBeenCalled------------------------------------------------------------*/
 
         /*------------------------------------------------------------Verification------------------------------------------------------------*/
 
@@ -91,7 +118,7 @@ namespace Interaction.Controllers
                 var result = _mapper.Map<List<ViewVerification>>(verifications);
                 foreach (var verification in result)
                 {
-                    var infoUser = await GetNameUserCurrent(verification.idAccount!);
+                    var infoUser = await GetInfoUser(verification.idAccount);
                     verification.fullName = infoUser.fullName;
                     verification.avatar = infoUser.avatar;
                 }
@@ -103,45 +130,55 @@ namespace Interaction.Controllers
         [HttpPost("CreateVerification/{idUser}")]
         public async Task<Response> CreateVerification(string idUser)
         {
-            Verification verification = new Verification()
+            var verificationExist = await _context.Verifications.FindAsync(idUser);
+            if (verificationExist == null)
             {
-                idAccount = idUser,
-                status = Status.Waiting,
-                createdDate = DateTime.Now
-            };
-            await _context.Verifications.AddAsync(verification);
-            var isSuccess = await _context.SaveChangesAsync();
-            if (isSuccess > 0)
-            {
-                return new Response(HttpStatusCode.OK, "Create verification is success!", _mapper.Map<ViewVerification>(verification));
+                Verification verification = new Verification()
+                {
+                    idAccount = idUser,
+                    status = Status.Waiting,
+                    createdDate = DateTime.Now
+                };
+                await _context.Verifications.AddAsync(verification);
+                var isSuccess = await _context.SaveChangesAsync();
+                if (isSuccess > 0)
+                {
+                    return new Response(HttpStatusCode.OK, "Create verification is success!", _mapper.Map<ViewVerification>(verification));
+                }
+                return new Response(HttpStatusCode.BadRequest, "Create verification is fail!");
             }
-            return new Response(HttpStatusCode.BadRequest, "Create verification is fail!");
+            return new Response(HttpStatusCode.BadRequest, "Verification is exist!");
         }
 
         [HttpPut("UpdateVerification/{idVerification}/{status}")]
         public async Task<Response> UpdateVerification(Guid idVerification, Status status)
         {
-            var verification = await _context.Verifications.FirstOrDefaultAsync(x => x.idVerification == idVerification);
+            var verification = await _context.Verifications.FindAsync(idVerification);
             if (verification != null)
             {
-                return new Response(HttpStatusCode.NotFound, "Verification doesn't exists!");
+                if (status == Status.Accept)
+                {
+                    verification.status = Status.Accept;
+                    verification.confirmedDate = DateTime.Now;
+                    var isSuccess = await _context.SaveChangesAsync();
+                    if (isSuccess > 0)
+                    {
+                        return new Response(HttpStatusCode.OK, "Accept verification is success!", _mapper.Map<ViewVerification>(verification));
+                    }
+                    return new Response(HttpStatusCode.BadRequest, "Accept verification is fail!", _mapper.Map<ViewVerification>(verification));
+                }
+                else
+                {
+                    _context.Verifications.Remove(verification);
+                    var isSuccess = await _context.SaveChangesAsync();
+                    if (isSuccess > 0)
+                    {
+                        return new Response(HttpStatusCode.OK, "Deny verification is success!", _mapper.Map<ViewVerification>(verification));
+                    }
+                    return new Response(HttpStatusCode.BadRequest, "Deny verification is fail!");
+                }
             }
-            if (status == Status.Accept)
-            {
-                verification!.status = Status.Accept;
-                verification.confirmedDate = DateTime.Now;
-            }
-            else
-            {
-                verification!.status = Status.Deny;
-                verification.confirmedDate = DateTime.Now;
-            }
-            var isSuccess = await _context.SaveChangesAsync();
-            if (isSuccess > 0)
-            {
-                return new Response(HttpStatusCode.OK, "Update status is success!", _mapper.Map<ViewVerification>(verification));
-            }
-            return new Response(HttpStatusCode.BadRequest, "Update status is fail!");
+            return new Response(HttpStatusCode.NotFound, "Verification doesn't exists!");
         }
 
         /*------------------------------------------------------------AccountReport------------------------------------------------------------*/
@@ -149,16 +186,16 @@ namespace Interaction.Controllers
         [HttpGet("GetAllAccountReport")]
         public async Task<Response> GetAllAccountReport()
         {
-            var accountReports = await _context.AccountReports.OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
+            var accountReports = await _context.AccountReports.OrderBy(x => x.idReporter).OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
             if (accountReports.Count > 0)
             {
                 var result = _mapper.Map<List<ViewAccountReport>>(accountReports);
                 foreach (var accountReport in result)
                 {
-                    var infoReporter = await GetNameUserCurrent(accountReport.idReporter!);
+                    var infoReporter = await GetInfoUser(accountReport.idReporter);
                     accountReport.nameReporter = infoReporter.fullName;
                     accountReport.avatarReporter = infoReporter.avatar;
-                    var infoReported = await GetNameUserCurrent(accountReport.idReported!);
+                    var infoReported = await GetInfoUser(accountReport.idReported);
                     accountReport.nameReported = infoReported.fullName;
                     accountReport.avatarReported = infoReported.avatar;
                 }
@@ -190,42 +227,46 @@ namespace Interaction.Controllers
         [HttpPut("UpdateAccountReport/{idAccountReport}/{status}")]
         public async Task<Response> UpdateAccountReport(Guid idAccountReport, Status status)
         {
-            var accountReport = await _context.AccountReports.FirstOrDefaultAsync(x => x.idAccountReport == idAccountReport);
+            var accountReport = await _context.AccountReports.FindAsync(idAccountReport);
             if (accountReport != null)
             {
-                return new Response(HttpStatusCode.NotFound, "Account report doesn't exists!");
+                if (status == Status.Accept)
+                {
+                    accountReport.status = Status.Accept;
+                    accountReport.confirmedDate = DateTime.Now;
+                    var isSuccess = await _context.SaveChangesAsync();
+                    if (isSuccess > 0)
+                    {
+                        var acceptCounts = await _context.AccountReports.Where(x => x.idReported == accountReport.idReported && x.status == Status.Accept).AsNoTracking().ToListAsync();
+                        if (acceptCounts.Count > 4 && acceptCounts.Count < 6)
+                        {
+                            await BlockUser(accountReport.idReported);
+                        }
+                        return new Response(HttpStatusCode.OK, "Accept report is success!", _mapper.Map<ViewAccountReport>(accountReport));
+                    }
+                    return new Response(HttpStatusCode.BadRequest, "Accept report is fail!");
+                }
+                else
+                {
+                    accountReport.status = Status.Deny;
+                    accountReport.confirmedDate = DateTime.Now;
+                    var isSuccess = await _context.SaveChangesAsync();
+                    if (isSuccess > 0)
+                    {
+                        return new Response(HttpStatusCode.OK, "Deny report is success!", _mapper.Map<ViewAccountReport>(accountReport));
+                    }
+                    return new Response(HttpStatusCode.BadRequest, "Deny report is fail!");
+                }
             }
-            if (status == Status.Accept)
-            {
-                accountReport!.status = Status.Accept;
-                accountReport.confirmedDate = DateTime.Now;
-            }
-            else
-            {
-                accountReport!.status = Status.Deny;
-                accountReport.confirmedDate = DateTime.Now;
-            }
-            var isSuccess = await _context.SaveChangesAsync();
-            if (isSuccess > 0)
-            {
-                return new Response(HttpStatusCode.OK, "Update status is success!", _mapper.Map<ViewAccountReport>(accountReport));
-            }
-            return new Response(HttpStatusCode.BadRequest, "Update status is fail!");
+            return new Response(HttpStatusCode.NotFound, "Account report doesn't exists!");
         }
 
         /*------------------------------------------------------------PostReport------------------------------------------------------------*/
 
-        [HttpGet("GetAllPostReportsAccept")]
-        public async Task<int> GetAllPostReportsAccept()
-        {
-            var postReports = await _context.PostReports.Where(x => x.status == Status.Accept).CountAsync();
-            return postReports;
-        }
-
         [HttpGet("GetAllPostReport")]
         public async Task<Response> GetAllPostReport()
         {
-            var postReports = await _context.PostReports.OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
+            var postReports = await _context.PostReports.OrderBy(x => x.idPosted).OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
             if (postReports.Count > 0)
             {
                 var result = _mapper.Map<List<ViewPostReport>>(postReports);
@@ -263,27 +304,33 @@ namespace Interaction.Controllers
         [HttpPut("UpdatePostReport/{idPostReport}/{status}")]
         public async Task<Response> UpdatePostReport(Guid idPostReport, Status status)
         {
-            var postReport = await _context.PostReports.FirstOrDefaultAsync(x => x.idPostReport == idPostReport);
+            var postReport = await _context.PostReports.FindAsync(idPostReport);
             if (postReport != null)
             {
-                return new Response(HttpStatusCode.NotFound, "Post report doesn't exists!");
+                if (status == Status.Accept)
+                {
+                    postReport.status = Status.Accept;
+                    postReport.confirmedDate = DateTime.Now;
+                    var isSuccess = await _context.SaveChangesAsync();
+                    if (isSuccess > 0)
+                    {
+                        return new Response(HttpStatusCode.OK, "Accept report is success!", _mapper.Map<ViewPostReport>(postReport));
+                    }
+                    return new Response(HttpStatusCode.BadRequest, "Accept report is fail!");
+                }
+                else
+                {
+                    postReport.status = Status.Deny;
+                    postReport.confirmedDate = DateTime.Now;
+                    var isSuccess = await _context.SaveChangesAsync();
+                    if (isSuccess > 0)
+                    {
+                        return new Response(HttpStatusCode.OK, "Deny report is success!", _mapper.Map<ViewPostReport>(postReport));
+                    }
+                    return new Response(HttpStatusCode.BadRequest, "Deny report is fail!");
+                }
             }
-            if (status == Status.Accept)
-            {
-                postReport!.status = Status.Accept;
-                postReport.confirmedDate = DateTime.Now;
-            }
-            else
-            {
-                postReport!.status = Status.Deny;
-                postReport.confirmedDate = DateTime.Now;
-            }
-            var result = await _context.SaveChangesAsync();
-            if (result > 0)
-            {
-                return new Response(HttpStatusCode.OK, "Update status is success!", _mapper.Map<ViewPostReport>(postReport));
-            }
-            return new Response(HttpStatusCode.BadRequest, "Update status is fail!");
+            return new Response(HttpStatusCode.NotFound, "Post report doesn't exists!");
         }
 
         /*------------------------------------------------------------BlogReport------------------------------------------------------------*/
@@ -304,7 +351,7 @@ namespace Interaction.Controllers
                 var result = _mapper.Map<List<ViewBlogReport>>(blogReports);
                 foreach (var blogReport in result)
                 {
-                    var infoBlog = await GetTitleBlog(blogReport.idBloged!);
+                    var infoBlog = await GetInfoBlog(blogReport.idBloged);
                     blogReport.titleBlog = infoBlog.title;
                     blogReport.contentBlog = infoBlog.content;
                 }
@@ -339,24 +386,30 @@ namespace Interaction.Controllers
             var blogReport = await _context.BlogReports.FirstOrDefaultAsync(x => x.idBlogReport == idBlogReport);
             if (blogReport != null)
             {
-                return new Response(HttpStatusCode.NotFound, "Blog report doesn't exists!");
+                if (status == Status.Accept)
+                {
+                    blogReport!.status = Status.Accept;
+                    blogReport.confirmedDate = DateTime.Now;
+                    var isSuccess = await _context.SaveChangesAsync();
+                    if (isSuccess > 0)
+                    {
+                        return new Response(HttpStatusCode.OK, "Accept report is success!", _mapper.Map<ViewBlogReport>(blogReport));
+                    }
+                    return new Response(HttpStatusCode.BadRequest, "Accept report is fail!");
+                }
+                else
+                {
+                    blogReport!.status = Status.Deny;
+                    blogReport.confirmedDate = DateTime.Now;
+                    var isSuccess = await _context.SaveChangesAsync();
+                    if (isSuccess > 0)
+                    {
+                        return new Response(HttpStatusCode.OK, "Deny report is success!", _mapper.Map<ViewBlogReport>(blogReport));
+                    }
+                    return new Response(HttpStatusCode.BadRequest, "Deny report is fail!");
+                }
             }
-            if (status == Status.Accept)
-            {
-                blogReport!.status = Status.Accept;
-                blogReport.confirmedDate = DateTime.Now;
-            }
-            else
-            {
-                blogReport!.status = Status.Deny;
-                blogReport.confirmedDate = DateTime.Now;
-            }
-            var result = await _context.SaveChangesAsync();
-            if (result > 0)
-            {
-                return new Response(HttpStatusCode.OK, "Update status is success!", _mapper.Map<ViewBlogReport>(blogReport));
-            }
-            return new Response(HttpStatusCode.BadRequest, "Update status is fail!");
+            return new Response(HttpStatusCode.NotFound, "Blog report doesn't exists!");
         }
     }
 }

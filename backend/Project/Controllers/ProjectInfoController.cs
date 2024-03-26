@@ -61,18 +61,22 @@ namespace Project.Controllers
             return BadRequest("Create notification is fail!");
         }
 
-        [HttpGet("GetNameUserCurrent/{idUser}")]
-        private async Task<ViewUser> GetNameUserCurrent(string idUser)
+        [HttpGet("GetInfoUser/{idUser}")]
+        private async Task<ViewUser> GetInfoUser(string idUser)
         {
-            HttpResponseMessage response = await client.GetAsync($"{UserApiUrl}/GetNameUser/{idUser}");
-            string strData = await response.Content.ReadAsStringAsync();
-            var option = new JsonSerializerOptions
+            HttpResponseMessage response = await client.GetAsync($"{UserApiUrl}/GetInfoUser/{idUser}");
+            if (response.IsSuccessStatusCode)
             {
-                PropertyNameCaseInsensitive = true,
-            };
-            var user = JsonSerializer.Deserialize<ViewUser>(strData, option);
+                string strData = await response.Content.ReadAsStringAsync();
+                var option = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true,
+                };
+                var user = JsonSerializer.Deserialize<ViewUser>(strData, option);
 
-            return user;
+                return user;
+            }
+            return null;
         }
 
         /*------------------------------------------------------------Statistic------------------------------------------------------------*/
@@ -113,7 +117,7 @@ namespace Project.Controllers
             var result = _mapper.Map<List<ProjectInfoView>>(projects);
             foreach (var project in result)
             {
-                var infoUser = await GetNameUserCurrent(project.idAccount!);
+                var infoUser = await GetInfoUser(project.idAccount!);
                 project.fullName = infoUser.fullName;
                 project.avatarUser = infoUser.avatar;
                 project.avatar = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, project.avatar);
@@ -135,7 +139,7 @@ namespace Project.Controllers
             var result = _mapper.Map<List<ProjectInfoView>>(projects);
             foreach (var project in result)
             {
-                var infoUser = await GetNameUserCurrent(project.idAccount!);
+                var infoUser = await GetInfoUser(project.idAccount!);
                 project.fullName = infoUser.fullName;
                 project.avatarUser = infoUser.avatar;
                 project.avatar = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, project.avatar);
@@ -159,7 +163,7 @@ namespace Project.Controllers
                 foreach (var projectMember in result)
                 {
                     var project = await _context.ProjectInfos.FirstOrDefaultAsync(x => x.idProject == projectMember.idProject);
-                    var inforUser = await GetNameUserCurrent(project.idAccount);
+                    var inforUser = await GetInfoUser(project.idAccount);
                     projectMember.fullName = inforUser.fullName;
                     projectMember.avatarUser = inforUser.avatar;
                     projectMember.avatar = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, projectMember.avatar);
@@ -183,7 +187,7 @@ namespace Project.Controllers
             var result = _mapper.Map<List<ProjectInfoView>>(projects);
             foreach (var project in result)
             {
-                var infoUser = await GetNameUserCurrent(project.idAccount!);
+                var infoUser = await GetInfoUser(project.idAccount!);
                 project.fullName = infoUser.fullName;
                 project.avatarUser = infoUser.avatar;
                 project.avatar = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, project.avatar);
@@ -203,7 +207,7 @@ namespace Project.Controllers
                 return new Response(HttpStatusCode.NotFound, "Project doesn't exists!");
             }
             var result = _mapper.Map<ProjectInfoView>(project);
-            var infoUser = await GetNameUserCurrent(result.idAccount!);
+            var infoUser = await GetInfoUser(result.idAccount!);
             result.fullName = infoUser.fullName;
             result.avatarUser = infoUser.avatar;
             result.avatar = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, result.avatar);
@@ -227,7 +231,7 @@ namespace Project.Controllers
                 var result = _mapper.Map<List<ProjectMemberView>>(members);
                 foreach (var member in result)
                 {
-                    var infoUser = await GetNameUserCurrent(member.idAccount!);
+                    var infoUser = await GetInfoUser(member.idAccount!);
                     member.fullName = infoUser.fullName;
                     member.avatar = infoUser.avatar;
                     var postion = await _context.Positions.FirstOrDefaultAsync(x => x.idPosition == member.idPosition);
@@ -371,7 +375,7 @@ namespace Project.Controllers
                         var result = _mapper.Map<List<ProjectMemberView>>(projectApplications);
                         foreach (var projectApplication in result)
                         {
-                            var infoUser = await GetNameUserCurrent(projectApplication.idAccount);
+                            var infoUser = await GetInfoUser(projectApplication.idAccount);
                             projectApplication.fullName = infoUser.fullName;
                             projectApplication.email = infoUser.email;
                             projectApplication.avatar = infoUser.avatar;
@@ -413,7 +417,7 @@ namespace Project.Controllers
                         var result = _mapper.Map<List<ProjectMemberView>>(sendInvites);
                         foreach (var sendInvite in result)
                         {
-                            var infoUser = await GetNameUserCurrent(sendInvite.idAccount);
+                            var infoUser = await GetInfoUser(sendInvite.idAccount);
                             sendInvite.fullName = infoUser.fullName;
                             sendInvite.email = infoUser.email;
                             sendInvite.avatar = infoUser.avatar;
@@ -447,7 +451,7 @@ namespace Project.Controllers
                 foreach (var projectInvite in result)
                 {
                     var project = await _context.ProjectInfos.FirstOrDefaultAsync(x => x.idProject == projectInvite.idProject);
-                    var infoUser = await GetNameUserCurrent(project.idAccount);
+                    var infoUser = await GetInfoUser(project.idAccount);
                     projectInvite.fullName = infoUser.fullName;
                     projectInvite.avatar = infoUser.avatar;
                     projectInvite.nameProject = project.name;
@@ -475,7 +479,7 @@ namespace Project.Controllers
                 foreach (var projectApplication in result)
                 {
                     var project = await _context.ProjectInfos.FirstOrDefaultAsync(x => x.idProject == projectApplication.idProject);
-                    var infoUser = await GetNameUserCurrent(project.idAccount);
+                    var infoUser = await GetInfoUser(project.idAccount);
                     projectApplication.fullName = infoUser.fullName;
                     projectApplication.avatar = infoUser.avatar;
                     projectApplication.nameProject = project.name;
