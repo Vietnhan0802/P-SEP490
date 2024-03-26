@@ -450,7 +450,7 @@ namespace PostService.Controllers
             foreach (var comment in result)
             {
                 comment.like = await _context.PostCommentLikes.Where(x => x.idPostComment == comment.idPostComment).CountAsync();
-                var isLikeComment = await _context.PostCommentLikes.FirstOrDefaultAsync(x => x.idAccount == idUser);
+                var isLikeComment = await _context.PostCommentLikes.FirstOrDefaultAsync(x => x.idAccount == idUser && x.idPostComment == comment.idPostComment);
                 if (isLikeComment != null)
                 {
                     comment.isLike = true;
@@ -463,7 +463,7 @@ namespace PostService.Controllers
                 foreach (var reply in resultReplies)
                 {
                     reply.like = await _context.PostReplyLikes.Where(x => x.idPostReply == reply.idPostReply).CountAsync();
-                    var isLikeReply = await _context.PostReplyLikes.FirstOrDefaultAsync(x => x.idAccount == idUser);
+                    var isLikeReply = await _context.PostReplyLikes.FirstOrDefaultAsync(x => x.idAccount == idUser && x.idPostReply == reply.idPostReply);
                     if (isLikeReply != null)
                     {
                         reply.isLike = true;
