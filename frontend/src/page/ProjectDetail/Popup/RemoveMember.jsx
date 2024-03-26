@@ -2,15 +2,16 @@ import React, { useState } from 'react'
 import { Button, Modal } from 'react-bootstrap'
 import { IoPersonRemove } from "react-icons/io5";
 import { projectInstance } from '../../../axios/axiosConfig';
-function RemoveMember({ id, project }) {
+function RemoveMember({ id, resetPage }) {
     const [show, setShow] = useState(false);
     const modalClose = () => { setShow(false); };
     const modalShow = () => { setShow(true); };
     const handleRemoveMember = () => {
-        projectInstance.delete(`RemoveMember/${project}/${id}`)
+        projectInstance.delete(`RemoveMember/${id}`)
             .then((res) => {
                 console.log(res?.data?.result);
-                // setReset(!reset);
+                setShow(false);
+                resetPage('Success');
             })
             .then((error) => { console.error(error) });
     }

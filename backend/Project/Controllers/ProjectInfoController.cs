@@ -626,7 +626,7 @@ namespace Project.Controllers
             return new Response(HttpStatusCode.BadRequest, "Remove invite is fail!");
         }
 
-        [HttpDelete("RemoveMember/{idProject}/{idAccount}")]
+        [HttpDelete("RemoveMember/{idProjectMember}")]
         public async Task<Response> RemoveMember(Guid idProjectMember)
         {
             var member = await _context.ProjectMembers.FirstOrDefaultAsync(x => x.idProjectMember == idProjectMember && x.isAcept == true);

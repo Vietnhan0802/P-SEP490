@@ -24,7 +24,6 @@ import UpdateAvatarPu from "./UpdateAvatarPu";
 import Report from "../../components/report-popup/Report";
 import UpdateInformationPu from "./UpdateInformationPu";
 import { BsThreeDots } from "react-icons/bs";
-import { MdVerified } from "react-icons/md";
 import ChangePass from "./ChangePass";
 // Import the main component
 import { Viewer } from '@react-pdf-viewer/core';
@@ -32,6 +31,7 @@ import { Viewer } from '@react-pdf-viewer/core';
 // Import the styles
 import '@react-pdf-viewer/core/lib/styles/index.css';
 import { Worker } from '@react-pdf-viewer/core';
+import Verification from "./Verification";
 function formatDateString(dateString) {
   // Check if the dateString is not empty
   if (dateString) {
@@ -138,6 +138,7 @@ function Profile({ handleChangeImg, value }) {
               console.log(error);
             });
         }
+
         if (user.role === "Member") {
           credentialInstance
             .get(`/GetDegreeByUser/${userId}`, {
@@ -321,15 +322,14 @@ function Profile({ handleChangeImg, value }) {
                           </Dropdown.Toggle>
 
                           <Dropdown.Menu style={{ minWidth: "auto" }}>
-                            <Dropdown.Item
-                            >
+                            <Dropdown.Item>
                               <UpdateInformationPu value={inputs} id={currentUserId} reset={reset} />
                             </Dropdown.Item>
-                            {role === 'Business' &&
+                            {(role === 'Business' || role === 'Member') &&
                               <Dropdown.Item>
-                                <MdVerified size={28} />
-                              </Dropdown.Item>}
-
+                                <Verification id={currentUserId}/>
+                              </Dropdown.Item>
+                            }
                             <Dropdown.Item>
                               <ChangePass email={inputs.email} />
                             </Dropdown.Item>
@@ -483,18 +483,17 @@ function Profile({ handleChangeImg, value }) {
                           >
                             View Detail
                           </a>
-                          <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
+                          {/* <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
                             <div
                               style={{
                                 border: '1px solid rgba(0, 0, 0, 0.3)',
                                 height: '750px',
                               }}
                             >
-                              <Viewer fileUrl={item.fileSrc} httpHeaders={{
-                                'Authorization': 'Bearer xxxxxx',
-                              }} withCredentials={true} />
+                              <Viewer fileUrl={item.fileSrc}
+                               />
                             </div>
-                          </Worker>
+                          </Worker> */}
                         </div>
                       </div>
                     ))}

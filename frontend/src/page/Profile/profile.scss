@@ -22,8 +22,11 @@
   width: 200px;
   height: 200px;
 }
-
+.react-date-picker__wrapper {
+  border: none !important;
+}
 #profile {
+
   background-color: var(--header_background) !important;
   color: var(--header_search_text);
   .dropdown-toggle::after {
@@ -34,21 +37,25 @@
     border-color: transparent;
     background-color: transparent;
   }
-  .btn-check:checked+.btn, .btn.active, .btn.show, .btn:first-child:active, :not(.btn-check)+.btn:active {
+  .btn-check:checked + .btn,
+  .btn.active,
+  .btn.show,
+  .btn:first-child:active,
+  :not(.btn-check) + .btn:active {
     border-color: transparent;
     background-color: transparent;
   }
   .text-white {
     color: white;
   }
-  .btn.degree-detail{
+  .btn.degree-detail {
     border: solid 0.5px black;
   }
   .bg-text {
     background-color: var(--header_background_search_box);
     color: var(--header_search_text);
   }
-  .none-resize{
+  .none-resize {
     resize: none;
   }
   .rounded {
@@ -124,7 +131,6 @@
   }
 
   .personal-information {
-
     input,
     textarea {
       padding: 9px;
@@ -148,11 +154,11 @@
       margin-bottom: 15px;
       border: solid 0.5px gray;
       cursor: pointer;
-      transition: transform 0.3s ease
+      transition: transform 0.3s ease;
     }
 
     .row:hover {
-      transform: scale(1.03)
+      transform: scale(1.03);
     }
 
     .image {
@@ -185,7 +191,6 @@
 .edit-btn-infor {
   position: absolute;
   right: 15px;
-
 }
 
 #profile {
@@ -235,14 +240,11 @@
   background-color: rgba(220, 53, 69, 0.1);
 }
 
-
 .check-control {
   padding: 0.5rem 1rem;
   background-color: var(--bs-secondary-bg);
   opacity: 1;
 }
-
-
 
 .img-contain {
   max-height: 100px;
@@ -271,7 +273,7 @@
     border-radius: 50%;
   }
 }
-.avatar-contain.wh-200{
+.avatar-contain.wh-200 {
   width: 200px;
   height: 200px;
 }

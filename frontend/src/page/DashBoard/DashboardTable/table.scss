@@ -23,7 +23,7 @@
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
-}
+  }
   .form-table th,
   .form-table svg,
   .form-table td,
@@ -176,7 +176,8 @@
     text-align: center;
   }
   .report-post,
-  .report-account {
+  .report-account,
+  .report-blog {
     text-align: center;
     width: 220px;
     padding: 5px;
@@ -185,27 +186,27 @@
     margin: 0px 10px;
   }
   .active-report {
-    color: #2F45AD;
+    color: #2f45ad;
     background-color: var(--header_background_search_box);
     //background: var(--blue-va-5, rgba(47, 69, 173, 0.2));
   }
-  .accept{
-    border: 3px solid var(--m-5, #4DCBD5);
-    color: #4DCBD5;
+  .accept {
+    border: 3px solid var(--m-5, #4dcbd5);
+    color: #4dcbd5;
     padding: 4px 8px;
 
     margin-left: 5px;
     border-radius: 16px;
   }
-  .deny{
-    border: 3px solid var(--m-5, #DFB016);
-    color: #DFB016;
+  .deny {
+    border: 3px solid var(--m-5, #dfb016);
+    color: #dfb016;
     padding: 4px 8px;
     margin-left: 5px;
     border-radius: 16px;
   }
 }
-#verifyTable{
+#verifyTable {
   input:focus {
     outline: none;
   }

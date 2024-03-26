@@ -48,12 +48,14 @@ function SideBar() {
       icon: <LuFileEdit />,
       text: "Project Application",
       userRole: "business",
+      otherRole:'member'
     },
     {
       id: "invitation",
       icon: <FaUserPlus />,
       text: "Project Invitation",
       userRole: "business",
+      otherRole:'member'
     },
     {
       id: "currentproject",
@@ -91,7 +93,7 @@ function SideBar() {
     // Customize this condition based on your role logic
     return (
       item.userRole.toLowerCase() === role.toLowerCase() ||
-      item.userRole.toLowerCase() === "all"
+      item.userRole.toLowerCase() === "all" || item?.otherRole?.toLowerCase() === role.toLowerCase()
     );
   });
   return (

@@ -6,6 +6,7 @@ import { use } from 'i18next';
 import AcceptConfirm from './acceptConfirm';
 import RejectConfirm from './rejectConfirm';
 import { projectInstance } from '../../axios/axiosConfig';
+import CancelItem from './CancelItem';
 
 const createData = (
     id,
@@ -28,7 +29,7 @@ const createData = (
 
 function ProjectInviation() {
     const sessionData = JSON.parse(sessionStorage.getItem('userSession')) || {};
-    const { currentUserId } = sessionData;
+    const { currentUserId, role } = sessionData;
     const [resetPage, setResetPage] = useState(true);
     const columns = React.useMemo(
         () => [
@@ -65,15 +66,15 @@ function ProjectInviation() {
                 Header: "Action",
                 accessor: "status",
                 Cell: ({ row }) => (
-                    <div style={{ display: "flex", alignItems: "center" }}>
-                        <a className="btn btn-info text-white"
-                            href={row.original.cvFile} // Directly use the cvFile URL here
-                            target="_blank" // Ensure it opens in a new tab
-                            rel="noopener noreferrer" // Improve security for opening new tabs
-                        > View CV
-                        </a>
-                        <AcceptConfirm id={row.original.id} reset={reset} />
-                        <RejectConfirm id={row.original.id} reset={reset} />
+                    <div >
+                        {role === 'Business' ?
+
+                            <CancelItem id={row.original.id} reset={reset} />
+                            :
+                            <div className='d-flex'>
+                                <AcceptConfirm id={row.original.id} reset={reset} />
+                                <RejectConfirm id={row.original.id} reset={reset} />
+                            </div>}
                     </div>
                 ),
             },
@@ -87,13 +88,24 @@ function ProjectInviation() {
     }
     const [invitation, setInvivtation] = useState([]);
     useEffect(() => {
-        projectInstance.get(`GetAllSendInvites/${currentUserId}`)
-            .then((res) => {
-                const data = res?.data?.result;
-                console.log(data)
-                setInvivtation(data.map((item) => createData(item.idProjectMember, item.fullName, item.email, item.namePosition, item.nameProject, item.avatar, item.cvUrlFile)));
-            })
-            .catch((error) => { console.error(error) });
+        if (role === 'Business') {
+            projectInstance.get(`GetAllSendInvites/${currentUserId}`)
+                .then((res) => {
+                    const data = res?.data?.result;
+                    console.log(data)
+                    setInvivtation(data.map((item) => createData(item.idProjectMember, item.fullName, item.email, item.namePosition, item.nameProject, item.avatar, item.cvUrlFile)));
+                })
+                .catch((error) => { console.error(error) });
+        } else {
+            projectInstance.get(`GetAllProjectInvites/${currentUserId}`)
+                .then((res) => {
+                    const data = res?.data?.result;
+                    console.log(data)
+                    setInvivtation(data.map((item) => createData(item.idProjectMember, item.fullName, item.email, item.namePosition, item.nameProject, item.avatar, item.cvUrlFile)));
+                })
+                .catch((error) => { console.error(error) });
+        }
+
     }, [resetPage]);
     return (
         <Row className="pt-3 ms-0 me-0">

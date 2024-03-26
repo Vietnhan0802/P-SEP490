@@ -86,7 +86,7 @@ function App() {
       .catch((error) => {
         console.error(error);
       });
-  }, []);
+  }, [currentUserId]);
   return (
     <div
       className="App"

@@ -46,7 +46,7 @@ function Report({ id, idItem, type }) {
         })
         .catch((error) => { console.error(error) })
     } else {
-      reportInstance.post(`CreateBlogReport/${report.idReporter}/${report.idPosted}/${report.content}`)
+      reportInstance.post(`CreateAccountReport/${report.idReporter}/${report.idPosted}/${report.content}`)
         .then((res) => {
           console.log(res?.data?.result);
           setShow(false);
