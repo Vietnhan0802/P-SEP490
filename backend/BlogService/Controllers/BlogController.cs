@@ -108,6 +108,36 @@ namespace BlogService.Controllers
             return NotFound();
         }
 
+        [HttpPut("BlockBlog/{idBlog}")]
+        public async Task<IActionResult> BlockBlog(Guid idBlog)
+        {
+            var blog = await _context.Blogs.FindAsync(idBlog);
+            if (blog != null)
+            {
+                if (blog.isBlock == false)
+                {
+                    blog.isBlock = true;
+                    var isSuccess = await _context.SaveChangesAsync();
+                    if (isSuccess > 0)
+                    {
+                        return Ok("Block blog is success");
+                    }
+                    return BadRequest("Block blog is fail");
+                }
+                else
+                {
+                    blog.isBlock = false;
+                    var isSuccess = await _context.SaveChangesAsync();
+                    if (isSuccess > 0)
+                    {
+                        return Ok("Unblock blog is success");
+                    }
+                    return BadRequest("Unblock blog is fail");
+                }
+            }
+            return NotFound("Blog doesn't exist!");
+        }
+
         /*------------------------------------------------------------Statistic------------------------------------------------------------*/
 
         [HttpGet("GetBlogStatistic")]

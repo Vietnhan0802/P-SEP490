@@ -105,7 +105,20 @@ namespace Interaction.Controllers
             return BadRequest("Block user is fail");
         }
 
+        [HttpPut("BlockBlog/{idBlog}")]
+        private async Task<IActionResult> BlockBlog(Guid idBLog)
+        {
+            HttpResponseMessage response = await client.PutAsync($"{BlogApiUrl}/BlockBlog/{idBLog}", null);
+            if (response.IsSuccessStatusCode)
+            {
+                return Ok("Block blog is success!");
+            }
+            return BadRequest("Block blog is fail");
+        }
+
         /*------------------------------------------------------------HaveBeenCalled------------------------------------------------------------*/
+
+
 
         /*------------------------------------------------------------Verification------------------------------------------------------------*/
 
@@ -237,8 +250,8 @@ namespace Interaction.Controllers
                     var isSuccess = await _context.SaveChangesAsync();
                     if (isSuccess > 0)
                     {
-                        var acceptCounts = await _context.AccountReports.Where(x => x.idReported == accountReport.idReported && x.status == Status.Accept).AsNoTracking().ToListAsync();
-                        if (acceptCounts.Count > 4 && acceptCounts.Count < 6)
+                        var acceptCounts = await _context.AccountReports.CountAsync(x => x.idReported == accountReport.idReported && x.status == Status.Accept);
+                        if (acceptCounts > 4 && acceptCounts < 6)
                         {
                             await BlockUser(accountReport.idReported);
                         }
@@ -335,13 +348,6 @@ namespace Interaction.Controllers
 
         /*------------------------------------------------------------BlogReport------------------------------------------------------------*/
 
-        [HttpGet("GetAllBlogReportsAccept")]
-        public async Task<int> GetAllBlogReportsAccept()
-        {
-            var blogReports = await _context.BlogReports.Where(x => x.status == Status.Accept).CountAsync();
-            return blogReports;
-        }
-
         [HttpGet("GetAllBlogReport")]
         public async Task<Response> GetAllBlogReport()
         {
@@ -388,18 +394,23 @@ namespace Interaction.Controllers
             {
                 if (status == Status.Accept)
                 {
-                    blogReport!.status = Status.Accept;
+                    blogReport.status = Status.Accept;
                     blogReport.confirmedDate = DateTime.Now;
                     var isSuccess = await _context.SaveChangesAsync();
                     if (isSuccess > 0)
                     {
+                        var blogCount = await _context.BlogReports.CountAsync(x => x.idBloged == blogReport.idBloged && x.status == Status.Accept);
+                        if (blogCount > 4 && blogCount < 6)
+                        {
+                            await BlockBlog(blogReport.idBloged);
+                        }
                         return new Response(HttpStatusCode.OK, "Accept report is success!", _mapper.Map<ViewBlogReport>(blogReport));
                     }
                     return new Response(HttpStatusCode.BadRequest, "Accept report is fail!");
                 }
                 else
                 {
-                    blogReport!.status = Status.Deny;
+                    blogReport.status = Status.Deny;
                     blogReport.confirmedDate = DateTime.Now;
                     var isSuccess = await _context.SaveChangesAsync();
                     if (isSuccess > 0)
