@@ -165,6 +165,37 @@ namespace BlogService.Controllers
 
         /*------------------------------------------------------------Blog------------------------------------------------------------*/
 
+        [HttpGet("SearchBlog/{nameBlog}")]
+        public async Task<Response> SearchBlog(string idUser, string nameBlog)
+        {
+            var blogs = await _context.Blogs.Where(x => x.title.Contains(nameBlog)).OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
+            if (blogs.Count > 0)
+            {
+                var result = _mapper.Map<List<ViewBlog>>(blogs);
+                foreach (var blog in result)
+                {
+                    blog.like = await _context.BlogsLike.Where(x => x.idBlog == blog.idBlog).CountAsync();
+                    var isLike = await _context.BlogsLike.FirstOrDefaultAsync(x => x.idAccount == idUser && x.idBlog == blog.idBlog);
+                    if (isLike != null)
+                    {
+                        blog.isLike = true;
+                    }
+                    var infoUser = await GetInfoUser(blog.idAccount);
+                    blog.fullName = infoUser.fullName;
+                    blog.avatar = infoUser.avatar;
+                    var blogImages = await _context.BlogsImage.Where(x => x.idBlog == blog.idBlog).ToListAsync();
+                    var viewImages = _mapper.Map<List<ViewBlogImage>>(blogImages);
+                    foreach (var image in viewImages)
+                    {
+                        image.ImageSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, image.image);
+                    }
+                    blog.ViewBlogImages = viewImages;
+                }
+                return new Response(HttpStatusCode.OK, "Search blog is success!", result);
+            }
+            return new Response(HttpStatusCode.NoContent, "Search blog is empty!");
+        }
+
         [HttpGet("GetAllBlogsTrend/{idUser}")]
         public async Task<Response> GetAllBlogsTrend(string idUser)
         {
@@ -450,7 +481,7 @@ namespace BlogService.Controllers
                 foreach (var comment in resultComments)
                 {
                     comment.like = await _context.BlogsCommentLike.Where(x => x.idBlogComment == comment.idBlogComment).CountAsync();
-                    var isLikeComment = await _context.BlogsCommentLike.FirstOrDefaultAsync(x => x.idAccount == idUser);
+                    var isLikeComment = await _context.BlogsCommentLike.FirstOrDefaultAsync(x => x.idAccount == idUser && x.idBlogComment == comment.idBlogComment);
                     if (isLikeComment != null)
                     {
                         comment.isLike = true;
@@ -463,7 +494,7 @@ namespace BlogService.Controllers
                     foreach (var reply in resultReplies)
                     {
                         reply.like = await _context.BlogsReplyLike.Where(x => x.idBlogReply == reply.idBlogReply).CountAsync();
-                        var isLikeReply = await _context.BlogsReplyLike.FirstOrDefaultAsync(x => x.idAccount == idUser);
+                        var isLikeReply = await _context.BlogsReplyLike.FirstOrDefaultAsync(x => x.idAccount == idUser && x.idBlogReply == reply.idBlogReply);
                         if (isLikeReply != null)
                         {
                             reply.isLike = true;
