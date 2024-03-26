@@ -17,7 +17,7 @@ namespace PostService.Data.Migrations
                 {
                     idPost = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     idAccount = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    idProject = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    idProject = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     title = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     content = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     view = table.Column<int>(type: "int", nullable: false),

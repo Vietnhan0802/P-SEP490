@@ -117,7 +117,7 @@ namespace Project.Controllers
             var result = _mapper.Map<List<ProjectInfoView>>(projects);
             foreach (var project in result)
             {
-                var infoUser = await GetInfoUser(project.idAccount!);
+                var infoUser = await GetInfoUser(project.idAccount);
                 project.fullName = infoUser.fullName;
                 project.avatarUser = infoUser.avatar;
                 project.avatar = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, project.avatar);

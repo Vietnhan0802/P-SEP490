@@ -7,7 +7,7 @@ namespace BusinessObjects.Entities.Posts
         [Key]
         public Guid idPost { get; set; }
         public string idAccount { get; set; }
-        public Guid idProject { get; set; }
+        public Guid? idProject { get; set; }
         public string? title { get; set; }
         public string? content { get; set; }
         public int view { get; set; }

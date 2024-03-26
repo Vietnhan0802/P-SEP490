@@ -38,7 +38,7 @@ namespace PostService.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("idProject")
+                    b.Property<Guid?>("idProject")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("isBlock")
