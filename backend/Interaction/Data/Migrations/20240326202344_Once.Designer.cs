@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Interaction.Data.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20240326094454_Once")]
+    [Migration("20240326202344_Once")]
     partial class Once
     {
         /// <inheritdoc />

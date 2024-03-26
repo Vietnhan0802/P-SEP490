@@ -121,21 +121,21 @@ namespace User.Data.Migrations
                         {
                             Id = "b80546cd-f4df-4a46-842e-22d3f9018ce3",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "d7da554d-eb72-468d-9496-c566e8cfa3a9",
+                            ConcurrencyStamp = "f624821c-b02c-4730-ad21-e04b7276eaa7",
                             Email = "PEITCS.admin@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = true,
                             NormalizedEmail = "PEITCS.ADMIN@GMAIL.COM",
                             NormalizedUserName = "PEITCS.ADMIN@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEED7wmzwxXVEh52FGggHMkQjey5l0BK3JyxKTFbfMlD1cdnEwAS0GssiA40e6BaQoA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEFoNCs1e9z05n2GJZ0ma0+rpYDWkF5I8N98OqiokbLDL/929gNgua0HfuGFNEe96Mw==",
                             PhoneNumber = "0949180802",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "f0dea514-b25a-45d1-9e78-473f8b36c818",
+                            SecurityStamp = "29e57c1a-d7f9-48df-81f0-f06b686ceda8",
                             TwoFactorEnabled = false,
                             UserName = "PEITCS.admin@gmail.com",
                             address = "Bến Tre",
                             avatar = "default.png",
-                            createdDate = new DateTime(2024, 3, 27, 3, 14, 36, 651, DateTimeKind.Local).AddTicks(1019),
+                            createdDate = new DateTime(2024, 3, 27, 3, 25, 56, 117, DateTimeKind.Local).AddTicks(8408),
                             date = new DateTime(2002, 8, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             description = "Admin quản lý trang web công nghệ kết nối, tập trung và hiệu quả trong việc duy trì và phát triển nền tảng, không lãng phí thời gian vào những cuộc trò chuyện vô nghĩa.",
                             fullName = "PEITCS",
@@ -182,14 +182,14 @@ namespace User.Data.Migrations
                         },
                         new
                         {
-                            Id = "a3c2be2a-7689-4916-a63c-794718259ed3",
+                            Id = "8d5e92e5-b8d9-4f1c-b7e4-8111fdfecbb2",
                             ConcurrencyStamp = "2",
                             Name = "Member",
                             NormalizedName = "Member"
                         },
                         new
                         {
-                            Id = "407a54aa-01da-4ccd-b01d-3c182a55f718",
+                            Id = "c05c83b0-5d6c-49e2-ba5c-eaedcfda05af",
                             ConcurrencyStamp = "3",
                             Name = "Business",
                             NormalizedName = "Business"

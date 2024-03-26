@@ -173,15 +173,15 @@ namespace User.Data.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "407a54aa-01da-4ccd-b01d-3c182a55f718", "3", "Business", "Business" },
-                    { "a3c2be2a-7689-4916-a63c-794718259ed3", "2", "Member", "Member" },
-                    { "aeb27c30-d31d-43ec-9465-d04bf75d0f0d", "1", "Admin", "Admin" }
+                    { "8d5e92e5-b8d9-4f1c-b7e4-8111fdfecbb2", "2", "Member", "Member" },
+                    { "aeb27c30-d31d-43ec-9465-d04bf75d0f0d", "1", "Admin", "Admin" },
+                    { "c05c83b0-5d6c-49e2-ba5c-eaedcfda05af", "3", "Business", "Business" }
                 });
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName", "address", "avatar", "createdDate", "date", "description", "fullName", "isBlock", "isMale", "isVerified", "tax" },
-                values: new object[] { "b80546cd-f4df-4a46-842e-22d3f9018ce3", 0, "d7da554d-eb72-468d-9496-c566e8cfa3a9", "PEITCS.admin@gmail.com", true, true, null, "PEITCS.ADMIN@GMAIL.COM", "PEITCS.ADMIN@GMAIL.COM", "AQAAAAIAAYagAAAAEED7wmzwxXVEh52FGggHMkQjey5l0BK3JyxKTFbfMlD1cdnEwAS0GssiA40e6BaQoA==", "0949180802", false, "f0dea514-b25a-45d1-9e78-473f8b36c818", false, "PEITCS.admin@gmail.com", "Bến Tre", "default.png", new DateTime(2024, 3, 27, 3, 14, 36, 651, DateTimeKind.Local).AddTicks(1019), new DateTime(2002, 8, 18, 0, 0, 0, 0, DateTimeKind.Unspecified), "Admin quản lý trang web công nghệ kết nối, tập trung và hiệu quả trong việc duy trì và phát triển nền tảng, không lãng phí thời gian vào những cuộc trò chuyện vô nghĩa.", "PEITCS", false, true, true, "1234567890" });
+                values: new object[] { "b80546cd-f4df-4a46-842e-22d3f9018ce3", 0, "f624821c-b02c-4730-ad21-e04b7276eaa7", "PEITCS.admin@gmail.com", true, true, null, "PEITCS.ADMIN@GMAIL.COM", "PEITCS.ADMIN@GMAIL.COM", "AQAAAAIAAYagAAAAEFoNCs1e9z05n2GJZ0ma0+rpYDWkF5I8N98OqiokbLDL/929gNgua0HfuGFNEe96Mw==", "0949180802", false, "29e57c1a-d7f9-48df-81f0-f06b686ceda8", false, "PEITCS.admin@gmail.com", "Bến Tre", "default.png", new DateTime(2024, 3, 27, 3, 25, 56, 117, DateTimeKind.Local).AddTicks(8408), new DateTime(2002, 8, 18, 0, 0, 0, 0, DateTimeKind.Unspecified), "Admin quản lý trang web công nghệ kết nối, tập trung và hiệu quả trong việc duy trì và phát triển nền tảng, không lãng phí thời gian vào những cuộc trò chuyện vô nghĩa.", "PEITCS", false, true, true, "1234567890" });
 
             migrationBuilder.InsertData(
                 table: "AspNetUserRoles",

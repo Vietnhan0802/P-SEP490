@@ -12,7 +12,7 @@ using ProjectService.Data;
 namespace ProjectService.Data.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20240326200429_Once")]
+    [Migration("20240326202532_Once")]
     partial class Once
     {
         /// <inheritdoc />
