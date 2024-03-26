@@ -1,12 +1,13 @@
-﻿namespace BusinessObjects.ViewModels.Notification
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace BusinessObjects.Entities.Notifications
 {
-    public class ViewNotification
+    public class Notification
     {
+        [Key]
         public Guid idNotification { get; set; }
         public string idSender { get; set; }
-        public string? nameSender { get; set; }
-        public string? avatar { get; set; }
-        public int? numberSender { get; set; }
+        public string idReceiver { get; set; }
         public string? content { get; set; }
         public bool? isRead { get; set; }
         public Guid idUrl { get; set; }

@@ -1,8 +1,5 @@
-﻿using BusinessObjects.Entities.Communication;
-using BusinessObjects.ViewModels.Communication;
-using Communication.Data;
+﻿using BusinessObjects.ViewModels.Communication;
 using Microsoft.AspNetCore.SignalR;
-using Microsoft.EntityFrameworkCore;
 
 namespace Communication
 {

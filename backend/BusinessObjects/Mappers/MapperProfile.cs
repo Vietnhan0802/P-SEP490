@@ -4,7 +4,7 @@ using BusinessObjects.Entities.Communication;
 using BusinessObjects.Entities.Credential;
 using BusinessObjects.Entities.Follow;
 using BusinessObjects.Entities.Interaction;
-using BusinessObjects.Entities.Notification;
+using BusinessObjects.Entities.Notifications;
 using BusinessObjects.Entities.Posts;
 using BusinessObjects.Entities.Projects;
 using BusinessObjects.Entities.User;
@@ -46,7 +46,7 @@ namespace BusinessObjects.Mappers
             CreateMap<PostReport, ViewPostReport>().ReverseMap();
             CreateMap<Verification, ViewVerification>().ReverseMap();
 
-            CreateMap<Notificationn, ViewNotification>().ReverseMap();
+            CreateMap<Notification, ViewNotification>().ReverseMap();
 
             CreateMap<Post, CreateUpdatePost>().ReverseMap();
             CreateMap<Post, CreateUpdatePostImage>().ReverseMap();
@@ -56,16 +56,16 @@ namespace BusinessObjects.Mappers
             CreateMap<PostReply, ViewPostReply>().ReverseMap();
 
             CreateMap<Position, PositionView>().ReverseMap();
-            CreateMap<ProjectInfo, ProjectInfoCreate>().ReverseMap();
-            CreateMap<ProjectInfo, ProjectInfoUpdate>().ReverseMap();
-            CreateMap<ProjectInfo, ProjectInfoView>().ReverseMap();
+            CreateMap<Project, ProjectInfoCreate>().ReverseMap();
+            CreateMap<Project, ProjectInfoUpdate>().ReverseMap();
+            CreateMap<Project, ProjectInfoView>().ReverseMap();
             CreateMap<ProjectMember, ProjectInfoView>().ReverseMap();
             CreateMap<ProjectMember, ProjectMemberView>().ReverseMap();
             CreateMap<ProjectMember, ProjectMemberCreateUpdate>().ReverseMap();
 
             CreateMap<Blog, ViewStatistic>().ReverseMap();
             CreateMap<Post, ViewStatistic>().ReverseMap();
-            CreateMap<ProjectInfo, ViewStatistic>().ReverseMap();
+            CreateMap<Project, ViewStatistic>().ReverseMap();
             CreateMap<Account, ViewStatistic>().ReverseMap();
 
             CreateMap<Account, SignUpPerson>().ReverseMap();

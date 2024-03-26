@@ -5,7 +5,7 @@ namespace BusinessObjects.ViewModels.Interaction
     public class ViewBlogReport
     {
         public Guid idBlogtReport { get; set; }
-        public string? idReporter { get; set; }
+        public string idReporter { get; set; }
         public Guid idBloged { get; set; }
         public string? titleBlog { get; set; }
         public string? contentBlog { get; set; }
