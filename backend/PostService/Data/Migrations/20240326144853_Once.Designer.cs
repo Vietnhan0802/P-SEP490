@@ -12,7 +12,7 @@ using PostService.Data;
 namespace PostService.Data.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20240326094517_Once")]
+    [Migration("20240326144853_Once")]
     partial class Once
     {
         /// <inheritdoc />
@@ -41,7 +41,7 @@ namespace PostService.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("idProject")
+                    b.Property<Guid?>("idProject")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("isBlock")

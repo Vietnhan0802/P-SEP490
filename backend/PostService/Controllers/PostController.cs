@@ -287,8 +287,8 @@ namespace PostService.Controllers
 
         
 
-        [HttpPost("CreatePost/{idUser}/{idProject}")]
-        public async Task<Response> CreatePost(string idUser, Guid idProject, [FromForm] CreateUpdatePost createUpdatePost)
+        [HttpPost("CreatePost/{idUser}")]
+        public async Task<Response> CreatePost(string idUser, Guid? idProject, [FromForm] CreateUpdatePost createUpdatePost)
         {
             /*var validator = new CreateUpdatePostValidator();
             var validatorResult = validator.Validate(createUpdatePost);
@@ -299,7 +299,14 @@ namespace PostService.Controllers
             }*/
             var post = _mapper.Map<Post>(createUpdatePost);
             post.idAccount = idUser;
-            post.idProject = idProject;
+            if (idProject == null)
+            {
+                post.idProject = null;
+            }
+            else
+            {
+                post.idProject = idProject;
+            }
             post.isDeleted = false;
             post.createdDate = DateTime.Now;
             await _context.Posts.AddAsync(post);
