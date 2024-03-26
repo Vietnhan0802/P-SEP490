@@ -1,4 +1,5 @@
 ﻿using BusinessObjects.Enums.Project;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BusinessObjects.ViewModels.Project
 {
@@ -16,5 +17,8 @@ namespace BusinessObjects.ViewModels.Project
         public bool isDeleted { get; set; }
         public DateTime createdDate { get; set; }
         public ICollection<PositionView>? PositionViews { get; set; }
+
+        [NotMapped]
+        public string avatarSrc { get; set; }
     }
 }

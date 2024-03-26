@@ -12,7 +12,7 @@ using User.Data;
 namespace User.Data.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20240325091943_Once")]
+    [Migration("20240326201436_Once")]
     partial class Once
     {
         /// <inheritdoc />
@@ -124,20 +124,21 @@ namespace User.Data.Migrations
                         {
                             Id = "b80546cd-f4df-4a46-842e-22d3f9018ce3",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "81635652-5966-49ab-b928-3398e6845289",
+                            ConcurrencyStamp = "d7da554d-eb72-468d-9496-c566e8cfa3a9",
                             Email = "PEITCS.admin@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = true,
                             NormalizedEmail = "PEITCS.ADMIN@GMAIL.COM",
                             NormalizedUserName = "PEITCS.ADMIN@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEPupdWm/lC1OYkaSA4YYjOZTLaVmVtdzgFRscNDg2pMF7pMfH7yA1X9CZ3QmzErRuw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEED7wmzwxXVEh52FGggHMkQjey5l0BK3JyxKTFbfMlD1cdnEwAS0GssiA40e6BaQoA==",
                             PhoneNumber = "0949180802",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "7728085b-0e20-417d-8fe2-c206c34131ad",
+                            SecurityStamp = "f0dea514-b25a-45d1-9e78-473f8b36c818",
                             TwoFactorEnabled = false,
                             UserName = "PEITCS.admin@gmail.com",
                             address = "Bến Tre",
-                            createdDate = new DateTime(2024, 3, 25, 16, 19, 43, 533, DateTimeKind.Local).AddTicks(2312),
+                            avatar = "default.png",
+                            createdDate = new DateTime(2024, 3, 27, 3, 14, 36, 651, DateTimeKind.Local).AddTicks(1019),
                             date = new DateTime(2002, 8, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             description = "Admin quản lý trang web công nghệ kết nối, tập trung và hiệu quả trong việc duy trì và phát triển nền tảng, không lãng phí thời gian vào những cuộc trò chuyện vô nghĩa.",
                             fullName = "PEITCS",
@@ -184,14 +185,14 @@ namespace User.Data.Migrations
                         },
                         new
                         {
-                            Id = "c1d0fd7a-3771-4f6c-91fa-f070250469a5",
+                            Id = "a3c2be2a-7689-4916-a63c-794718259ed3",
                             ConcurrencyStamp = "2",
                             Name = "Member",
                             NormalizedName = "Member"
                         },
                         new
                         {
-                            Id = "a648b100-4cfb-4e25-8779-76d07a3932bb",
+                            Id = "407a54aa-01da-4ccd-b01d-3c182a55f718",
                             ConcurrencyStamp = "3",
                             Name = "Business",
                             NormalizedName = "Business"
