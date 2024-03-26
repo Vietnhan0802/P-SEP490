@@ -56,7 +56,7 @@ export default function SignIn() {
                 className={`gray-border white-bg d-flex w-25 flex-row rounded-50 align-items-center justify-content-center ${showForm1 === true ? "active-item" : ""
                   }`}
               >
-                User
+                Member
               </button>
               <button
                 onClick={() => handleFormClick(2)}

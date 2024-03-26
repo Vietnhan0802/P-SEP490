@@ -123,7 +123,7 @@ function Table({ columns, data }) {
           headerGroup.headers.map((column) =>
             column.Filter ? (
               <div key={column.id} id="select-custom">
-                <label for={column.id}>{column.render("Header")}: </label>
+                <label htmlFor={column.id}>{column.render("Header")}: </label>
                 {column.render("Filter")}
               </div>
             ) : null

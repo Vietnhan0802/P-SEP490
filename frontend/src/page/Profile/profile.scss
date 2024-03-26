@@ -25,6 +25,9 @@
 .react-date-picker__wrapper {
   border: none !important;
 }
+.react-date-picker__clear-button{
+  display: none !important;
+}
 #profile {
 
   background-color: var(--header_background) !important;
