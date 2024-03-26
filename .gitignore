@@ -382,15 +382,15 @@ backend/Credential/Images/*.tif
 backend/Credential/Images/*.webp
 backend/Credential/Images/*.svg
 
-backend/Post/Images/*.jpg
-backend/Post/Images/*.jpeg
-backend/Post/Images/*.png
-backend/Post/Images/*.gif
-backend/Post/Images/*.bmp
-backend/Post/Images/*.tiff
-backend/Post/Images/*.tif
-backend/Post/Images/*.webp
-backend/Post/Images/*.svg
+backend/PostService/Images/*.jpg
+backend/PostService/Images/*.jpeg
+backend/PostService/Images/*.png
+backend/PostService/Images/*.gif
+backend/PostService/Images/*.bmp
+backend/PostService/Images/*.tiff
+backend/PostService/Images/*.tif
+backend/PostService/Images/*.webp
+backend/PostService/Images/*.svg
 
 backend/Project/Images/*.jpg
 backend/Project/Images/*.jpeg
