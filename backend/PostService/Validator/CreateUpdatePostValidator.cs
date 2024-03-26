@@ -1,7 +1,7 @@
 ﻿using BusinessObjects.ViewModels.Post;
 using FluentValidation;
 
-namespace Post.Validator
+namespace PostService.Validator
 {
     public class CreateUpdatePostValidator : AbstractValidator<CreateUpdatePost>
     {

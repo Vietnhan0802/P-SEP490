@@ -58,10 +58,10 @@ namespace Interaction.Controllers
             return null;
         }
 
-        [HttpGet("GetTitlePost/{idPost}")]
-        private async Task<ViewPost> GetTitlePost(Guid idPost)
+        [HttpGet("GetInfoPost/{idPost}")]
+        private async Task<ViewPost> GetInfoPost(Guid idPost)
         {
-            HttpResponseMessage response = await client.GetAsync($"{PostApiUrl}/GetTitlePost/{idPost}");
+            HttpResponseMessage response = await client.GetAsync($"{PostApiUrl}/GetInfoPost/{idPost}");
             if (response.IsSuccessStatusCode)
             {
                 string strData = await response.Content.ReadAsStringAsync();
@@ -103,6 +103,17 @@ namespace Interaction.Controllers
                 return Ok("Block user is success!");
             }
             return BadRequest("Block user is fail");
+        }
+
+        [HttpPut("BlockPost/{idPost}")]
+        private async Task<IActionResult> BlockPost(Guid idPost)
+        {
+            HttpResponseMessage response = await client.PutAsync($"{BlogApiUrl}/BlockPost/{idPost}", null);
+            if (response.IsSuccessStatusCode)
+            {
+                return Ok("Block post is success!");
+            }
+            return BadRequest("Block post is fail");
         }
 
         [HttpPut("BlockBlog/{idBlog}")]
@@ -285,7 +296,7 @@ namespace Interaction.Controllers
                 var result = _mapper.Map<List<ViewPostReport>>(postReports);
                 foreach (var postReport in result)
                 {
-                    var infoPost = await GetTitlePost(postReport.idPosted);
+                    var infoPost = await GetInfoPost(postReport.idPosted);
                     postReport.titlePost = infoPost.title;
                     postReport.contentPost = infoPost.content;
                 }
@@ -338,6 +349,11 @@ namespace Interaction.Controllers
                     var isSuccess = await _context.SaveChangesAsync();
                     if (isSuccess > 0)
                     {
+                        var postCount = await _context.PostReports.CountAsync(x => x.idPosted == postReport.idPosted && x.status == Status.Accept);
+                        if (postCount > 4 && postCount < 6)
+                        {
+                            await BlockPost(postReport.idPosted);
+                        }
                         return new Response(HttpStatusCode.OK, "Deny report is success!", _mapper.Map<ViewPostReport>(postReport));
                     }
                     return new Response(HttpStatusCode.BadRequest, "Deny report is fail!");

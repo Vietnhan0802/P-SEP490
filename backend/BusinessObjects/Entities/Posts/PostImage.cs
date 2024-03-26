@@ -1,14 +1,14 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace BusinessObjects.ViewModels.Post
+namespace BusinessObjects.Entities.Posts
 {
-    public class ViewPostImage
+    public class PostImage
     {
+        [Key]
         public Guid idPostImage { get; set; }
         public Guid idPost { get; set; }
         public string? image { get; set; }
         public DateTime createdDate { get; set; }
-        [NotMapped]
-        public string ImageSrc { get; set; }
+        public Post? Post { get; set; }
     }
 }

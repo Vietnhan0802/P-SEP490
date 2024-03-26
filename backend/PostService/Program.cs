@@ -3,8 +3,8 @@ using Commons.Helpers;
 using Hangfire;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
-using Post;
-using Post.Data;
+using PostService;
+using PostService.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,11 +37,12 @@ app.UseStaticFiles(new StaticFileOptions
 
 app.UseHttpsRedirection();
 
-app.UseRouting();
-
 app.UseCors(options =>
 {
-    options.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin();
+    options.WithOrigins("http://localhost:3000")
+           .AllowAnyMethod()
+           .AllowAnyHeader()
+           .AllowCredentials();
 });
 
 app.UseAuthorization();
