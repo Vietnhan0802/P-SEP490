@@ -33,13 +33,13 @@ namespace User.Data.Migrations
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     fullName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    date = table.Column<DateTime>(type: "datetime2", nullable: true),
                     isMale = table.Column<bool>(type: "bit", nullable: true),
                     tax = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     address = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     avatar = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    description = table.Column<string>(type: "text", nullable: true),
-                    idVerification = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    isVerified = table.Column<bool>(type: "bit", nullable: true),
                     isBlock = table.Column<bool>(type: "bit", nullable: true),
                     createdDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -173,15 +173,15 @@ namespace User.Data.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "015456f0-93d5-435a-8c9c-3e495646001b", "3", "Business", "Business" },
+                    { "a648b100-4cfb-4e25-8779-76d07a3932bb", "3", "Business", "Business" },
                     { "aeb27c30-d31d-43ec-9465-d04bf75d0f0d", "1", "Admin", "Admin" },
-                    { "ea5f8624-5a8e-4248-bb44-7607cd9feb20", "2", "Member", "Member" }
+                    { "c1d0fd7a-3771-4f6c-91fa-f070250469a5", "2", "Member", "Member" }
                 });
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
-                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName", "address", "avatar", "createdDate", "date", "description", "fullName", "idVerification", "isBlock", "isMale", "tax" },
-                values: new object[] { "b80546cd-f4df-4a46-842e-22d3f9018ce3", 0, "acbccfac-bd98-4022-bff9-d1a335e7f937", "admin@gmail.com", true, true, null, "ADMIN@GMAIL.COM", "ADMIN@GMAIL.COM", "AQAAAAIAAYagAAAAENQmRLsfxxeKuo8gcwKFQcsXeOT0rugiVi2gbS4BsbidFajt/AFRhpBHNj23Z1kJyg==", "0949180802", false, "6f00cdd4-5135-4857-bd86-525501488670", false, "admin@gmail.com", "Bến Tre", null, new DateTime(2024, 1, 29, 10, 44, 19, 85, DateTimeKind.Local).AddTicks(5248), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Tao là admin! Web này tao là bố!", "Đầu bự vô địch", new Guid("00000000-0000-0000-0000-000000000000"), false, true, "1234567890" });
+                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName", "address", "avatar", "createdDate", "date", "description", "fullName", "isBlock", "isMale", "isVerified", "tax" },
+                values: new object[] { "b80546cd-f4df-4a46-842e-22d3f9018ce3", 0, "81635652-5966-49ab-b928-3398e6845289", "PEITCS.admin@gmail.com", true, true, null, "PEITCS.ADMIN@GMAIL.COM", "PEITCS.ADMIN@GMAIL.COM", "AQAAAAIAAYagAAAAEPupdWm/lC1OYkaSA4YYjOZTLaVmVtdzgFRscNDg2pMF7pMfH7yA1X9CZ3QmzErRuw==", "0949180802", false, "7728085b-0e20-417d-8fe2-c206c34131ad", false, "PEITCS.admin@gmail.com", "Bến Tre", null, new DateTime(2024, 3, 25, 16, 19, 43, 533, DateTimeKind.Local).AddTicks(2312), new DateTime(2002, 8, 18, 0, 0, 0, 0, DateTimeKind.Unspecified), "Admin quản lý trang web công nghệ kết nối, tập trung và hiệu quả trong việc duy trì và phát triển nền tảng, không lãng phí thời gian vào những cuộc trò chuyện vô nghĩa.", "PEITCS", false, true, true, "1234567890" });
 
             migrationBuilder.InsertData(
                 table: "AspNetUserRoles",

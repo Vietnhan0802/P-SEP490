@@ -1,17 +1,17 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace BusinessObjects.Entities.Blog
+namespace BusinessObjects.Entities.Blogs
 {
-    public class BloggReply
+    public class BlogReply
     {
         [Key]
         public Guid idBlogReply { get; set; }
-        public string? idAccount { get; set; }
+        public string idAccount { get; set; }
         public Guid idBlogComment { get; set; }
         public string? content { get; set; }
         public bool isDeleted { get; set; }
         public DateTime createdDate { get; set; }
-        public BloggComment? BloggComment { get; set; }
-        public ICollection<BloggReplyLike>? BloggReplyLikes { get; set; }
+        public BlogComment? BlogComment { get; set; }
+        public ICollection<BlogReplyLike>? BlogReplyLikes { get; set; }
     }
 }

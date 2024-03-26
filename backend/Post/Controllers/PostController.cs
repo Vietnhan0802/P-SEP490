@@ -74,18 +74,22 @@ namespace Post.Controllers
             return BadRequest("Create notification is fail!");
         }
 
-        [HttpGet("GetNameUserCurrent/{idUser}")]
-        private async Task<ViewUser> GetNameUserCurrent(string idUser)
+        [HttpGet("GetInfoUser/{idUser}")]
+        private async Task<ViewUser> GetInfoUser(string idUser)
         {
-            HttpResponseMessage response = await client.GetAsync($"{UserApiUrl}/GetNameUser/{idUser}");
-            string strData = await response.Content.ReadAsStringAsync();
-            var option = new JsonSerializerOptions
+            HttpResponseMessage response = await client.GetAsync($"{UserApiUrl}/GetInfoUser/{idUser}");
+            if (response.IsSuccessStatusCode)
             {
-                PropertyNameCaseInsensitive = true,
-            };
-            var user = JsonSerializer.Deserialize<ViewUser>(strData, option);
+                string strData = await response.Content.ReadAsStringAsync();
+                var option = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true,
+                };
+                var user = JsonSerializer.Deserialize<ViewUser>(strData, option);
 
-            return user!;
+                return user;
+            }
+            return null;
         }
 
         [HttpGet("GetAllReportPost")]
@@ -142,7 +146,7 @@ namespace Post.Controllers
                 {
                     post.isLike = true;
                 }
-                var infoUser = await GetNameUserCurrent(post.idAccount!);
+                var infoUser = await GetInfoUser(post.idAccount!);
                 post.fullName = infoUser.fullName;
                 post.avatar = infoUser.avatar;
                 var postImages = await _context.PosttImages.Where(x => x.idPost == post.idPost).ToListAsync();
@@ -178,7 +182,7 @@ namespace Post.Controllers
                 {
                     post.isLike = true;
                 }
-                var infoUser = await GetNameUserCurrent(post.idAccount!);
+                var infoUser = await GetInfoUser(post.idAccount!);
                 post.fullName = infoUser.fullName;
                 post.avatar = infoUser.avatar;
                 var postImages = await _context.PosttImages.Where(x => x.idPost == post.idPost).ToListAsync();
@@ -214,7 +218,7 @@ namespace Post.Controllers
                 {
                     post.isLike = true;
                 }
-                var infoUser = await GetNameUserCurrent(post.idAccount!);
+                var infoUser = await GetInfoUser(post.idAccount!);
                 post.fullName = infoUser.fullName;
                 post.avatar = infoUser.avatar;
                 var postImages = await _context.PosttImages.Where(x => x.idPost == post.idPost).ToListAsync();
@@ -243,7 +247,7 @@ namespace Post.Controllers
             {
                 result.isLike = true;
             }
-            var infoUser = await GetNameUserCurrent(result.idAccount!);
+            var infoUser = await GetInfoUser(result.idAccount!);
             result.fullName = infoUser.fullName;
             result.avatar = infoUser.avatar;
             var postImages = await _context.PosttImages.Where(x => x.idPost == post.idPost).ToListAsync();
@@ -436,7 +440,7 @@ namespace Post.Controllers
                 {
                     comment.isLike = true;
                 }
-                var infoUserComment = await GetNameUserCurrent(comment.idAccount!);
+                var infoUserComment = await GetInfoUser(comment.idAccount!);
                 comment.fullName = infoUserComment.fullName;
                 comment.avatar = infoUserComment.avatar;
                 var replies = await _context.PosttReplies.Where(x => x.idPostComment == comment.idPostComment && x.isDeleted == false).OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
@@ -449,7 +453,7 @@ namespace Post.Controllers
                     {
                         reply.isLike = true;
                     }
-                    var infoUserReply = await GetNameUserCurrent(reply.idAccount!);
+                    var infoUserReply = await GetInfoUser(reply.idAccount!);
                     reply.fullName = infoUserReply.fullName;
                     reply.avatar = infoUserReply.avatar;
                 }

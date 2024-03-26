@@ -2,20 +2,15 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace BusinessObjects.Entities.Blog
+namespace BusinessObjects.Entities.Blogs
 {
-    public class BloggImage
+    public class BlogImage
     {
         [Key]
         public Guid idBlogImage { get; set; }
         public Guid idBlog { get; set; }
         public string? image { get; set; }
         public DateTime createdDate { get; set; }
-        public Blogg? Blogg { get; set; }
-
-        [NotMapped]
-        public IFormFile ImageFile { get; set; }
-        [NotMapped]
-        public string ImageSrc { get; set; }
+        public Blog? Blog { get; set; }
     }
 }

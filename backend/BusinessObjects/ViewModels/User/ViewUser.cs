@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BusinessObjects.ViewModels.User
 {
@@ -16,7 +15,7 @@ namespace BusinessObjects.ViewModels.User
         public string? address { get; set; }
         public string? avatar { get; set; }
         public string? description { get; set; }
-        public Guid idVerification { get; set; }
+        public bool isVerified { get; set; }
         public bool isBlock { get; set; }
         public int follower { get; set; }
         public int following { get; set; }

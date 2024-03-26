@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using BusinessObjects.Entities.Blog;
+using BusinessObjects.Entities.Blogs;
 using BusinessObjects.Entities.Communication;
 using BusinessObjects.Entities.Credential;
 using BusinessObjects.Entities.Follow;
@@ -25,12 +25,12 @@ namespace BusinessObjects.Mappers
     {
         public MapperProfile()
         {
-            CreateMap<Blogg, CreateUpdateBlog>().ReverseMap();
-            CreateMap<Blogg, CreateUpdateBlogImage>().ReverseMap();
-            CreateMap<Blogg, ViewBlog>().ReverseMap();
-            CreateMap<BloggImage, ViewBlogImage>().ReverseMap();
-            CreateMap<BloggComment, ViewBlogComment>().ReverseMap();
-            CreateMap<BloggReply, ViewBlogReply>().ReverseMap();
+            CreateMap<Blog, CreateUpdateBlog>().ReverseMap();
+            CreateMap<Blog, CreateUpdateBlogImage>().ReverseMap();
+            CreateMap<Blog, ViewBlog>().ReverseMap();
+            CreateMap<BlogImage, ViewBlogImage>().ReverseMap();
+            CreateMap<BlogComment, ViewBlogComment>().ReverseMap();
+            CreateMap<BlogReply, ViewBlogReply>().ReverseMap();
 
             CreateMap<Conversation, ViewConversation>().ReverseMap();
             CreateMap<Message, CreateUpdateMessage>().ReverseMap();
@@ -39,7 +39,7 @@ namespace BusinessObjects.Mappers
             CreateMap<Degree, CreateUpdateDegree>().ReverseMap();
             CreateMap<Degree, ViewDegree>().ReverseMap();
 
-            CreateMap<Follower, FollowingView>().ReverseMap();
+            CreateMap<FollowList, FollowingView>().ReverseMap();
 
             CreateMap<AccountReport, ViewAccountReport>().ReverseMap();
             CreateMap<BlogReport, ViewBlogReport>().ReverseMap();
@@ -63,17 +63,17 @@ namespace BusinessObjects.Mappers
             CreateMap<ProjectMember, ProjectMemberView>().ReverseMap();
             CreateMap<ProjectMember, ProjectMemberCreateUpdate>().ReverseMap();
 
-            CreateMap<Blogg, ViewStatistic>().ReverseMap();
+            CreateMap<Blog, ViewStatistic>().ReverseMap();
             CreateMap<Postt, ViewStatistic>().ReverseMap();
             CreateMap<ProjectInfo, ViewStatistic>().ReverseMap();
-            CreateMap<AppUser, ViewStatistic>().ReverseMap();
+            CreateMap<Account, ViewStatistic>().ReverseMap();
 
-            CreateMap<AppUser, SignUpPerson>().ReverseMap();
-            CreateMap<AppUser, SignUpBusiness>().ReverseMap();
-            CreateMap<AppUser, SignIn>().ReverseMap();
-            CreateMap<AppUser, UpdateUser>().ReverseMap();
-            CreateMap<AppUser, UpdateAvatar>().ReverseMap();
-            CreateMap<AppUser, ViewUser>().ReverseMap();
+            CreateMap<Account, SignUpPerson>().ReverseMap();
+            CreateMap<Account, SignUpBusiness>().ReverseMap();
+            CreateMap<Account, SignIn>().ReverseMap();
+            CreateMap<Account, UpdateUser>().ReverseMap();
+            CreateMap<Account, UpdateAvatar>().ReverseMap();
+            CreateMap<Account, ViewUser>().ReverseMap();
         }
     }
 }

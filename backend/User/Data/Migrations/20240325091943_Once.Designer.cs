@@ -12,7 +12,7 @@ using User.Data;
 namespace User.Data.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20240129034419_Once")]
+    [Migration("20240325091943_Once")]
     partial class Once
     {
         /// <inheritdoc />
@@ -25,7 +25,7 @@ namespace User.Data.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("BusinessObjects.Entities.User.AppUser", b =>
+            modelBuilder.Entity("BusinessObjects.Entities.User.Account", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -86,22 +86,22 @@ namespace User.Data.Migrations
                     b.Property<DateTime>("createdDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("date")
+                    b.Property<DateTime?>("date")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("description")
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("fullName")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("idVerification")
-                        .HasColumnType("uniqueidentifier");
 
                     b.Property<bool?>("isBlock")
                         .HasColumnType("bit");
 
                     b.Property<bool?>("isMale")
+                        .HasColumnType("bit");
+
+                    b.Property<bool?>("isVerified")
                         .HasColumnType("bit");
 
                     b.Property<string>("tax")
@@ -124,26 +124,26 @@ namespace User.Data.Migrations
                         {
                             Id = "b80546cd-f4df-4a46-842e-22d3f9018ce3",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "acbccfac-bd98-4022-bff9-d1a335e7f937",
-                            Email = "admin@gmail.com",
+                            ConcurrencyStamp = "81635652-5966-49ab-b928-3398e6845289",
+                            Email = "PEITCS.admin@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = true,
-                            NormalizedEmail = "ADMIN@GMAIL.COM",
-                            NormalizedUserName = "ADMIN@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAENQmRLsfxxeKuo8gcwKFQcsXeOT0rugiVi2gbS4BsbidFajt/AFRhpBHNj23Z1kJyg==",
+                            NormalizedEmail = "PEITCS.ADMIN@GMAIL.COM",
+                            NormalizedUserName = "PEITCS.ADMIN@GMAIL.COM",
+                            PasswordHash = "AQAAAAIAAYagAAAAEPupdWm/lC1OYkaSA4YYjOZTLaVmVtdzgFRscNDg2pMF7pMfH7yA1X9CZ3QmzErRuw==",
                             PhoneNumber = "0949180802",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "6f00cdd4-5135-4857-bd86-525501488670",
+                            SecurityStamp = "7728085b-0e20-417d-8fe2-c206c34131ad",
                             TwoFactorEnabled = false,
-                            UserName = "admin@gmail.com",
+                            UserName = "PEITCS.admin@gmail.com",
                             address = "Bến Tre",
-                            createdDate = new DateTime(2024, 1, 29, 10, 44, 19, 85, DateTimeKind.Local).AddTicks(5248),
-                            date = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            description = "Tao là admin! Web này tao là bố!",
-                            fullName = "Đầu bự vô địch",
-                            idVerification = new Guid("00000000-0000-0000-0000-000000000000"),
+                            createdDate = new DateTime(2024, 3, 25, 16, 19, 43, 533, DateTimeKind.Local).AddTicks(2312),
+                            date = new DateTime(2002, 8, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            description = "Admin quản lý trang web công nghệ kết nối, tập trung và hiệu quả trong việc duy trì và phát triển nền tảng, không lãng phí thời gian vào những cuộc trò chuyện vô nghĩa.",
+                            fullName = "PEITCS",
                             isBlock = false,
                             isMale = true,
+                            isVerified = true,
                             tax = "1234567890"
                         });
                 });
@@ -184,14 +184,14 @@ namespace User.Data.Migrations
                         },
                         new
                         {
-                            Id = "ea5f8624-5a8e-4248-bb44-7607cd9feb20",
+                            Id = "c1d0fd7a-3771-4f6c-91fa-f070250469a5",
                             ConcurrencyStamp = "2",
                             Name = "Member",
                             NormalizedName = "Member"
                         },
                         new
                         {
-                            Id = "015456f0-93d5-435a-8c9c-3e495646001b",
+                            Id = "a648b100-4cfb-4e25-8779-76d07a3932bb",
                             ConcurrencyStamp = "3",
                             Name = "Business",
                             NormalizedName = "Business"
@@ -322,7 +322,7 @@ namespace User.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("BusinessObjects.Entities.User.AppUser", null)
+                    b.HasOne("BusinessObjects.Entities.User.Account", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -331,7 +331,7 @@ namespace User.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("BusinessObjects.Entities.User.AppUser", null)
+                    b.HasOne("BusinessObjects.Entities.User.Account", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -346,7 +346,7 @@ namespace User.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BusinessObjects.Entities.User.AppUser", null)
+                    b.HasOne("BusinessObjects.Entities.User.Account", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -355,7 +355,7 @@ namespace User.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("BusinessObjects.Entities.User.AppUser", null)
+                    b.HasOne("BusinessObjects.Entities.User.Account", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)

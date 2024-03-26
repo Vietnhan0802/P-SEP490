@@ -7,7 +7,7 @@ namespace Follow.Data
     {
         public AppDBContext(DbContextOptions<AppDBContext> options) : base(options) { }
 
-        public DbSet<Follower> Followers { get; set; }
+        public DbSet<FollowList> FollowLists { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

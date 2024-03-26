@@ -1,14 +1,14 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace BusinessObjects.Entities.Blog
+namespace BusinessObjects.Entities.Blogs
 {
-    public class BloggLike
+    public class BlogLike
     {
         [Key]
         public Guid idBlogLike { get; set; }
-        public string? idAccount { get; set; }
+        public string idAccount { get; set; }
         public Guid idBlog { get; set; }
         public DateTime createdDate { get; set; }
-        public Blogg? Blogg { get; set; }
+        public Blog? Blog { get; set; }
     }
 }
