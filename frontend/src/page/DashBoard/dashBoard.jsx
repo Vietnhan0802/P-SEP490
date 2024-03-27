@@ -38,33 +38,35 @@ function DashBoard() {
   const [accountReportList, setAccountReportList] = useState([]);
   const [blogReportList, setBlogReportList] = useState([]);
   const [portReportList, setPostReportList] = useState([]);
+  const [reset, setReset] = useState(false);
+  const [resetAcc, setResetAcc] = useState(false);
+  const [resetRe, setResetRe] = useState(false);
+  const [resetBlogRender, setResetBlogRender] = useState(false);
   const sessionData = JSON.parse(sessionStorage.getItem("userSession")) || {};
   const { currentUserId } = sessionData;
-  // const value = 13;
   const handleTabClick = (tab) => {
     setActiveTab(tab);
   };
+
   React.useEffect(() => {
-    postInstance.get(`GetAllposts/${currentUserId}`)
-      .then((res) => {
-        setPostList(res?.data?.result);
-      })
-      .catch((err) => { console.log(err) });
     userInstance.get('GetAllUsers')
       .then((res) => {
         setAccessList(res?.data?.result);
       })
       .catch((err) => { console.log(err) });
+  }, [resetAcc])
+  React.useEffect(() => {
     blogInstance.get(`GetAllBlogs/${currentUserId}`)
       .then((res) => {
         setBlogList(res?.data?.result);
       })
       .catch((err) => { console.log(err) });
-    projectInstance.get(`GetAllProjects`)
-      .then((res) => {
-        setProjectList(res?.data?.result);
-      })
-      .catch((err) => { console.log(err) });
+  }, [resetBlogRender])
+  const resetAccount = () => {
+    setResetAcc((prevReset) => !prevReset)
+  }
+
+  React.useEffect(() => {
     reportInstance.get(`GetAllAccountReport`)
       .then((res) => {
         setAccountReportList(res?.data?.result);
@@ -80,20 +82,44 @@ function DashBoard() {
         setPostReportList(res?.data?.result);
       })
       .catch((err) => { console.log(err) });
-  }, []);
+  }, [resetRe])
+  React.useEffect(() => {
+    postInstance.get(`GetAllPosts/${currentUserId}`)
+      .then((res) => {
+        setPostList(res?.data?.result);
+      })
+      .catch((err) => { console.log(err) });
+
+    projectInstance.get(`GetAllProjects`)
+      .then((res) => {
+        setProjectList(res?.data?.result);
+      })
+      .catch((err) => { console.log(err) });
+
+  }, [reset]);
+  const resetTable = () => {
+    setReset((prevReset) => !prevReset)
+  }
+  const resetBlog = () => {
+    setResetBlogRender((prevReset) => !prevReset)
+  }
+  const resetReport = () => {
+    setResetRe((prevReset) => !prevReset)
+  }
   const renderTable = () => {
     switch (activeTab) {
       case "post":
-        return <PostTable value={postList} />;
+        return <PostTable value={postList} resetTable={resetTable} />;
       case "blog":
-        return <BlogTable value={blogList} />;
+        return <BlogTable value={blogList} resetBlog={resetBlog} />;
       case "access":
-        return <AccessTable value={accessList} />;
+        return <AccessTable value={accessList} resetAccount={resetAccount} />;
       case "report":
-        return <ReportTable 
-        accountValue={accountReportList} 
-        postValue={portReportList} 
-        blogValue={blogReportList} />;
+        return <ReportTable
+          accountValue={accountReportList}
+          postValue={portReportList}
+          blogValue={blogReportList}
+          resetReport={resetReport} />;
       case "verify":
         return <VerifyTable />;
       case "project":
@@ -102,6 +128,7 @@ function DashBoard() {
         return null;
     }
   };
+
   return (
     <Row className="pt-3 ms-0 me-0">
       <Col md={3} >

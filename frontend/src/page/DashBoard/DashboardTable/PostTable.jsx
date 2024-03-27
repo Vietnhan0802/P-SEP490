@@ -11,15 +11,16 @@ import TableRow from "@mui/material/TableRow";
 import TableSortLabel from "@mui/material/TableSortLabel";
 import Paper from "@mui/material/Paper";
 import { visuallyHidden } from "@mui/utils";
-import avatar from "../../../images/common/Avatar.png";
 import { IoSearchOutline } from "react-icons/io5";
 import "../DashboardTable/table.scss";
 import { GoDotFill } from "react-icons/go";
 import { postInstance } from "../../../axios/axiosConfig";
-function createData(id, avatar, fullName, title, content, date, report, isBlock) {
+import { useNavigate } from "react-router-dom";
+
+function createData(id, avatar, fullName, title, content, date, report, isBlock, idAccount) {
   const time = formatDate(date);
   return {
-    id, avatar, fullName, title, content, time, report, isBlock
+    id, avatar, fullName, title, content, time, report, isBlock, idAccount
   };
 }
 
@@ -76,33 +77,29 @@ const headCells = [
     label: "User",
   },
   {
+    id: "title",
+    numeric: false,
+    disablePadding: false,
+    label: "Post",
+  },
+  {
     id: "date",
     numeric: false,
     disablePadding: false,
     label: "Date",
   },
   {
-    id: "title",
-    numeric: false,
-    disablePadding: false,
-    label: "Post Title",
-  },
-
-  {
     id: "Status",
     numeric: true,
     disablePadding: false,
-    label: "Status",
+    label: "Action",
   },
 ];
 
 function EnhancedTableHead(props) {
   const {
-    onSelectAllClick,
     order,
     orderBy,
-    numSelected,
-    rowCount,
     onRequestSort,
   } = props;
   const createSortHandler = (property) => (event) => {
@@ -118,7 +115,7 @@ function EnhancedTableHead(props) {
             align={headCell.numeric ? "right" : "left"}
             padding={headCell.disablePadding ? "none" : "normal"}
             sortDirection={orderBy === headCell.id ? order : false}
-            style={{ paddingLeft: "10px" }}
+            style={{ paddingLeft: "16px" }}
           >
             <TableSortLabel
               active={orderBy === headCell.id}
@@ -148,7 +145,7 @@ EnhancedTableHead.propTypes = {
   rowCount: PropTypes.number.isRequired,
 };
 
-export default function PostTable({ value }) {
+export default function PostTable({ value, resetTable }) {
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("calories");
   const [selected, setSelected] = React.useState([]);
@@ -156,6 +153,7 @@ export default function PostTable({ value }) {
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [postRows, setUserRows] = React.useState([]);
   const [searchTerm, setSearchTerm] = React.useState('');
+  const navigate = useNavigate();
   React.useEffect(() => {
     // id, name, email, date, title, description, report, status
     const fetchedPostRows = value.map(element => (
@@ -168,6 +166,7 @@ export default function PostTable({ value }) {
         element.createdDate,
         element.report,
         element.isBlock,
+        element.idAccount
       )
     )
     );
@@ -220,7 +219,21 @@ export default function PostTable({ value }) {
       ).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage),
     [order, orderBy, page, rowsPerPage, postRows, searchTerm]
   );
-
+  const handleNavigateUser = (idAccount) => {
+    navigate('/profile', { state: { userId: idAccount } });
+  }
+  const handleViewPost = (idPost) => {
+    navigate('/postdetail', { state: { idPost: idPost } });
+  }
+  const handleBlockPost = (idPost) => {
+    postInstance.put(`BlockPost/${idPost}`)
+      .then((res) => {
+        resetTable();
+      })
+      .catch((error) => {
+        console.error(error);
+      })
+  }
   return (
     <Box
       id="postTable"
@@ -266,6 +279,7 @@ export default function PostTable({ value }) {
                       id={labelId}
                       scope="row"
                       padding="none"
+                      onClick={() => handleNavigateUser(row.idAccount)}
                     >
                       <div className="ms-2 my-2 d-flex align-items-center">
                         <img
@@ -283,25 +297,32 @@ export default function PostTable({ value }) {
                         </div>
                       </div>
                     </TableCell>
-                    <TableCell align="left" className="blur">
-                      {row.time}
-                    </TableCell>
-                    <TableCell align="left">
+
+                    <TableCell align="left" onClick={() => handleViewPost(row.id)}>
                       <p style={{ fontSize: "16px", fontWeight: "500" }}>
                         {row.title}
                       </p>
-                      <p className="blur ellipsis" style={{ maxWidth: '300px' }}>{row.content}</p>
+                      <p className="ellipsis" style={{ maxWidth: '300px' }}>{row.content}</p>
                     </TableCell>
-                    <TableCell align="right">
+                    <TableCell align="left" >
+                      {row.time}
+                    </TableCell>
+                    <TableCell align="right" onClick={() => handleBlockPost(row.id)}>
                       <div className="d-flex align-items-center justify-content-end">
-                        <div
-                          className={`block-box ${row.isBlock ? "active-block" : ""
-                            }`}
-                        >
-                          <GoDotFill className="me-1 dot" />
-                          {row.isBlock ? 'Block' : 'Unblock'}
+                        <div  style={{ width: "80px" }}>
+                          <div
+                            className={`d-flex align-items-center block-box ${row.isBlock ? "active-block" : "blur" 
+                              }`}  style={{ width: "80px" }}
+                          >
+                            <GoDotFill className={`me-1 dot ${row.isBlock ? "active-dot" : "blur-dot"
+                              }`} />
+                            <p>
+                              {row.isBlock ? 'Unblock' : 'Block'}
+                            </p>
+                          </div>
                         </div>
                       </div>
+
                     </TableCell>
                   </TableRow>
                 );
