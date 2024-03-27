@@ -100,8 +100,8 @@ namespace BlogService.Controllers
             {
                 var result = new
                 {
-                    titleBlog = blog.title,
-                    contentBlog = blog.content
+                    title = blog.title,
+                    content = blog.content
                 };
                 return Ok(result);
             }

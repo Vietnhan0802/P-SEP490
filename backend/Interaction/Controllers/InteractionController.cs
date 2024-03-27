@@ -143,6 +143,7 @@ namespace Interaction.Controllers
                 foreach (var verification in result)
                 {
                     var infoUser = await GetInfoUser(verification.idAccount);
+                    verification.email = infoUser.email;
                     verification.fullName = infoUser.fullName;
                     verification.avatar = infoUser.avatar;
                 }
@@ -154,7 +155,7 @@ namespace Interaction.Controllers
         [HttpPost("CreateVerification/{idUser}")]
         public async Task<Response> CreateVerification(string idUser)
         {
-            var verificationExist = await _context.Verifications.FindAsync(idUser);
+            var verificationExist = await _context.Verifications.FirstOrDefaultAsync(x => x.idAccount == idUser);
             if (verificationExist == null)
             {
                 Verification verification = new Verification()
@@ -174,8 +175,8 @@ namespace Interaction.Controllers
             return new Response(HttpStatusCode.BadRequest, "Verification is exist!");
         }
 
-        [HttpPut("UpdateVerification/{idVerification}/{status}")]
-        public async Task<Response> UpdateVerification(Guid idVerification, Status status)
+        [HttpPut("AcceptVerification/{idVerification}/{status}")]
+        public async Task<Response> AcceptVerification(Guid idVerification, Status status)
         {
             var verification = await _context.Verifications.FindAsync(idVerification);
             if (verification != null)
@@ -189,7 +190,7 @@ namespace Interaction.Controllers
                     {
                         return new Response(HttpStatusCode.OK, "Accept verification is success!", _mapper.Map<ViewVerification>(verification));
                     }
-                    return new Response(HttpStatusCode.BadRequest, "Accept verification is fail!", _mapper.Map<ViewVerification>(verification));
+                    return new Response(HttpStatusCode.BadRequest, "Accept verification is fail!");
                 }
                 else
                 {
@@ -217,9 +218,11 @@ namespace Interaction.Controllers
                 foreach (var accountReport in result)
                 {
                     var infoReporter = await GetInfoUser(accountReport.idReporter);
+                    accountReport.emailReporter = infoReporter.email;
                     accountReport.nameReporter = infoReporter.fullName;
                     accountReport.avatarReporter = infoReporter.avatar;
                     var infoReported = await GetInfoUser(accountReport.idReported);
+                    accountReport.emailReported = infoReported.email;
                     accountReport.nameReported = infoReported.fullName;
                     accountReport.avatarReported = infoReported.avatar;
                 }
@@ -248,8 +251,8 @@ namespace Interaction.Controllers
             return new Response(HttpStatusCode.BadRequest, "Create account report is fail!");
         }
 
-        [HttpPut("UpdateAccountReport/{idAccountReport}/{status}")]
-        public async Task<Response> UpdateAccountReport(Guid idAccountReport, Status status)
+        [HttpPut("AcceptAccountReport/{idAccountReport}/{status}")]
+        public async Task<Response> AcceptAccountReport(Guid idAccountReport, Status status)
         {
             var accountReport = await _context.AccountReports.FindAsync(idAccountReport);
             if (accountReport != null)
@@ -296,6 +299,10 @@ namespace Interaction.Controllers
                 var result = _mapper.Map<List<ViewPostReport>>(postReports);
                 foreach (var postReport in result)
                 {
+                    var infoUser = await GetInfoUser(postReport.idReporter);
+                    postReport.emailReporter = infoUser.email;
+                    postReport.nameReporter = infoUser.fullName;
+                    postReport.avatarReporter = infoUser.avatar;
                     var infoPost = await GetInfoPost(postReport.idPosted);
                     postReport.titlePost = infoPost.title;
                     postReport.contentPost = infoPost.content;
@@ -325,8 +332,8 @@ namespace Interaction.Controllers
             return new Response(HttpStatusCode.BadRequest, "Create post report is fail!");
         }
 
-        [HttpPut("UpdatePostReport/{idPostReport}/{status}")]
-        public async Task<Response> UpdatePostReport(Guid idPostReport, Status status)
+        [HttpPut("AcceptPostReport/{idPostReport}/{status}")]
+        public async Task<Response> AcceptPostReport(Guid idPostReport, Status status)
         {
             var postReport = await _context.PostReports.FindAsync(idPostReport);
             if (postReport != null)
@@ -373,6 +380,10 @@ namespace Interaction.Controllers
                 var result = _mapper.Map<List<ViewBlogReport>>(blogReports);
                 foreach (var blogReport in result)
                 {
+                    var infoUser = await GetInfoUser(blogReport.idReporter);
+                    blogReport.emailReporter = infoUser.email;
+                    blogReport.nameReporter = infoUser.fullName;
+                    blogReport.avatarReporter = infoUser.avatar;
                     var infoBlog = await GetInfoBlog(blogReport.idBloged);
                     blogReport.titleBlog = infoBlog.title;
                     blogReport.contentBlog = infoBlog.content;
@@ -402,8 +413,8 @@ namespace Interaction.Controllers
             return new Response(HttpStatusCode.BadRequest, "Create blog report is fail!");
         }
 
-        [HttpPut("UpdateBlogReport/{idBlogReport}/{status}")]
-        public async Task<Response> UpdateBlogReport(Guid idBlogReport, Status status)
+        [HttpPut("AcceptBlogReport/{idBlogReport}/{status}")]
+        public async Task<Response> AcceptBlogReport(Guid idBlogReport, Status status)
         {
             var blogReport = await _context.BlogReports.FirstOrDefaultAsync(x => x.idBlogReport == idBlogReport);
             if (blogReport != null)
