@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualBasic;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Text.Json;
@@ -135,15 +136,30 @@ namespace Communication.Controllers
         [HttpGet("GetMessages/{idConversation}/{idCurrentUser}")]
         public async Task<Response> GetMessages(Guid idConversation, string idCurrentUser)
         {
-            var messages = await _context.Messages.Where(x => x.idConversation == idConversation).ToListAsync();
-            foreach (var message in messages)
+            var messages = await _context.Messages.Where(x => x.idConversation == idConversation).OrderBy(x => x.createdDate).ToListAsync();
+            if (messages.Count > 0)
             {
-                messages = messages.Where(x => (x.idSender == idCurrentUser && x.isDeletedBySender == false) 
-                                            || (x.idReceiver == idCurrentUser && x.isDeletedByReceiver == false)).ToList();
+                var result = _mapper.Map<List<ViewMessage>>(messages);
+                foreach (var message in result)
+                {
+                    if (message.idSender == idCurrentUser)
+                    {
+                        message.isYourself = true;
+                        var infoSender = await GetInfoUser(message.idSender);
+                        message.nameReceiver = infoSender.fullName;
+                    }
+                    else
+                    {
+                        message.isYourself = false;
+                        var infoReceiver = await GetInfoUser(message.idSender);
+                        message.nameReceiver = infoReceiver.fullName;
+                        message.avatarReceiver = infoReceiver.avatar;
+                    }
+                }
+                return new Response(HttpStatusCode.OK, "Get message is success!", result);
             }
-            var result = _mapper.Map<List<ViewMessage>>(messages);
             //await _chatHub.GetMessages(result);
-            return new Response(HttpStatusCode.NoContent, "Conversation had been existed!", result);
+            return new Response(HttpStatusCode.NoContent, "Get message is fail!");
         }
 
         [HttpPost("SendMessage/{idCurrentUser}/{idReceiver}/{idConversation}")]
