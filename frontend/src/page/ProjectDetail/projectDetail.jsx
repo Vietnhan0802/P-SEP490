@@ -110,7 +110,7 @@ function ProjectDetail() {
               <div className="image-container d-flex justify-content-center">
                 <img
                   className="rounded-t-lg bor-8"
-                  src={data?.avatar}
+                  src={data?.avatarSrc}
                   alt="project"
                 />
               </div>

@@ -44,7 +44,7 @@ function formatDateString(dateString) {
   // If dateString is empty, return an empty string
   return "";
 }
-function Profile({ handleChangeImg, value }) {
+function Profile({ handleChangeImg, value, resetFollowing }) {
 
   // ````````````````````````````
 
@@ -87,7 +87,6 @@ function Profile({ handleChangeImg, value }) {
       .then((res) => {
         setUser(res?.data?.result);
         const user = res?.data?.result;
-        console.log(user);
         if (user.role === "Admin") {
           setTab("blog");
         } else if (user.role === "Business") {
@@ -198,6 +197,7 @@ function Profile({ handleChangeImg, value }) {
           isFollow: !inputs.isFollow,
         }));
         setFollow(!follow);
+        resetFollowing('Success');
       })
       .catch((error) => {
         console.error(error);
@@ -232,7 +232,7 @@ function Profile({ handleChangeImg, value }) {
     setTabs(tabsBasedOnRole);
   }, [user.role]); // Chỉ chạy lại khi user.role thay đổi
   const reset = (value) => {
-    setResetAvatar(!resetAvatar)
+    setResetAvatar(!resetAvatar);
   }
   const navigateChat = () => {
     navigate('/chat');
@@ -308,8 +308,7 @@ function Profile({ handleChangeImg, value }) {
           </div>
         </Col>
         <Col md={6}>
-          <UpdateInformationPu value={inputs} id={currentUserId} reset={reset} show={updateDisplay} onClose={() => setUpdateDisplay(false)} />
-
+          <UpdateInformationPu value={inputs} id={currentUserId} reset={reset} show={updateDisplay} onClose={() => setUpdateDisplay(false)} handleChangeImg={handleChangeImg} />
           <div id="profile">
             <div className="bg-secondary-soft p-3  rounded">
               <div className="row g-3">
@@ -376,7 +375,6 @@ function Profile({ handleChangeImg, value }) {
                         )
                         }
                         <UpdateInformationPu value={inputs} id={currentUserId} reset={reset} />
-
                       </div>
                     </div>
                   )}
@@ -468,7 +466,7 @@ function Profile({ handleChangeImg, value }) {
                     }`}
                 >
                   {userDegree
-                    .slice(0, showAllItems ? userDegree.length : 3)
+                    .slice(0, showAllItems ? userDegree?.length : 3)
                     .map((item) => (
                       <div className="row mb-4" key={item.idDegree}>
                         <div className="col-2 d-flex justify-content-center img-contain">
@@ -512,8 +510,8 @@ function Profile({ handleChangeImg, value }) {
               {/* DegreeTab */}
               {user.role === "Business" && tab === "post" && (
                 <div className="post tab-content">
-                  {userPost.length > 0 ? (
-                    userPost.map((post) => (
+                  {userPost?.length > 0 ? (
+                    userPost?.map((post) => (
                       <div className="row">
                         <div className="col-3 d-flex justify-content-center img-contain">
                           <img
@@ -562,8 +560,8 @@ function Profile({ handleChangeImg, value }) {
               {/* Posttab of business profile*/}
               {user.role === "Admin" && tab === "blog" && (
                 <div className="blog tab-content">
-                  {userBlog.length > 0 ? (
-                    userBlog.map((blog) => (
+                  {userBlog?.length > 0 ? (
+                    userBlog?.map((blog) => (
                       <div
                         className="row align-items-center mb-3"
                         key={blog.idBlog}
@@ -571,8 +569,8 @@ function Profile({ handleChangeImg, value }) {
                         <div className="col-3 d-flex justify-content-center img-contain">
                           <img
                             src={
-                              blog.viewBlogImages.length > 0
-                                ? blog.viewBlogImages[0].imageSrc
+                              blog?.viewBlogImages?.length > 0
+                                ? blog?.viewBlogImages[0].imageSrc
                                 : defaultProject
                             }
                             alt=""
@@ -616,8 +614,8 @@ function Profile({ handleChangeImg, value }) {
               {user.role !== "Admin" && tab === "project" && (
                 <div className="project tab-content">
                   <div className="row" id="all-projects">
-                    {userProject.length > 0 ? (
-                      userProject.map((project) => (
+                    {userProject?.length > 0 ? (
+                      userProject?.map((project) => (
                         <div className="col-md-6" id="project-items-1">
                           <div className="card">
                             <div className="card-body">

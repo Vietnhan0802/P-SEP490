@@ -136,7 +136,7 @@ function BlogDetail({ value }) {
   }
   const handleUpdateInputComment = (commentId, newContent) => {
     setCommentList((prevComments) =>
-      prevComments.map((comment) =>
+      prevComments?.map((comment) =>
         comment.idBlogComment === commentId
           ? { ...comment, content: newContent }
           : comment
@@ -182,11 +182,11 @@ function BlogDetail({ value }) {
     }));
   }
   const handleUpdateInputReplyComment = (replyId, newContent) => {
-    setCommentList((prevComments) => prevComments.map((comment) => {
+    setCommentList((prevComments) => prevComments?.map((comment) => {
       // Check if this is the comment containing the reply we updated
       if (comment.viewBlogReplies) {
         // Map through the replies to find and update the correct one
-        const updatedReplies = comment.viewBlogReplies.map((reply) => {
+        const updatedReplies = comment?.viewBlogReplies?.map((reply) => {
           if (reply.idBlogReply === replyId) {
             // Found the reply we want to update
             return { ...reply, content: newContent };
@@ -239,7 +239,7 @@ function BlogDetail({ value }) {
   }
   const handleLikeOrUnlikeBlogCmt = (idBlogComment) => {
     setCommentList((prevCommentList) =>
-      prevCommentList.map((comment) => {
+      prevCommentList?.map((comment) => {
         if (comment.idBlogComment === idBlogComment) {
           // Update the like state and count for this comment
           const isLiked = !comment.isLike;
@@ -262,7 +262,7 @@ function BlogDetail({ value }) {
         // Revert the like state and count in case of an error
         console.error(error);
         setCommentList((prevCommentList) =>
-          prevCommentList.map((comment) => {
+          prevCommentList?.map((comment) => {
             if (comment.idBlogComment === idBlogComment) {
               // Revert to the previous like state and count for this comment
               const revertedIsLiked = !comment.isLike;
@@ -286,9 +286,9 @@ function BlogDetail({ value }) {
   }
   const handleLikeOrUnlikeBlogReply = (idBlogReply) => {
     setCommentList((prevCommentList) =>
-      prevCommentList.map((comment) => {
+      prevCommentList?.map((comment) => {
         if (comment.viewBlogReplies) {
-          const updatedReplies = comment.viewBlogReplies.map((reply) => {
+          const updatedReplies = comment?.viewBlogReplies?.map((reply) => {
             if (reply.idBlogReply === idBlogReply) {
               // Update the like state and count for this reply
               const isLiked = !reply.isLike;
@@ -320,9 +320,9 @@ function BlogDetail({ value }) {
         // Revert the like state and count in case of an error
         console.error(error);
         setCommentList((prevCommentList) =>
-          prevCommentList.map((comment) => {
+          prevCommentList?.map((comment) => {
             if (comment.viewBlogReplies) {
-              const revertedReplies = comment.viewBlogReplies.map((reply) => {
+              const revertedReplies = comment.viewBlogReplies?.map((reply) => {
                 if (reply.idBlogReply === idBlogReply) {
                   // Revert to the previous like state and count for this reply
                   const revertedIsLiked = !reply.isLike;
@@ -470,11 +470,11 @@ function BlogDetail({ value }) {
             {data.content}
           </p>
           <div>
-            {data.viewBlogImages && (
-              data.viewBlogImages.length === 1 ? (
+            {data?.viewBlogImages && (
+              data?.viewBlogImages?.length === 1 ? (
                 <img src={data.viewBlogImages[0].imageSrc} alt="" className="w-100" />
               ) : (
-                data.viewBlogImages.map((item, index) => (
+                data?.viewBlogImages?.map((item, index) => (
                   <img key={index} src={item.imageSrc} alt="" className="w-100" />
                 ))
               )
@@ -504,7 +504,7 @@ function BlogDetail({ value }) {
             <VscSend style={{ fontSize: "30px" }} onClick={handleCreateComment} />
           </div>
           <div className="cmt-block">
-            {commentList.map((item) => (
+            {commentList?.map((item) => (
               <div
                 key={item?.id}
                 className={`d-flex pb-3 mt-2 cmt-item ${item.type === "reply-comment" ? "ms-5" : ""
@@ -595,7 +595,7 @@ function BlogDetail({ value }) {
                       }
                     </div>
                     {viewReply === item.idBlogComment ? (
-                      item.viewBlogReplies.map((reply) => (
+                      item?.viewBlogReplies?.map((reply) => (
                         <>
                           <div className="d-flex">
                             <img src={reply.avatar === 'https://localhost:7006/Images/' ? avatarDefault : reply.avatar} alt="" className="profile reply-cmt" />

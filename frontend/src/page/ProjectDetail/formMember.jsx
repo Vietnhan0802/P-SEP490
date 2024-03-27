@@ -88,7 +88,7 @@ function FormMember({ projectId, positionOption }) {
                 value={search}
                 onChange={handleSearch}
                 placeholder={"Search"}
-                className="search-box size-20"
+                className="search-box size-20 w-100"
               />
             </div>
           </div>

@@ -26,8 +26,8 @@ function Follow({ followValue }) {
               <img src={tick} alt="tick" className="user-tick" />
             </div>
             <div className="follow-user-info ms-2">
-              <p className="follow-user-name fw-bold">{item.fullName}</p>
-              <p className="follow-user-email">{item.email}</p>
+              <p className="follow-user-name fw-bold">{item.fullNameAccount}</p>
+              <p className="follow-user-email">{item.emailAccount}</p>
             </div>
           </div>)) : <p>You are not following anyone yet!</p>}
       </div>

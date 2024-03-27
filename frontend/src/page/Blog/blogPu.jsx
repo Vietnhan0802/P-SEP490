@@ -94,7 +94,7 @@ function BlogPu({ resetBlog }) {
           CreateUpdateBlogImages: [], // new state for managing multiple images
         });
         notifySuccess("Create blog successfully!");
-        resetBlog(!reset);
+        resetBlog(); // Call resetBlog directly
       })
       .catch((err) => {
         console.log(err);
@@ -108,7 +108,7 @@ function BlogPu({ resetBlog }) {
       <Button variant="m-0 btn btn-primary me-2" onClick={modalShow}>
         Create
       </Button>
-      <Modal show={show} onHide={modalClose}>
+      <Modal show={show} onHide={modalClose} id="blogPu">
         <Modal.Header closeButton>
           <Modal.Title>Create New Blog</Modal.Title>
         </Modal.Header>
@@ -121,12 +121,12 @@ function BlogPu({ resetBlog }) {
             className="input-text form-control  mb-3"
             placeholder="Enter the title"
           />
-          <input
+          <textarea
             type="text"
             value={inputs.content}
             name="content"
             onChange={handleInputChange}
-            className="input-text form-control  mb-3"
+            className="input-text form-control cus-h w-100  mb-3"
             placeholder="Enter your content..."
           />
           <input

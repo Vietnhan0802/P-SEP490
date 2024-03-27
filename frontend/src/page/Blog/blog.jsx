@@ -39,7 +39,7 @@ function calculateTimeDifference(targetDate) {
     return days === 1 ? `${days} day ago` : `${hours} days ago`;
   }
 }
-function Blog({value}) {
+function Blog({ value }) {
   const createData = (
     id,
     createdDate,
@@ -118,13 +118,13 @@ function Blog({value}) {
   // Handler function to update the state when the input changes
   useEffect(() => {
     blogInstance
-      .get(`GetAllBlogsTrend/${currentUserId}`)
+      .get(`GetAllBlogs/${currentUserId}`)
       .then((res) => {
         const blogList = res?.data?.result;
-        setBlogListTrend([]);
+        setData([]);
         blogList.map((element) => {
           const time = calculateTimeDifference(element.createdDate);
-          setBlogListTrend((prevData) => [
+          setData((prevData) => [
             ...prevData,
             createData(
               element.idBlog,
@@ -143,38 +143,38 @@ function Blog({value}) {
       .catch((error) => {
         console.error(error);
       });
-  }, [reset]);
-  useEffect(()=>{
+  }, [reset, currentUserId]);
+  useEffect(() => {
     blogInstance
-    .get(`GetAllBlogsTrend/${currentUserId}`)
-    .then((res) => {
-      const blogList = res?.data?.result;
-      setData([]);
-      blogList.map((element) => {
-        const time = calculateTimeDifference(element.createdDate);
-        setData((prevData) => [
-          ...prevData,
-          createData(
-            element.idBlog,
-            time,
-            element.title,
-            element.content,
-            element.view,
-            element.like,
-            element.viewBlogImages,
-            element.fullName,
-            element.isLike
-          ),
-        ]);
+      .get(`GetAllBlogsTrend/${currentUserId}`)
+      .then((res) => {
+        const blogList = res?.data?.result;
+        setData([]);
+        blogList.map((element) => {
+          const time = calculateTimeDifference(element.createdDate);
+          setData((prevData) => [
+            ...prevData,
+            createData(
+              element.idBlog,
+              time,
+              element.title,
+              element.content,
+              element.view,
+              element.like,
+              element.viewBlogImages,
+              element.fullName,
+              element.isLike
+            ),
+          ]);
+        });
+      })
+      .catch((error) => {
+        console.error(error);
       });
-    })
-    .catch((error) => {
-      console.error(error);
-    });
-  },[])
- 
-  const resetBlog = (value) => {
-    setReset(!reset);
+  }, [])
+
+  const resetBlog = () => {
+    setReset((prevReset) => !prevReset);
   };
   const handleSearchPost = (event) => {
     setSearch(event.target.value);
@@ -209,7 +209,7 @@ function Blog({value}) {
               {role === "Admin" ? <BlogPu resetBlog={resetBlog} /> : ""}
 
               <button type="button" className="btn btn-info text-white" onClick={toggleTrendList}>
-              {showTrendList ? 'ViewAll' : "Trend"}
+                {showTrendList ? 'ViewAll' : "Trend"}
               </button>
             </div>
           </div>
@@ -231,7 +231,7 @@ function Blog({value}) {
                     <p className="mb-0">{item.createdDate}</p>
                   </div>
                 </div>
-                <Report  id={currentUserId} idItem={item.id} type="blog"/>
+                <Report id={currentUserId} idItem={item.id} type="blog" />
               </div>
 
               <h3 className="mt-2">{item.title}</h3>

@@ -2,6 +2,7 @@ import { Modal, Button } from "react-bootstrap";
 import { useState } from "react";
 import React, { useEffect } from "react";
 import "./post-pu.scss";
+import Select from 'react-select';
 import Notification, {
   notifySuccess,
   notifyError,
@@ -26,21 +27,28 @@ function PostPu({ reset }) {
     CreateUpdatePostImages: [], // new state for managing multiple images
     project: "",
   });
-  console.log(inputs)
   useEffect(() => {
     projectInstance
       .get("GetAllProjects")
       .then((res) => {
-        setProject(res?.data?.result);
+        const projectList = res?.data?.result;
+        const options = projectList.map((item) => ({
+          value: item.idProject,
+          label: item.name,
+        }));
+        setProject(options);
       })
       .catch((error) => {
         console.error(error);
       });
   }, []);
+  const handleSelctProject = (selectedOption) => {
+    setInputs(prevState => ({
+      ...prevState,
+      project: selectedOption.value
+    }));
+  }
   const handleCreatePost = () => {
-    if (inputs.project === "") {
-      alert("Plase choose a project");
-    }
     const formData = new FormData();
     formData.append("title", inputs.title);
     formData.append("content", inputs.content);
@@ -60,14 +68,13 @@ function PostPu({ reset }) {
       );
     });
 
-    postInstance.post(`/CreatePost/${currentUserId}/${inputs.project}`, formData, {
+    postInstance.post(`/CreatePost/${currentUserId}?idProject=${inputs.project}`, formData, {
       headers: {
         "Content-Type": "multipart/form-data",
         accept: "application/json",
       },
     })
       .then((res) => {
-
         reset(!resetPage);
         setInputs({
           title: "",
@@ -76,7 +83,7 @@ function PostPu({ reset }) {
           project: "",
         });
         notifySuccess("Create post successfully!");
-
+        setShow(false);
       })
       .catch((err) => {
         console.log(err);
@@ -122,32 +129,43 @@ function PostPu({ reset }) {
       setInputs((values) => ({ ...values, [name]: value }));
     }
   };
-  const fileTypes = ["JPG", "PNG", "GIF"];
   return (
     <div className="">
       <Button variant="m-0 btn btn-primary me-2" onClick={modalShow}>
         Create
       </Button>
-      <Modal show={show} onHide={modalClose}>
+      <Modal show={show} onHide={modalClose} id='postPu'>
         <Modal.Header closeButton>
           <Modal.Title>Create New Post</Modal.Title>
         </Modal.Header>
         <Modal.Body className="popup-body">
-          <input
-            type="text"
-            name="title"
-            value={inputs.title}
-            onChange={handleInputChange}
-            className="input-text form-control mb-3"
-            placeholder="title"
-          />
+          <div className='form-floating mb-3'>
+            <input
+              type="text"
+              name="title"
+              value={inputs.title}
+              onChange={handleInputChange}
+              className="input-text form-control mb-3"
+            />
+            <label for="floatingInput">Post Title</label>
+          </div>
           <textarea
             type="text"
             value={inputs.content}
             name="content"
             onChange={handleInputChange}
-            className="input-text form-control mb-3 w-100"
-            placeholder="content"
+            className="input-text form-control mb-3 w-100  cus-h"
+            placeholder="Post Content"
+          />
+
+          <Select
+            placeholder="Select a project (optional)"
+            className="basic-single my-3"
+            classNamePrefix="Select"
+            isSearchable={false}
+            name="color"
+            options={project}
+            onChange={handleSelctProject}
           />
           <input
             type="file"
@@ -156,20 +174,6 @@ function PostPu({ reset }) {
             className="form-control"
             multiple
           />
-          <label>Select a project(optional):</label>
-          <select
-            id="dropdown"
-            name="project"
-            value={inputs.project}
-            onChange={handleInputChange}
-          >
-            <option value="">Select a project</option>
-            {project?.map((item) => (
-              <option key={item.idProject} value={item.idProject}>
-                {item.name}
-              </option>
-            ))}
-          </select>
         </Modal.Body>
 
         <Modal.Footer>
