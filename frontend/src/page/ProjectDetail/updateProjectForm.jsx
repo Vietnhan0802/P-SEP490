@@ -25,7 +25,7 @@ function UpdateProjectForm({ input, id, resetPage }) {
     setProject({
       name: input.name,
       description: input.description,
-      avatar: input.avatar,
+      avatar: input.avatarSrc,
       visibility: input.visibility,
       process: input.process,
       namePosition: positionOptions,

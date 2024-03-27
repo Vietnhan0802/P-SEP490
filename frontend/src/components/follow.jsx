@@ -22,7 +22,7 @@ function Follow({ followValue }) {
         {following?.length > 0 ? following?.map((item) => (
           <div className="follow-user d-flex align-items-center mb-2" key={item.idAccount} onClick={() => handleAvatarclick(item.idAccount)}>
             <div className="follow-avata-box">
-              <img src={item.avatar === "https://localhost:7006/Images/" ? defaultImage : item.avatar} alt="user" className="user-image" />
+              <img src={item.avatarAccount} alt="user" className="user-image" />
               <img src={tick} alt="tick" className="user-tick" />
             </div>
             <div className="follow-user-info ms-2">

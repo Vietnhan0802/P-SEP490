@@ -46,6 +46,36 @@
     margin: 5px;
   }
 
+  .position-list {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  
+  .position-items {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .position-item {
+    flex: 0 0 33.33%; /* Adjust this value to change the number of columns */
+    padding: 0.5rem;
+    box-sizing: border-box;
+  }
+  
+  /* Responsive styles */
+  @media (max-width: 767px) {
+    .position-item {
+      flex: 0 0 50%; /* Display two columns on smaller screens */
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .position-item {
+      flex: 0 0 100%; /* Display one column on very small screens */
+    }
+  }
   .preparing {
     background-color: #edbd46;
   }
@@ -115,6 +145,7 @@
 
   .process-bar {
     margin-top: 60px;
+    margin-bottom: 60px;
   }
 
   .description-cover {

@@ -9,7 +9,7 @@ import "../Profile/check-box.scss";
 import Select from 'react-select'
 import { FiEdit } from "react-icons/fi";
 import { userInstance } from "../../axios/axiosConfig";
-function UpdateInformationPu({ value, id, reset, show, onClose ,handleChangeImg}) {
+function UpdateInformationPu({ value, id, reset, show, onClose, handleChangeImg }) {
   const [user, setUser] = useState({});
 
 
@@ -51,9 +51,10 @@ function UpdateInformationPu({ value, id, reset, show, onClose ,handleChangeImg}
       address: user.address,
       description: user.description
     })
-      .then((res) => { 
+      .then((res) => {
         handleChangeImg('ok');
-        reset(!show); })
+        reset(!show);
+      })
       .catch((error) => { console.error(error) })
     modalClose();
   };
@@ -70,45 +71,46 @@ function UpdateInformationPu({ value, id, reset, show, onClose ,handleChangeImg}
           <Modal.Title>Update Information</Modal.Title>
         </Modal.Header>
         <Modal.Body className="popup-body report-popup " id="report-body">
-          <label className="mt-2">Full Name:</label>
-          <input
-            type="text"
-            className="form-control"
-            name="fullName"
-            value={user?.fullName}
-            onChange={handleChange}
-            aria-label="Full name"
-            required
-          />
-          <label className="mt-2">
-            {user?.role === "Business" ? "Establish date" : "Birthday"}
-          </label>
-          <DatePicker
-            value={user?.date}
-            onChange={(date) => { setUser((prev) => ({ ...prev, date: moment(date).format('YYYY-MM-DD') })) }}
-            className="form-control" />
-          <label className="mt-2">Phone number</label>
-          <input
-            type="text"
-            name="phoneNumber"
-            value={user?.phoneNumber}
-            onChange={handleChange}
-            className="form-control"
-            aria-label="Phone number"
-            required
-          />
+          <form>
+            <label className="mt-2">Full Name:</label>
+            <input
+              type="text"
+              className="form-control"
+              name="fullName"
+              value={user?.fullName}
+              onChange={handleChange}
+              aria-label="Full name"
+              required
+            />
+            <label className="mt-2">
+              {user?.role === "Business" ? "Establish date" : "Birthday"}
+            </label>
+            <DatePicker
+              value={user?.date}
+              onChange={(date) => { setUser((prev) => ({ ...prev, date: moment(date).format('YYYY-MM-DD') })) }}
+              className="form-control" />
+            <label className="mt-2">Phone number</label>
+            <input
+              type="text"
+              name="phoneNumber"
+              value={user?.phoneNumber}
+              onChange={handleChange}
+              className="form-control"
+              aria-label="Phone number"
+              required
+            />
 
-          {user.role !== "Business" && (
-            <div>
-              <label className="mt-2">Gender:</label>
-              <div className="">
-                <Select
-                  isSearchable={false}
-                  defaultValue={user?.isMale ? options[0] : options[1]}
-                  options={options}
-                  onChange={(selectedOption) => handlePositionChange(selectedOption)}
-                />
-                {/* <div className="checkbox-wrapper-13 bg-text">
+            {user.role !== "Business" && (
+              <div>
+                <label className="mt-2">Gender:</label>
+                <div className="">
+                  <Select
+                    isSearchable={false}
+                    defaultValue={user?.isMale ? options[0] : options[1]}
+                    options={options}
+                    onChange={(selectedOption) => handlePositionChange(selectedOption)}
+                  />
+                  {/* <div className="checkbox-wrapper-13 bg-text">
                   <label>
                     <input
                       id="c1-13"
@@ -140,42 +142,44 @@ function UpdateInformationPu({ value, id, reset, show, onClose ,handleChangeImg}
                     Female
                   </label>
                 </div> */}
+                </div>
               </div>
-            </div>
-          )}
-          <label className="mt-2">Address:</label>
-          <input
-            type="text"
-            name="address"
-            className="form-control"
-            value={user?.address}
-            onChange={handleChange}
-            aria-label="Address"
-            required
-          />
-          <label className="mt-2 ">Tax:</label>
-          <input
-            type="number"
-            name="tax"
-            className="form-control"
-            value={user?.tax}
-            onChange={handleChange}
-            aria-label="Tax"
-            required
-          />
+            )}
+            <label className="mt-2">Address:</label>
+            <input
+              type="text"
+              name="address"
+              className="form-control"
+              value={user?.address}
+              onChange={handleChange}
+              aria-label="Address"
+              required
+            />
+            <label className="mt-2 ">Tax:</label>
+            <input
+              type="number"
+              name="tax"
+              className="form-control"
+              value={user?.tax}
+              onChange={handleChange}
+              aria-label="Tax"
+              required
+            />
 
-          <label className="mt-2">Description:</label>
-          <textarea
-            type="text"
-            name="description"
-            value={user?.description || ""}
-            placeholder="Hope you will give us some description about yourselves"
-            onChange={handleChange}
-            style={{ maxHeight: '200px' }}
-            className="form-control"
-            aria-label="Description"
+            <label className="mt-2">Description:</label>
+            <textarea
+              type="text"
+              name="description"
+              value={user?.description || ""}
+              placeholder="Hope you will give us some description about yourselves"
+              onChange={handleChange}
+              style={{ maxHeight: '200px' }}
+              className="form-control"
+              aria-label="Description"
 
-          />
+            />
+          </form>
+
         </Modal.Body>
 
         <Modal.Footer>
