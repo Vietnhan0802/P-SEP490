@@ -138,10 +138,7 @@ function ProjectDetail() {
                     <UpdateProjectForm input={data} id={data?.idProject} resetPage={resetPage} />
                     <DeletePopup className='ms-3' id={data?.idProject} />
                   </div>}
-
-
               </div>
-
               <div className="status-block size-18 d-flex mt-3">
                 <div>
                   <p className="fw-bold">
@@ -170,7 +167,7 @@ function ProjectDetail() {
                     <ol className="position-items">
                       {data?.positionViews.map((position) => (
                         <li key={position.id} className="position-item">
-                          {position.namePosition}
+                          <p className="d-flex justify-content-center">{position.namePosition}</p>
                         </li>
                       ))}
                     </ol>

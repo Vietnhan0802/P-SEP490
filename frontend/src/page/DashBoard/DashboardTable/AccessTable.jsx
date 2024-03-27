@@ -16,8 +16,9 @@ import { IoSearchOutline } from "react-icons/io5";
 import "../DashboardTable/table.scss";
 import { GoDotFill } from "react-icons/go";
 import { userInstance } from "../../../axios/axiosConfig";
+import { useNavigate } from "react-router-dom";
 
-function createData(id, avatar, name, email, type, description, isBlock) {
+function createData(id, avatar, name, email, type, description, isBlock,idAccount) {
   return {
     id,
     avatar,
@@ -26,6 +27,7 @@ function createData(id, avatar, name, email, type, description, isBlock) {
     type,
     description,
     isBlock,
+    idAccount
   };
 }
 
@@ -132,13 +134,12 @@ EnhancedTableHead.propTypes = {
   rowCount: PropTypes.number.isRequired,
 };
 
-export default function AccessTable({ value }) {
+export default function AccessTable({ value, resetAccount }) {
+  const navigate = useNavigate();
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("calories");
-  const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const [resetData, setResetData] = React.useState(false);
 
   const [searchTerm, setSearchTerm] = React.useState('');
   const handleSearch = (e) => {
@@ -171,14 +172,14 @@ export default function AccessTable({ value }) {
   const handleBlock = id => {
     userInstance.put(`BlockUser/${id}`)
       .then((res) => {
-        setResetData(!resetData);
+        resetAccount();
       })
       .catch((err) => { console.error(err.data) })
   }
   // Avoid a layout jump when reaching the last page with empty rows.
   const [userRows, setUserRows] = React.useState([]);
   React.useEffect(() => {
-
+    console.log(value)
     const fetchedUserRows = value?.map(element => (
       createData(
         element.id,
@@ -187,13 +188,16 @@ export default function AccessTable({ value }) {
         element.email,
         element.role,
         element.description,
-        element.isBlock
+        element.isBlock,
+        element.id
       )
     ));
     setUserRows(fetchedUserRows);
-
-  }, []);
-
+console.log(userRows)
+  }, [value]);
+  const handleNavigateUser = (idAccount) => {
+    navigate('/profile', { state: { userId: idAccount } });
+  }
   const visibleRows = React.useMemo(
     () =>
       stableSort(
@@ -220,7 +224,6 @@ export default function AccessTable({ value }) {
         <TableContainer>
           <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle" >
             <EnhancedTableHead
-              numSelected={selected.length}
               order={order}
               orderBy={orderBy}
               onRequestSort={handleRequestSort}
@@ -244,6 +247,7 @@ export default function AccessTable({ value }) {
                       id={labelId}
                       scope="row"
                       padding="none"
+                      onClick={()=>handleNavigateUser(row.idAccount)}
                     >
                       <div className="ms-2 my-2 d-flex align-items-center">
                         <img
@@ -272,23 +276,28 @@ export default function AccessTable({ value }) {
                       </p>
                     </TableCell>
                     <TableCell align="left">
-                      <p className="blur">{row.description === null ? "No Description" : row.description}</p>
+                      <p>{row.description === null ? "No Description" : row.description}</p>
                     </TableCell>
                     <TableCell align="right">
-                      <div className="d-flex align-items-center justify-content-end" onClick={() => handleBlock(row.id)}>
-                        <div
-                          style={{
-                            width: "80px",
-                            textAlign: "center",
-                            padding: "1",
-                          }}
-                          className={`block-box ${row.isBlock === false ? "" : "active-block"
-                            }`}
-                        >
-                          <GoDotFill className="me-1" />
-                          {row.isBlock === false ? "Unblock" : "Block"}
+                      <div className="d-flex align-items-center justify-content-end">
+                        <div onClick={() => handleBlock(row.id)} style={{ width: '80px' }}>
+                          <div
+                            style={{
+                              width: "80px",
+                              textAlign: "center",
+                              padding: "1",
+                            }}
+                            className={`block-box d-flex align-items-center ${row.isBlock ? "active-block" : "blur"
+                              }`}
+                          >
+                            <GoDotFill className={` ${row.isBlock ? "active-dot" : "blur-dot"
+                              }`} />
+                            <p>  {row.isBlock ? "Unblock" : "Block"}</p>
+
+                          </div>
                         </div>
                       </div>
+
                     </TableCell>
 
                   </TableRow>

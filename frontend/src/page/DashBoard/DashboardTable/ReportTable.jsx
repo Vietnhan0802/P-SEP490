@@ -11,10 +11,11 @@ import TableRow from "@mui/material/TableRow";
 import TableSortLabel from "@mui/material/TableSortLabel";
 import Paper from "@mui/material/Paper";
 import { visuallyHidden } from "@mui/utils";
-import avatar from "../../../images/common/Avatar.png";
 import { IoSearchOutline } from "react-icons/io5";
 import "../DashboardTable/table.scss";
 import { GoDotFill } from "react-icons/go";
+import { useNavigate } from "react-router-dom";
+import { reportInstance } from "../../../axios/axiosConfig";
 const formatDate = (timestamp) => {
   const months = [
     "Jan",
@@ -37,7 +38,7 @@ const formatDate = (timestamp) => {
 
   return `${day} ${month} ${year}`;
 };
-function createPostData(id, avatar, name, email, date, title, content, description) {
+function createPostData(id, avatar, name, email, date, title, content, description, idPosted) {
   return {
     id,
     avatar,
@@ -47,16 +48,17 @@ function createPostData(id, avatar, name, email, date, title, content, descripti
     title,
     content,
     description,
+    idPosted
   };
 }
-function createBlogData(id, avatar, name, email, date, title, content, description) {
+function createBlogData(id, avatar, name, email, date, title, content, description, idBloged) {
   return {
-    id, avatar, name, email, date, title, content, description
+    id, avatar, name, email, date, title, content, description, idBloged
   };
 }
-const createAccountData = (id, avatar, name, email, createdDate, description) => {
+const createAccountData = (id, avatar, name, email, createdDate, description, idReported) => {
   return {
-    id, avatar, name, email, createdDate, description
+    id, avatar, name, email, createdDate, description, idReported
   };
 };
 
@@ -124,7 +126,7 @@ const headCells = [
     id: "title",
     numeric: false,
     disablePadding: false,
-    label: "Blog Title",
+    label: "Blog",
     for: "reportBlog",
   },
 
@@ -156,6 +158,13 @@ const headCells = [
     label: "Description",
     for: "reportBlog",
   },
+  {
+    id: "name",
+    numeric: false,
+    disablePadding: true,
+    label: "",
+    for: "all",
+  },
 ];
 
 function EnhancedTableHead(props) {
@@ -184,7 +193,7 @@ function EnhancedTableHead(props) {
               align={headCell.numeric ? "right" : "left"}
               padding={headCell.disablePadding ? "none" : "normal"}
               sortDirection={orderBy === headCell.id ? order : false}
-              style={{ paddingLeft: "10px" }}
+              style={{ paddingLeft: "16px" }}
             >
               <TableSortLabel
                 active={orderBy === headCell.id}
@@ -214,7 +223,7 @@ EnhancedTableHead.propTypes = {
   rowCount: PropTypes.number.isRequired,
 };
 
-export default function ReportTable({ accountValue, postValue, blogValue }) {
+export default function ReportTable({ accountValue, postValue, blogValue ,resetReport }) {
 
   function renderPostTable() {
     return (
@@ -235,6 +244,7 @@ export default function ReportTable({ accountValue, postValue, blogValue }) {
                 id={labelId}
                 scope="row"
                 padding="none"
+                onClick={() => handleView()}
               >
                 <div className="ms-2 my-2 d-flex align-items-center">
                   <img
@@ -257,7 +267,7 @@ export default function ReportTable({ accountValue, postValue, blogValue }) {
               <TableCell align="left" className="blur">
                 {row.date}
               </TableCell>
-              <TableCell align="left">
+              <TableCell align="left" onClick={() => handleView(row.idPosted, 'post')}>
                 <p style={{ fontSize: "16px", fontWeight: "500" }}>
                   {row.title}
                 </p>
@@ -271,13 +281,13 @@ export default function ReportTable({ accountValue, postValue, blogValue }) {
               <TableCell align="right">
                 <div className="d-flex align-items-center justify-content-end">
                   <div className="d-flex justify-content-center">
-                    <div className="deny">
+                    <div className="deny" onClick={() => handleAcceptorDeny(row.id, 1, 'post')}>
                       <GoDotFill className="me-1" />
                       Deny
                     </div>
-                    <div className="accept">
+                    <div className="accept" onClick={() => handleAcceptorDeny(row.id, 2, 'post')}>
                       <GoDotFill className="me-1" />
-                      Block
+                      Accept
                     </div>
                   </div>
                 </div>
@@ -311,6 +321,7 @@ export default function ReportTable({ accountValue, postValue, blogValue }) {
                 id={labelId}
                 scope="row"
                 padding="none"
+                onClick={() => handleView(row.idReported, 'account')}
               >
                 <div className="ms-2 my-2 d-flex align-items-center">
                   <img
@@ -331,7 +342,7 @@ export default function ReportTable({ accountValue, postValue, blogValue }) {
                 </div>
               </TableCell>
               <TableCell align="left" className="blur">
-                <p>{formatDate(row.createdDate)}</p>
+                <p>{row.createdDate}</p>
               </TableCell>
               <TableCell align="left">
                 <p className="blur">{row.description}</p>
@@ -339,11 +350,11 @@ export default function ReportTable({ accountValue, postValue, blogValue }) {
               <TableCell align="right">
                 <div className="d-flex align-items-center justify-content-end">
                   <div className="d-flex justify-content-center">
-                    <div className="deny">
+                    <div className="deny" onClick={() => handleAcceptorDeny(row.id, 1, 'account')}>
                       <GoDotFill className="me-1" />
                       Deny
                     </div>
-                    <div className="accept">
+                    <div className="accept" onClick={() => handleAcceptorDeny(row.id, 2, 'account')}>
                       <GoDotFill className="me-1" />
                       Block
                     </div>
@@ -398,7 +409,7 @@ export default function ReportTable({ accountValue, postValue, blogValue }) {
               <TableCell align="left" className="blur">
                 {row.date}
               </TableCell>
-              <TableCell align="left">
+              <TableCell align="left" onClick={() => handleView(row.idBloged, 'blog')}>
                 <p style={{ fontSize: "16px", fontWeight: "500" }}>
                   {row.title}
                 </p>
@@ -412,11 +423,11 @@ export default function ReportTable({ accountValue, postValue, blogValue }) {
               <TableCell align="right">
                 <div className="d-flex align-items-center justify-content-end">
                   <div className="d-flex justify-content-center">
-                    <div className="deny">
+                    <div className="deny" onClick={() => handleAcceptorDeny(row.id, 2, 'blog')}>
                       <GoDotFill className="me-1" />
                       Deny
                     </div>
-                    <div className="accept">
+                    <div className="accept" onClick={() => handleAcceptorDeny(row.id, 2, 'blog')}>
                       <GoDotFill className="me-1" />
                       Block
                     </div>
@@ -429,7 +440,7 @@ export default function ReportTable({ accountValue, postValue, blogValue }) {
       </TableBody>
     );
   }
-
+  const navigate = useNavigate();
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("calories");
   const [selected, setSelected] = React.useState([]);
@@ -446,8 +457,8 @@ export default function ReportTable({ accountValue, postValue, blogValue }) {
           element.avatarReported,
           element.nameReported,
           element.emailReported,
-          element.createdDate,
-          element.content
+          formatDate(element.createdDate),
+          element.content, element.idReported
         )
       )
       );
@@ -463,7 +474,8 @@ export default function ReportTable({ accountValue, postValue, blogValue }) {
           formatDate(element.createdDate),
           element.titlePost,
           element.contentPost,
-          element.content
+          element.content,
+          element.idPosted
         )
       )
       );
@@ -479,7 +491,8 @@ export default function ReportTable({ accountValue, postValue, blogValue }) {
           formatDate(element.createdDate),
           element.titleBlog,
           element.contentBlog,
-          element.content
+          element.content,
+          element.idBloged
         )
       )
       );
@@ -487,7 +500,34 @@ export default function ReportTable({ accountValue, postValue, blogValue }) {
     }
 
   }, [accountValue, postValue, blogValue]);
-
+  const handleView = (id, type) => {
+    if (type === 'post') {
+      navigate('/postdetail', { state: { idPost: id } })
+    }
+    if (type === 'blog') {
+      navigate('/blogdetail', { state: { idBlog: id } })
+    }
+    if (type === 'account') {
+      navigate('/profile', { state: { userId: id } });
+    }
+  }
+  const handleAcceptorDeny = (id, status, type) => {
+    if (type === 'post') {
+      reportInstance.put(`AcceptPostReport/${id}/${status}`)
+        .then((res) => { console.log(res?.data?.result); resetReport(); })
+        .catch((error) => { console.error(error); })
+    }
+    if (type === 'blog') {
+      reportInstance.put(`AcceptBlogReport/${id}/${status}`)
+        .then((res) => { console.log(res?.data?.result); resetReport(); })
+        .catch((error) => { console.error(error); })
+    }
+    if (type === 'account') {
+      reportInstance.put(`AcceptAccountReport/${id}/${status}`)
+        .then((res) => { console.log(res?.data?.result); resetReport(); })
+        .catch((error) => { console.error(error); })
+    }
+  }
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
