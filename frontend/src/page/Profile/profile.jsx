@@ -270,15 +270,15 @@ function Profile({ handleChangeImg, value, resetFollowing }) {
                 changeImage={changeImage}
               />
               {display === false && currentUserId !== userId ? (
-                <div className="d-flex justify-content-evenly w-100">
+                <div className="d-flex justify-content-evenly w-100 mt-3">
                   <button
-                    className="btn edit-btn mt-3 w-25 m-auto"
+                    className="btn edit-btn mx-3 w-50"
                     onClick={() => handleFollow()}
                   >
                     {inputs.isFollow ? "UnFollow" : "Follow"}
                   </button>
                   <button
-                    className="btn edit-btn mt-3 w-25 m-auto"
+                    className="btn edit-btn mx-3 w-50"
                     onClick={() => navigateChat()}
                   >
                     Chat
@@ -389,7 +389,7 @@ function Profile({ handleChangeImg, value, resetFollowing }) {
                 </div>
                 <div className="col-md-12 ">
                   <label className="form-label">Description:</label>
-                  <p className="form-control">{inputs.description}</p>
+                  <p className="form-control">{inputs.description ? inputs.description : 'No description'}</p>
                 </div>
               </div>
             </div>
@@ -465,7 +465,7 @@ function Profile({ handleChangeImg, value, resetFollowing }) {
                   className={`degree tab-content ${showAllItems ? "scrollable" : ""
                     }`}
                 >
-                  {userDegree
+                  {userDegree?.length !== 0 ? userDegree
                     .slice(0, showAllItems ? userDegree?.length : 3)
                     .map((item) => (
                       <div className="row mb-4" key={item.idDegree}>
@@ -504,7 +504,7 @@ function Profile({ handleChangeImg, value, resetFollowing }) {
                           </Worker> */}
                         </div>
                       </div>
-                    ))}
+                    )) : <p>There is no degree</p>}
                 </div>
               )}
               {/* DegreeTab */}

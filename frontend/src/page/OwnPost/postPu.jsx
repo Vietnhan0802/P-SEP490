@@ -136,7 +136,7 @@ function PostPu({ reset }) {
       </Button>
       <Modal show={show} onHide={modalClose} id='postPu'>
         <Modal.Header closeButton>
-          <Modal.Title>Create New Post</Modal.Title>
+          <Modal.Title>Create Post</Modal.Title>
         </Modal.Header>
         <Modal.Body className="popup-body">
           <div className='form-floating mb-3'>
@@ -146,18 +146,21 @@ function PostPu({ reset }) {
               value={inputs.title}
               onChange={handleInputChange}
               className="input-text form-control mb-3"
+              placeholder=""
             />
             <label for="floatingInput">Post Title</label>
           </div>
-          <textarea
-            type="text"
-            value={inputs.content}
-            name="content"
-            onChange={handleInputChange}
-            className="input-text form-control mb-3 w-100  cus-h"
-            placeholder="Post Content"
-          />
-
+          <div className='form-floating mb-3'>
+            <textarea
+              type="text"
+              value={inputs.content}
+              name="content"
+              onChange={handleInputChange}
+              className="input-text form-control mb-3 w-100  cus-h"
+              placeholder="Post Content"
+            />
+            <label for="floatingInput">Post content</label>
+          </div>
           <Select
             placeholder="Select a project (optional)"
             className="basic-single my-3"
@@ -167,13 +170,16 @@ function PostPu({ reset }) {
             options={project}
             onChange={handleSelctProject}
           />
-          <input
-            type="file"
-            name="images"
-            onChange={handleInputChange}
-            className="form-control"
-            multiple
-          />
+          <div className="input-cover">
+            <input
+              type="file"
+              name="images"
+              onChange={handleInputChange}
+              className="form-control"
+              multiple
+            />
+          </div>
+
         </Modal.Body>
 
         <Modal.Footer>

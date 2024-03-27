@@ -85,12 +85,6 @@ const headCells = [
     label: "Blog Title",
   },
   {
-    id: "report",
-    numeric: true,
-    disablePadding: false,
-    label: "Report",
-  },
-  {
     id: "Status",
     numeric: true,
     disablePadding: false,
@@ -201,20 +195,20 @@ export default function BlogTable({ value }) {
   const [blogRows, setUserRows] = React.useState([]);
   React.useEffect(() => {
 
-        const fetchedBlogRows = value?.map(element => (
-          createData(
-            element.idBlog,
-            element.avatar,
-            element.fullName,
-            element.title,
-            element.content,
-            element.createdDate,
-            element.report,
-            element.isBlock,
-          )
-        )
-        );
-        setUserRows(fetchedBlogRows);
+    const fetchedBlogRows = value?.map(element => (
+      createData(
+        element.idBlog,
+        element.avatar,
+        element.fullName,
+        element.title,
+        element.content,
+        element.createdDate,
+        element.report,
+        element.isBlock,
+      )
+    )
+    );
+    setUserRows(fetchedBlogRows);
 
 
   }, []);
@@ -293,7 +287,6 @@ export default function BlogTable({ value }) {
                       <p style={{ fontSize: "16px", fontWeight: "500" }}>{row.title}</p>
                       <p className="blur ellipsis" style={{ maxWidth: '300px' }}>{row.content}</p>
                     </TableCell>
-                    <TableCell align="right">{row.report}</TableCell>
                     <TableCell align="right">
                       <div
                         className="d-flex align-items-center justify-content-end"

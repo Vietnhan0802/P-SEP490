@@ -15,59 +15,51 @@ import avatar from "../../../images/common/Avatar.png";
 import { IoSearchOutline } from "react-icons/io5";
 import "../DashboardTable/table.scss";
 import { GoDotFill } from "react-icons/go";
+const formatDate = (timestamp) => {
+  const months = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
+  const date = new Date(timestamp);
+  const day = date.getDate();
+  const month = months[date.getMonth()];
+  const year = date.getFullYear();
 
-function createPostData(id, name, email, date, title, description) {
+  return `${day} ${month} ${year}`;
+};
+function createPostData(id, avatar, name, email, date, title, content, description) {
   return {
     id,
+    avatar,
     name,
     email,
     date,
     title,
+    content,
     description,
   };
 }
-function createBlogData(id, name, email, date, title, description) {
+function createBlogData(id, avatar, name, email, date, title, content, description) {
   return {
-    id,
-    name,
-    email,
-    date,
-    title,
-    description,
+    id, avatar, name, email, date, title, content, description
   };
 }
-const createAccountData = (id, name, email, type, description, report) => {
+const createAccountData = (id, avatar, name, email, createdDate, description) => {
   return {
-    id,
-    name,
-    email,
-    type,
-    description,
+    id, avatar, name, email, createdDate, description
   };
 };
-const accountRows = [
-  createAccountData(
-    1,
-    "Olivia Rhye",
-    "example@gmail,com",
-    "Business",
-    "Description of the current content"
-  ),
-  createAccountData(
-    2,
-    "Adison Schleifer",
-    "example@gmail,com",
-    "User",
-    "Description of the current content"
-  ),
-  createAccountData(
-    3,
-    "Martin George",
-    "example@gmail,com",
-    "User",
-    "Description of the current content"
-  ),
-];
+
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
     return -1;
@@ -115,10 +107,17 @@ const headCells = [
     for: "reportPost",
   },
   {
+    id: "date",
+    numeric: false,
+    disablePadding: false,
+    label: "Date",
+    for: "reportBlog",
+  },
+  {
     id: "title",
     numeric: false,
     disablePadding: false,
-    label: "Post Title",
+    label: "Post",
     for: "reportPost",
   },
   {
@@ -130,7 +129,7 @@ const headCells = [
   },
 
   {
-    id: "type",
+    id: "Date",
     numeric: false,
     disablePadding: false,
     label: "Type",
@@ -142,6 +141,20 @@ const headCells = [
     disablePadding: false,
     label: "Description",
     for: "reportAccount",
+  },
+  {
+    id: "description",
+    numeric: false,
+    disablePadding: false,
+    label: "Description",
+    for: "reportPost",
+  },
+  {
+    id: "description",
+    numeric: false,
+    disablePadding: false,
+    label: "Description",
+    for: "reportBlog",
   },
 ];
 
@@ -226,7 +239,7 @@ export default function ReportTable({ accountValue, postValue, blogValue }) {
                 <div className="ms-2 my-2 d-flex align-items-center">
                   <img
                     className="me-2"
-                    src={avatar}
+                    src={row.avatar}
                     alt=""
                     style={{
                       width: "40px",
@@ -248,7 +261,12 @@ export default function ReportTable({ accountValue, postValue, blogValue }) {
                 <p style={{ fontSize: "16px", fontWeight: "500" }}>
                   {row.title}
                 </p>
-                <p className="blur">{row.description}</p>
+                <p className="blur">{row.content}</p>
+              </TableCell>
+              <TableCell align="left">
+                <p style={{ fontSize: "16px", fontWeight: "500" }}>
+                  {row.description}
+                </p>
               </TableCell>
               <TableCell align="right">
                 <div className="d-flex align-items-center justify-content-end">
@@ -297,7 +315,7 @@ export default function ReportTable({ accountValue, postValue, blogValue }) {
                 <div className="ms-2 my-2 d-flex align-items-center">
                   <img
                     className="me-2"
-                    src={avatar}
+                    src={row.avatar}
                     alt=""
                     style={{
                       width: "40px",
@@ -313,10 +331,7 @@ export default function ReportTable({ accountValue, postValue, blogValue }) {
                 </div>
               </TableCell>
               <TableCell align="left" className="blur">
-                <p
-                  className={`${row.type === "Business" ? "business" : "user"
-                    }`}
-                >{row.type}</p>
+                <p>{formatDate(row.createdDate)}</p>
               </TableCell>
               <TableCell align="left">
                 <p className="blur">{row.description}</p>
@@ -346,65 +361,70 @@ export default function ReportTable({ accountValue, postValue, blogValue }) {
     return (
       <TableBody>
         {visibleBlogRows.map((row, index) => {
-           const labelId = `enhanced-table-checkbox-${index}`;
-           return (
-             <TableRow
-               hover
-               role="checkbox"
-               tabIndex={-1}
-               key={row.id}
-               sx={{ cursor: "pointer" }}
-               className="my-2"
-             >
-               <TableCell
-                 component="th"
-                 id={labelId}
-                 scope="row"
-                 padding="none"
-               >
-                 <div className="ms-2 my-2 d-flex align-items-center">
-                   <img
-                     className="me-2"
-                     src={avatar}
-                     alt=""
-                     style={{
-                       width: "40px",
-                       height: "40px",
-                       borderRadius: "50%",
-                     }}
-                   />
-                   <div>
-                     {row.name}
-                     <br></br>
-                     {row.email}
-                   </div>
-                 </div>
-               </TableCell>
-               <TableCell align="left" className="blur">
-                 {row.date}
-               </TableCell>
-               <TableCell align="left">
-                 <p style={{ fontSize: "16px", fontWeight: "500" }}>
-                   {row.title}
-                 </p>
-                 <p className="blur">{row.description}</p>
-               </TableCell>
-               <TableCell align="right">
-                 <div className="d-flex align-items-center justify-content-end">
-                   <div className="d-flex justify-content-center">
-                     <div className="deny">
-                       <GoDotFill className="me-1" />
-                       Deny
-                     </div>
-                     <div className="accept">
-                       <GoDotFill className="me-1" />
-                       Block
-                     </div>
-                   </div>
-                 </div>
-               </TableCell>
-             </TableRow>
-           );
+          const labelId = `enhanced-table-checkbox-${index}`;
+          return (
+            <TableRow
+              hover
+              role="checkbox"
+              tabIndex={-1}
+              key={row.id}
+              sx={{ cursor: "pointer" }}
+              className="my-2"
+            >
+              <TableCell
+                component="th"
+                id={labelId}
+                scope="row"
+                padding="none"
+              >
+                <div className="ms-2 my-2 d-flex align-items-center">
+                  <img
+                    className="me-2"
+                    src={row.avatar}
+                    alt=""
+                    style={{
+                      width: "40px",
+                      height: "40px",
+                      borderRadius: "50%",
+                    }}
+                  />
+                  <div>
+                    {row.name}
+                    <br></br>
+                    {row.email}
+                  </div>
+                </div>
+              </TableCell>
+              <TableCell align="left" className="blur">
+                {row.date}
+              </TableCell>
+              <TableCell align="left">
+                <p style={{ fontSize: "16px", fontWeight: "500" }}>
+                  {row.title}
+                </p>
+                <p className="blur">{row.content}</p>
+              </TableCell>
+              <TableCell align="left">
+                <p style={{ fontSize: "16px", fontWeight: "500" }}>
+                  {row.description}
+                </p>
+              </TableCell>
+              <TableCell align="right">
+                <div className="d-flex align-items-center justify-content-end">
+                  <div className="d-flex justify-content-center">
+                    <div className="deny">
+                      <GoDotFill className="me-1" />
+                      Deny
+                    </div>
+                    <div className="accept">
+                      <GoDotFill className="me-1" />
+                      Block
+                    </div>
+                  </div>
+                </div>
+              </TableCell>
+            </TableRow>
+          );
         })}
       </TableBody>
     );
@@ -422,14 +442,12 @@ export default function ReportTable({ accountValue, postValue, blogValue }) {
     if (accountValue) {
       const fetchedAccountRows = accountValue?.map(element => (
         createAccountData(
-          element.idPost,
-          element.avatar,
-          element.fullName,
-          element.title,
-          element.content,
+          element.idAccountReport,
+          element.avatarReported,
+          element.nameReported,
+          element.emailReported,
           element.createdDate,
-          element.report,
-          element.isBlock,
+          element.content
         )
       )
       );
@@ -438,14 +456,14 @@ export default function ReportTable({ accountValue, postValue, blogValue }) {
     if (postValue) {
       const fetchedPostRows = postValue?.map(element => (
         createPostData(
-          element.idPost,
-          element.avatar,
-          element.fullName,
-          element.title,
-          element.content,
-          element.createdDate,
-          element.report,
-          element.isBlock,
+          element.idPostReport,
+          element.avatarReporter,
+          element.nameReporter,
+          element.emailReporter,
+          formatDate(element.createdDate),
+          element.titlePost,
+          element.contentPost,
+          element.content
         )
       )
       );
@@ -454,14 +472,14 @@ export default function ReportTable({ accountValue, postValue, blogValue }) {
     if (blogValue) {
       const fetchedBlogRows = blogValue?.map(element => (
         createBlogData(
-          element.idPost,
-          element.avatar,
-          element.fullName,
-          element.title,
-          element.content,
-          element.createdDate,
-          element.report,
-          element.isBlock,
+          element.idBlogReport,
+          element.avatarReporter,
+          element.nameReporter,
+          element.emailReporter,
+          formatDate(element.createdDate),
+          element.titleBlog,
+          element.contentBlog,
+          element.content
         )
       )
       );
@@ -501,11 +519,11 @@ export default function ReportTable({ accountValue, postValue, blogValue }) {
   );
   const visibleAccountRows = React.useMemo(
     () =>
-      stableSort(accountRows, getComparator(order, orderBy)).slice(
+      stableSort(accountRow, getComparator(order, orderBy)).slice(
         page * rowsPerPage,
         page * rowsPerPage + rowsPerPage
       ),
-    [order, orderBy, page, rowsPerPage,]
+    [order, orderBy, page, rowsPerPage, accountRow]
   );
   const visibleBlogRows = React.useMemo(
     () =>

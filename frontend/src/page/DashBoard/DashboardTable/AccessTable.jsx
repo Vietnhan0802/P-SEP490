@@ -80,7 +80,7 @@ const headCells = [
     id: "status",
     numeric: true,
     disablePadding: false,
-    label: "Status",
+    label: "",
   },
 ];
 
@@ -290,9 +290,7 @@ export default function AccessTable({ value }) {
                         </div>
                       </div>
                     </TableCell>
-                    <TableCell align="right" style={{ color: "#5572E8" }}>
-                      View
-                    </TableCell>
+
                   </TableRow>
                 );
               })}
