@@ -49,7 +49,7 @@ function Chat() {
               </div>
             </div>
             <div className="chat-list">
-              {conversations.length > 0 ? (
+              {conversations?.length > 0 ? (
               conversations.map((item) => (
                 <div className="chat-item" key={item.idConversation}>
                   <div className="d-flex align-items-center" >

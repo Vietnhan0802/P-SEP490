@@ -100,8 +100,8 @@ namespace PostService.Controllers
             {
                 var result = new
                 {
-                    titlePost = post.title,
-                    contentPost = post.content
+                    title = post.title,
+                    content = post.content
                 };
                 return Ok(result);
             }
