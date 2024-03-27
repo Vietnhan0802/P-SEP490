@@ -225,7 +225,7 @@ namespace ProjectService.Controllers
             {
                 return new Response(HttpStatusCode.NotFound, "Project doesn't exists!");
             }
-            var members = await _context.ProjectMembers.Where(x => x.idProject == idProject).OrderByDescending(x => x.createdDate).ToListAsync();
+            var members = await _context.ProjectMembers.Where(x => x.idProject == idProject && x.isAcept == true).OrderByDescending(x => x.createdDate).ToListAsync();
             if (members.Count > 0)
             {
                 var result = _mapper.Map<List<ProjectMemberView>>(members);
