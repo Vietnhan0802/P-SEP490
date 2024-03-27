@@ -4,7 +4,8 @@ import { blogInstance, postInstance, projectInstance } from '../../../axios/axio
 import bootstrap from "bootstrap/dist/js/bootstrap.bundle.min";
 import { RiCameraOffLine } from "react-icons/ri";
 import { IoCameraReverse } from "react-icons/io5";
-import "./update.scss"
+import "./update.scss";
+import Notification, { notifySuccess, notifyError } from "../../components/notification";
 function UpdateItem({ show, onClose, value, type }) {
     const [deleteAppear, setDeleteAppear] = useState(false);
     const [update, setUpdate] = useState({
@@ -85,8 +86,8 @@ function UpdateItem({ show, onClose, value, type }) {
                     accept: "application/json",
                 },
             })
-                .then((res) => { console.log(res?.data?.result) })
-                .catch((error) => { console.error(error) });
+                .then((res) => { console.log(res?.data?.result); notifySuccess("Update post successfully!"); })
+                .catch((error) => { console.error(error); notifyError("Update post failed!"); });
         } else if (update?.CreateUpdateImages?.length > 0) {
             update.CreateUpdateImages.forEach((imageInfo, index) => {
                 formData.append(
@@ -107,8 +108,8 @@ function UpdateItem({ show, onClose, value, type }) {
                 accept: "application/json",
             },
         })
-            .then((res) => { console.log(res?.data?.result) })
-            .catch((error) => { console.error(error) });
+            .then((res) => { console.log(res?.data?.result); notifySuccess("Update blog successfully!"); })
+            .catch((error) => { console.error(error); notifyError("Update blog failed!"); });
 
     }
     const carouselRef = useRef(null);

@@ -1,6 +1,7 @@
 import { Modal, Button } from "react-bootstrap";
 import { blogInstance, postInstance } from "../../../axios/axiosConfig";
 import { useNavigate } from "react-router-dom";
+import Notification, { notifySuccess, notifyError } from "../../components/notification";
 
 function DeleteItem({ type, value, show, onClose }) {
     const navigate = useNavigate();
@@ -9,14 +10,16 @@ function DeleteItem({ type, value, show, onClose }) {
             postInstance.delete(`/RemovePost/${value}`)
                 .then((res) => {
                     navigate('/post');
+                    notifySuccess("Delete post successfully!");
                 })
-                .catch((error) => { console.error(error); })
+                .catch((error) => { console.error(error); notifyError("Delete post failed!"); })
         } else {
             blogInstance.delete(`/RemoveBlog/${value}`)
                 .then((res) => {
                     navigate('/blog');
+                    notifySuccess("Delete blog successfully!");
                 })
-                .catch((error) => { console.error(error); })
+                .catch((error) => { console.error(error); notifyError("Delete blog failed!"); })
         }
 
     }
