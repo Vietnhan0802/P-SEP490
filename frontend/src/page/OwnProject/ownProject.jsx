@@ -105,7 +105,7 @@ function OwnProject({ value }) {
               <div className="image-container d-flex justify-content-center">
                 <img
                   className="rounded-t-lg bor-8"
-                  src={item.avatar}
+                  src={item.avatarSrc}
                   alt="Laptop with developer items spread around"
                 />
               </div>

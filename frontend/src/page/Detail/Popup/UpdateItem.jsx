@@ -5,7 +5,7 @@ import bootstrap from "bootstrap/dist/js/bootstrap.bundle.min";
 import { RiCameraOffLine } from "react-icons/ri";
 import { IoCameraReverse } from "react-icons/io5";
 import "./update.scss";
-import Notification, { notifySuccess, notifyError } from "../../components/notification";
+import Notification, { notifySuccess, notifyError } from "../../../components/notification";
 function UpdateItem({ show, onClose, value, type }) {
     const [deleteAppear, setDeleteAppear] = useState(false);
     const [update, setUpdate] = useState({

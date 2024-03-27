@@ -1,7 +1,7 @@
 import { Modal, Button } from "react-bootstrap";
 import { blogInstance, postInstance } from "../../../axios/axiosConfig";
 import { useNavigate } from "react-router-dom";
-import Notification, { notifySuccess, notifyError } from "../../components/notification";
+import Notification, { notifySuccess, notifyError } from "../../../components/notification";
 
 function DeleteItem({ type, value, show, onClose }) {
     const navigate = useNavigate();
