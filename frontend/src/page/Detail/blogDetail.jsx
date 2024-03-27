@@ -16,6 +16,7 @@ import Follow from "../../components/follow";
 import Report from "../../components/report-popup/Report";
 import UpdateItem from "./Popup/UpdateItem";
 import DeleteItem from "./Popup/DeleteItem";
+import Notification, { notifySuccess, notifyError } from "../../components/notification";
 function calculateTimeDifference(targetDate) {
   // Convert the target date string to a Date object
   const targetTime = new Date(targetDate).getTime();
@@ -96,10 +97,12 @@ function BlogDetail({ value }) {
       .then(() => {
         setUpdateShow(null);
         setState(!state);
+        notifySuccess("Update comment successfully!");
       }
       )
       .catch((error) => {
         console.error(error);
+        notifyError("Update comment failed!");
       })
   };
   const handleDeleteComment = (id) => {
@@ -108,9 +111,11 @@ function BlogDetail({ value }) {
         (res) => {
           console.log(res.data.result);
           setState(!state);
+          notifySuccess("Delete comment successfully!");
         }
       ).catch((error) => {
         console.error(error);
+        notifyError("Delete comment failed!");
       })
   }
   const handleDeleteReplyComment = (id) => {
@@ -119,9 +124,11 @@ function BlogDetail({ value }) {
         (res) => {
           console.log(res.data.result);
           setState(!state);
+          notifySuccess("Delete reply successfully!");
         }
       ).catch((error) => {
         console.error(error);
+        notifyError("Delete reply failed!");
       })
   }
   const handleInputComment = (event) => {
@@ -145,8 +152,9 @@ function BlogDetail({ value }) {
       .then((res) => {
         setState(!state);
         console.log(res)
+        notifySuccess("Create comment successfully!");
       })
-      .catch((error) => { console.error(error) });
+      .catch((error) => { console.error(error); notifyError("Create comment failed!"); });
   }
   const handleCreateReplyComment = (commentId) => {
     const replyContent = inputReply[commentId];
@@ -157,8 +165,9 @@ function BlogDetail({ value }) {
       .then((res) => {
         setState(!state)
         console.log(res?.data?.result)
+        notifySuccess("Create reply successfully!");
       })
-      .catch((error) => { console.error(error) });
+      .catch((error) => { console.error(error); notifyError("Create reply failed!"); });
     // After successful submission, clear the input field for that commentId
     setInputReply(prevReplyInputs => ({
       ...prevReplyInputs,
@@ -195,10 +204,12 @@ function BlogDetail({ value }) {
       .then(() => {
         setUpdateReplyShow(null);
         setState(!state);
+        notifySuccess("Update reply successfully!");
       }
       )
       .catch((error) => {
         console.error(error);
+        notifyError("Update reply failed!");
       })
   }
   //Hanlde like or unlike the the blog

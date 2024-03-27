@@ -19,6 +19,7 @@ import SideBar from "../../components/sidebar";
 import Follow from "../../components/follow";
 
 import Report from "../../components/report-popup/Report";
+import Notification, { notifySuccess, notifyError } from "../../components/notification";
 
 function calculateTimeDifference(targetDate) {
   // Convert the target date string to a Date object

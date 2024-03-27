@@ -16,6 +16,7 @@ import Follow from "../../components/follow";
 import SideBar from "../../components/sidebar";
 import { FaHeart } from "react-icons/fa";
 import { BsThreeDots } from "react-icons/bs";
+import Notification, { notifySuccess, notifyError } from "../../components/notification";
 function PostDetail({ value }) {
   const location = useLocation();
   const sessionData = JSON.parse(sessionStorage.getItem("userSession")) || {};
@@ -72,9 +73,11 @@ function PostDetail({ value }) {
       .then(() => {
         setUpdateShow(null);
         setState(!state);
+        notifySuccess("Update comment successfully!");
       })
       .catch((error) => {
         console.error(error);
+        notifyError("Update comment failed!");
       });
   };
   const handleDeleteComment = (id) => {
@@ -83,9 +86,11 @@ function PostDetail({ value }) {
       .then((res) => {
         console.log(res.data.result);
         setState(!state);
+        notifySuccess("Delete comment successfully!");
       })
       .catch((error) => {
         console.error(error);
+        notifyError("Delete comment failed!");
       });
   };
   const handleDeleteReplyComment = (id) => {
@@ -94,9 +99,11 @@ function PostDetail({ value }) {
       .then((res) => {
         console.log(res.data.result);
         setState(!state);
+        notifySuccess("Delete reply successfully!");
       })
       .catch((error) => {
         console.error(error);
+        notifyError("Delete reply failed!");
       });
   };
   const handleInputComment = (event) => {
@@ -122,9 +129,11 @@ function PostDetail({ value }) {
         setContent("");
         setState(!state);
         console.log(res);
+        notifySuccess("Create comment successfully!");
       })
       .catch((error) => {
         console.error(error);
+        notifyError("Create comment failed!");
       });
   };
   const handleCreateReplyComment = (commentId) => {
@@ -137,9 +146,11 @@ function PostDetail({ value }) {
       .then((res) => {
         setState(!state);
         console.log(res?.data?.result);
+        notifySuccess("Create reply successfully!");
       })
       .catch((error) => {
         console.error(error);
+        notifyError("Create reply failed!");
       });
     // After successful submission, clear the input field for that commentId
     setInputReply((prevReplyInputs) => ({
@@ -180,9 +191,11 @@ function PostDetail({ value }) {
       .then(() => {
         setUpdateReplyShow(null);
         setState(!state);
+        notifySuccess("Update reply successfully!");
       })
       .catch((error) => {
         console.error(error);
+        notifyError("Update reply failed!");
       });
   };
   //Hanlde like or unlike the the blog
