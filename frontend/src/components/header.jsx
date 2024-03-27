@@ -76,7 +76,10 @@ export default function Header({ activeComponent, onItemClick, changeImage }) {
       // console.log(originalUsers)
       setFilterlistUser(originalUsers);
     } else {
-      setFilterlistUser(users.filter(user => user.fullName.toLowerCase().includes(event.target.value.toLowerCase())));
+      setFilterlistUser(users.filter(
+        user => user.fullName.toLowerCase().includes(event.target.value.toLowerCase())
+          || user.email.toLowerCase().includes(event.target.value.toLowerCase())
+      ));
     }
   }
   return (

@@ -50,30 +50,9 @@ function PostContent({ data, handleLikeOrUnlikePost, viewProject, userId }) {
     // First, check if the project with the given ID exists.
     projectInstance.get(`GetProjectById/${data.idProject}`)
       .then((res) => {
-        if (res?.data?.result !== null && res?.data?.result?.visibility === 0) {
-          // If the project exists, get all members of the project.
-          projectInstance.get(`GetAllMemberInProject/${data.idProject}`)
-            .then((res) => {
-              if (res?.data?.result) {
-                const memberList = res.data.result;
-                // Check if the current user is among the project members.
-                const isMember = memberList.some((item) => item.idAccount === currentUserId);
-                // If the current user is a member, navigate to the project detail page.
-                if (isMember) {
-                  navigate('/projectdetail', { state: { idProject: data.idProject } });
-                }
-              } else {
-                setDisplayAlert(true);
-                setMessage('You can not access to this Project');
-              }
-            })
-            .catch((error) => {
-              console.error("Error fetching project members:", error);
-            });
-        } else if (res?.data?.result !== null && res?.data?.result?.visibility === 1) {
+        if (res?.data?.result !== null && res?.data?.result?.visibility !== 2) {
           navigate('/projectdetail', { state: { idProject: data.idProject } });
         } else {
-          console.log(1)
           setDisplayAlert(true);
           setMessage('This Project is no longer exist.')
         }
@@ -103,7 +82,7 @@ function PostContent({ data, handleLikeOrUnlikePost, viewProject, userId }) {
         {data?.idAccount === userId ? (
           <Dropdown>
             <Dropdown.Toggle
-            as={Button}
+              as={Button}
               variant="white"
               className="border-none text-body"
               style={{
@@ -113,7 +92,7 @@ function PostContent({ data, handleLikeOrUnlikePost, viewProject, userId }) {
                 },
               }}
             >
-              <BsThreeDots  size={28} /></Dropdown.Toggle>
+              <BsThreeDots size={28} /></Dropdown.Toggle>
 
             <Dropdown.Menu style={{ minWidth: "auto" }}>
               <Dropdown.Item
@@ -219,10 +198,11 @@ function PostContent({ data, handleLikeOrUnlikePost, viewProject, userId }) {
           </>
         )}
       </div>
-      <button className="btn btn-outline-info mt-3" onClick={handleViewProject}>
-        View Project
-      </button>
-
+      {data?.idProject === '00000000-0000-0000-0000-000000000000' ? "" :
+        <button className="btn btn-outline-info mt-3" onClick={handleViewProject}>
+          View Project
+        </button>
+      }
       <div className="d-flex align-items-center border-bottom pb-3 mt-2 border-dark">
         <div className="d-flex align-items-center me-3">
           <FiEye className="me-2" /> {data?.view + 1}

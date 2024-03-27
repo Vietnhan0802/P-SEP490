@@ -9,7 +9,7 @@ import "../Profile/check-box.scss";
 import Select from 'react-select'
 import { FiEdit } from "react-icons/fi";
 import { userInstance } from "../../axios/axiosConfig";
-function UpdateInformationPu({ value, id, reset, show, onClose }) {
+function UpdateInformationPu({ value, id, reset, show, onClose ,handleChangeImg}) {
   const [user, setUser] = useState({});
 
 
@@ -40,7 +40,6 @@ function UpdateInformationPu({ value, id, reset, show, onClose }) {
       [name]: type === "checkbox" ? checked : value,
     }));
   };
-  console.log(user)
   const modelSubmit = (event) => {
     userInstance.put(`UpdateUser/${id}`, {
       userName: user.userName,
@@ -52,7 +51,9 @@ function UpdateInformationPu({ value, id, reset, show, onClose }) {
       address: user.address,
       description: user.description
     })
-      .then((res) => { reset(!show); })
+      .then((res) => { 
+        handleChangeImg('ok');
+        reset(!show); })
       .catch((error) => { console.error(error) })
     modalClose();
   };

@@ -33,6 +33,7 @@ function App() {
   const appRef = useRef(null);
   const navigate = useNavigate(); // Hook to handle navigation
   const [changeImage, setChangeImage] = useState(false);
+  const [follow, setFollow] = useState(true);
   const [following, setFollowing] = useState([]);
   const sessionData = JSON.parse(sessionStorage.getItem("userSession")) || {};
   const { currentUserId } = sessionData;
@@ -71,7 +72,11 @@ function App() {
     location.pathname === "/forgetpassword" ||
     location.pathname === "/resetpassword"
   );
-
+  const resetFollowing = (value) => {
+    if (value === "Success") {
+      setFollow(!follow);
+    }
+  };
   const handleChangeImg = (value) => {
     if (value === "ok") {
       setChangeImage(!changeImage);
@@ -81,12 +86,13 @@ function App() {
     followInstance
       .get(`GetAllFollowings/${currentUserId}`)
       .then((res) => {
+        console.log(res?.data?.result);
         setFollowing(res?.data?.result);
       })
       .catch((error) => {
         console.error(error);
       });
-  }, [currentUserId]);
+  }, [currentUserId,follow]);
   return (
     <div
       className="App"
@@ -119,7 +125,11 @@ function App() {
         <Route
           path="/profile"
           element={
-            <Profile handleChangeImg={handleChangeImg} value={following} />
+            <Profile
+              handleChangeImg={handleChangeImg}
+              value={following}
+              resetFollowing={resetFollowing}
+            />
           }
         />
         <Route path="/notify" element={<Notify />} />
