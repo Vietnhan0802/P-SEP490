@@ -306,6 +306,10 @@ namespace Interaction.Controllers
                     var infoPost = await GetInfoPost(postReport.idPosted);
                     postReport.titlePost = infoPost.title;
                     postReport.contentPost = infoPost.content;
+                    var infoUserPost = await GetInfoUser(infoPost.idAccount);
+                    postReport.emailPosted = infoUserPost.email;
+                    postReport.namePosted = infoUserPost.fullName;
+                    postReport.avatarPosted = infoUserPost.avatar;
                 }
                 return new Response(HttpStatusCode.OK, "Get all post report is success!", result);
             }
@@ -387,6 +391,10 @@ namespace Interaction.Controllers
                     var infoBlog = await GetInfoBlog(blogReport.idBloged);
                     blogReport.titleBlog = infoBlog.title;
                     blogReport.contentBlog = infoBlog.content;
+                    var infoUserBlog = await GetInfoUser(infoBlog.idAccount);
+                    blogReport.emailBloged = infoUserBlog.email;
+                    blogReport.nameBloged = infoUserBlog.fullName;
+                    blogReport.avatarBloged = infoUserBlog.avatar;
                 }
                 return new Response(HttpStatusCode.OK, "Get all blog report is success!", result);
             }

@@ -100,6 +100,7 @@ namespace BlogService.Controllers
             {
                 var result = new
                 {
+                    idAccount = blog.idAccount,
                     title = blog.title,
                     content = blog.content
                 };
