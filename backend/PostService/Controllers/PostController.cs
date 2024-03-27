@@ -100,6 +100,7 @@ namespace PostService.Controllers
             {
                 var result = new
                 {
+                    idAccount = post.idAccount,
                     title = post.title,
                     content = post.content
                 };
