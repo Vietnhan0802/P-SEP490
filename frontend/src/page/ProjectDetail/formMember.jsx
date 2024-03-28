@@ -6,7 +6,7 @@ import { CiSearch } from "react-icons/ci";
 import Select from 'react-select'
 import { projectInstance, userInstance } from "../../axios/axiosConfig";
 import defaultAvatar from '../../images/common/default.png'
-import Notification, { notifySuccess, notifyError } from "../../../components/notification";
+import Notification, { notifySuccess, notifyError } from "../../components/notification";
 function createData(id, avatar, fullName, email, role) {
   return { id, avatar, fullName, email, role }
 }

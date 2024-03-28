@@ -3,7 +3,7 @@ import { useState } from "react";
 import "./popup.scss";
 import { IoFlagOutline } from "react-icons/io5";
 import { reportInstance } from "../../axios/axiosConfig";
-import Notification, { notifySuccess, notifyError } from "../../../components/notification";
+import Notification, { notifySuccess, notifyError } from "../../../src/components/notification";
 function Report({ id, idItem, type }) {
   const [show, setShow] = useState(false);
   const modalClose = () => setShow(false);

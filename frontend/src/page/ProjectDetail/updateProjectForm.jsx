@@ -7,7 +7,7 @@ import { IoCameraReverse } from "react-icons/io5";
 import CreatableSelect from 'react-select/creatable';
 import makeAnimated from 'react-select/animated';
 import { projectInstance } from "../../axios/axiosConfig";
-import Notification, { notifySuccess, notifyError } from "../../../components/notification";
+import Notification, { notifySuccess, notifyError } from "../../components/notification";
 function UpdateProjectForm({ input, id, resetPage }) {
 
   const animatedComponents = makeAnimated();

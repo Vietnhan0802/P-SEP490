@@ -1,7 +1,7 @@
 import { Modal, Button } from "react-bootstrap";
 import { useEffect, useState } from "react";
 import { projectInstance } from "../../axios/axiosConfig";
-import { notifyError, notifySuccess } from "../../components/notification";
+import { notifyError, notifySuccess } from "../../../src/components/notification";
 
 function CancelItem({ id, reset, role }) {
     useEffect(() => {

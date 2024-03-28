@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Button, Modal } from 'react-bootstrap'
 import { MdOutlineLockPerson } from "react-icons/md";
 import { userInstance } from '../../axios/axiosConfig';
-import Notification, { notifySuccess, notifyError } from "../../../components/notification";
+import Notification, { notifySuccess, notifyError } from "../../../src/components/notification";
 
 function ChangePass({ email }) {
     const [show, setShow] = useState(false);
