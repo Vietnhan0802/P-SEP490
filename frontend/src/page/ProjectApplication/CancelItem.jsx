@@ -1,13 +1,18 @@
 import { Modal, Button } from "react-bootstrap";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { projectInstance } from "../../axios/axiosConfig";
 
 function CancelItem({ id, reset, role }) {
+    useEffect(() => {
+        setRoleMember(role);
+    }, [id, role])
+    const [roleMember, setRoleMember] = useState('');
     const [show, setShow] = useState(false);
     const modalClose = () => setShow(false);
     const modalShow = () => setShow(true);
+    console.log(roleMember)
     const handleConfirm = () => {
-        if (role === 'Business') {
+        if (roleMember === 'Business') {
             projectInstance.delete(`RemoveInvite/${id}`)
                 .then((res) => {
                     setShow(false);
@@ -35,7 +40,7 @@ function CancelItem({ id, reset, role }) {
                 </Modal.Header>
 
                 <Modal.Body className="popup-body" id="">
-                    Are you sure you want to cancel this {role === 'Business' ? 'invitation' : 'application'}?
+                    Are you sure you want to cancel this {roleMember === 'Business' ? 'invitation' : 'application'}?
                 </Modal.Body>
 
                 <Modal.Footer>

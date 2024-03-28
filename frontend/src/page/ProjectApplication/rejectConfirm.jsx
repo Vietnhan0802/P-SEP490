@@ -3,18 +3,28 @@ import { useState } from "react";
 import { Row, Col } from "react-bootstrap";
 import { projectInstance } from "../../axios/axiosConfig";
 
-function RejectConfirm({ id, reset }) {
+function RejectConfirm({ id, reset, role }) {
   const idMember = id;
   const [show, setShow] = useState(false);
   const modalClose = () => setShow(false);
   const modalShow = () => setShow(true);
   const handleConfirm = () => {
-    projectInstance.put(`DenyProjectApplication/${idMember}`)
-      .then((res) => {
-        setShow(false);
-        reset('Success');
-      })
-      .catch((error) => { })
+    if (role === 'Member') {
+      projectInstance.put(`DenyProjectInvitation/${idMember}`)
+        .then((res) => {
+          setShow(false);
+          reset('Success');
+        })
+        .catch((error) => { })
+    } else {
+      projectInstance.put(`DenyProjectApplication/${idMember}`)
+        .then((res) => {
+          setShow(false);
+          reset('Success');
+        })
+        .catch((error) => { })
+    }
+
   }
   return (
     <div className="p-1">

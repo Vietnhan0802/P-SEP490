@@ -3,18 +3,27 @@ import { useState } from "react";
 import { Row, Col } from "react-bootstrap";
 import { projectInstance } from "../../axios/axiosConfig";
 
-function AcceptConfirm({ id, reset }) {
+function AcceptConfirm({ id, reset, role }) {
   const idMember = id;
   const [show, setShow] = useState(false);
   const modalClose = () => setShow(false);
   const modalShow = () => setShow(true);
   const handleConfirm = () => {
-    projectInstance.put(`AcceptProjectApplication/${idMember}`)
-      .then((res) => {
-        setShow(false);
-        reset('Success');
-      })
-      .catch((error) => { console.error(error); })
+    if (role === 'Business') {
+      projectInstance.put(`AcceptProjectApplication/${idMember}`)
+        .then((res) => {
+          setShow(false);
+          reset('Success');
+        })
+        .catch((error) => { console.error(error); })
+    } else {
+      projectInstance.put(`AcceptProjectInvitation/${idMember}`)
+        .then((res) => {
+          setShow(false);
+          reset('Success');
+        })
+        .catch((error) => { console.error(error); })
+    }
   }
 
   return (

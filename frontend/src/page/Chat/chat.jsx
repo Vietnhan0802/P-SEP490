@@ -119,11 +119,23 @@ function Chat() {
         <div id="chat-box" className="bg-white ms-3 position-relative">
           <div className="chat-box-header">
             <div className="d-flex align-items-center p-3">
-              <img src={conversations[0]?.avatar === "https://localhost:7006/Images/" ? defaultImage : conversations[0]?.avatar} alt="" className="avatar" />
-              <div className="ms-2">
-                <p className="mb-0 name">{conversations[0]?.fullName}</p>
-                <p className="mb-0 text">Online</p>
-              </div>
+              {conversations.length > 0 && (
+                <>
+                  <img
+                    src={
+                      (conversations[0]?.avatar === "https://localhost:7006/Images/"
+                        ? defaultImage
+                        : conversations[0]?.avatar) || ""
+                    }
+                    alt=""
+                    className="avatar"
+                  />
+                  <div className="ms-2">
+                    <p className="mb-0 name">{conversations[0]?.fullName || ""}</p>
+                    <p className="mb-0 text">Online</p>
+                  </div>
+                </>
+              )}
             </div>
           </div>
           <div className="chat-box-body">
