@@ -117,6 +117,7 @@ namespace User.Controllers
             {
                 var result = new
                 {
+                    Id = user.Id,
                     email = user.Email,
                     fullName = user.fullName!,
                     avatar = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, user.avatar),

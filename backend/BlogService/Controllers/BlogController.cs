@@ -231,7 +231,7 @@ namespace BlogService.Controllers
         [HttpGet("GetAllBlogs/{idUser}")]
         public async Task<Response> GetAllBlogs(string idUser)
         {
-            var blogs = await _context.Blogs.Where(x => x.isDeleted == false ).OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
+            var blogs = await _context.Blogs.Where(x => x.isDeleted == false).OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
             if (blogs.Count > 0)
             {
                 var result = _mapper.Map<List<ViewBlog>>(blogs);

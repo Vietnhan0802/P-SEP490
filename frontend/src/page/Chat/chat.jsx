@@ -51,7 +51,7 @@ function Chat() {
         console.error(error);
       })
   };
-  if (userId !== null) {
+  if (userId !== undefined) {
     chatInstance.post(`CreateConversation/${currentUserId}/${userId}`)
       .then((res) => {
         console.log(res?.data?.result);
