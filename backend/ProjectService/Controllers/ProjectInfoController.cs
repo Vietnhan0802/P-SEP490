@@ -521,55 +521,55 @@ namespace ProjectService.Controllers
                 return new Response(HttpStatusCode.BadRequest, "Invalid data", error);
             }*/
             var existApplication = await _context.ProjectMembers.FirstOrDefaultAsync(x => x.idProject == idProject && x.idAccount == idUser);
-            if (existApplication != null)
+            if (existApplication == null)
             {
-                return new Response(HttpStatusCode.BadRequest, "Project application is exist!");
+                projectMemberCreateUpdate.cvUrl = await _saveImageService.SaveImage(projectMemberCreateUpdate.cvUrlFile);
+                var projectApplication = _mapper.Map<ProjectMember>(projectMemberCreateUpdate);
+                projectApplication.idAccount = idUser;
+                projectApplication.idProject = idProject;
+                projectApplication.type = BusinessObjects.Enums.Project.Type.Applied;
+                projectApplication.isAcept = null;
+                projectApplication.createdDate = DateTime.Now;
+                await _context.ProjectMembers.AddAsync(projectApplication);
+                var isSuucess = await _context.SaveChangesAsync();
+                if (isSuucess > 0)
+                {
+                    var project = await _context.Projects.FirstOrDefaultAsync(x => x.idProject == idProject);
+                    await CreateNotificationProjectApply(idUser, project.idAccount, idProject);
+                    return new Response(HttpStatusCode.NoContent, "Create project application is success!");
+                }
+                return new Response(HttpStatusCode.BadRequest, "Create project application is fail!");
             }
-            projectMemberCreateUpdate.cvUrl = await _saveImageService.SaveImage(projectMemberCreateUpdate.cvUrlFile);
-            var projectApplication = _mapper.Map<ProjectMember>(projectMemberCreateUpdate);
-            projectApplication.idAccount = idUser;
-            projectApplication.idProject = idProject;
-            projectApplication.type = BusinessObjects.Enums.Project.Type.Applied;
-            projectApplication.isAcept = null;
-            projectApplication.createdDate = DateTime.Now;
-            await _context.ProjectMembers.AddAsync(projectApplication);
-            var isSuucess = await _context.SaveChangesAsync();
-            if (isSuucess > 0)
-            {
-                var project = await _context.Projects.FirstOrDefaultAsync(x => x.idProject == idProject);
-                await CreateNotificationProjectApply(idUser, project.idAccount, idProject);
-                return new Response(HttpStatusCode.NoContent, "Create project application is success!");
-            }
-            return new Response(HttpStatusCode.BadRequest, "Create project application is fail!");
+            return new Response(HttpStatusCode.BadRequest, "Project application is exist!");
         }
 
         [HttpPost("CreateProjectInvite/{idUser}")]
         public async Task<Response> CreateProjectInvite(string idUser, Guid idProject, Guid idPosition)
         {
             var existInvitation = await _context.ProjectMembers.FirstOrDefaultAsync(x => x.idProject == idProject && x.idAccount == idUser);
-            if (existInvitation != null)
+            if (existInvitation == null)
             {
-                return new Response(HttpStatusCode.BadRequest, "Project invitation is exist!");
-            }
-            ProjectMember projectApplication = new ProjectMember
-            {
-                idPosition = idPosition,
-                idAccount = idUser,
-                idProject = idProject,
-                type = BusinessObjects.Enums.Project.Type.Invited,
-                isAcept = null,
-                createdDate = DateTime.Now
-            };
+                ProjectMember projectApplication = new ProjectMember
+                {
+                    idPosition = idPosition,
+                    idAccount = idUser,
+                    idProject = idProject,
+                    type = BusinessObjects.Enums.Project.Type.Invited,
+                    isAcept = null,
+                    createdDate = DateTime.Now
+                };
 
-            await _context.ProjectMembers.AddAsync(projectApplication);
-            var isSuucess = await _context.SaveChangesAsync();
-            if (isSuucess > 0)
-            {
-                var project = await _context.Projects.FirstOrDefaultAsync(x => x.idProject == idProject);
-                await CreateNotificationProjectInvite(project.idAccount, idUser, idProject);
-                return new Response(HttpStatusCode.NoContent, "Create project invite is success!");
+                await _context.ProjectMembers.AddAsync(projectApplication);
+                var isSuucess = await _context.SaveChangesAsync();
+                if (isSuucess > 0)
+                {
+                    var project = await _context.Projects.FirstOrDefaultAsync(x => x.idProject == idProject);
+                    await CreateNotificationProjectInvite(project.idAccount, idUser, idProject);
+                    return new Response(HttpStatusCode.NoContent, "Create project invite is success!");
+                }
+                return new Response(HttpStatusCode.BadRequest, "Create project invite is fail!");
             }
-            return new Response(HttpStatusCode.BadRequest, "Create project invite is fail!");
+            return new Response(HttpStatusCode.BadRequest, "Project invitation is exist!");
         }
 
         [HttpPut("AcceptProjectApplication/{idProjectMember}")]
