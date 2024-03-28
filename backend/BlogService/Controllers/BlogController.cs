@@ -184,6 +184,7 @@ namespace BlogService.Controllers
                     var infoUser = await GetInfoUser(blog.idAccount);
                     blog.fullName = infoUser.fullName;
                     blog.avatar = infoUser.avatar;
+                    blog.isVerified = infoUser.isVerified;
                     var blogImages = await _context.BlogsImage.Where(x => x.idBlog == blog.idBlog).ToListAsync();
                     var viewImages = _mapper.Map<List<ViewBlogImage>>(blogImages);
                     foreach (var image in viewImages)
@@ -215,6 +216,7 @@ namespace BlogService.Controllers
                     var infoUser = await GetInfoUser(blog.idAccount);
                     blog.fullName = infoUser.fullName;
                     blog.avatar = infoUser.avatar;
+                    blog.isVerified = infoUser.isVerified;
                     var blogImages = await _context.BlogsImage.Where(x => x.idBlog == blog.idBlog).ToListAsync();
                     var viewImages = _mapper.Map<List<ViewBlogImage>>(blogImages);
                     foreach (var image in viewImages)
@@ -246,6 +248,7 @@ namespace BlogService.Controllers
                     var infoUser = await GetInfoUser(blog.idAccount);
                     blog.fullName = infoUser.fullName;
                     blog.avatar = infoUser.avatar;
+                    blog.isVerified = infoUser.isVerified;
                     var blogImages = await _context.BlogsImage.Where(x => x.idBlog == blog.idBlog).ToListAsync();
                     var viewImages = _mapper.Map<List<ViewBlogImage>>(blogImages);
                     foreach (var image in viewImages)
@@ -277,6 +280,7 @@ namespace BlogService.Controllers
                     var infoUser = await GetInfoUser(blog.idAccount);
                     blog.fullName = infoUser.fullName;
                     blog.avatar = infoUser.avatar;
+                    blog.isVerified = infoUser.isVerified;
                     var blogImages = await _context.BlogsImage.Where(x => x.idBlog == blog.idBlog).ToListAsync();
                     var viewImages = _mapper.Map<List<ViewBlogImage>>(blogImages);
                     foreach (var image in viewImages)
@@ -308,6 +312,7 @@ namespace BlogService.Controllers
                     var infoUser = await GetInfoUser(blog.idAccount);
                     blog.fullName = infoUser.fullName;
                     blog.avatar = infoUser.avatar;
+                    blog.isVerified = infoUser.isVerified;
                     var blogImages = await _context.BlogsImage.Where(x => x.idBlog == blog.idBlog).ToListAsync();
                     var viewImages = _mapper.Map<List<ViewBlogImage>>(blogImages);
                     foreach (var image in viewImages)
@@ -337,6 +342,7 @@ namespace BlogService.Controllers
                 var infoUser = await GetInfoUser(result.idAccount);
                 result.fullName = infoUser.fullName;
                 result.avatar = infoUser.avatar;
+                result.isVerified = infoUser.isVerified;
                 var blogImages = await _context.BlogsImage.Where(x => x.idBlog == blog.idBlog).ToListAsync();
                 var viewImages = _mapper.Map<List<ViewBlogImage>>(blogImages);
                 foreach (var image in viewImages)
@@ -364,6 +370,8 @@ namespace BlogService.Controllers
             }*/
             var blog = _mapper.Map<Blog>(createUpdateBlog);
             blog.idAccount = idUser;
+            blog.view = 0;
+            blog.viewInDate = 0;
             blog.isDeleted = false;
             blog.isBlock = false;
             blog.createdDate = DateTime.Now;
@@ -522,6 +530,7 @@ namespace BlogService.Controllers
                     var infoUserComment = await GetInfoUser(comment.idAccount!);
                     comment.fullName = infoUserComment.fullName;
                     comment.avatar = infoUserComment.avatar;
+                    comment.isVerified = infoUserComment.isVerified;
                     var replies = await _context.BlogsReply.Where(x => x.idBlogComment == comment.idBlogComment && x.isDeleted == false).OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
                     var resultReplies = _mapper.Map<List<ViewBlogReply>>(replies);
                     foreach (var reply in resultReplies)
@@ -535,6 +544,7 @@ namespace BlogService.Controllers
                         var infoUserReply = await GetInfoUser(reply.idAccount!);
                         reply.fullName = infoUserReply.fullName;
                         reply.avatar = infoUserReply.avatar;
+                        reply.isVerified = infoUserReply.isVerified;
                     }
                     comment.ViewBlogReplies = resultReplies;
                 }

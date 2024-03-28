@@ -339,6 +339,8 @@ namespace PostService.Controllers
             {
                 post.idProject = idProject;
             }
+            post.view = 0;
+            post.viewInDate = 0;
             post.isDeleted = false;
             post.createdDate = DateTime.Now;
             await _context.Posts.AddAsync(post);

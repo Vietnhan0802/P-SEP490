@@ -6,6 +6,7 @@
         public string idAccount { get; set; }
         public string fullName { get; set; }
         public string avatar { get; set; }
+        public bool isVerified { get; set; }
         public Guid idBlog { get; set; }
         public string content { get; set; }
         public int like { get; set; }
