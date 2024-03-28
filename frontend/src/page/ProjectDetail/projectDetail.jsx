@@ -77,6 +77,7 @@ function ProjectDetail() {
   useEffect(() => {
     projectInstance.get(`/GetProjectById/${idProject}`)
       .then((res) => {
+        console.log(res.data.result);
         setData(res?.data?.result);
       })
       .catch((error) => {
@@ -86,7 +87,6 @@ function ProjectDetail() {
   useEffect(() => {
     projectInstance.get(`/GetAllMemberInProject/${idProject}`)
       .then((res) => {
-        console.log(res?.data?.result);
         setProjectMembers(res?.data?.result);
       })
       .catch((error) => {
@@ -94,7 +94,7 @@ function ProjectDetail() {
       });
   }, [reset]);
   const resetPage = (value) => {
-    console.log(value ==='Success')
+    console.log(value === 'Success')
     if (value === 'Success') setResetProject(!resetProject);
   }
   return (
@@ -138,24 +138,21 @@ function ProjectDetail() {
                     <UpdateProjectForm input={data} id={data?.idProject} resetPage={resetPage} />
                     <DeletePopup className='ms-3' id={data?.idProject} />
                   </div>}
-
-
               </div>
-
-              <div className="status-block size-18 d-flex">
+              <div className="status-block size-18 d-flex mt-3">
                 <div>
-                  <p>
+                  <p className="fw-bold">
                     Project Status:
                   </p>
-                  <p>
+                  <p className="mt-2 fw-bold" >
                     Access Visibility:
                   </p>
                 </div>
-                <div>
+                <div className="ms-2">
                   <p>
                     {projectStatus(data?.process)}
                   </p>
-                  <p>
+                  <p className="mt-2">
                     {projectVisibility(data?.visibility)}
                   </p>
                 </div>
@@ -163,9 +160,19 @@ function ProjectDetail() {
               <div className="status-block size-18">
 
               </div>
-              <div >
-                <p className="description fw-bold">Position: </p>
-                {data?.positionViews.map((position) => (<p className="ps-3">{position.namePosition}</p>))}
+              <div className="w-100 mt-2">
+                <div className="fw-bold">Position:</div>
+                <div className="position-list">
+                  {data?.positionViews.length > 0 && (
+                    <ol className="position-items">
+                      {data?.positionViews.map((position) => (
+                        <li key={position.id} className="position-item">
+                          <p className="d-flex justify-content-center">{position.namePosition}</p>
+                        </li>
+                      ))}
+                    </ol>
+                  )}
+                </div>
               </div>
               <div className="process-bar">
                 <MultiStepProgressBar page={data?.process} />

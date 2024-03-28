@@ -15,10 +15,11 @@ import { IoSearchOutline } from "react-icons/io5";
 import "../DashboardTable/table.scss";
 import { GoDotFill } from "react-icons/go";
 import { blogInstance } from "../../../axios/axiosConfig";
-function createData(id, avatar, fullName, title, content, date, report, isBlock) {
+import { useNavigate } from "react-router-dom";
+function createData(id, avatar, fullName, title, content, date, report, isBlock, idAccount) {
   const time = formatDate(date);
   return {
-    id, avatar, fullName, title, content, time, report, isBlock
+    id, avatar, fullName, title, content, time, report, isBlock, idAccount
   };
 }
 
@@ -85,16 +86,10 @@ const headCells = [
     label: "Blog Title",
   },
   {
-    id: "report",
+    id: "action",
     numeric: true,
     disablePadding: false,
-    label: "Report",
-  },
-  {
-    id: "Status",
-    numeric: true,
-    disablePadding: false,
-    label: "Status",
+    label: "Action",
   },
 ];
 
@@ -147,9 +142,9 @@ EnhancedTableHead.propTypes = {
   rowCount: PropTypes.number.isRequired,
 };
 
-export default function BlogTable({ value }) {
+export default function BlogTable({ value, resetBlog }) {
 
-
+  const navigate = useNavigate();
   const sessionData = JSON.parse(sessionStorage.getItem("userSession")) || {};
   const { currentUserId } = sessionData;
   const [order, setOrder] = React.useState("asc");
@@ -198,26 +193,39 @@ export default function BlogTable({ value }) {
   const isSelected = (id) => selected.indexOf(id) !== -1;
 
   // Avoid a layout jump when reaching the last page with empty rows.
-  const [blogRows, setUserRows] = React.useState([]);
+  const [blogRows, setBlogRows] = React.useState([]);
   React.useEffect(() => {
-
-        const fetchedBlogRows = value?.map(element => (
-          createData(
-            element.idBlog,
-            element.avatar,
-            element.fullName,
-            element.title,
-            element.content,
-            element.createdDate,
-            element.report,
-            element.isBlock,
-          )
-        )
-        );
-        setUserRows(fetchedBlogRows);
-
-
-  }, []);
+    const fetchedBlogRows = value?.map(element => (
+      createData(
+        element.idBlog,
+        element.avatar,
+        element.fullName,
+        element.title,
+        element.content,
+        element.createdDate,
+        element.report,
+        element.isBlock,
+        element.idAccount
+      )
+    )
+    );
+    setBlogRows(fetchedBlogRows);
+  }, [value]);
+  const handleNavigateUser = (idAccount) => {
+    navigate('/profile', { state: { userId: idAccount } });
+  }
+  const handleViewBlog = (idBlog) => {
+    navigate('/blogdetail', { state: { idBlog: idBlog } });
+  }
+  const handleBlockBlog = (idBlog) => {
+    blogInstance.put(`BlockBlog/${idBlog}`)
+      .then((res) => {
+        resetBlog();
+      })
+      .catch((error) => {
+        console.error(error);
+      })
+  }
   const visibleRows = React.useMemo(
     () =>
       stableSort(
@@ -269,6 +277,7 @@ export default function BlogTable({ value }) {
                       id={labelId}
                       scope="row"
                       padding="none"
+                      onClick={() => handleNavigateUser(row.idAccount)}
                     >
                       <div className="ms-2 my-2 d-flex align-items-center">
                         <img
@@ -288,22 +297,27 @@ export default function BlogTable({ value }) {
                         </div>
                       </div>
                     </TableCell>
-                    <TableCell align="left" className="blur">{row.time}</TableCell>
-                    <TableCell align="left">
+                    <TableCell align="left" >{row.time}</TableCell>
+                    <TableCell align="left" onClick={() => handleViewBlog(row.id)}>
                       <p style={{ fontSize: "16px", fontWeight: "500" }}>{row.title}</p>
-                      <p className="blur ellipsis" style={{ maxWidth: '300px' }}>{row.content}</p>
+                      <p className="ellipsis" style={{ maxWidth: '300px' }}>{row.content}</p>
                     </TableCell>
-                    <TableCell align="right">{row.report}</TableCell>
-                    <TableCell align="right">
-                      <div
-                        className="d-flex align-items-center justify-content-end"
-                      >
-                        <div className={`block-box ${row.isBlock ? "active-block" : ""
-                          }`}>
-                          <GoDotFill className="me-1" />
-                          {row.isblock ? 'UnBlock' : 'Block'}
+                    <TableCell align="right" onClick={() => handleBlockBlog(row.id)}>
+                      <div className="d-flex align-items-center justify-content-end">
+                        <div style={{ width: "80px" }}>
+                          <div
+                            className={`d-flex align-items-center block-box ${row.isBlock ? "active-block" : "blur"
+                              }`} style={{ width: "80px" }}
+                          >
+                            <GoDotFill className={`me-1 dot ${row.isBlock ? "active-dot" : "blur-dot"
+                              }`} />
+                            <p>
+                              {row.isBlock ? 'Unblock' : 'Block'}
+                            </p>
+                          </div>
                         </div>
                       </div>
+
                     </TableCell>
 
                   </TableRow>

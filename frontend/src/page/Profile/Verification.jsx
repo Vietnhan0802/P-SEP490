@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Button, Modal } from 'react-bootstrap';
 import { MdVerified } from 'react-icons/md';
 import { reportInstance } from '../../axios/axiosConfig';
+import Notification, { notifySuccess, notifyError } from "../../components/notification";
 
 function Verification({ id }) {
     const [show, setShow] = useState(false);
@@ -11,9 +12,17 @@ function Verification({ id }) {
         setShow(false);
     }
     const modalSubmit = () => {
-        reportInstance.post(`CreateVerification/${id}`)
+        reportInstance.post(`CreateVerification/${id}`, {
+            headers: {
+                accept: 'application/json'
+            }
+        })
             .then((res) => {
-                setShow(false);
+                if (res?.data?.message === 'Create verification is success!') {
+                    notifySuccess("Create verification is success!");
+                    setShow(false);
+
+                }
             })
             .catch((error) => {
                 console.error(error);
@@ -27,7 +36,6 @@ function Verification({ id }) {
                     <Modal.Title>Verification</Modal.Title>
                 </Modal.Header>
                 <Modal.Body className="popup-body report-popup " id="report-body">
-
                     <p> Thank you for submitting your identity verification application. Your application has been received successfully and is now being processed.
                         <br />
                         <br />

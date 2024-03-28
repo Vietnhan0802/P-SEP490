@@ -14,10 +14,11 @@ import { visuallyHidden } from "@mui/utils";
 import { IoSearchOutline } from "react-icons/io5";
 import "../DashboardTable/table.scss";
 import { GoDotFill } from "react-icons/go";
-function createData(id, avatar, name, fullName, description, date, process, visibility) {
+import { useNavigate } from "react-router-dom";
+function createData(id, avatar, name, fullName, description, date, process, visibility, idAccount) {
   const time = formatDate(date);
   return {
-    id, avatar, name, fullName, description, time, process, visibility
+    id, avatar, name, fullName, description, time, process, visibility, idAccount
   }
 }
 
@@ -80,22 +81,22 @@ const headCells = [
     label: "Date",
   },
   {
-    id: "title",
+    id: "project",
     numeric: false,
     disablePadding: false,
-    label: "Post Title",
+    label: "Project",
   },
   {
-    id: "report",
+    id: "process",
     numeric: false,
     disablePadding: false,
-    label: "Report",
+    label: "Process",
   },
   {
-    id: "Status",
+    id: "visibility",
     numeric: false,
     disablePadding: false,
-    label: "Status",
+    label: "Visibility",
   },
 ];
 
@@ -147,6 +148,7 @@ EnhancedTableHead.propTypes = {
 };
 
 export default function ProjectTable({ value }) {
+  const navigate = useNavigate();
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("calories");
   const [selected, setSelected] = React.useState([]);
@@ -164,7 +166,8 @@ export default function ProjectTable({ value }) {
         element.description,
         element.createdDate,
         element.process,
-        element.visibility
+        element.visibility,
+        element.idAccount
       )
     )
     );
@@ -187,7 +190,34 @@ export default function ProjectTable({ value }) {
     }
     setSelected([]);
   };
+  const projectStatus = (process) => {
+    switch (process) {
+      case 0:
+        return <div>Preparing</div>;
+      case 1:
+        return <div>Process</div>;
+      case 2:
+        return <div>Pending</div>;
+      case 3:
+        return <div>Done</div>;
 
+      default:
+      // code block
+    }
+  };
+  const projectVisibility = (visibility) => {
+    switch (visibility) {
+      case 0:
+        return <div>Private</div>;
+      case 1:
+        return <div>Public</div>;
+      case 2:
+        return <div>Hidden</div>;
+
+      default:
+      // code block
+    }
+  };
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -196,7 +226,14 @@ export default function ProjectTable({ value }) {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
-
+  const handleView = (id, type) => {
+    if (type === 'project') {
+      navigate('/projectdetail', { state: { idProject: id } });
+    }
+    if (type === 'account') {
+      navigate('/profile', { state: { userId: id } });
+    }
+  }
   const isSelected = (id) => selected.indexOf(id) !== -1;
 
   // Avoid a layout jump when reaching the last page with empty rows.
@@ -264,6 +301,7 @@ export default function ProjectTable({ value }) {
                       id={labelId}
                       scope="row"
                       padding="none"
+                      onClick={() => handleView(row.idAccount, 'account')}
                     >
                       <div className="ms-2 my-2 d-flex align-items-center">
                         <img
@@ -281,17 +319,17 @@ export default function ProjectTable({ value }) {
                         </div>
                       </div>
                     </TableCell>
-                    <TableCell align="left" className="blur">
+                    <TableCell align="left">
                       {row.time}
                     </TableCell>
-                    <TableCell align="left">
+                    <TableCell align="left" onClick={() => handleView(row.id, 'project')}>
                       <p style={{ fontSize: "16px", fontWeight: "500" }}>
                         {row.name}
                       </p>
-                      <p className="blur ellipsis" style={{ maxWidth: '300px' }}>{row.description}</p>
+                      <p className="ellipsis" style={{ maxWidth: '300px' }}>{row.description}</p>
                     </TableCell>
-                    <TableCell align="left">{row.process}</TableCell>
-                    <TableCell align="left">{row.visibility}</TableCell>
+                    <TableCell align="left">{projectStatus(row.process)}</TableCell>
+                    <TableCell align="left">{projectVisibility(row.visibility)}</TableCell>
                   </TableRow>
                 );
               })}

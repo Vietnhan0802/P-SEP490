@@ -110,25 +110,32 @@ function BlogPu({ resetBlog }) {
       </Button>
       <Modal show={show} onHide={modalClose} id="blogPu">
         <Modal.Header closeButton>
-          <Modal.Title>Create New Blog</Modal.Title>
+          <Modal.Title>Create Blog</Modal.Title>
         </Modal.Header>
         <Modal.Body className="popup-body">
-          <input
-            type="text"
-            name="title"
-            value={inputs.title}
-            onChange={handleInputChange}
-            className="input-text form-control  mb-3"
-            placeholder="Enter the title"
-          />
-          <textarea
-            type="text"
-            value={inputs.content}
-            name="content"
-            onChange={handleInputChange}
-            className="input-text form-control cus-h w-100  mb-3"
-            placeholder="Enter your content..."
-          />
+          <div class="form-floating mb-3">
+            <input
+              type="text"
+              name="title"
+              id="floatingInput"
+              value={inputs.title}
+              onChange={handleInputChange}
+              className="input-text form-control  mb-3"
+              placeholder="Enter the title"
+            />
+            <label htmlFor="floatingInput">Enter the title</label>
+          </div>
+          <div class="form-floating mb-3">
+            <textarea
+              type="text"
+              value={inputs.content}
+              name="content"
+              onChange={handleInputChange}
+              className="input-text form-control cus-h w-100  mb-3"
+              placeholder="Enter your content..."
+            />
+            <label for="floatingInput">Enter your content</label>
+          </div>
           <input
             type="file"
             name="images"

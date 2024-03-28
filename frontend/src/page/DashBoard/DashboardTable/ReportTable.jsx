@@ -11,63 +11,57 @@ import TableRow from "@mui/material/TableRow";
 import TableSortLabel from "@mui/material/TableSortLabel";
 import Paper from "@mui/material/Paper";
 import { visuallyHidden } from "@mui/utils";
-import avatar from "../../../images/common/Avatar.png";
 import { IoSearchOutline } from "react-icons/io5";
 import "../DashboardTable/table.scss";
 import { GoDotFill } from "react-icons/go";
+import { useNavigate } from "react-router-dom";
+import { reportInstance } from "../../../axios/axiosConfig";
+const formatDate = (timestamp) => {
+  const months = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
+  const date = new Date(timestamp);
+  const day = date.getDate();
+  const month = months[date.getMonth()];
+  const year = date.getFullYear();
 
-function createPostData(id, name, email, date, title, description) {
+  return `${day} ${month} ${year}`;
+};
+function createPostData(id, avatar, name, email, date, title, content, description, idPosted) {
   return {
     id,
+    avatar,
     name,
     email,
     date,
     title,
+    content,
     description,
+    idPosted
   };
 }
-function createBlogData(id, name, email, date, title, description) {
+function createBlogData(id, avatar, name, email, date, title, content, description, idBloged) {
   return {
-    id,
-    name,
-    email,
-    date,
-    title,
-    description,
+    id, avatar, name, email, date, title, content, description, idBloged
   };
 }
-const createAccountData = (id, name, email, type, description, report) => {
+const createAccountData = (id, avatar, name, email, createdDate, description, idReported) => {
   return {
-    id,
-    name,
-    email,
-    type,
-    description,
+    id, avatar, name, email, createdDate, description, idReported
   };
 };
-const accountRows = [
-  createAccountData(
-    1,
-    "Olivia Rhye",
-    "example@gmail,com",
-    "Business",
-    "Description of the current content"
-  ),
-  createAccountData(
-    2,
-    "Adison Schleifer",
-    "example@gmail,com",
-    "User",
-    "Description of the current content"
-  ),
-  createAccountData(
-    3,
-    "Martin George",
-    "example@gmail,com",
-    "User",
-    "Description of the current content"
-  ),
-];
+
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
     return -1;
@@ -115,22 +109,29 @@ const headCells = [
     for: "reportPost",
   },
   {
+    id: "date",
+    numeric: false,
+    disablePadding: false,
+    label: "Date",
+    for: "reportBlog",
+  },
+  {
     id: "title",
     numeric: false,
     disablePadding: false,
-    label: "Post Title",
+    label: "Post",
     for: "reportPost",
   },
   {
     id: "title",
     numeric: false,
     disablePadding: false,
-    label: "Blog Title",
+    label: "Blog",
     for: "reportBlog",
   },
 
   {
-    id: "type",
+    id: "Date",
     numeric: false,
     disablePadding: false,
     label: "Type",
@@ -142,6 +143,27 @@ const headCells = [
     disablePadding: false,
     label: "Description",
     for: "reportAccount",
+  },
+  {
+    id: "description",
+    numeric: false,
+    disablePadding: false,
+    label: "Description",
+    for: "reportPost",
+  },
+  {
+    id: "description",
+    numeric: false,
+    disablePadding: false,
+    label: "Description",
+    for: "reportBlog",
+  },
+  {
+    id: "name",
+    numeric: false,
+    disablePadding: true,
+    label: "",
+    for: "all",
   },
 ];
 
@@ -171,7 +193,7 @@ function EnhancedTableHead(props) {
               align={headCell.numeric ? "right" : "left"}
               padding={headCell.disablePadding ? "none" : "normal"}
               sortDirection={orderBy === headCell.id ? order : false}
-              style={{ paddingLeft: "10px" }}
+              style={{ paddingLeft: "16px" }}
             >
               <TableSortLabel
                 active={orderBy === headCell.id}
@@ -201,7 +223,7 @@ EnhancedTableHead.propTypes = {
   rowCount: PropTypes.number.isRequired,
 };
 
-export default function ReportTable({ accountValue, postValue, blogValue }) {
+export default function ReportTable({ accountValue, postValue, blogValue ,resetReport }) {
 
   function renderPostTable() {
     return (
@@ -222,11 +244,12 @@ export default function ReportTable({ accountValue, postValue, blogValue }) {
                 id={labelId}
                 scope="row"
                 padding="none"
+                onClick={() => handleView()}
               >
                 <div className="ms-2 my-2 d-flex align-items-center">
                   <img
                     className="me-2"
-                    src={avatar}
+                    src={row.avatar}
                     alt=""
                     style={{
                       width: "40px",
@@ -244,22 +267,27 @@ export default function ReportTable({ accountValue, postValue, blogValue }) {
               <TableCell align="left" className="blur">
                 {row.date}
               </TableCell>
-              <TableCell align="left">
+              <TableCell align="left" onClick={() => handleView(row.idPosted, 'post')}>
                 <p style={{ fontSize: "16px", fontWeight: "500" }}>
                   {row.title}
                 </p>
-                <p className="blur">{row.description}</p>
+                <p className="blur">{row.content}</p>
+              </TableCell>
+              <TableCell align="left">
+                <p style={{ fontSize: "16px", fontWeight: "500" }}>
+                  {row.description}
+                </p>
               </TableCell>
               <TableCell align="right">
                 <div className="d-flex align-items-center justify-content-end">
                   <div className="d-flex justify-content-center">
-                    <div className="deny">
+                    <div className="deny" onClick={() => handleAcceptorDeny(row.id, 1, 'post')}>
                       <GoDotFill className="me-1" />
                       Deny
                     </div>
-                    <div className="accept">
+                    <div className="accept" onClick={() => handleAcceptorDeny(row.id, 2, 'post')}>
                       <GoDotFill className="me-1" />
-                      Block
+                      Accept
                     </div>
                   </div>
                 </div>
@@ -293,11 +321,12 @@ export default function ReportTable({ accountValue, postValue, blogValue }) {
                 id={labelId}
                 scope="row"
                 padding="none"
+                onClick={() => handleView(row.idReported, 'account')}
               >
                 <div className="ms-2 my-2 d-flex align-items-center">
                   <img
                     className="me-2"
-                    src={avatar}
+                    src={row.avatar}
                     alt=""
                     style={{
                       width: "40px",
@@ -313,10 +342,7 @@ export default function ReportTable({ accountValue, postValue, blogValue }) {
                 </div>
               </TableCell>
               <TableCell align="left" className="blur">
-                <p
-                  className={`${row.type === "Business" ? "business" : "user"
-                    }`}
-                >{row.type}</p>
+                <p>{row.createdDate}</p>
               </TableCell>
               <TableCell align="left">
                 <p className="blur">{row.description}</p>
@@ -324,11 +350,11 @@ export default function ReportTable({ accountValue, postValue, blogValue }) {
               <TableCell align="right">
                 <div className="d-flex align-items-center justify-content-end">
                   <div className="d-flex justify-content-center">
-                    <div className="deny">
+                    <div className="deny" onClick={() => handleAcceptorDeny(row.id, 1, 'account')}>
                       <GoDotFill className="me-1" />
                       Deny
                     </div>
-                    <div className="accept">
+                    <div className="accept" onClick={() => handleAcceptorDeny(row.id, 2, 'account')}>
                       <GoDotFill className="me-1" />
                       Block
                     </div>
@@ -346,70 +372,75 @@ export default function ReportTable({ accountValue, postValue, blogValue }) {
     return (
       <TableBody>
         {visibleBlogRows.map((row, index) => {
-           const labelId = `enhanced-table-checkbox-${index}`;
-           return (
-             <TableRow
-               hover
-               role="checkbox"
-               tabIndex={-1}
-               key={row.id}
-               sx={{ cursor: "pointer" }}
-               className="my-2"
-             >
-               <TableCell
-                 component="th"
-                 id={labelId}
-                 scope="row"
-                 padding="none"
-               >
-                 <div className="ms-2 my-2 d-flex align-items-center">
-                   <img
-                     className="me-2"
-                     src={avatar}
-                     alt=""
-                     style={{
-                       width: "40px",
-                       height: "40px",
-                       borderRadius: "50%",
-                     }}
-                   />
-                   <div>
-                     {row.name}
-                     <br></br>
-                     {row.email}
-                   </div>
-                 </div>
-               </TableCell>
-               <TableCell align="left" className="blur">
-                 {row.date}
-               </TableCell>
-               <TableCell align="left">
-                 <p style={{ fontSize: "16px", fontWeight: "500" }}>
-                   {row.title}
-                 </p>
-                 <p className="blur">{row.description}</p>
-               </TableCell>
-               <TableCell align="right">
-                 <div className="d-flex align-items-center justify-content-end">
-                   <div className="d-flex justify-content-center">
-                     <div className="deny">
-                       <GoDotFill className="me-1" />
-                       Deny
-                     </div>
-                     <div className="accept">
-                       <GoDotFill className="me-1" />
-                       Block
-                     </div>
-                   </div>
-                 </div>
-               </TableCell>
-             </TableRow>
-           );
+          const labelId = `enhanced-table-checkbox-${index}`;
+          return (
+            <TableRow
+              hover
+              role="checkbox"
+              tabIndex={-1}
+              key={row.id}
+              sx={{ cursor: "pointer" }}
+              className="my-2"
+            >
+              <TableCell
+                component="th"
+                id={labelId}
+                scope="row"
+                padding="none"
+              >
+                <div className="ms-2 my-2 d-flex align-items-center">
+                  <img
+                    className="me-2"
+                    src={row.avatar}
+                    alt=""
+                    style={{
+                      width: "40px",
+                      height: "40px",
+                      borderRadius: "50%",
+                    }}
+                  />
+                  <div>
+                    {row.name}
+                    <br></br>
+                    {row.email}
+                  </div>
+                </div>
+              </TableCell>
+              <TableCell align="left" className="blur">
+                {row.date}
+              </TableCell>
+              <TableCell align="left" onClick={() => handleView(row.idBloged, 'blog')}>
+                <p style={{ fontSize: "16px", fontWeight: "500" }}>
+                  {row.title}
+                </p>
+                <p className="blur">{row.content}</p>
+              </TableCell>
+              <TableCell align="left">
+                <p style={{ fontSize: "16px", fontWeight: "500" }}>
+                  {row.description}
+                </p>
+              </TableCell>
+              <TableCell align="right">
+                <div className="d-flex align-items-center justify-content-end">
+                  <div className="d-flex justify-content-center">
+                    <div className="deny" onClick={() => handleAcceptorDeny(row.id, 2, 'blog')}>
+                      <GoDotFill className="me-1" />
+                      Deny
+                    </div>
+                    <div className="accept" onClick={() => handleAcceptorDeny(row.id, 2, 'blog')}>
+                      <GoDotFill className="me-1" />
+                      Block
+                    </div>
+                  </div>
+                </div>
+              </TableCell>
+            </TableRow>
+          );
         })}
       </TableBody>
     );
   }
-
+  const navigate = useNavigate();
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("calories");
   const [selected, setSelected] = React.useState([]);
@@ -422,14 +453,12 @@ export default function ReportTable({ accountValue, postValue, blogValue }) {
     if (accountValue) {
       const fetchedAccountRows = accountValue?.map(element => (
         createAccountData(
-          element.idPost,
-          element.avatar,
-          element.fullName,
-          element.title,
-          element.content,
-          element.createdDate,
-          element.report,
-          element.isBlock,
+          element.idAccountReport,
+          element.avatarReported,
+          element.nameReported,
+          element.emailReported,
+          formatDate(element.createdDate),
+          element.content, element.idReported
         )
       )
       );
@@ -438,14 +467,15 @@ export default function ReportTable({ accountValue, postValue, blogValue }) {
     if (postValue) {
       const fetchedPostRows = postValue?.map(element => (
         createPostData(
-          element.idPost,
-          element.avatar,
-          element.fullName,
-          element.title,
+          element.idPostReport,
+          element.avatarReporter,
+          element.nameReporter,
+          element.emailReporter,
+          formatDate(element.createdDate),
+          element.titlePost,
+          element.contentPost,
           element.content,
-          element.createdDate,
-          element.report,
-          element.isBlock,
+          element.idPosted
         )
       )
       );
@@ -454,14 +484,15 @@ export default function ReportTable({ accountValue, postValue, blogValue }) {
     if (blogValue) {
       const fetchedBlogRows = blogValue?.map(element => (
         createBlogData(
-          element.idPost,
-          element.avatar,
-          element.fullName,
-          element.title,
+          element.idBlogReport,
+          element.avatarReporter,
+          element.nameReporter,
+          element.emailReporter,
+          formatDate(element.createdDate),
+          element.titleBlog,
+          element.contentBlog,
           element.content,
-          element.createdDate,
-          element.report,
-          element.isBlock,
+          element.idBloged
         )
       )
       );
@@ -469,7 +500,34 @@ export default function ReportTable({ accountValue, postValue, blogValue }) {
     }
 
   }, [accountValue, postValue, blogValue]);
-
+  const handleView = (id, type) => {
+    if (type === 'post') {
+      navigate('/postdetail', { state: { idPost: id } })
+    }
+    if (type === 'blog') {
+      navigate('/blogdetail', { state: { idBlog: id } })
+    }
+    if (type === 'account') {
+      navigate('/profile', { state: { userId: id } });
+    }
+  }
+  const handleAcceptorDeny = (id, status, type) => {
+    if (type === 'post') {
+      reportInstance.put(`AcceptPostReport/${id}/${status}`)
+        .then((res) => { console.log(res?.data?.result); resetReport(); })
+        .catch((error) => { console.error(error); })
+    }
+    if (type === 'blog') {
+      reportInstance.put(`AcceptBlogReport/${id}/${status}`)
+        .then((res) => { console.log(res?.data?.result); resetReport(); })
+        .catch((error) => { console.error(error); })
+    }
+    if (type === 'account') {
+      reportInstance.put(`AcceptAccountReport/${id}/${status}`)
+        .then((res) => { console.log(res?.data?.result); resetReport(); })
+        .catch((error) => { console.error(error); })
+    }
+  }
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
@@ -501,11 +559,11 @@ export default function ReportTable({ accountValue, postValue, blogValue }) {
   );
   const visibleAccountRows = React.useMemo(
     () =>
-      stableSort(accountRows, getComparator(order, orderBy)).slice(
+      stableSort(accountRow, getComparator(order, orderBy)).slice(
         page * rowsPerPage,
         page * rowsPerPage + rowsPerPage
       ),
-    [order, orderBy, page, rowsPerPage,]
+    [order, orderBy, page, rowsPerPage, accountRow]
   );
   const visibleBlogRows = React.useMemo(
     () =>
