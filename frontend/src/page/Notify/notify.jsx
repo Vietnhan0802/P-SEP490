@@ -111,7 +111,7 @@ function Notify() {
               <img src={item.avatar === "https://localhost:7006/Images/" ? defaultImage : item.avatar} alt="profile" className="profile" />
               <div className="ms-2 content">
                 <p className="mb-0">
-                  <span className="fw-bold">{item.nameSender}</span>{item.count === 0 ? `${getContent(item.content)}` : ` ${t('and')} ${item.count} ${t('people')} ${getContent(item.content)}`} 
+                  <span className="fw-bold">{item.nameSender}</span>{item.count === null || 0 ? `${getContent(item.content)}` : ` ${t('and')} ${item.count} ${t('people')} ${getContent(item.content)}`} 
                 </p>
                 <p className={`mb-0 date ${item.isRead === false ? "notRead" : "read"
                   }`}>{item.timeAgo}</p>
