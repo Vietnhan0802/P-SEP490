@@ -38,6 +38,7 @@ function DashBoard() {
   const [resetBlogRender, setResetBlogRender] = useState(false);
   const [resetVerification, setResetVerification] = useState(false);
   const [verificationList, setVerificationList] = useState(false);
+  const [verificationAcceptedList, setVerificationAcceptedList] = useState(false);
   const sessionData = JSON.parse(sessionStorage.getItem("userSession")) || {};
   const { currentUserId } = sessionData;
   const handleTabClick = (tab) => {
@@ -98,6 +99,11 @@ function DashBoard() {
         setVerificationList(res?.data?.result);
       })
       .catch((err) => { console.log(err) });
+    reportInstance.get(`VerificationAccepted`)
+      .then((res) => {
+        setVerificationAcceptedList(res?.data?.result);
+      })
+      .catch((err) => { console.log(err) });
   }, [resetVerification])
 
 
@@ -132,7 +138,7 @@ function DashBoard() {
           blogValue={blogReportList}
           resetReport={resetReport} />;
       case "verify":
-        return <VerifyTable value={verificationList} resetVerify={resetVerify} />;
+        return <VerifyTable value={verificationList} verified={verificationAcceptedList} resetVerify={resetVerify} />;
       case "project":
         return <ProjectTable value={projectList} />;
       default:

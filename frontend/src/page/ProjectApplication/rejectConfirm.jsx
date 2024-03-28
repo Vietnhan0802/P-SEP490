@@ -2,7 +2,7 @@ import { Modal, Button } from "react-bootstrap";
 import { useState } from "react";
 import { Row, Col } from "react-bootstrap";
 import { projectInstance } from "../../axios/axiosConfig";
-import Notification, { notifySuccess, notifyError } from "../../../components/notification";
+import Notification, { notifySuccess, notifyError } from "../../../src/components/notification";
 
 function RejectConfirm({ id, reset, role }) {
   const idMember = id;

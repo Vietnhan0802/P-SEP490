@@ -4,7 +4,7 @@ import CreatableSelect from 'react-select/creatable';
 import makeAnimated from 'react-select/animated';
 import { Modal, Button } from "react-bootstrap";
 import { projectInstance } from '../../axios/axiosConfig';
-import Notification, { notifySuccess, notifyError } from "../../../components/notification";
+import Notification, { notifySuccess, notifyError } from "../../../src/components/notification";
 function CreateProject({ reset }) {
     const sessionData = JSON.parse(sessionStorage.getItem('userSession')) || {};
     const { currentUserId } = sessionData;

@@ -4,7 +4,7 @@ import defaultImage from "../../images/common/default.png";
 import "../Profile/profile.scss";
 import { Modal, Button } from "react-bootstrap";
 import { userInstance } from '../../axios/axiosConfig';
-import Notification, { notifySuccess, notifyError } from "../../../components/notification";
+import Notification, { notifySuccess, notifyError } from "../../../src/components/notification";
 function UpdateAvatarPu({ show, onClose, image, currentUserId, changeImage }) {
 
     const [display, setDisplay] = useState(show);

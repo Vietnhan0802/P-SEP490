@@ -9,7 +9,7 @@ import "../Profile/check-box.scss";
 import Select from 'react-select'
 import { FiEdit } from "react-icons/fi";
 import { userInstance } from "../../axios/axiosConfig";
-import Notification, { notifySuccess, notifyError } from "../../../components/notification";
+import Notification, { notifySuccess, notifyError } from "../../../src/components/notification";
 function UpdateInformationPu({ value, id, reset, show, onClose, handleChangeImg }) {
   const [user, setUser] = useState({});
 
