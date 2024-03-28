@@ -39,7 +39,6 @@ function UpdateProjectForm({ input, id, resetPage }) {
       namePosition: selectedOptions || [] // Use selected options or fallback to an empty array
     }));
   };
-  console.log(project);
   const handleClick = () => {
     fileInputRef.current.click();
   };

@@ -92,21 +92,32 @@ function ProjectInviation() {
             projectInstance.get(`GetAllSendInvites/${currentUserId}`)
                 .then((res) => {
                     const data = res?.data?.result;
-                    console.log(data)
-                    setInvivtation(data.map((item) => createData(item.idProjectMember, item.fullName, item.email, item.namePosition, item.nameProject, item.avatar, item.cvUrlFile)));
+                    if (Array.isArray(data) && data.length > 0) {
+                        setInvivtation(data.map((item) => createData(item.idProjectMember, item.fullName, item.email, item.namePosition, item.nameProject, item.avatar, item.cvUrlFile)));
+                    } else {
+                        setInvivtation([]); // Set to an empty array if the API returns no data
+                    }
                 })
-                .catch((error) => { console.error(error) });
+                .catch((error) => {
+                    console.error(error);
+                    setInvivtation([]); // Set to an empty array if there's an error
+                });
         } else {
             projectInstance.get(`GetAllProjectInvites/${currentUserId}`)
                 .then((res) => {
                     const data = res?.data?.result;
-                    console.log(data)
-                    setInvivtation(data.map((item) => createData(item.idProjectMember, item.fullName, item.email, item.namePosition, item.nameProject, item.avatar, item.cvUrlFile)));
+                    if (Array.isArray(data) && data.length > 0) {
+                        setInvivtation(data.map((item) => createData(item.idProjectMember, item.fullName, item.email, item.namePosition, item.nameProject, item.avatar, item.cvUrlFile)));
+                    } else {
+                        setInvivtation([]); // Set to an empty array if the API returns no data
+                    }
                 })
-                .catch((error) => { console.error(error) });
+                .catch((error) => {
+                    console.error(error);
+                    setInvivtation([]); // Set to an empty array if there's an error
+                });
         }
-
-    }, [resetPage]);
+    }, [resetPage, currentUserId, role]);
     return (
         <Row className="pt-3 ms-0 me-0">
             <Col md={3} >

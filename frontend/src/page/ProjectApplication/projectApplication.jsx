@@ -66,9 +66,9 @@ function ProjectApplication() {
         Header: "Action",
         accessor: "status",
         Cell: ({ row }) => (
-          <div style={{ display: "flex", alignItems: "center" }}>
+          <div >
             {role === "Business" ?
-              <div>
+              <div style={{ display: "flex", alignItems: "center" }}>
                 <a className="btn btn-info text-white"
                   href={row.original.cvFile} // Directly use the cvFile URL here
                   target="_blank" // Ensure it opens in a new tab
@@ -78,7 +78,7 @@ function ProjectApplication() {
                 <AcceptConfirm id={row.original.id} reset={reset} />
                 <RejectConfirm id={row.original.id} reset={reset} />
               </div> :
-               <CancelItem id={row.original.id} reset={reset} role={role} />}
+              <CancelItem id={row.original.id} reset={reset} role={role} />}
 
           </div>
         ),
@@ -97,19 +97,33 @@ function ProjectApplication() {
       projectInstance.get(`GetAllProjectApplications/${currentUserId}`)
         .then((res) => {
           const data = res?.data?.result;
-          setApplications(data.map((item) => createData(item.idProjectMember, item.fullName, item.email, item.namePosition, item.nameProject, item.avatar, item.cvUrlFile)));
+          console.log(data)
+          if (Array.isArray(data) && data.length > 0) {
+            setApplications(data.map((item) => createData(item.idProjectMember, item.fullName, item.email, item.namePosition, item.nameProject, item.avatar, item.cvUrlFile)));
+          } else {
+            setApplications([]); // Set to an empty array if the API returns no data
+          }
         })
-        .catch((error) => { console.error(error) });
+        .catch((error) => {
+          console.error(error);
+          setApplications([]); // Set to an empty array if there's an error
+        });
     } else {
       projectInstance.get(`GetAllSendApplications/${currentUserId}`)
         .then((res) => {
           const data = res?.data?.result;
-          setApplications(data.map((item) => createData(item.idProjectMember, item.fullName, item.email, item.namePosition, item.nameProject, item.avatar, item.cvUrlFile)));
+          if (Array.isArray(data) && data.length > 0) {
+            setApplications(data.map((item) => createData(item.idProjectMember, item.fullName, item.email, item.namePosition, item.nameProject, item.avatar, item.cvUrlFile)));
+          } else {
+            setApplications([]); // Set to an empty array if the API returns no data
+          }
         })
-        .catch((error) => { console.error(error) });
+        .catch((error) => {
+          console.error(error);
+          setApplications([]); // Set to an empty array if there's an error
+        });
     }
-
-  }, [resetPage]);
+  }, [resetPage, currentUserId, role]);
   return (
     <Row className="pt-3 ms-0 me-0">
       <Col md={3} >

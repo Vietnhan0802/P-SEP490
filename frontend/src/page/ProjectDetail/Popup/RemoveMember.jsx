@@ -9,9 +9,8 @@ function RemoveMember({ id, resetPage }) {
     const handleRemoveMember = () => {
         projectInstance.delete(`RemoveMember/${id}`)
             .then((res) => {
-                console.log(res?.data?.result);
                 setShow(false);
-                resetPage('Success');
+                resetPage();
             })
             .then((error) => { console.error(error) });
     }

@@ -72,30 +72,33 @@ function ProjectDetail() {
   const [projectMembers, setProjectMembers] = useState([]);
   const [reset, setReset] = useState(false);
   const { idProject } = location.state || {};
-  console.log(idProject)
 
   useEffect(() => {
     projectInstance.get(`/GetProjectById/${idProject}`)
       .then((res) => {
-        console.log(res.data.result);
         setData(res?.data?.result);
       })
       .catch((error) => {
         console.error(error);
       });
-  }, [resetProject]);
+  }, [resetProject,idProject]);
   useEffect(() => {
     projectInstance.get(`/GetAllMemberInProject/${idProject}`)
       .then((res) => {
-        setProjectMembers(res?.data?.result);
+        const data = res?.data?.result;
+        if (Array.isArray(data) && data?.length > 0) {
+          setProjectMembers(data);
+        } else {
+          setProjectMembers([]);
+        }
       })
       .catch((error) => {
         console.error(error);
+        setProjectMembers([]);
       });
-  }, [reset]);
+  }, [reset,idProject]);
   const resetPage = (value) => {
-    console.log(value === 'Success')
-    if (value === 'Success') setResetProject(!resetProject);
+    setResetProject(reset => !reset);
   }
   return (
     <Row className="pt-3 ms-0 me-0 pb-3">
