@@ -259,6 +259,37 @@ namespace BlogService.Controllers
             return new Response(HttpStatusCode.NoContent, "Blog list is empty!");
         }
 
+        [HttpGet("GetAllPublicBlogs/{idUser}")]
+        public async Task<Response> GetAllPublicBlogs(string idUser)
+        {
+            var blogs = await _context.Blogs.Where(x => x.isDeleted == false && x.isBlock == false).OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
+            if (blogs.Count > 0)
+            {
+                var result = _mapper.Map<List<ViewBlog>>(blogs);
+                foreach (var blog in result)
+                {
+                    blog.like = await _context.BlogsLike.Where(x => x.idBlog == blog.idBlog).CountAsync();
+                    var isLike = await _context.BlogsLike.FirstOrDefaultAsync(x => x.idAccount == idUser && x.idBlog == blog.idBlog);
+                    if (isLike != null)
+                    {
+                        blog.isLike = true;
+                    }
+                    var infoUser = await GetInfoUser(blog.idAccount);
+                    blog.fullName = infoUser.fullName;
+                    blog.avatar = infoUser.avatar;
+                    var blogImages = await _context.BlogsImage.Where(x => x.idBlog == blog.idBlog).ToListAsync();
+                    var viewImages = _mapper.Map<List<ViewBlogImage>>(blogImages);
+                    foreach (var image in viewImages)
+                    {
+                        image.ImageSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, image.image);
+                    }
+                    blog.ViewBlogImages = viewImages;
+                }
+                return new Response(HttpStatusCode.OK, "Get blog list is success!", result);
+            }
+            return new Response(HttpStatusCode.NoContent, "Blog list is empty!");
+        }
+
         [HttpGet("GetBlogByUser/{idUser}")]
         public async Task<Response> GetBlogByUser(string idUser)
         {

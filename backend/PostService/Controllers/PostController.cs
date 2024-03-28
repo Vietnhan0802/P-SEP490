@@ -196,6 +196,37 @@ namespace PostService.Controllers
         [HttpGet("GetAllPosts/{idUser}")]
         public async Task<Response> GetAllPosts(string idUser)
         {
+            var posts = await _context.Posts.Where(x => x.isDeleted == false).OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
+            if (posts == null)
+            {
+                return new Response(HttpStatusCode.NoContent, "Post list is empty!");
+            }
+            var result = _mapper.Map<List<ViewPost>>(posts);
+            foreach (var post in result)
+            {
+                post.like = await _context.PostLikes.Where(x => x.idPost == post.idPost).CountAsync();
+                var isLike = await _context.PostLikes.FirstOrDefaultAsync(x => x.idAccount == idUser && x.idPost == post.idPost);
+                if (isLike != null)
+                {
+                    post.isLike = true;
+                }
+                var infoUser = await GetInfoUser(post.idAccount!);
+                post.fullName = infoUser.fullName;
+                post.avatar = infoUser.avatar;
+                var postImages = await _context.PostImages.Where(x => x.idPost == post.idPost).ToListAsync();
+                var viewImages = _mapper.Map<List<ViewPostImage>>(postImages);
+                foreach (var image in viewImages)
+                {
+                    image.ImageSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, image.image);
+                }
+                post.ViewPostImages = viewImages;
+            }
+            return new Response(HttpStatusCode.OK, "Get post list is success!", result);
+        }
+
+        [HttpGet("GetAllPublicPosts/{idUser}")]
+        public async Task<Response> GetAllPublicPosts(string idUser)
+        {
             var posts = await _context.Posts.Where(x => x.isDeleted == false && x.isBlock == false).OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
             if (posts == null)
             {
