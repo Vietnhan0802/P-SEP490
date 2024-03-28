@@ -260,73 +260,82 @@ export default function PostTable({ value, resetTable }) {
               rowCount={postRows.length}
             />
             <TableBody>
-              {visibleRows.map((row, index) => {
-                const isItemSelected = isSelected(row.id);
-                const labelId = `enhanced-table-checkbox-${index}`;
+              {value && value.length > 0 ? (
+                
+                  visibleRows.map((row, index) => {
+                    const isItemSelected = isSelected(row.id);
+                    const labelId = `enhanced-table-checkbox-${index}`;
 
-                return (
-                  <TableRow
-                    hover
-                    role="checkbox"
-                    aria-checked={isItemSelected}
-                    tabIndex={-1}
-                    key={row.id}
-                    sx={{ cursor: "pointer" }}
-                    className="my-2"
-                  >
-                    <TableCell
-                      component="th"
-                      id={labelId}
-                      scope="row"
-                      padding="none"
-                      onClick={() => handleNavigateUser(row.idAccount)}
-                    >
-                      <div className="ms-2 my-2 d-flex align-items-center">
-                        <img
-                          className="me-2"
-                          src={row.avatar}
-                          alt=""
-                          style={{
-                            width: "40px",
-                            height: "40px",
-                            borderRadius: "50%",
-                          }}
-                        />
-                        <div>
-                          {row.fullName}
-                        </div>
-                      </div>
-                    </TableCell>
-
-                    <TableCell align="left" onClick={() => handleViewPost(row.id)}>
-                      <p style={{ fontSize: "16px", fontWeight: "500" }}>
-                        {row.title}
-                      </p>
-                      <p className="ellipsis" style={{ maxWidth: '300px' }}>{row.content}</p>
-                    </TableCell>
-                    <TableCell align="left" >
-                      {row.time}
-                    </TableCell>
-                    <TableCell align="right" onClick={() => handleBlockPost(row.id)}>
-                      <div className="d-flex align-items-center justify-content-end">
-                        <div  style={{ width: "80px" }}>
-                          <div
-                            className={`d-flex align-items-center block-box ${row.isBlock ? "active-block" : "blur" 
-                              }`}  style={{ width: "80px" }}
-                          >
-                            <GoDotFill className={`me-1 dot ${row.isBlock ? "active-dot" : "blur-dot"
-                              }`} />
-                            <p>
-                              {row.isBlock ? 'Unblock' : 'Block'}
-                            </p>
+                    return (
+                      <TableRow
+                        hover
+                        role="checkbox"
+                        aria-checked={isItemSelected}
+                        tabIndex={-1}
+                        key={row.id}
+                        sx={{ cursor: "pointer" }}
+                        className="my-2"
+                      >
+                        <TableCell
+                          component="th"
+                          id={labelId}
+                          scope="row"
+                          padding="none"
+                          onClick={() => handleNavigateUser(row.idAccount)}
+                        >
+                          <div className="ms-2 my-2 d-flex align-items-center">
+                            <img
+                              className="me-2"
+                              src={row.avatar}
+                              alt=""
+                              style={{
+                                width: "40px",
+                                height: "40px",
+                                borderRadius: "50%",
+                              }}
+                            />
+                            <div>
+                              {row.fullName}
+                            </div>
                           </div>
-                        </div>
-                      </div>
+                        </TableCell>
 
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
+                        <TableCell align="left" onClick={() => handleViewPost(row.id)}>
+                          <p style={{ fontSize: "16px", fontWeight: "500" }}>
+                            {row.title}
+                          </p>
+                          <p className="ellipsis" style={{ maxWidth: '300px' }}>{row.content}</p>
+                        </TableCell>
+                        <TableCell align="left" >
+                          {row.time}
+                        </TableCell>
+                        <TableCell align="right" onClick={() => handleBlockPost(row.id)}>
+                          <div className="d-flex align-items-center justify-content-end">
+                            <div style={{ width: "80px" }}>
+                              <div
+                                className={`d-flex align-items-center block-box ${row.isBlock ? "active-block" : "blur"
+                                  }`} style={{ width: "80px" }}
+                              >
+                                <GoDotFill className={`me-1 dot ${row.isBlock ? "active-dot" : "blur-dot"
+                                  }`} />
+                                <p>
+                                  {row.isBlock ? 'Unblock' : 'Block'}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })
+                
+              ) : (<TableRow>
+                <TableCell colSpan={headCells.length} align="center" style={{ padding: "16px" }}>
+                  No data found
+                </TableCell>
+              </TableRow>)}
+
             </TableBody>
           </Table>
         </TableContainer>

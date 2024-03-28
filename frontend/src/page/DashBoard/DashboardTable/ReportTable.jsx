@@ -38,7 +38,7 @@ const formatDate = (timestamp) => {
 
   return `${day} ${month} ${year}`;
 };
-function createPostData(id, avatar, name, email, date, title, content, description, idPosted) {
+function createPostData(id, avatar, name, email, date, title, content, description, idPosted, idAccount) {
   return {
     id,
     avatar,
@@ -49,11 +49,12 @@ function createPostData(id, avatar, name, email, date, title, content, descripti
     content,
     description,
     idPosted
+    , idAccount
   };
 }
-function createBlogData(id, avatar, name, email, date, title, content, description, idBloged) {
+function createBlogData(id, avatar, name, email, date, title, content, description, idBloged, idAccount) {
   return {
-    id, avatar, name, email, date, title, content, description, idBloged
+    id, avatar, name, email, date, title, content, description, idBloged, idAccount
   };
 }
 const createAccountData = (id, avatar, name, email, createdDate, description, idReported) => {
@@ -223,7 +224,7 @@ EnhancedTableHead.propTypes = {
   rowCount: PropTypes.number.isRequired,
 };
 
-export default function ReportTable({ accountValue, postValue, blogValue ,resetReport }) {
+export default function ReportTable({ accountValue, postValue, blogValue, resetReport }) {
 
   function renderPostTable() {
     return (
@@ -244,7 +245,7 @@ export default function ReportTable({ accountValue, postValue, blogValue ,resetR
                 id={labelId}
                 scope="row"
                 padding="none"
-                onClick={() => handleView()}
+                onClick={() => handleView(row.idAccount, 'account')}
               >
                 <div className="ms-2 my-2 d-flex align-items-center">
                   <img
@@ -281,11 +282,11 @@ export default function ReportTable({ accountValue, postValue, blogValue ,resetR
               <TableCell align="right">
                 <div className="d-flex align-items-center justify-content-end">
                   <div className="d-flex justify-content-center">
-                    <div className="deny" onClick={() => handleAcceptorDeny(row.id, 1, 'post')}>
+                    <div className="deny" onClick={() => handleAcceptorDeny(row.id, 2, 'post')}>
                       <GoDotFill className="me-1" />
                       Deny
                     </div>
-                    <div className="accept" onClick={() => handleAcceptorDeny(row.id, 2, 'post')}>
+                    <div className="accept" onClick={() => handleAcceptorDeny(row.id, 1, 'post')}>
                       <GoDotFill className="me-1" />
                       Accept
                     </div>
@@ -350,11 +351,11 @@ export default function ReportTable({ accountValue, postValue, blogValue ,resetR
               <TableCell align="right">
                 <div className="d-flex align-items-center justify-content-end">
                   <div className="d-flex justify-content-center">
-                    <div className="deny" onClick={() => handleAcceptorDeny(row.id, 1, 'account')}>
+                    <div className="deny" onClick={() => handleAcceptorDeny(row.id, 2, 'account')}>
                       <GoDotFill className="me-1" />
                       Deny
                     </div>
-                    <div className="accept" onClick={() => handleAcceptorDeny(row.id, 2, 'account')}>
+                    <div className="accept" onClick={() => handleAcceptorDeny(row.id, 1, 'account')}>
                       <GoDotFill className="me-1" />
                       Block
                     </div>
@@ -387,6 +388,7 @@ export default function ReportTable({ accountValue, postValue, blogValue ,resetR
                 id={labelId}
                 scope="row"
                 padding="none"
+                onClick={() => handleView(row.idAccount, 'account')}
               >
                 <div className="ms-2 my-2 d-flex align-items-center">
                   <img
@@ -427,9 +429,9 @@ export default function ReportTable({ accountValue, postValue, blogValue ,resetR
                       <GoDotFill className="me-1" />
                       Deny
                     </div>
-                    <div className="accept" onClick={() => handleAcceptorDeny(row.id, 2, 'blog')}>
+                    <div className="accept" onClick={() => handleAcceptorDeny(row.id, 1, 'blog')}>
                       <GoDotFill className="me-1" />
-                      Block
+                      Accept
                     </div>
                   </div>
                 </div>
@@ -458,7 +460,9 @@ export default function ReportTable({ accountValue, postValue, blogValue ,resetR
           element.nameReported,
           element.emailReported,
           formatDate(element.createdDate),
-          element.content, element.idReported
+          element.content,
+          element.idReported,
+
         )
       )
       );
@@ -475,7 +479,8 @@ export default function ReportTable({ accountValue, postValue, blogValue ,resetR
           element.titlePost,
           element.contentPost,
           element.content,
-          element.idPosted
+          element.idPosted,
+          element.accountPosted
         )
       )
       );
@@ -492,13 +497,13 @@ export default function ReportTable({ accountValue, postValue, blogValue ,resetR
           element.titleBlog,
           element.contentBlog,
           element.content,
-          element.idBloged
+          element.idBloged,
+          element.accountBloged
         )
       )
       );
       setBlogRow(fetchedBlogRows);
     }
-
   }, [accountValue, postValue, blogValue]);
   const handleView = (id, type) => {
     if (type === 'post') {
