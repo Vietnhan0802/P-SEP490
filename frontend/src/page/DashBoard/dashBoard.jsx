@@ -48,7 +48,7 @@ function DashBoard() {
   React.useEffect(() => {
     userInstance.get('GetAllUsers')
       .then((res) => {
-        setAccessList(res?.data?.result);
+        setAccessList(res?.data?.result || []);
       })
       .catch((err) => { console.log(err) });
   }, [resetAcc])
@@ -56,7 +56,7 @@ function DashBoard() {
   React.useEffect(() => {
     blogInstance.get(`GetAllBlogs/${currentUserId}`)
       .then((res) => {
-        setBlogList(res?.data?.result);
+        setBlogList(res?.data?.result || []);
       })
       .catch((err) => { console.log(err) });
   }, [resetBlogRender])
@@ -64,17 +64,17 @@ function DashBoard() {
   React.useEffect(() => {
     reportInstance.get(`GetAllAccountReport`)
       .then((res) => {
-        setAccountReportList(res?.data?.result);
+        setAccountReportList(res?.data?.result || []);
       })
       .catch((err) => { console.log(err) });
     reportInstance.get(`GetAllBlogReport`)
       .then((res) => {
-        setBlogReportList(res?.data?.result);
+        setBlogReportList(res?.data?.result || []);
       })
       .catch((err) => { console.log(err) });
     reportInstance.get(`GetAllPostReport`)
       .then((res) => {
-        setPostReportList(res?.data?.result);
+        setPostReportList(res?.data?.result || []);
       })
       .catch((err) => { console.log(err) });
   }, [resetRe])
@@ -82,13 +82,13 @@ function DashBoard() {
   React.useEffect(() => {
     postInstance.get(`GetAllPosts/${currentUserId}`)
       .then((res) => {
-        setPostList(res?.data?.result);
+        setPostList(res?.data?.result || []);
       })
       .catch((err) => { console.log(err) });
 
     projectInstance.get(`GetAllProjects`)
       .then((res) => {
-        setProjectList(res?.data?.result);
+        setProjectList(res?.data?.result || []);
       })
       .catch((err) => { console.log(err) });
   }, [reset]);
@@ -96,17 +96,19 @@ function DashBoard() {
   React.useEffect(() => {
     reportInstance.get(`GetAllVerification`)
       .then((res) => {
-        setVerificationList(res?.data?.result);
+        setVerificationList(res?.data?.result || []);
       })
       .catch((err) => { console.log(err) });
     reportInstance.get(`VerificationAccepted`)
       .then((res) => {
-        setVerificationAcceptedList(res?.data?.result);
+
+        setVerificationAcceptedList(res?.data?.result || []);
       })
       .catch((err) => { console.log(err) });
   }, [resetVerification])
 
-
+  const verifiListLength = verificationAcceptedList?.length + verificationList?.length;
+  console.log(verifiListLength);
 
   const resetAccount = () => {
     setResetAcc((prevReset) => !prevReset)
@@ -123,6 +125,7 @@ function DashBoard() {
   const resetVerify = () => {
     setResetVerification(prevReset => !prevReset);
   }
+
   const renderTable = () => {
     switch (activeTab) {
       case "post":
@@ -163,7 +166,7 @@ function DashBoard() {
                   >
                     <div className="mb-1 fs-12">{t('managepost')}</div>
                     <div className="d-flex justify-content-between">
-                      <p className="fs-24 fw-bold">{postList?.length} {t('post')}</p>
+                      <p className="fs-24 fw-bold">{postList?.length} {t('post')}{postList?.length > 1 && 's'}</p>
                     </div>
                     <hr style={{ margin: "0.5rem 0" }} />
                     <p
@@ -199,7 +202,7 @@ function DashBoard() {
                     }`}>
                     <div className="mb-1 fs-12">{t('manageblog')}</div>
                     <div className="d-flex justify-content-between">
-                      <p className="fs-24 fw-bold">{blogList?.length} {t('blog')}</p>
+                      <p className="fs-24 fw-bold">{blogList?.length} {t('blog')}{blogList?.length > 1 && 's'}</p>
                     </div>
                     <hr style={{ margin: "0.5rem 0" }} />
                     <p
@@ -235,7 +238,7 @@ function DashBoard() {
                     }`}>
                     <div className="mb-1 fs-12">Manage Project</div>
                     <div className="d-flex justify-content-between">
-                      <p className="fs-24 fw-bold">{projectList.length} Project</p>
+                      <p className="fs-24 fw-bold">{projectList.length} Project{projectList.length > 1 && 's'}</p>
                     </div>
                     <hr style={{ margin: "0.5rem 0" }} />
                     <p
@@ -253,7 +256,7 @@ function DashBoard() {
                     }`}>
                     <div className="mb-1 fs-12">Manage Verification</div>
                     <div className="d-flex justify-content-between">
-                      <p className="fs-24 fw-bold">{verificationList ? verificationList?.length : 0}  Verification{verificationList?.length > 0 && 's'}</p>
+                      <p className="fs-24 fw-bold">{verifiListLength > 0 ? verifiListLength : 0}  Verification{verifiListLength > 0 && 's'}</p>
                     </div>
                     <hr style={{ margin: "0.5rem 0" }} />
                     <p

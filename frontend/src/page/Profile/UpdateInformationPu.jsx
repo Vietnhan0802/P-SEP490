@@ -67,7 +67,7 @@ function UpdateInformationPu({ value, id, reset, show, onClose, handleChangeImg 
     }));
   };
   return (
-    <div className="p-1" id="">
+    <div>
       <Modal show={show} onHide={modalClose} id="update-infomation">
         <Modal.Header closeButton>
           <Modal.Title>Update Information</Modal.Title>
