@@ -39,10 +39,10 @@ namespace BlogService.Controllers
 
         /*------------------------------------------------------------CallAPI------------------------------------------------------------*/
 
-        [HttpPost("CreateNotificationBlogLike/{idSender}/{idReceiver}/{idBlog}")]
-        private async Task<IActionResult> CreateNotificationBlogLike(string idSender, string idReceiver, Guid idBlog)
+        [HttpPost("CreateNotificationBlogLike/{idSender}/{idReceiver}/{idBlog}/{like}")]
+        private async Task<IActionResult> CreateNotificationBlogLike(string idSender, string idReceiver, Guid idBlog, int like)
         {
-            HttpResponseMessage response = await client.PostAsync($"{NotifyApiUrl}/CreateNotificationBlogLike/{idSender}/{idReceiver}/{idBlog}", null);
+            HttpResponseMessage response = await client.PostAsync($"{NotifyApiUrl}/CreateNotificationBlogLike/{idSender}/{idReceiver}/{idBlog}/{like}", null);
             if (response.IsSuccessStatusCode)
             {
                 return Ok("Create notification is successfully!");
@@ -262,7 +262,7 @@ namespace BlogService.Controllers
         [HttpGet("GetBlogByUser/{idUser}")]
         public async Task<Response> GetBlogByUser(string idUser)
         {
-            var blogs = await _context.Blogs.Where(x => x.idAccount == idUser && x.isDeleted == false).OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
+            var blogs = await _context.Blogs.Where(x => x.idAccount == idUser && x.isDeleted == false && x.isBlock == false).OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
             if (blogs.Count > 0)
             {
                 var result = _mapper.Map<List<ViewBlog>>(blogs);
@@ -293,7 +293,7 @@ namespace BlogService.Controllers
         [HttpGet("GetBlogById/{idBlog}/{idUser}")]
         public async Task<Response> GetBlogById(Guid idBlog, string idUser)
         {
-            var blog = await _context.Blogs.FirstOrDefaultAsync(x => x.idBlog == idBlog);
+            var blog = await _context.Blogs.FirstOrDefaultAsync(x => x.idBlog == idBlog && x.isDeleted == false && x.isBlock == false);
             if (blog != null)
             {
                 var result = _mapper.Map<ViewBlog>(blog);
@@ -453,7 +453,8 @@ namespace BlogService.Controllers
                 if (isSuccess > 0)
                 {
                     var blog = await _context.Blogs.FirstOrDefaultAsync(x => x.idBlog == idBlog);
-                    await CreateNotificationBlogLike(idUser, blog.idAccount, idBlog);
+                    var numberLike = await _context.BlogsLike.Where(x => x.idBlog == idBlog).CountAsync();
+                    await CreateNotificationBlogLike(idUser, blog.idAccount, idBlog, numberLike);
                     return new Response(HttpStatusCode.NoContent, "Like blog is success!");
                 }
                 return new Response(HttpStatusCode.BadRequest, "Like blog is fail!");
@@ -623,6 +624,7 @@ namespace BlogService.Controllers
                 var isSuccess = await _context.SaveChangesAsync();
                 if (isSuccess > 0)
                 {
+                    await CreateNotificationBlogReply(idUser, blogComment.idAccount, blogComment.idBlog);
                     return new Response(HttpStatusCode.OK, "Create reply is success!", _mapper.Map<ViewBlogReply>(blogReply));
                 }
                 return new Response(HttpStatusCode.BadRequest, "Create reply is fail!");

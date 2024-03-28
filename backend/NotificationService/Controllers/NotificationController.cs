@@ -30,6 +30,8 @@ namespace NotificationService.Controllers
             UserApiUrl = "https://localhost:7006/api/User";
         }
 
+        /*------------------------------------------------------------CallAPI------------------------------------------------------------*/
+
         [HttpGet("GetInfoUser/{idUser}")]
         private async Task<ViewUser> GetInfoUser(string idUser)
         {
@@ -179,26 +181,40 @@ namespace NotificationService.Controllers
 
         /*------------------------------------------------------------NotificationBlog------------------------------------------------------------*/
 
-        [HttpPost("CreateNotificationBlogLike/{idSender}/{idReceiver}/{idBlog}")]
-        public async Task<ViewNotification> CreateNotificationBlogLike(string idSender, string idReceiver, Guid idBlog)
+        [HttpPost("CreateNotificationBlogLike/{idSender}/{idReceiver}/{idBlog}/{like}")]
+        public async Task<ViewNotification> CreateNotificationBlogLike(string idSender, string idReceiver, Guid idBlog, int like)
         {
-            Notification notification = new Notification()
+            var notification = await _context.Notifications.FirstOrDefaultAsync(x => x.idReceiver == idReceiver && x.idUrl == idBlog && x.url == "BlogLike");
+            if (notification == null)
             {
-                idSender = idSender,
-                idReceiver = idReceiver,
-                content = "content_notibloglike",
-                isRead = false,
-                idUrl = idBlog,
-                url = "BlogLike",
-                createdDate = DateTime.Now
-            };
-            await _context.Notifications.AddAsync(notification);
+                Notification newNotification = new Notification()
+                {
+                    idSender = idSender,
+                    idReceiver = idReceiver,
+                    content = "content_notibloglike",
+                    isRead = false,
+                    idUrl = idBlog,
+                    url = "BlogLike",
+                    count = 0,
+                    createdDate = DateTime.Now
+                };
+                await _context.Notifications.AddAsync(newNotification);
+                await _context.SaveChangesAsync();
+                var resultc = _mapper.Map<ViewNotification>(newNotification);
+                var infoUserc = await GetInfoUser(resultc.idSender!);
+                resultc.nameSender = infoUserc.fullName;
+                resultc.avatar = infoUserc.avatar;
+                return resultc;
+            }
+            notification.idSender = idSender;
+            notification.count = like - 1;
+            notification.createdDate = DateTime.Now;
+            _context.Notifications.Update(notification);
             await _context.SaveChangesAsync();
             var result = _mapper.Map<ViewNotification>(notification);
             var infoUser = await GetInfoUser(result.idSender!);
             result.nameSender = infoUser.fullName;
             result.avatar = infoUser.avatar;
-            result.content = $"{notification.content}";
             return result;
         }
 

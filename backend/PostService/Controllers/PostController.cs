@@ -169,7 +169,7 @@ namespace PostService.Controllers
         [HttpGet("GetAllPostsTrend/{idUser}")]
         public async Task<Response> GetAllPostsTrend(string idUser)
         {
-            var top10Posts = await _context.Posts.Where(x => x.isDeleted == false).OrderByDescending(x => x.viewInDate).Take(10).ToListAsync();
+            var top10Posts = await _context.Posts.Where(x => x.isDeleted == false && x.isBlock == false).OrderByDescending(x => x.viewInDate).Take(10).ToListAsync();
             var result = _mapper.Map<List<ViewPost>>(top10Posts);
             foreach (var post in result)
             {
@@ -196,7 +196,7 @@ namespace PostService.Controllers
         [HttpGet("GetAllPosts/{idUser}")]
         public async Task<Response> GetAllPosts(string idUser)
         {
-            var posts = await _context.Posts.Where(x => x.isDeleted == false).OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
+            var posts = await _context.Posts.Where(x => x.isDeleted == false && x.isBlock == false).OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
             if (posts == null)
             {
                 return new Response(HttpStatusCode.NoContent, "Post list is empty!");
@@ -227,7 +227,7 @@ namespace PostService.Controllers
         [HttpGet("GetPostByUser/{idUser}")]
         public async Task<Response> GetPostByUser(string idUser)
         {
-            var posts = await _context.Posts.Where(x => x.idAccount == idUser && x.isDeleted == false).OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
+            var posts = await _context.Posts.Where(x => x.idAccount == idUser && x.isDeleted == false && x.isBlock == false).OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
             if (posts == null)
             {
                 return new Response(HttpStatusCode.NoContent, "Post list is empty!");
@@ -258,7 +258,7 @@ namespace PostService.Controllers
         [HttpGet("GetPostById/{idPost}/{idUser}")]
         public async Task<Response> GetPostById(Guid idPost, string idUser)
         {
-            var post = await _context.Posts.FirstOrDefaultAsync(x => x.idPost == idPost);
+            var post = await _context.Posts.FirstOrDefaultAsync(x => x.idPost == idPost && x.isBlock == false);
             if (post == null)
             {
                 return new Response(HttpStatusCode.NotFound, "Post doesn't exist!");

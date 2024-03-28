@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Org.BouncyCastle.Crypto;
 using System.Data;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net;
@@ -118,11 +119,42 @@ namespace User.Controllers
                 {
                     email = user.Email,
                     fullName = user.fullName!,
-                    avatar = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, user.avatar)
+                    avatar = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, user.avatar),
+                    isVerified = user.isVerified
                 };
                 return Ok(result);
             }
             return NotFound();
+        }
+
+        [HttpPut("ChangeVerification/{idUser}")]
+        public async Task<IActionResult> ChangeVerification(string idUser)
+        {
+            var user = await _userManager.FindByIdAsync(idUser);
+            if (user != null)
+            {
+                if (user.isVerified == false)
+                {
+                    user.isVerified = true;
+                    var isSuccess = await _userManager.UpdateAsync(user);
+                    if (isSuccess.Succeeded)
+                    {
+                        return Ok("Accept verification user is success!");
+                    }
+                    return BadRequest("Accept verification user is fail!");
+                }
+                else
+                {
+                    user.isVerified = false;
+                    var isSuccess = await _userManager.UpdateAsync(user);
+                    if (isSuccess.Succeeded)
+                    {
+                        return Ok("Remove verification user is success!");
+                    }
+                    return BadRequest("Remove verification user is fail!");
+                }
+            }
+            return NotFound("User doesn't exist!");
         }
 
         [HttpPut("BlockUser/{idUser}")]

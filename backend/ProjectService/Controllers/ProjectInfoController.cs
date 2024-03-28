@@ -166,7 +166,7 @@ namespace ProjectService.Controllers
                     var inforUser = await GetInfoUser(project.idAccount);
                     projectMember.fullName = inforUser.fullName;
                     projectMember.avatarUser = inforUser.avatar;
-                    projectMember.avatarSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, projectMember.avatar);
+                    projectMember.avatarSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, project.avatar);
                     var positions = await _context.Positions.Where(x => x.idProject == project.idProject).ToListAsync();
                     var viewPosition = _mapper.Map<List<PositionView>>(positions);
                     projectMember.PositionViews = viewPosition;
@@ -560,7 +560,7 @@ namespace ProjectService.Controllers
         [HttpPut("AcceptProjectApplication/{idProjectMember}")]
         public async Task<Response> AcceptProjectApplication(Guid idProjectMember)
         {
-            var projectApplication = await _context.ProjectMembers.FirstOrDefaultAsync(x => x.idProjectMember == idProjectMember);
+            var projectApplication = await _context.ProjectMembers.FirstOrDefaultAsync(x => x.idProjectMember == idProjectMember && x.type == BusinessObjects.Enums.Project.Type.Applied && x.isAcept == null);
             if (projectApplication == null)
             {
                 return new Response(HttpStatusCode.NotFound, "Project application doesn't exists!");
@@ -576,23 +576,57 @@ namespace ProjectService.Controllers
             return new Response(HttpStatusCode.BadRequest, "Accept project application is fail!");
         }
 
-        [HttpPut("DenyProjectApplication/{idProjectMember}")]
-        public async Task<Response> DenyProjectApplication(Guid idProjectMember)
+        [HttpPut("AcceptProjectInvitation/{idProjectMember}")]
+        public async Task<Response> AcceptProjectInvitation(Guid idProjectMember)
         {
-            var projectApplication = await _context.ProjectMembers.FirstOrDefaultAsync(x => x.idProjectMember == idProjectMember);
+            var projectApplication = await _context.ProjectMembers.FirstOrDefaultAsync(x => x.idProjectMember == idProjectMember && x.type == BusinessObjects.Enums.Project.Type.Invited && x.isAcept == null);
             if (projectApplication == null)
             {
-                return new Response(HttpStatusCode.NotFound, "Project Application doesn't exists!");
+                return new Response(HttpStatusCode.NotFound, "Project invitation doesn't exists!");
             }
-            projectApplication.isAcept = false;
+            projectApplication.isAcept = true;
             projectApplication.confirmedDate = DateTime.Now;
             _context.ProjectMembers.Update(projectApplication);
             var isSuccess = await _context.SaveChangesAsync();
             if (isSuccess > 0)
             {
-                return new Response(HttpStatusCode.OK, "Deny project application is success!", projectApplication);
+                return new Response(HttpStatusCode.OK, "Accept invitation application is success!", projectApplication);
             }
-            return new Response(HttpStatusCode.OK, "Deny project application is fail!");
+            return new Response(HttpStatusCode.BadRequest, "Accept invitation application is fail!");
+        }
+
+        [HttpPut("DenyProjectApplication/{idProjectMember}")]
+        public async Task<Response> DenyProjectApplication(Guid idProjectMember)
+        {
+            var projectApplication = await _context.ProjectMembers.FirstOrDefaultAsync(x => x.idProjectMember == idProjectMember && x.type == BusinessObjects.Enums.Project.Type.Applied && x.isAcept == null);
+            if (projectApplication != null)
+            {
+                _context.ProjectMembers.Remove(projectApplication);
+                var isSuccess = await _context.SaveChangesAsync();
+                if (isSuccess > 0)
+                {
+                    return new Response(HttpStatusCode.OK, "Deny project application is success!", projectApplication);
+                }
+                return new Response(HttpStatusCode.OK, "Deny project application is fail!");
+            }
+            return new Response(HttpStatusCode.NotFound, "Project Application doesn't exists!");
+        }
+
+        [HttpPut("DenyProjectInvitation/{idProjectMember}")]
+        public async Task<Response> DenyProjectInvitation(Guid idProjectMember)
+        {
+            var projectApplication = await _context.ProjectMembers.FirstOrDefaultAsync(x => x.idProjectMember == idProjectMember && x.type == BusinessObjects.Enums.Project.Type.Invited && x.isAcept == null);
+            if (projectApplication != null)
+            {
+                _context.ProjectMembers.Remove(projectApplication);
+                var isSuccess = await _context.SaveChangesAsync();
+                if (isSuccess > 0)
+                {
+                    return new Response(HttpStatusCode.OK, "Deny project invitation is success!", projectApplication);
+                }
+                return new Response(HttpStatusCode.OK, "Deny project invitation is fail!");
+            }
+            return new Response(HttpStatusCode.NotFound, "Project invitation doesn't exists!");
         }
 
         [HttpDelete("RemoveApply/{idProjectMember}")]

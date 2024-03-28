@@ -40,6 +40,17 @@ namespace Interaction.Controllers
 
         /*------------------------------------------------------------CallAPI------------------------------------------------------------*/
 
+        [HttpPut("ChangeVerification/{idUser}")]
+        private async Task<IActionResult> ChangeVerification(string idUser)
+        {
+            HttpResponseMessage response = await client.PutAsync($"{UserApiUrl}/ChangeVerification/{idUser}", null);
+            if (response.IsSuccessStatusCode)
+            {
+                return Ok("Change verification user is success!");
+            }
+            return BadRequest("Change verification user is fail");
+        }
+
         [HttpGet("GetInfoBlog/{idBlog}")]
         private async Task<ViewBlog> GetInfoBlog(Guid idBlog)
         {
@@ -188,6 +199,7 @@ namespace Interaction.Controllers
                     var isSuccess = await _context.SaveChangesAsync();
                     if (isSuccess > 0)
                     {
+                        await ChangeVerification(verification.idAccount);
                         return new Response(HttpStatusCode.OK, "Accept verification is success!", _mapper.Map<ViewVerification>(verification));
                     }
                     return new Response(HttpStatusCode.BadRequest, "Accept verification is fail!");
@@ -307,6 +319,7 @@ namespace Interaction.Controllers
                     postReport.titlePost = infoPost.title;
                     postReport.contentPost = infoPost.content;
                     var infoUserPost = await GetInfoUser(infoPost.idAccount);
+                    postReport.accountPosted = infoUserPost.Id;
                     postReport.emailPosted = infoUserPost.email;
                     postReport.namePosted = infoUserPost.fullName;
                     postReport.avatarPosted = infoUserPost.avatar;
@@ -392,6 +405,7 @@ namespace Interaction.Controllers
                     blogReport.titleBlog = infoBlog.title;
                     blogReport.contentBlog = infoBlog.content;
                     var infoUserBlog = await GetInfoUser(infoBlog.idAccount);
+                    blogReport.accountBloged = infoUserBlog.Id;
                     blogReport.emailBloged = infoUserBlog.email;
                     blogReport.nameBloged = infoUserBlog.fullName;
                     blogReport.avatarBloged = infoUserBlog.avatar;
