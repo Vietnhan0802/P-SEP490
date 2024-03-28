@@ -118,7 +118,7 @@ function Blog({ value }) {
   // Handler function to update the state when the input changes
   useEffect(() => {
     blogInstance
-      .get(`GetAllBlogs/${currentUserId}`)
+      .get(`GetAllPublicBlogs/${currentUserId}`)
       .then((res) => {
         const blogList = res?.data?.result;
         setData([]);
@@ -149,10 +149,10 @@ function Blog({ value }) {
       .get(`GetAllBlogsTrend/${currentUserId}`)
       .then((res) => {
         const blogList = res?.data?.result;
-        setData([]);
+        setBlogListTrend([]);
         blogList.map((element) => {
           const time = calculateTimeDifference(element.createdDate);
-          setData((prevData) => [
+          setBlogListTrend((prevData) => [
             ...prevData,
             createData(
               element.idBlog,
@@ -184,6 +184,7 @@ function Blog({ value }) {
     );
     setFilterBlog(filtered);
   }
+  console.log(showTrendList);
   const toggleTrendList = () => {
     setShowTrendList(!showTrendList);
   };

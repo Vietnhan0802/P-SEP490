@@ -121,7 +121,7 @@ function Post({value}) {
   };
   useEffect(() => {
     postInstance
-      .get(`GetAllPosts/${currentUserId}`)
+      .get(`GetAllPublicPosts/${currentUserId}`)
       .then((res) => {
         const postList = res?.data?.result;
         setPostList([]);

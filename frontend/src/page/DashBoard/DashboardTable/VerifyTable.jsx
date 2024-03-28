@@ -188,7 +188,7 @@ EnhancedTableHead.propTypes = {
     rowCount: PropTypes.number.isRequired,
 };
 
-export default function VerifyTable({ value, verified,resetVerify }) {
+export default function VerifyTable({ value, verified, resetVerify }) {
     const navigate = useNavigate();
     const [order, setOrder] = React.useState("asc");
     const [orderBy, setOrderBy] = React.useState("calories");
@@ -197,6 +197,7 @@ export default function VerifyTable({ value, verified,resetVerify }) {
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
     const [verifyRow, setVerifyRow] = React.useState([]);
     const [verifiedRow, setVerifiedRow] = React.useState([]);
+    const [searchTerm, setSearchTerm] = React.useState('');
     React.useEffect(() => {
         if (Array.isArray(value) && value.length > 0) {
             const data = value?.map((element) =>
@@ -244,6 +245,11 @@ export default function VerifyTable({ value, verified,resetVerify }) {
                 console.error(error);
             })
     }
+    const handleCancel = (id) => {
+        reportInstance.delete(`RemoveVerification/${id}`)
+            .then((res) => { console.log(res?.data?.result) })
+            .catch((error) => { console.error(error) });
+    }
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === "asc";
         setOrder(isAsc ? "desc" : "asc");
@@ -271,23 +277,39 @@ export default function VerifyTable({ value, verified,resetVerify }) {
     const isSelected = (id) => selected.indexOf(id) !== -1;
 
     // Avoid a layout jump when reaching the last page with empty rows.
+    const filterRows = (rows, searchTerm) => {
+        if (!searchTerm) {
+            return rows;
+        }
 
+        const lowercaseSearchTerm = searchTerm.toLowerCase();
+
+        return rows.filter(
+            (row) =>
+                row.fullName.toLowerCase().includes(lowercaseSearchTerm) ||
+                row.email.toLowerCase().includes(lowercaseSearchTerm)
+        );
+    };
+    const filteredVerifyRows = filterRows(verifyRow, searchTerm);
+    const filteredVerifiedRows = filterRows(verifiedRow, searchTerm);
     const visibleRows = React.useMemo(
         () =>
-            stableSort(verifyRow, getComparator(order, orderBy)).slice(
+            stableSort(filteredVerifyRows, getComparator(order, orderBy)).slice(
                 page * rowsPerPage,
                 page * rowsPerPage + rowsPerPage
             ),
-        [order, orderBy, page, rowsPerPage, verifyRow]
+        [order, orderBy, page, rowsPerPage, filteredVerifyRows]
     );
+
     const verifiedRows = React.useMemo(
         () =>
-            stableSort(verifiedRow, getComparator(order, orderBy)).slice(
+            stableSort(filteredVerifiedRows, getComparator(order, orderBy)).slice(
                 page * rowsPerPage,
                 page * rowsPerPage + rowsPerPage
             ),
-        [order, orderBy, page, rowsPerPage, verifiedRow]
+        [order, orderBy, page, rowsPerPage, filteredVerifiedRows]
     );
+
     const [activeTab, setActiveTab] = React.useState("unverify");
     const handledActive = (report) => {
         setActiveTab(report);
@@ -301,7 +323,14 @@ export default function VerifyTable({ value, verified,resetVerify }) {
                 <div className="d-flex w-50">
                     <div className="ms-2 search-box d-flex align-items-center w-100">
                         <IoSearchOutline className="search-icon me-1 fs-4" />
-                        <input type="text" name="" className="search" id="" />
+                        <input
+                            type="text"
+                            name=""
+                            className="search"
+                            id=""
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                        />
                     </div>
                     <div className="d-flex justify-content-between align-items-center">
                         <div onClick={() => handledActive("unverify")}>
@@ -393,7 +422,7 @@ export default function VerifyTable({ value, verified,resetVerify }) {
                                             </div> : <div
                                                 className="d-flex align-items-center justify-content-end"
                                             >
-                                                <div className={`block-box ms-2 delete`} onClick={() => handleVerify(row.id, 2)}>
+                                                <div className={`block-box ms-2 delete`} onClick={() => handleCancel(row.id)}>
                                                     <GoDotFill className="me-1 delete-dot" />
                                                     Cancel
                                                 </div>

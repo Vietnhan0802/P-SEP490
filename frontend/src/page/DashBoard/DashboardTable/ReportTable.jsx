@@ -451,6 +451,7 @@ export default function ReportTable({ accountValue, postValue, blogValue, resetR
   const [accountRow, setAccountRow] = React.useState([]);
   const [postRow, setPostRow] = React.useState([]);
   const [blogRow, setBlogRow] = React.useState([]);
+  const [searchTerm, setSearchTerm] = React.useState("");
   React.useEffect(() => {
     if (accountValue) {
       const fetchedAccountRows = accountValue?.map(element => (
@@ -538,7 +539,41 @@ export default function ReportTable({ accountValue, postValue, blogValue, resetR
     setOrder(isAsc ? "desc" : "asc");
     setOrderBy(property);
   };
+  const filterRows = (rows, searchTerm) => {
+    if (!searchTerm) return rows; // Return the original array if no search term
 
+    return rows.filter((row) =>
+      Object.values(row).some((value) =>
+        value.toString().toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    );
+  };
+  const visibleRows = React.useMemo(
+    () =>
+      stableSort(filterRows(postRow, searchTerm), getComparator(order, orderBy)).slice(
+        page * rowsPerPage,
+        page * rowsPerPage + rowsPerPage
+      ),
+    [order, orderBy, page, rowsPerPage, postRow, searchTerm]
+  );
+
+  const visibleAccountRows = React.useMemo(
+    () =>
+      stableSort(filterRows(accountRow, searchTerm), getComparator(order, orderBy)).slice(
+        page * rowsPerPage,
+        page * rowsPerPage + rowsPerPage
+      ),
+    [order, orderBy, page, rowsPerPage, accountRow, searchTerm]
+  );
+
+  const visibleBlogRows = React.useMemo(
+    () =>
+      stableSort(filterRows(blogRow, searchTerm), getComparator(order, orderBy)).slice(
+        page * rowsPerPage,
+        page * rowsPerPage + rowsPerPage
+      ),
+    [order, orderBy, page, rowsPerPage, blogRow, searchTerm]
+  );
 
 
   const handleChangePage = (event, newPage) => {
@@ -553,31 +588,6 @@ export default function ReportTable({ accountValue, postValue, blogValue, resetR
   const isSelected = (id) => selected.indexOf(id) !== -1;
 
   // Avoid a layout jump when reaching the last page with empty rows.
-
-  const visibleRows = React.useMemo(
-    () =>
-      stableSort(postRow, getComparator(order, orderBy)).slice(
-        page * rowsPerPage,
-        page * rowsPerPage + rowsPerPage
-      ),
-    [order, orderBy, page, rowsPerPage, postRow]
-  );
-  const visibleAccountRows = React.useMemo(
-    () =>
-      stableSort(accountRow, getComparator(order, orderBy)).slice(
-        page * rowsPerPage,
-        page * rowsPerPage + rowsPerPage
-      ),
-    [order, orderBy, page, rowsPerPage, accountRow]
-  );
-  const visibleBlogRows = React.useMemo(
-    () =>
-      stableSort(blogRow, getComparator(order, orderBy)).slice(
-        page * rowsPerPage,
-        page * rowsPerPage + rowsPerPage
-      ),
-    [order, orderBy, page, rowsPerPage, blogRow]
-  );
   const [activeReport, setActiveReport] = React.useState("reportPost");
   const handledActiveReport = (report) => {
     setActiveReport(report);
@@ -591,7 +601,8 @@ export default function ReportTable({ accountValue, postValue, blogValue, resetR
         <div className="d-flex ">
           <div className="ms-2 search-box">
             <IoSearchOutline className="search-icon me-1 fs-4" />
-            <input type="text" name="" className="search" id="" />
+            <input type="text" name="" className="search" id="" value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)} />
           </div>
           <div className="d-flex justify-content-between align-items-center">
             <div onClick={() => handledActiveReport("reportPost")}>

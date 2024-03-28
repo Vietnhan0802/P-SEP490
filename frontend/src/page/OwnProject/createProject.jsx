@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { useRef } from 'react';
+import "./ownProject.scss";
 import CreatableSelect from 'react-select/creatable';
 import makeAnimated from 'react-select/animated';
 import { Modal, Button } from "react-bootstrap";
@@ -150,9 +151,9 @@ function CreateProject({ reset }) {
                 <Button variant="m-0 btn btn-primary me-2" onClick={modalShow}>
                     Create
                 </Button>
-                <Modal show={show} onHide={modalClose}>
+                <Modal show={show} onHide={modalClose} id="cus-project">
                     <Modal.Header closeButton>
-                        <Modal.Title>Create New Project</Modal.Title>
+                        <Modal.Title>Create Project</Modal.Title>
                     </Modal.Header>
                     <Modal.Body className="popup-body">
                         <div className="d-flex flex-column">
@@ -173,7 +174,7 @@ function CreateProject({ reset }) {
                                     value={value.description}
                                     name="description"
                                     onChange={handleInputChange}
-                                    className="form-control w-100 "
+                                    className="form-control w-100 cus-h"
                                     placeholder="Enter Project Description..."
                                 />
                                 <label for="floatingInput">Project description</label>
