@@ -69,11 +69,11 @@ function ProjectInviation() {
                     <div >
                         {role === 'Business' ?
 
-                            <CancelItem id={row.original.id} reset={reset} />
+                            <CancelItem id={row.original.id} reset={reset} role={role} />
                             :
                             <div className='d-flex'>
-                                <AcceptConfirm id={row.original.id} reset={reset} />
-                                <RejectConfirm id={row.original.id} reset={reset} />
+                                <AcceptConfirm id={row.original.id} reset={reset} role={role} />
+                                <RejectConfirm id={row.original.id} reset={reset} role={role} />
                             </div>}
                     </div>
                 ),

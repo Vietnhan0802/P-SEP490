@@ -75,11 +75,10 @@ function ProjectApplication() {
                   rel="noopener noreferrer" // Improve security for opening new tabs
                 > View CV
                 </a>
-                <AcceptConfirm id={row.original.id} reset={reset} />
-                <RejectConfirm id={row.original.id} reset={reset} />
+                <AcceptConfirm id={row.original.id} reset={reset} role={role}  />
+                <RejectConfirm id={row.original.id} reset={reset} role={role} />
               </div> :
               <CancelItem id={row.original.id} reset={reset} role={role} />}
-
           </div>
         ),
       },
