@@ -10,6 +10,7 @@ namespace BusinessObjects.ViewModels.Interaction
         public string? nameReporter { get; set; }
         public string? avatarReporter { get; set; }
         public Guid idPosted { get; set; }
+        public string? accountPosted { get; set; }
         public string? emailPosted { get; set; }
         public string? namePosted { get; set; }
         public string? avatarPosted { get; set; }
