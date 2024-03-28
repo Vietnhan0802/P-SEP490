@@ -109,7 +109,7 @@ function Table({ columns, data }) {
     useSortBy,
     usePagination // new
   );
-  const noDataAvailable = data.length === 0;
+  const noDataAvailable = data?.length === 0;
   // Render the UI for your table
   return (
     <>

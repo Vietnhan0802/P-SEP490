@@ -48,6 +48,7 @@ function FormApply({ projectId, positionOption }) {
       cvUrl: invite.fileName,
       cvUrlFile: invite.file
     };
+    console.log()
     const form = new FormData();
     form.append("idPosition", postData.positionId);
     form.append("cvUrl", postData.cvUrl);
