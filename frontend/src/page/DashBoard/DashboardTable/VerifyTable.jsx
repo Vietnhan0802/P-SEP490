@@ -15,16 +15,22 @@ import avatar from "../../../images/common/Avatar.png";
 import { IoSearchOutline } from "react-icons/io5";
 import "../DashboardTable/table.scss";
 import { GoDotFill } from "react-icons/go";
+import { useNavigate } from "react-router-dom";
+import { reportInstance } from "../../../axios/axiosConfig";
+import { color } from "@mui/system";
+const formatDate = (timestamp) => {
+    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+        "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const date = new Date(timestamp);
+    const day = date.getDate();
+    const month = months[date.getMonth()];
+    const year = date.getFullYear();
 
-function createData(id, name, email, date, project, follower, status) {
+    return `${day} ${month} ${year}`;
+}
+function createData(id, idAccount, email, fullName, avatar, project, follow, date) {
     return {
-        id,
-        name,
-        email,
-        date,
-        project,
-        follower,
-        status,
+        id, idAccount, email, fullName, avatar, project, follow, date
     };
 }
 
@@ -115,21 +121,21 @@ const headCells = [
     },
     {
         id: "Project",
-        numeric: true,
+        numeric: false,
         disablePadding: false,
         label: "Project",
     },
     {
         id: "Follower",
-        numeric: true,
+        numeric: false,
         disablePadding: false,
         label: "Follower",
     },
     {
-        id: "Status",
+        id: "action",
         numeric: true,
         disablePadding: false,
-        label: "Status",
+        label: "Action",
     },
 ];
 
@@ -152,7 +158,7 @@ function EnhancedTableHead(props) {
                         align={headCell.numeric ? "right" : "left"}
                         padding={headCell.disablePadding ? "none" : "normal"}
                         sortDirection={orderBy === headCell.id ? order : false}
-                        style={{ paddingLeft: "10px" }}
+                        style={{ paddingLeft: "16px" }}
                     >
                         <TableSortLabel
                             active={orderBy === headCell.id}
@@ -182,13 +188,45 @@ EnhancedTableHead.propTypes = {
     rowCount: PropTypes.number.isRequired,
 };
 
-export default function VerifyTable() {
+export default function VerifyTable({ value, resetVerify }) {
+    const navigate = useNavigate();
     const [order, setOrder] = React.useState("asc");
     const [orderBy, setOrderBy] = React.useState("calories");
     const [selected, setSelected] = React.useState([]);
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
+    const [verifyRow, setVerifyRow] = React.useState([]);
+    React.useEffect(() => {
+        if (Array.isArray(value) && value.length > 0) {
+            const data = value?.map((element) =>
+                createData(
+                    element.idVerification,
+                    element.idAccount,
+                    element.email,
+                    element.fullName,
+                    element.avatar,
+                    element.project,
+                    element.follower,
+                    formatDate(element.createdDate)
+                )
+            )
+            setVerifyRow(data);
+        }
 
+    }, [value])
+    const navigateUser = (id) => {
+        navigate('/profile', { state: { userId: id } })
+    }
+    const handleVerify = (id, status) => {
+        reportInstance.put(`AcceptVerification/${id}/${status}`)
+            .then((res) => {
+                console.log(res?.data?.result);
+                resetVerify();
+            })
+            .catch((error) => {
+                console.error(error);
+            })
+    }
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === "asc";
         setOrder(isAsc ? "desc" : "asc");
@@ -219,13 +257,16 @@ export default function VerifyTable() {
 
     const visibleRows = React.useMemo(
         () =>
-            stableSort(rows, getComparator(order, orderBy)).slice(
+            stableSort(verifyRow, getComparator(order, orderBy)).slice(
                 page * rowsPerPage,
                 page * rowsPerPage + rowsPerPage
             ),
-        [order, orderBy, page, rowsPerPage]
+        [order, orderBy, page, rowsPerPage, verifyRow]
     );
-
+    const [activeReport, setActiveReport] = React.useState("reportPost");
+    const handledActive = (report) => {
+        setActiveReport(report);
+    };
     return (
         <Box
             id="verifyTable"
@@ -235,8 +276,26 @@ export default function VerifyTable() {
                 <div className="ms-2 search-box">
                     <IoSearchOutline className="search-icon me-1 fs-4" />
                     <input type="text" name="" className="search" id="" />
+                    <div className="d-flex justify-content-between align-items-center">
+                        <div onClick={() => handledActive("unverify")}>
+                            <p
+                                className={`report-post ${activeReport === "unverify" ? "active-report" : ""
+                                    }`}
+                            >
+                                Verify List
+                            </p>
+                        </div>
+                        <div onClick={() => handledActive("verified")}>
+                            <p
+                                className={`report-account ${activeReport === "verified" ? "active-report" : ""
+                                    }`}
+                            >
+                                Unverifed List
+                            </p>
+                        </div>
+
+                    </div>
                 </div>
-                <div className="line"></div>
                 <TableContainer>
                     <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
                         <EnhancedTableHead
@@ -267,11 +326,12 @@ export default function VerifyTable() {
                                             id={labelId}
                                             scope="row"
                                             padding="none"
+                                            onClick={() => navigateUser(row.idAccount)}
                                         >
                                             <div className="ms-2 my-2 d-flex align-items-center">
                                                 <img
                                                     className="me-2"
-                                                    src={avatar}
+                                                    src={row.avatar}
                                                     alt=""
                                                     style={{
                                                         width: "40px",
@@ -280,29 +340,31 @@ export default function VerifyTable() {
                                                     }}
                                                 />
                                                 <div>
-                                                    {row.name}
+                                                    {row.fullName}
                                                     <br></br>
                                                     {row.email}
                                                 </div>
                                             </div>
                                         </TableCell>
                                         <TableCell align="left" className="blur">{row.date}</TableCell>
-                                        <TableCell align="right">
+                                        <TableCell align="left">
                                             <p>{row.project}</p>
                                         </TableCell>
-                                        <TableCell align="right" className="blur">{row.follower}</TableCell>
+                                        <TableCell align="left" className="blur">{row.follow}</TableCell>
                                         <TableCell align="right">
                                             <div
                                                 className="d-flex align-items-center justify-content-end"
                                             >
-                                                <div className={`block-box ${row.status === 'accept' ? "active-block" : ""
-                                                    }`}>
-                                                    <GoDotFill className="me-1" />
-                                                    {row.status}
+                                                <div className={`block-box accept `} onClick={() => handleVerify(row.id, 1)}>
+                                                    <GoDotFill className="me-1 accept-dot" />
+                                                    Accept
+                                                </div>
+                                                <div className={`block-box ms-2 deny`} onClick={() => handleVerify(row.id, 2)}>
+                                                    <GoDotFill className="me-1 deny-dot" />
+                                                    Deny
                                                 </div>
                                             </div>
                                         </TableCell>
-                                        <TableCell align="right">View</TableCell>
                                     </TableRow>
                                 );
                             })}

@@ -81,7 +81,7 @@ function ProjectDetail() {
       .catch((error) => {
         console.error(error);
       });
-  }, [resetProject,idProject]);
+  }, [resetProject, idProject]);
   useEffect(() => {
     projectInstance.get(`/GetAllMemberInProject/${idProject}`)
       .then((res) => {
@@ -96,9 +96,9 @@ function ProjectDetail() {
         console.error(error);
         setProjectMembers([]);
       });
-  }, [reset,idProject]);
+  }, [resetProject, idProject]);
   const resetPage = (value) => {
-    setResetProject(reset => !reset);
+    setResetProject(prevReset => !prevReset);
   }
   return (
     <Row className="pt-3 ms-0 me-0 pb-3">
