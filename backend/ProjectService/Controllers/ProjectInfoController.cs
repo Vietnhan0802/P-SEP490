@@ -39,6 +39,8 @@ namespace ProjectService.Controllers
             UserApiUrl = "https://localhost:7006/api/User";
         }
 
+        /*------------------------------------------------------------CallAPI------------------------------------------------------------*/
+
         [HttpPost("CreateNotificationProjectApply/{idSender}/{idReceiver}/{idPorject}")]
         private async Task<IActionResult> CreateNotificationProjectApply(string idSender, string idReceiver, Guid idPorject)
         {
@@ -77,6 +79,19 @@ namespace ProjectService.Controllers
                 return user;
             }
             return null;
+        }
+
+        /*------------------------------------------------------------HaveBeenCalled------------------------------------------------------------*/
+
+        [HttpGet("GetTotalProjects/{idUser}")]
+        public async Task<int> GetTotalProjects(string idUser)
+        {
+            var totalProject = await _context.Projects.CountAsync(x => x.idAccount == idUser);
+            if (totalProject > 0)
+            {
+                return totalProject;
+            }
+            return 0;
         }
 
         /*------------------------------------------------------------Statistic------------------------------------------------------------*/

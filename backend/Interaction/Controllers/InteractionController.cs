@@ -23,7 +23,9 @@ namespace Interaction.Controllers
         private readonly HttpClient client;
 
         public string BlogApiUrl { get; }
+        public string FollowApiUrl { get; }
         public string PostApiUrl { get; }
+        public string ProjectApiUrl { get; }
         public string UserApiUrl { get; }
 
         public InteractionController(AppDBContext context, IMapper mapper)
@@ -34,11 +36,49 @@ namespace Interaction.Controllers
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
             client.DefaultRequestHeaders.Accept.Add(contentType);
             BlogApiUrl = "https://localhost:7007/api/Blog";
+            FollowApiUrl = "https://localhost:7002/api/Follow";
             PostApiUrl = "https://localhost:7008/api/Post";
+            ProjectApiUrl = "https://localhost:7005/api/ProjectInfo";
             UserApiUrl = "https://localhost:7006/api/User";
         }
 
         /*------------------------------------------------------------CallAPI------------------------------------------------------------*/
+
+        [HttpGet("GetTotalProjects/{idOwner}")]
+        private async Task<int> GetTotalProjects(string idOwner)
+        {
+            HttpResponseMessage response = await client.GetAsync($"{ProjectApiUrl}/GetTotalProjects/{idOwner}");
+            if (response.IsSuccessStatusCode)
+            {
+                string strData = await response.Content.ReadAsStringAsync();
+                var option = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true,
+                };
+                var projects = JsonSerializer.Deserialize<int>(strData, option);
+
+                return projects!;
+            }
+            return 0;
+        }
+
+        [HttpGet("GetTotalFollowers/{idOwner}")]
+        private async Task<int> GetTotalFollowers(string idOwner)
+        {
+            HttpResponseMessage response = await client.GetAsync($"{FollowApiUrl}/GetTotalFollowers/{idOwner}");
+            if (response.IsSuccessStatusCode)
+            {
+                string strData = await response.Content.ReadAsStringAsync();
+                var option = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true,
+                };
+                var followers = JsonSerializer.Deserialize<int>(strData, option);
+
+                return followers!;
+            }
+            return 0;
+        }
 
         [HttpPut("ChangeVerification/{idUser}")]
         private async Task<IActionResult> ChangeVerification(string idUser)
@@ -154,6 +194,8 @@ namespace Interaction.Controllers
                 foreach (var verification in result)
                 {
                     var infoUser = await GetInfoUser(verification.idAccount);
+                    verification.project = await GetTotalProjects(verification.idAccount);
+                    verification.follower = await GetTotalFollowers(verification.idAccount);
                     verification.email = infoUser.email;
                     verification.fullName = infoUser.fullName;
                     verification.avatar = infoUser.avatar;
@@ -223,7 +265,7 @@ namespace Interaction.Controllers
         [HttpGet("GetAllAccountReport")]
         public async Task<Response> GetAllAccountReport()
         {
-            var accountReports = await _context.AccountReports.OrderBy(x => x.idReporter).OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
+            var accountReports = await _context.AccountReports.Where(x => x.status == Status.Waiting).OrderBy(x => x.idReporter).OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
             if (accountReports.Count > 0)
             {
                 var result = _mapper.Map<List<ViewAccountReport>>(accountReports);
@@ -305,7 +347,7 @@ namespace Interaction.Controllers
         [HttpGet("GetAllPostReport")]
         public async Task<Response> GetAllPostReport()
         {
-            var postReports = await _context.PostReports.OrderBy(x => x.idPosted).OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
+            var postReports = await _context.PostReports.Where(x => x.status == Status.Waiting).OrderBy(x => x.idPosted).OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
             if (postReports.Count > 0)
             {
                 var result = _mapper.Map<List<ViewPostReport>>(postReports);
@@ -391,7 +433,7 @@ namespace Interaction.Controllers
         [HttpGet("GetAllBlogReport")]
         public async Task<Response> GetAllBlogReport()
         {
-            var blogReports = await _context.BlogReports.OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
+            var blogReports = await _context.BlogReports.Where(x => x.status == Status.Waiting).OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
             if (blogReports.Count > 0)
             {
                 var result = _mapper.Map<List<ViewBlogReport>>(blogReports);

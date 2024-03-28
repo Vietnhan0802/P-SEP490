@@ -67,9 +67,18 @@ namespace Communication.Controllers
                 var result = _mapper.Map<List<ViewConversation>>(conversations);
                 foreach (var conversation in result)
                 {
-                    var infoUser = await GetInfoUser(conversation.idAccount2);
-                    conversation.fullName = infoUser.fullName;
-                    conversation.avatar = infoUser.avatar;
+                    if (idCurrentUser == conversation.idAccount2)
+                    {
+                        var infoUser = await GetInfoUser(conversation.idAccount1);
+                        conversation.fullName = infoUser.fullName;
+                        conversation.avatar = infoUser.avatar;
+                    }
+                    else
+                    {
+                        var infoUser = await GetInfoUser(conversation.idAccount2);
+                        conversation.fullName = infoUser.fullName;
+                        conversation.avatar = infoUser.avatar;
+                    }
                 }
                 return new Response(HttpStatusCode.OK, "Get all conversations is success!", result);
             }
@@ -93,7 +102,7 @@ namespace Communication.Controllers
                 await _context.Conversations.AddAsync(conversation);
                 await _context.SaveChangesAsync();
                 var result = _mapper.Map<ViewConversation>(conversation);
-                await _chatHub.Clients.User(idReceiver).SendAsync("StartConversation", idCurrentUser);
+                //await _chatHub.Clients.User(idReceiver).SendAsync("StartConversation", idCurrentUser);
                 return new Response(HttpStatusCode.OK, "Create conversation is success!", result);
             }
             return new Response(HttpStatusCode.NoContent, "Conversation had been existed!");
