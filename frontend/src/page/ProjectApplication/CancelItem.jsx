@@ -1,6 +1,7 @@
 import { Modal, Button } from "react-bootstrap";
 import { useEffect, useState } from "react";
 import { projectInstance } from "../../axios/axiosConfig";
+import { notifyError, notifySuccess } from "../../components/notification";
 
 function CancelItem({ id, reset, role }) {
     useEffect(() => {
@@ -17,15 +18,17 @@ function CancelItem({ id, reset, role }) {
                 .then((res) => {
                     setShow(false);
                     reset('Success');
+                    notifySuccess("Cancel invite is success!");
                 })
-                .catch((error) => { console.error(error); })
+                .catch((error) => { console.error(error); notifyError("Cancel invite is fail!"); })
         } else {
             projectInstance.delete(`RemoveApply/${id}`)
                 .then((res) => {
                     setShow(false);
                     reset('Success');
+                    notifySuccess("Cancel apply is success!");
                 })
-                .catch((error) => { console.error(error); })
+                .catch((error) => { console.error(error); notifyError("Cancel apply is fail!"); })
         }
 
     }

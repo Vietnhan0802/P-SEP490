@@ -3,6 +3,7 @@ import { useState } from "react";
 import "./popup.scss";
 import { IoFlagOutline } from "react-icons/io5";
 import { reportInstance } from "../../axios/axiosConfig";
+import Notification, { notifySuccess, notifyError } from "../../../components/notification";
 function Report({ id, idItem, type }) {
   const [show, setShow] = useState(false);
   const modalClose = () => setShow(false);
@@ -36,22 +37,25 @@ function Report({ id, idItem, type }) {
         .then((res) => {
           console.log(res?.data?.result);
           setShow(false);
+          notifySuccess("Create post report is success!");
         })
-        .catch((error) => { console.error(error) })
+        .catch((error) => { console.error(error); notifyError("Create post report is fail!"); })
     } else if (reportType === 'blog') {
       reportInstance.post(`CreateBlogReport/${report.idReporter}/${report.idPosted}/${report.content}`)
         .then((res) => {
           console.log(res?.data?.result);
           setShow(false);
+          notifySuccess("Create blog report is success!")
         })
-        .catch((error) => { console.error(error) })
+        .catch((error) => { console.error(error); notifyError("Create blog report is fail!"); })
     } else {
       reportInstance.post(`CreateAccountReport/${report.idReporter}/${report.idPosted}/${report.content}`)
         .then((res) => {
           console.log(res?.data?.result);
           setShow(false);
+          notifySuccess("Create account report is success!");
         })
-        .catch((error) => { console.error(error) })
+        .catch((error) => { console.error(error); notifyError("Create account report is fail!"); })
     }
   }
 

@@ -4,6 +4,7 @@ import defaultImage from "../../images/common/default.png";
 import "../Profile/profile.scss";
 import { Modal, Button } from "react-bootstrap";
 import { userInstance } from '../../axios/axiosConfig';
+import Notification, { notifySuccess, notifyError } from "../../../components/notification";
 function UpdateAvatarPu({ show, onClose, image, currentUserId, changeImage }) {
 
     const [display, setDisplay] = useState(show);
@@ -61,10 +62,12 @@ function UpdateAvatarPu({ show, onClose, image, currentUserId, changeImage }) {
                 onClose(false);
                 if (res?.data?.status === "OK") {
                     changeImage('ok');
+                    notifySuccess("Update avatar is success!");
                 }
             })
             .catch((err) => {
                 console.log(err?.response?.data);
+                notifyError("Update avatar is fail!");
             });
     };
     return (

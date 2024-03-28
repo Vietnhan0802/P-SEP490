@@ -4,6 +4,7 @@ import "./form-member.scss";
 import Select from 'react-select'
 import { BsSendPlus } from "react-icons/bs";
 import { projectInstance } from "../../axios/axiosConfig";
+import { notifyError, notifySuccess } from "../../components/notification";
 function FormApply({ projectId, positionOption }) {
   const sessionData = JSON.parse(sessionStorage.getItem('userSession')) || {};
   const { currentUserId } = sessionData;
@@ -60,8 +61,8 @@ function FormApply({ projectId, positionOption }) {
         accept: "application/json",
       },
     })
-      .then((res) => { console.log(res?.data?.result); setShow(false); })
-      .catch((error) => { console.error(error) });
+      .then((res) => { console.log(res?.data?.result); setShow(false); notifySuccess("Send apply is success!"); })
+      .catch((error) => { console.error(error); notifyError("Send apply is fail!"); });
   };
   return (
     <div className="p-1">

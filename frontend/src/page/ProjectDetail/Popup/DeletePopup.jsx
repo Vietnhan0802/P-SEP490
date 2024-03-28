@@ -4,6 +4,7 @@ import "../../ProjectDetail/UPF.scss";
 import { projectInstance } from "../../../axios/axiosConfig";
 import { MdDeleteOutline } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
+import { notifyError, notifySuccess } from "../../../components/notification";
 function DeletePopup({ id }) {
     const [show, setShow] = useState(false);
     const modalClose = () => { setShow(false); };
@@ -19,7 +20,9 @@ function DeletePopup({ id }) {
             // reset("Success");
             setShow(false);
             navigate('/ownproject');
+            notifySuccess("Delete project is success!");
         })
+        .catch((error) => { notifyError("Delete project is fail!"); })
     };
     return (
         <div className="p-1 ">
