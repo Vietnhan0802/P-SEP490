@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Button, Modal } from 'react-bootstrap'
 import { MdOutlineLockPerson } from "react-icons/md";
 import { userInstance } from '../../axios/axiosConfig';
+import Notification, { notifySuccess, notifyError } from "../../../components/notification";
 
 function ChangePass({ email }) {
     const [show, setShow] = useState(false);
@@ -35,8 +36,9 @@ function ChangePass({ email }) {
                     setShow(false);
                     setErrorText([]); // Optionally clear errors on successful action
                     console.log(res?.data?.result);
+                    notifySuccess("Change passsword is success!");
                 })
-                .catch((error) => { console.error(error); })
+                .catch((error) => { console.error(error); notifyError("Change password is fail!"); })
         }
 
     };

@@ -6,6 +6,7 @@ import { CiSearch } from "react-icons/ci";
 import Select from 'react-select'
 import { projectInstance, userInstance } from "../../axios/axiosConfig";
 import defaultAvatar from '../../images/common/default.png'
+import Notification, { notifySuccess, notifyError } from "../../../components/notification";
 function createData(id, avatar, fullName, email, role) {
   return { id, avatar, fullName, email, role }
 }
@@ -51,8 +52,8 @@ function FormMember({ projectId, positionOption }) {
       positionId: invite.positionId
     };
     projectInstance.post(`CreateProjectInvite/${postData.userId}?idProject=${postData.idProject}&idPosition=${postData.positionId}`)
-      .then((res) => { console.log(res?.data?.result); setShow(false); })
-      .catch((error) => { console.error(error) });
+      .then((res) => { console.log(res?.data?.result); setShow(false); notifySuccess("Send invite is success!"); })
+      .catch((error) => { console.error(error); notifyError("Send invite is fail!"); });
   };
   const handleSearch = (event) => {
     const userText = event.target.value;

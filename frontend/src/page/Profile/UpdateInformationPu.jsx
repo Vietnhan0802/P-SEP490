@@ -9,6 +9,7 @@ import "../Profile/check-box.scss";
 import Select from 'react-select'
 import { FiEdit } from "react-icons/fi";
 import { userInstance } from "../../axios/axiosConfig";
+import Notification, { notifySuccess, notifyError } from "../../../components/notification";
 function UpdateInformationPu({ value, id, reset, show, onClose, handleChangeImg }) {
   const [user, setUser] = useState({});
 
@@ -54,8 +55,9 @@ function UpdateInformationPu({ value, id, reset, show, onClose, handleChangeImg 
       .then((res) => {
         handleChangeImg('ok');
         reset(!show);
+        notifySuccess("Update information is success!");
       })
-      .catch((error) => { console.error(error) })
+      .catch((error) => { console.error(error); notifyError("Update information is fail!"); })
     modalClose();
   };
   const handlePositionChange = (selectedOption) => {

@@ -4,6 +4,7 @@ import CreatableSelect from 'react-select/creatable';
 import makeAnimated from 'react-select/animated';
 import { Modal, Button } from "react-bootstrap";
 import { projectInstance } from '../../axios/axiosConfig';
+import Notification, { notifySuccess, notifyError } from "../../../components/notification";
 function CreateProject({ reset }) {
     const sessionData = JSON.parse(sessionStorage.getItem('userSession')) || {};
     const { currentUserId } = sessionData;
@@ -131,7 +132,9 @@ function CreateProject({ reset }) {
                 ImageSrc: ''
             });
             setShow(false);
+            notifySuccess("Create project is success!");
         })
+        .catch((error) => { notifyError("Create project is fail!"); })
     };
     const handleSelectChange = (selectedOptions) => {
         const newOptions = selectedOptions.filter(option => !options.some(existingOption => existingOption.value === option.value));

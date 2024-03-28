@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Button, Modal } from 'react-bootstrap'
 import { IoPersonRemove } from "react-icons/io5";
 import { projectInstance } from '../../../axios/axiosConfig';
+import { notifyError, notifySuccess } from '../../../components/notification';
 function RemoveMember({ id, resetPage }) {
     const [show, setShow] = useState(false);
     const modalClose = () => { setShow(false); };
@@ -11,8 +12,9 @@ function RemoveMember({ id, resetPage }) {
             .then((res) => {
                 setShow(false);
                 resetPage();
+                notifySuccess("Delete member is success!");
             })
-            .then((error) => { console.error(error) });
+            .catch((error) => { console.error(error); notifyError("Delete member is fail!"); });
     }
     return (
         <div>

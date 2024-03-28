@@ -2,6 +2,8 @@ import { Modal, Button } from "react-bootstrap";
 import { useState } from "react";
 import "./profile.scss";
 import { credentialInstance } from "../../axios/axiosConfig";
+import Notification, { notifySuccess, notifyError } from "../../../components/notification";
+
 function DegreePu({ ...props }) {
   const { user } = props;
   const [show, setShow] = useState(false);
@@ -55,9 +57,11 @@ function DegreePu({ ...props }) {
           file: "",
           FileFile: null,
         });
+        notifySuccess("Create degree is success!");
       })
       .catch((error) => {
         console.error(error);
+        notifyError("Create degree is fail!");
       });
     setShow(false);
   };

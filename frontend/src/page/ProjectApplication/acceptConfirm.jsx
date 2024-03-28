@@ -2,6 +2,7 @@ import { Modal, Button } from "react-bootstrap";
 import { useState } from "react";
 import { Row, Col } from "react-bootstrap";
 import { projectInstance } from "../../axios/axiosConfig";
+import Notification, { notifySuccess, notifyError } from "../../../components/notification";
 
 function AcceptConfirm({ id, reset, role }) {
   const idMember = id;
@@ -14,15 +15,17 @@ function AcceptConfirm({ id, reset, role }) {
         .then((res) => {
           setShow(false);
           reset('Success');
+          notifySuccess("Accept apply is success!");
         })
-        .catch((error) => { console.error(error); })
+        .catch((error) => { console.error(error); notifyError("Accept apply is fail!"); })
     } else {
       projectInstance.put(`AcceptProjectInvitation/${idMember}`)
         .then((res) => {
           setShow(false);
           reset('Success');
+          notifySuccess("Accept invite is success!");
         })
-        .catch((error) => { console.error(error); })
+        .catch((error) => { console.error(error); notifyError("Accept invite is fail!"); })
     }
   }
 

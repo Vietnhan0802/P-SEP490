@@ -2,6 +2,7 @@ import { Modal, Button } from "react-bootstrap";
 import { useState } from "react";
 import { Row, Col } from "react-bootstrap";
 import { projectInstance } from "../../axios/axiosConfig";
+import Notification, { notifySuccess, notifyError } from "../../../components/notification";
 
 function RejectConfirm({ id, reset, role }) {
   const idMember = id;
@@ -14,15 +15,17 @@ function RejectConfirm({ id, reset, role }) {
         .then((res) => {
           setShow(false);
           reset('Success');
+          notifySuccess("Deny apply is success!");
         })
-        .catch((error) => { })
+        .catch((error) => { notifyError("Deny apply is fail!"); })
     } else {
       projectInstance.put(`DenyProjectApplication/${idMember}`)
         .then((res) => {
           setShow(false);
           reset('Success');
+          notifySuccess("Deny invite is success!");
         })
-        .catch((error) => { })
+        .catch((error) => { notifyError("Deny invite is fail!") })
     }
 
   }

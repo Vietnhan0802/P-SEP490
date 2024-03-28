@@ -33,6 +33,7 @@ import { Viewer } from '@react-pdf-viewer/core';
 import '@react-pdf-viewer/core/lib/styles/index.css';
 import { Worker } from '@react-pdf-viewer/core';
 import Verification from "./Verification";
+import Notification, { notifySuccess, notifyError } from "../../../components/notification";
 function formatDateString(dateString) {
   // Check if the dateString is not empty
   if (dateString) {
@@ -198,9 +199,16 @@ function Profile({ handleChangeImg, value, resetFollowing }) {
         }));
         setFollow(!follow);
         resetFollowing('Success');
+        if (inputs.isFollow){
+          notifySuccess("Follow is success!");
+        }
+        else{
+          notifySuccess("Unfollow is success!");
+        }
       })
       .catch((error) => {
         console.error(error);
+        notifyError("Follow is fail!");
       });
   };
   const [tabs, setTabs] = useState([]);
