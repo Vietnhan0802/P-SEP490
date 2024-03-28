@@ -520,7 +520,7 @@ namespace ProjectService.Controllers
             {
                 return new Response(HttpStatusCode.BadRequest, "Invalid data", error);
             }*/
-            var existApplication = await _context.ProjectMembers.FirstOrDefaultAsync(x => x.idProject == idProject && x.idAccount == idUser && x.type == BusinessObjects.Enums.Project.Type.Applied);
+            var existApplication = await _context.ProjectMembers.FirstOrDefaultAsync(x => x.idProject == idProject && x.idAccount == idUser);
             if (existApplication != null)
             {
                 return new Response(HttpStatusCode.BadRequest, "Project application is exist!");
@@ -546,7 +546,7 @@ namespace ProjectService.Controllers
         [HttpPost("CreateProjectInvite/{idUser}")]
         public async Task<Response> CreateProjectInvite(string idUser, Guid idProject, Guid idPosition)
         {
-            var existInvitation = await _context.ProjectMembers.FirstOrDefaultAsync(x => x.idProject == idProject && x.idAccount == idUser && x.type == BusinessObjects.Enums.Project.Type.Invited);
+            var existInvitation = await _context.ProjectMembers.FirstOrDefaultAsync(x => x.idProject == idProject && x.idAccount == idUser);
             if (existInvitation != null)
             {
                 return new Response(HttpStatusCode.BadRequest, "Project invitation is exist!");
