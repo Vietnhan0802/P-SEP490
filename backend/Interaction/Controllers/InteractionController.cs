@@ -187,7 +187,28 @@ namespace Interaction.Controllers
         [HttpGet("GetAllVerification")]
         public async Task<Response> GetAllVerification()
         {
-            var verifications = await _context.Verifications.OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
+            var verifications = await _context.Verifications.Where(x => x.status == Status.Waiting).OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
+            if (verifications.Count > 0)
+            {
+                var result = _mapper.Map<List<ViewVerification>>(verifications);
+                foreach (var verification in result)
+                {
+                    var infoUser = await GetInfoUser(verification.idAccount);
+                    verification.project = await GetTotalProjects(verification.idAccount);
+                    verification.follower = await GetTotalFollowers(verification.idAccount);
+                    verification.email = infoUser.email;
+                    verification.fullName = infoUser.fullName;
+                    verification.avatar = infoUser.avatar;
+                }
+                return new Response(HttpStatusCode.OK, "Get all verifications is success!", result);
+            }
+            return new Response(HttpStatusCode.NoContent, "Get all verifications is empty!");
+        }
+
+        [HttpGet("VerificationAccepted")]
+        public async Task<Response> VerificationAccepted()
+        {
+            var verifications = await _context.Verifications.Where(x => x.status == Status.Accept).OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
             if (verifications.Count > 0)
             {
                 var result = _mapper.Map<List<ViewVerification>>(verifications);
@@ -256,6 +277,24 @@ namespace Interaction.Controllers
                     }
                     return new Response(HttpStatusCode.BadRequest, "Deny verification is fail!");
                 }
+            }
+            return new Response(HttpStatusCode.NotFound, "Verification doesn't exists!");
+        }
+
+        [HttpDelete("RemoveVerification/{idVerification}")]
+        public async Task<Response> RemoveVerification(Guid idVerification)
+        {
+            var verification = await _context.Verifications.FindAsync(idVerification);
+            if (verification != null)
+            {
+                _context.Verifications.Remove(verification);
+                var isSuccess = await _context.SaveChangesAsync();
+                if (isSuccess > 0)
+                {
+                    await ChangeVerification(verification.idAccount);
+                    return new Response(HttpStatusCode.OK, "Remove verification is success!", _mapper.Map<ViewVerification>(verification));
+                }
+                return new Response(HttpStatusCode.BadRequest, "Remove verification is fail!");
             }
             return new Response(HttpStatusCode.NotFound, "Verification doesn't exists!");
         }
