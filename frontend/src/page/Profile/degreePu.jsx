@@ -2,7 +2,7 @@ import { Modal, Button } from "react-bootstrap";
 import { useState } from "react";
 import "./profile.scss";
 import { credentialInstance } from "../../axios/axiosConfig";
-import Notification, { notifySuccess, notifyError } from "../../../components/notification";
+import Notification, { notifySuccess, notifyError } from "../../../src/components/notification";
 
 function DegreePu({ ...props }) {
   const { user } = props;

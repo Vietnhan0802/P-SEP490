@@ -188,7 +188,7 @@ EnhancedTableHead.propTypes = {
     rowCount: PropTypes.number.isRequired,
 };
 
-export default function VerifyTable({ value, resetVerify }) {
+export default function VerifyTable({ value, verified,resetVerify }) {
     const navigate = useNavigate();
     const [order, setOrder] = React.useState("asc");
     const [orderBy, setOrderBy] = React.useState("calories");
@@ -196,6 +196,7 @@ export default function VerifyTable({ value, resetVerify }) {
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
     const [verifyRow, setVerifyRow] = React.useState([]);
+    const [verifiedRow, setVerifiedRow] = React.useState([]);
     React.useEffect(() => {
         if (Array.isArray(value) && value.length > 0) {
             const data = value?.map((element) =>
@@ -212,8 +213,24 @@ export default function VerifyTable({ value, resetVerify }) {
             )
             setVerifyRow(data);
         }
-
     }, [value])
+    React.useEffect(() => {
+        if (Array.isArray(verified) && verified.length > 0) {
+            const data = verified?.map((element) =>
+                createData(
+                    element.idVerification,
+                    element.idAccount,
+                    element.email,
+                    element.fullName,
+                    element.avatar,
+                    element.project,
+                    element.follower,
+                    formatDate(element.createdDate)
+                )
+            )
+            setVerifiedRow(data);
+        }
+    }, [verified])
     const navigateUser = (id) => {
         navigate('/profile', { state: { userId: id } })
     }
@@ -263,9 +280,17 @@ export default function VerifyTable({ value, resetVerify }) {
             ),
         [order, orderBy, page, rowsPerPage, verifyRow]
     );
-    const [activeReport, setActiveReport] = React.useState("reportPost");
+    const verifiedRows = React.useMemo(
+        () =>
+            stableSort(verifiedRow, getComparator(order, orderBy)).slice(
+                page * rowsPerPage,
+                page * rowsPerPage + rowsPerPage
+            ),
+        [order, orderBy, page, rowsPerPage, verifiedRow]
+    );
+    const [activeTab, setActiveTab] = React.useState("unverify");
     const handledActive = (report) => {
-        setActiveReport(report);
+        setActiveTab(report);
     };
     return (
         <Box
@@ -273,13 +298,15 @@ export default function VerifyTable({ value, resetVerify }) {
             sx={{ width: "100%", paddingLeft: "0px", marginTop: "16px" }}
         >
             <Paper sx={{ width: "100%", mb: 2 }} style={{ paddingTop: "10px" }} className="form-table">
-                <div className="ms-2 search-box">
-                    <IoSearchOutline className="search-icon me-1 fs-4" />
-                    <input type="text" name="" className="search" id="" />
+                <div className="d-flex w-50">
+                    <div className="ms-2 search-box d-flex align-items-center w-100">
+                        <IoSearchOutline className="search-icon me-1 fs-4" />
+                        <input type="text" name="" className="search" id="" />
+                    </div>
                     <div className="d-flex justify-content-between align-items-center">
                         <div onClick={() => handledActive("unverify")}>
                             <p
-                                className={`report-post ${activeReport === "unverify" ? "active-report" : ""
+                                className={`report-post ${activeTab === "unverify" ? "active-report" : ""
                                     }`}
                             >
                                 Verify List
@@ -287,15 +314,15 @@ export default function VerifyTable({ value, resetVerify }) {
                         </div>
                         <div onClick={() => handledActive("verified")}>
                             <p
-                                className={`report-account ${activeReport === "verified" ? "active-report" : ""
+                                className={`report-account ${activeTab === "verified" ? "active-report" : ""
                                     }`}
                             >
-                                Unverifed List
+                                Verifed List
                             </p>
                         </div>
-
                     </div>
                 </div>
+
                 <TableContainer>
                     <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
                         <EnhancedTableHead
@@ -307,7 +334,7 @@ export default function VerifyTable({ value, resetVerify }) {
                             rowCount={rows.length}
                         />
                         <TableBody>
-                            {visibleRows.map((row, index) => {
+                            {(activeTab === 'unverify' ? visibleRows : verifiedRows).map((row, index) => {
                                 const isItemSelected = isSelected(row.id);
                                 const labelId = `enhanced-table-checkbox-${index}`;
 
@@ -352,7 +379,7 @@ export default function VerifyTable({ value, resetVerify }) {
                                         </TableCell>
                                         <TableCell align="left" className="blur">{row.follow}</TableCell>
                                         <TableCell align="right">
-                                            <div
+                                            {activeTab === 'unverfy' ? <div
                                                 className="d-flex align-items-center justify-content-end"
                                             >
                                                 <div className={`block-box accept `} onClick={() => handleVerify(row.id, 1)}>
@@ -363,7 +390,15 @@ export default function VerifyTable({ value, resetVerify }) {
                                                     <GoDotFill className="me-1 deny-dot" />
                                                     Deny
                                                 </div>
-                                            </div>
+                                            </div> : <div
+                                                className="d-flex align-items-center justify-content-end"
+                                            >
+                                                <div className={`block-box ms-2 delete`} onClick={() => handleVerify(row.id, 2)}>
+                                                    <GoDotFill className="me-1 delete-dot" />
+                                                    Cancel
+                                                </div>
+                                            </div>}
+
                                         </TableCell>
                                     </TableRow>
                                 );

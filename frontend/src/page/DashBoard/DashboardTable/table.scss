@@ -293,11 +293,34 @@
   .deny-dot{
     color:#dfb016 !important ; 
   }
+  .delete{
+    color:#BB0507 !important ; 
+    border:1px solid#dfb016 !important;
+  }
+  .delete-dot{
+    color:#BB0507 !important ; 
+  }
+  .acti
   .active-block {
     color: #dfb016;
     border: 1px solid #dfb016;
   }
   .blur {
     color: #778089;
+  }
+  .active-report {
+    color: #2f45ad;
+    background-color: var(--header_background_search_box);
+    //background: var(--blue-va-5, rgba(47, 69, 173, 0.2));
+  }
+  .report-post,
+  .report-account,
+  .report-blog {
+    text-align: center;
+    width: 220px;
+    padding: 5px;
+    border-radius: 8px;
+    border: 1px solid #a4aab0;
+    margin: 0px 10px;
   }
 }
