@@ -277,9 +277,7 @@ function Post({value}) {
               </div>
               <h4 className="mt-2">{item.title}</h4>
 
-              <p className="mt-2" style={{ whiteSpace: "pre-wrap" }}>
-                {item.content}
-              </p>
+              <div dangerouslySetInnerHTML={{ __html: item.content }} />
               <div
                 id={`carouselExampleControls-${item.id}`}
                 className="carousel slide"

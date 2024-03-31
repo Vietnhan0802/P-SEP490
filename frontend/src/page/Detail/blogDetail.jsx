@@ -1,4 +1,5 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo,useRef } from "react";
+import bootstrap from "bootstrap/dist/js/bootstrap.bundle.min";
 import "./detail.scss";
 import avatarDefault from "../../images/common/default.png";
 import { FiEye } from "react-icons/fi";
@@ -43,7 +44,21 @@ function calculateTimeDifference(targetDate) {
   }
 }
 function BlogDetail({ value }) {
+  const carouselRef = useRef(null);
+  useEffect(() => {
+    if (carouselRef.current) {
+      var carouselInstance = new bootstrap.Carousel(carouselRef.current, {
+        interval: 99999999,
+        wrap: true,
+      });
+    }
 
+    return () => {
+      if (carouselInstance) {
+        carouselInstance.dispose();
+      }
+    };
+  }, []);
   const sessionData = JSON.parse(sessionStorage.getItem("userSession")) || {};
   const { currentUserId } = sessionData;
   const location = useLocation();
@@ -466,21 +481,66 @@ function BlogDetail({ value }) {
             type={'blog'}
           />
           <h3 className="fw-bold">{data.title}</h3>
-          <p style={{ whiteSpace: 'pre-wrap' }}>
-            {data.content}
-          </p>
-          <div>
-            {data?.viewBlogImages && (
-              data?.viewBlogImages?.length === 1 ? (
-                <img src={data.viewBlogImages[0].imageSrc} alt="" className="w-100" />
-              ) : (
-                data?.viewBlogImages?.map((item, index) => (
-                  <img key={index} src={item.imageSrc} alt="" className="w-100" />
-                ))
-              )
-            )}
+          <div dangerouslySetInnerHTML={{__html:data.content}}/>
+          <div
+                id={`carouselExampleControls-${data.id}`}
+                className="carousel slide"
+                data-bs-ride="carousel"
+                ref={carouselRef} // Thêm tham chiếu này
+              >
+                <div className="carousel-inner">
+                  {data.viewBlogImages?.map((items, index) => (
+                    <div
+                      className={`carousel-item ${index === 0 ? "active" : ""}`}
+                    >
+                      <div className="image-container d-flex justify-content-center">
+                        <img
+                          src={items.imageSrc}
+                          className="d-block w-100"
+                          alt=""
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
 
-          </div>
+                {data.viewBlogImages?.length > 1 && (
+                  <>
+                    <button
+                      className="carousel-control-prev"
+                      type="button"
+                      data-bs-target={`#carouselExampleControls-${data.id}`}
+                      data-bs-slide="prev"
+                    >
+                      <span
+                        className="carousel-control-prev-icon"
+                        style={{
+                          backgroundColor: "rgba(128, 128, 128, 0.6)",
+                          padding: "15px",
+                        }}
+                        aria-hidden="true"
+                      ></span>
+                      <span className="visually-hidden">Previous</span>
+                    </button>
+                    <button
+                      className="carousel-control-next"
+                      type="button"
+                      data-bs-target={`#carouselExampleControls-${data.id}`}
+                      data-bs-slide="next"
+                    >
+                      <span
+                        className="carousel-control-next-icon"
+                        style={{
+                          backgroundColor: "rgba(128, 128, 128, 0.6)",
+                          padding: "15px",
+                        }}
+                        aria-hidden="true"
+                      ></span>
+                      <span className="visually-hidden">Next</span>
+                    </button>
+                  </>
+                )}
+              </div>
           <div className="d-flex align-items-center border-bottom pb-3 mt-2 border-dark">
             <div className="d-flex align-items-center me-3">
               <FiEye className="me-2" /> {data.view + 1}

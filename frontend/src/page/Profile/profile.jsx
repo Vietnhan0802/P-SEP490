@@ -4,7 +4,6 @@ import "../Profile/profile.scss";
 import "../Profile/check-box.scss";
 import "../Profile/project.scss";
 import "../Profile/switchbtn.scss";
-import degree from "../../images/common/degree.png";
 import Follow from "../../components/follow";
 import { Button, Col, Dropdown, Row } from "react-bootstrap";
 import defaultImage from "../../images/common/default.png";
@@ -18,8 +17,7 @@ import {
 } from "../../axios/axiosConfig";
 import { CgProfile } from "react-icons/cg";
 import { useLocation, useNavigate } from "react-router-dom";
-import defaultProject from "../../images/common/default_project.webp";
-import DegreePu from "./degreePu";
+
 import UpdateAvatarPu from "./UpdateAvatarPu";
 import Report from "../../components/report-popup/Report";
 import UpdateInformationPu from "./UpdateInformationPu";
@@ -34,6 +32,7 @@ import '@react-pdf-viewer/core/lib/styles/index.css';
 import { Worker } from '@react-pdf-viewer/core';
 import Verification from "./Verification";
 import Notification, { notifySuccess, notifyError } from "../../../src/components/notification";
+import ProfileTab from "./ProfileTab";
 function formatDateString(dateString) {
   // Check if the dateString is not empty
   if (dateString) {
@@ -46,21 +45,17 @@ function formatDateString(dateString) {
   return "";
 }
 function Profile({ handleChangeImg, value, resetFollowing }) {
-
   // ````````````````````````````
-
   const navigate = useNavigate();
   const location = useLocation();
   // ````````````````````````````
   const [user, setUser] = useState({});
   const [follow, setFollow] = useState(true);
-  const [tab, setTab] = useState("");
   const sessionData = JSON.parse(sessionStorage.getItem("userSession")) || {};
   const { role, currentUserId } = sessionData;
   const { userId } = location.state || {};
   const [resetAvatar, setResetAvatar] = useState(true);
   const [resetDegree, setResetDegree] = useState(true);
-  const [showAllItems, setShowAllItems] = useState(false);
   const [display, setDisplay] = useState(false);
   const [updateDisplay, setUpdateDisplay] = useState(false);
   const [inputs, setInputs] = useState({
@@ -88,13 +83,6 @@ function Profile({ handleChangeImg, value, resetFollowing }) {
       .then((res) => {
         setUser(res?.data?.result);
         const user = res?.data?.result;
-        if (user.role === "Admin") {
-          setTab("blog");
-        } else if (user.role === "Business") {
-          setTab("post");
-        } else {
-          setTab("degree");
-        }
         // Update inputs here after user is fetched
         setInputs({
           userName: user?.userName || "",
@@ -177,10 +165,6 @@ function Profile({ handleChangeImg, value, resetFollowing }) {
     setDisplay(true);
   };
 
-  const hanldeSetTab = (tab) => {
-    setTab(tab);
-    setShowAllItems(!showAllItems);
-  };
   const handleFollow = () => {
     followInstance
       .post(
@@ -199,10 +183,10 @@ function Profile({ handleChangeImg, value, resetFollowing }) {
         }));
         setFollow(!follow);
         resetFollowing('Success');
-        if (inputs.isFollow){
+        if (inputs.isFollow) {
           notifySuccess("Follow is success!");
         }
-        else{
+        else {
           notifySuccess("Unfollow is success!");
         }
       })
@@ -403,296 +387,16 @@ function Profile({ handleChangeImg, value, resetFollowing }) {
             </div>
           </div>
           <section id="switch" className="mt-3">
-            <div className="btn-swtich d-flex flex-row justify-content-between mb-2">
-              <div className="action-swap tabs">
-                {tabs.map((tab, index) => (
-                  <React.Fragment key={index}>
-                    <input
-                      type="radio"
-                      id={`radio-${index + 1}`}
-                      name="tabs"
-                      defaultChecked={index === 0}
-                      onClick={() => hanldeSetTab(tab.action)}
-                    />
-                    <label className="tab" htmlFor={`radio-${index + 1}`}>
-                      {tab.title}
-                    </label>
-                  </React.Fragment>
-                ))}
-                <span className="glider"></span>
-              </div>
-              <div className="action-user d-flex flex-row align-items-center justify-content-end">
-                {user.role === "Member" && tab === "degree" && (
-                  <DegreePu user={currentUserId} />
-                )}
-                {user.role === "Member" && tab === "degree" && (
-                  <button
-                    className={`height-50 text-white btn-info btn ${tab === "degree" ? "active" : ""
-                      }`}
-                    onClick={() => hanldeSetTab("degree")}
-                  >
-                    {showAllItems ? "Show Less" : "View All"}
-                  </button>
-                )}
-
-                {user.role === "Admin" && tab === "blog" && (
-                  <button
-                    className={`height-50 text-white btn-info btn ${tab === "blog" ? "active" : ""
-                      }`}
-                    onClick={() => hanldeSetTab("blog")}
-                  >
-                    {" "}
-                    View All
-                  </button>
-                )}
-                {user.role === "Business" && tab === "post" && (
-                  <button
-                    className={`height-50 text-white btn-info btn ${tab === "post" ? "active" : ""
-                      }`}
-                    onClick={() => hanldeSetTab("post")}
-                  >
-                    {" "}
-                    View All
-                  </button>
-                )}
-                {user.role !== "Admin" && tab === "project" && (
-                  <button
-                    className={`height-50 text-white btn-info btn ${tab === "project" ? "active" : ""
-                      }`}
-                    onClick={() => hanldeSetTab("project")}
-                  >
-                    {" "}
-                    View All
-                  </button>
-                )}
-              </div>
-            </div>
-            <div>
-              {user.role === "Member" && tab === "degree" && (
-                <div
-                  className={`degree tab-content ${showAllItems ? "scrollable" : ""
-                    }`}
-                >
-                  {userDegree?.length !== 0 ? userDegree
-                    .slice(0, showAllItems ? userDegree?.length : 3)
-                    .map((item) => (
-                      <div className="row mb-4" key={item.idDegree}>
-                        <div className="col-2 d-flex justify-content-center img-contain">
-                          <img src={degree} alt="" className="image" />
-                        </div>
-                        <div className="col-7 d-flex flex-column justify-content-center">
-                          <p className="degree-title ellipsis">
-                            Degree title:
-                            {item.name}
-                          </p>
-                          <p className="degree-description ellipsis">
-                            Degree institution:
-                            {item.institution}
-                          </p>
-                        </div>
-                        <div className="col-3 d-flex justify-content-center align-items-center">
-                          <a
-                            href={item.fileSrc} // Link to the PDF file
-                            target="_blank" // Open in a new tab
-                            rel="noopener noreferrer" // Security best practice
-                            className="btn degree-detail btn-info text-white"
-                          >
-                            View Detail
-                          </a>
-                          {/* <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
-                            <div
-                              style={{
-                                border: '1px solid rgba(0, 0, 0, 0.3)',
-                                height: '750px',
-                              }}
-                            >
-                              <Viewer fileUrl={item.fileSrc}
-                               />
-                            </div>
-                          </Worker> */}
-                        </div>
-                      </div>
-                    )) : <p>There is no degree</p>}
-                </div>
-              )}
-              {/* DegreeTab */}
-              {user.role === "Business" && tab === "post" && (
-                <div className="post tab-content">
-                  {userPost?.length > 0 ? (
-                    userPost?.map((post) => (
-                      <div className="row">
-                        <div className="col-3 d-flex justify-content-center img-contain">
-                          <img
-                            src={
-                              post.viewPostImages.length > 0
-                                ? post.viewPostImages[0].imageSrc
-                                : defaultProject
-                            }
-                            alt=""
-                            className="image"
-                          />
-                        </div>
-                        <div className="col-7 d-flex flex-column justify-content-start">
-                          <div className="d-flex items-center">
-                            <div className="avatar-contain me-2">
-                              <img
-                                src={post.avatar}
-                                alt="Instructor Cooper Bator"
-                              />
-                            </div>
-                            <div className="left-30 d-flex flex-column justify-content-center">
-                              <div className="size-20 SFU-heavy d-flex ellipsis">
-                                {post.fullName}
-                              </div>
-                              <div className="size-14 SFU-reg text-gray-600 d-flex ellipsis">
-                                {formatDateString(post.createdDate)}
-                              </div>
-                            </div>
-                          </div>
-                          <p className="degree-description ellipsis">
-                            Post Title: {post.title}
-                          </p>
-                        </div>
-                        <div className="col-2 d-flex justify-content-center align-items-center">
-                          <button className="btn degree-detail">
-                            View Detail
-                          </button>
-                        </div>
-                      </div>
-                    ))
-                  ) : (
-                    <p>There is no post </p>
-                  )}
-                </div>
-              )}
-              {/* Posttab of business profile*/}
-              {user.role === "Admin" && tab === "blog" && (
-                <div className="blog tab-content">
-                  {userBlog?.length > 0 ? (
-                    userBlog?.map((blog) => (
-                      <div
-                        className="row align-items-center mb-3"
-                        key={blog.idBlog}
-                      >
-                        <div className="col-3 d-flex justify-content-center img-contain">
-                          <img
-                            src={
-                              blog?.viewBlogImages?.length > 0
-                                ? blog?.viewBlogImages[0].imageSrc
-                                : defaultProject
-                            }
-                            alt=""
-                            className="image"
-                          />
-                        </div>
-                        <div className="col-7 d-flex flex-column justify-content-start">
-                          <div className="d-flex items-center">
-                            <div className="avatar-contain me-2">
-                              <img
-                                src={blog.avatar}
-                                alt="Instructor Cooper Bator"
-                              />
-                            </div>
-
-                            <div className="left-30 d-flex flex-column justify-content-center">
-                              <div className="size-20 SFU-heavy d-flex ellipsis">
-                                {blog.fullName}
-                              </div>
-                              <div className="size-14 SFU-reg text-gray-600 d-flex ellipsis">
-                                {formatDateString(blog.createdDate)}
-                              </div>
-                            </div>
-                          </div>
-                          <p className="degree-description ellipsis">
-                            Post Title:{blog.title}
-                          </p>
-                        </div>
-                        <div className="col-2 d-flex justify-content-center align-items-center">
-                          <button className="btn degree-detail">
-                            View More
-                          </button>
-                        </div>
-                      </div>
-                    ))
-                  ) : (
-                    <p>There is no blog</p>
-                  )}
-                </div>
-              )}
-              {user.role !== "Admin" && tab === "project" && (
-                <div className="project tab-content">
-                  <div className="row" id="all-projects">
-                    {userProject?.length > 0 ? (
-                      userProject?.map((project) => (
-                        <div className="col-md-6" id="project-items-1">
-                          <div className="card">
-                            <div className="card-body">
-                              <div className="d-flex mb-3">
-                                <div className="flex-grow-1 align-items-start">
-                                  <div>
-                                    <h6 className="mb-0 text-muted">
-                                      <i className="mdi mdi-circle-medium text-danger fs-3 align-middle"></i>
-                                      <span className="team-date">
-                                        {formatDateString(project.createdDate)}
-                                      </span>
-                                    </h6>
-                                  </div>
-                                </div>
-                              </div>
-
-                              <div className="mb-4">
-                                <h5 className="mb-1 font-size-17 team-title ellipsis">
-                                  {project.name}
-                                </h5>
-                                <p className="text-muted mb-0 team-description ellipsis">
-                                  {project.description}
-                                </p>
-                              </div>
-                              <div className="d-flex">
-                                <div className="avatar-group float-start flex-grow-1 task-assigne">
-                                  {/* Clone from */}
-                                  <div className="avatar-group-item">
-                                    <img
-                                      src="https://bootdey.com/img/Content/avatar/avatar1.png"
-                                      alt=""
-                                      className="rounded-circle avatar-sm"
-                                    />
-                                  </div>
-                                  {/* to THis */}
-                                  <div className="avatar-group-item">
-                                    <img
-                                      src="https://bootdey.com/img/Content/avatar/avatar1.png"
-                                      alt=""
-                                      className="rounded-circle avatar-sm"
-                                    />
-                                  </div>
-                                  <div className="avatar-group-item">
-                                    <img
-                                      src="https://bootdey.com/img/Content/avatar/avatar1.png"
-                                      alt=""
-                                      className="rounded-circle avatar-sm"
-                                    />
-                                  </div>
-                                </div>
-                                <div className="align-self-end">
-                                  <span className="badge badge-soft-danger p-2 team-status">
-                                    {projectStatus(project.process)}
-                                  </span>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      ))
-                    ) : (
-                      <p>There is no project</p>
-                    )}
-                  </div>
-                </div>
-              )}
-
-              {/* PrijectTab of business profile */}
-            </div>
+            <ProfileTab
+              tabs={tabs}
+              user={user}
+              currentUserId={currentUserId}
+              userDegree={userDegree}
+              userPost={userPost}
+              userBlog={userBlog}
+              userProject={userProject}
+              formatDateString={formatDateString}
+              projectStatus={projectStatus} />
           </section>
         </Col>
         <Col md={3}>

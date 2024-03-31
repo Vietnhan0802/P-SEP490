@@ -137,7 +137,7 @@ function PostContent({ data, handleLikeOrUnlikePost, viewProject, userId }) {
       />
 
       <p className="fs-4 fw-bold">{data?.title}</p>
-      <p style={{ whiteSpace: "pre-wrap" }}>{data?.content}</p>
+      <div dangerouslySetInnerHTML={{ __html: data?.content }} />
       <div></div>
       <div
         id={`carouselExampleControls-PostUnique`}
