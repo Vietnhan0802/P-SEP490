@@ -13,6 +13,7 @@ namespace BusinessObjects.ViewModels.Interaction
         public string? emailReported { get; set; }
         public string? nameReported { get; set; }
         public string? avatarReported { get; set; }
+        public bool isVerified { get; set; }
         public string? content { get; set; }
         public Status? status { get; set; }
         public DateTime? createdDate { get; set; }

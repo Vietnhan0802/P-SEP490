@@ -6,6 +6,7 @@
         public string idSender { get; set; }
         public string? nameSender { get; set; }
         public string? avatar { get; set; }
+        public bool isVerified { get; set; }
         public int? numberSender { get; set; }
         public string? content { get; set; }
         public bool? isRead { get; set; }

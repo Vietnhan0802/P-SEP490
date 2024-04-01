@@ -7,6 +7,7 @@
         public string idAccount2 { get; set; }
         public string? fullName { get; set; }
         public string? avatar { get; set; }
+        public bool isVerified { get; set; }
         public DateTime createdDate { get; set; }
     }
 }

@@ -182,6 +182,7 @@ namespace PostService.Controllers
                 var infoUser = await GetInfoUser(post.idAccount!);
                 post.fullName = infoUser.fullName;
                 post.avatar = infoUser.avatar;
+                post.isVerified = infoUser.isVerified;
                 var postImages = await _context.PostImages.Where(x => x.idPost == post.idPost).ToListAsync();
                 var viewImages = _mapper.Map<List<ViewPostImage>>(postImages);
                 foreach (var image in viewImages)
@@ -213,6 +214,7 @@ namespace PostService.Controllers
                 var infoUser = await GetInfoUser(post.idAccount!);
                 post.fullName = infoUser.fullName;
                 post.avatar = infoUser.avatar;
+                post.isVerified = infoUser.isVerified;
                 var postImages = await _context.PostImages.Where(x => x.idPost == post.idPost).ToListAsync();
                 var viewImages = _mapper.Map<List<ViewPostImage>>(postImages);
                 foreach (var image in viewImages)
@@ -244,6 +246,7 @@ namespace PostService.Controllers
                 var infoUser = await GetInfoUser(post.idAccount!);
                 post.fullName = infoUser.fullName;
                 post.avatar = infoUser.avatar;
+                post.isVerified = infoUser.isVerified;
                 var postImages = await _context.PostImages.Where(x => x.idPost == post.idPost).ToListAsync();
                 var viewImages = _mapper.Map<List<ViewPostImage>>(postImages);
                 foreach (var image in viewImages)
@@ -275,6 +278,7 @@ namespace PostService.Controllers
                 var infoUser = await GetInfoUser(post.idAccount!);
                 post.fullName = infoUser.fullName;
                 post.avatar = infoUser.avatar;
+                post.isVerified = infoUser.isVerified;
                 var postImages = await _context.PostImages.Where(x => x.idPost == post.idPost).ToListAsync();
                 var viewImages = _mapper.Map<List<ViewPostImage>>(postImages);
                 foreach (var image in viewImages)
@@ -304,6 +308,7 @@ namespace PostService.Controllers
             var infoUser = await GetInfoUser(result.idAccount!);
             result.fullName = infoUser.fullName;
             result.avatar = infoUser.avatar;
+            result.isVerified = infoUser.isVerified;
             var postImages = await _context.PostImages.Where(x => x.idPost == post.idPost).ToListAsync();
             var viewImages = _mapper.Map<List<ViewPostImage>>(postImages);
             foreach (var image in viewImages)
@@ -492,6 +497,7 @@ namespace PostService.Controllers
                 var infoUserComment = await GetInfoUser(comment.idAccount!);
                 comment.fullName = infoUserComment.fullName;
                 comment.avatar = infoUserComment.avatar;
+                comment.isVerified = infoUserComment.isVerified;
                 var replies = await _context.PostReplys.Where(x => x.idPostComment == comment.idPostComment && x.isDeleted == false).OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
                 var resultReplies = _mapper.Map<List<ViewPostReply>>(replies);
                 foreach (var reply in resultReplies)
@@ -505,6 +511,7 @@ namespace PostService.Controllers
                     var infoUserReply = await GetInfoUser(reply.idAccount!);
                     reply.fullName = infoUserReply.fullName;
                     reply.avatar = infoUserReply.avatar;
+                    reply.isVerified = infoUserReply.isVerified;
                 }
                 comment.ViewPostReplies = resultReplies;
             }

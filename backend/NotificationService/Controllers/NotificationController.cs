@@ -66,6 +66,7 @@ namespace NotificationService.Controllers
                 var infoUser = await GetInfoUser(notification.idSender!);
                 notification.nameSender = infoUser.fullName;
                 notification.avatar = infoUser.avatar;
+                notification.isVerified = infoUser.isVerified;
             }
             return result;
         }
@@ -90,6 +91,7 @@ namespace NotificationService.Controllers
             var infoUser = await GetInfoUser(result.idSender!);
             result.nameSender = infoUser.fullName;
             result.avatar = infoUser.avatar;
+            result.isVerified = infoUser.isVerified;
             result.content = $"{notification.content}";
             return result;
         }
@@ -119,6 +121,7 @@ namespace NotificationService.Controllers
                 var infoUserc = await GetInfoUser(resultc.idSender!);
                 resultc.nameSender = infoUserc.fullName;
                 resultc.avatar = infoUserc.avatar;
+                resultc.isVerified = infoUserc.isVerified;
                 return resultc;
             }
             notification.idSender = idSender;
@@ -130,6 +133,7 @@ namespace NotificationService.Controllers
             var infoUser = await GetInfoUser(result.idSender!);
             result.nameSender = infoUser.fullName;
             result.avatar = infoUser.avatar;
+            result.isVerified = infoUser.isVerified;
             return result;
         }
 
@@ -152,6 +156,7 @@ namespace NotificationService.Controllers
             var infoUser = await GetInfoUser(result.idSender!);
             result.nameSender = infoUser.fullName;
             result.avatar = infoUser.avatar;
+            result.isVerified = infoUser.isVerified;
             result.content = $"{notification.content}";
             return result;
         }
@@ -175,6 +180,7 @@ namespace NotificationService.Controllers
             var infoUser = await GetInfoUser(result.idSender!);
             result.nameSender = infoUser.fullName;
             result.avatar = infoUser.avatar;
+            result.isVerified = infoUser.isVerified;
             result.content = $"{notification.content}";
             return result;
         }
@@ -204,6 +210,7 @@ namespace NotificationService.Controllers
                 var infoUserc = await GetInfoUser(resultc.idSender!);
                 resultc.nameSender = infoUserc.fullName;
                 resultc.avatar = infoUserc.avatar;
+                resultc.isVerified = infoUserc.isVerified;
                 return resultc;
             }
             notification.idSender = idSender;
@@ -215,6 +222,7 @@ namespace NotificationService.Controllers
             var infoUser = await GetInfoUser(result.idSender!);
             result.nameSender = infoUser.fullName;
             result.avatar = infoUser.avatar;
+            result.isVerified = infoUser.isVerified;
             return result;
         }
 
@@ -237,6 +245,7 @@ namespace NotificationService.Controllers
             var infoUser = await GetInfoUser(result.idSender!);
             result.nameSender = infoUser.fullName;
             result.avatar = infoUser.avatar;
+            result.isVerified = infoUser.isVerified;
             result.content = $"{notification.content}";
             return result;
         }
@@ -260,6 +269,7 @@ namespace NotificationService.Controllers
             var infoUser = await GetInfoUser(result.idSender!);
             result.nameSender = infoUser.fullName;
             result.avatar = infoUser.avatar;
+            result.isVerified = infoUser.isVerified;
             result.content = $"{notification.content}";
             return result;
         }
@@ -285,6 +295,7 @@ namespace NotificationService.Controllers
             var infoUser = await GetInfoUser(result.idSender!);
             result.nameSender = infoUser.fullName;
             result.avatar = infoUser.avatar;
+            result.isVerified = infoUser.isVerified;
             result.content = $"{notification.content}";
             return result;
         }
@@ -308,6 +319,7 @@ namespace NotificationService.Controllers
             var infoUser = await GetInfoUser(result.idSender!);
             result.nameSender = infoUser.fullName;
             result.avatar = infoUser.avatar;
+            result.isVerified = infoUser.isVerified;
             result.content = $"{notification.content}";
             return result;
         }

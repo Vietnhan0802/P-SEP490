@@ -109,6 +109,7 @@ namespace Follow.Controllers
                     following.emailAccount = infoUser.email;
                     following.fullNameAccount = infoUser.fullName;
                     following.avatarAccount = infoUser.avatar;
+                    following.isVerifiedAccount = infoUser.isVerified;
                 }
                 return new Response(HttpStatusCode.OK, "Get followings list is success!", result);
             }
@@ -132,6 +133,7 @@ namespace Follow.Controllers
                     follower.emailOwner = infoUser.email;
                     follower.fullNameOwner = infoUser.fullName;
                     follower.avatarOwner = infoUser.avatar;
+                    follower.isVerifiedOwner = infoUser.isVerified;
                 }
                 return new Response(HttpStatusCode.OK, "Get followers list is success!", result);
             }
