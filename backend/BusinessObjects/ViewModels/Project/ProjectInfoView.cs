@@ -9,6 +9,7 @@ namespace BusinessObjects.ViewModels.Project
         public string? idAccount { get; set; }
         public string? fullName { get; set; }
         public string? avatarUser { get; set; }
+        public bool isVerified { get; set; }
         public string? name { get; set; }
         public string? description { get; set; }
         public string? avatar { get; set; }

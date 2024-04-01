@@ -11,6 +11,7 @@ namespace BusinessObjects.ViewModels.Project
         public string? fullName { get; set; }
         public string? email { get; set; }
         public string? avatar { get; set; }
+        public bool isVerified { get; set; }
         public Guid? idProject { get; set; }
         public string? nameProject { get; set; }
         public Guid? idPosition { get; set; }

@@ -135,6 +135,7 @@ namespace ProjectService.Controllers
                 var infoUser = await GetInfoUser(project.idAccount);
                 project.fullName = infoUser.fullName;
                 project.avatarUser = infoUser.avatar;
+                project.isVerified = infoUser.isVerified;
                 project.avatarSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, project.avatar);
                 var positions = await _context.Positions.Where(x => x.idProject == project.idProject).ToListAsync();
                 var viewPosition = _mapper.Map<List<PositionView>>(positions);
@@ -157,6 +158,7 @@ namespace ProjectService.Controllers
                 var infoUser = await GetInfoUser(project.idAccount!);
                 project.fullName = infoUser.fullName;
                 project.avatarUser = infoUser.avatar;
+                project.isVerified = infoUser.isVerified;
                 project.avatarSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, project.avatar);
                 var positions = await _context.Positions.Where(x => x.idProject == project.idProject).ToListAsync();
                 var viewPosition = _mapper.Map<List<PositionView>>(positions);
@@ -181,6 +183,7 @@ namespace ProjectService.Controllers
                     var inforUser = await GetInfoUser(project.idAccount);
                     projectMember.fullName = inforUser.fullName;
                     projectMember.avatarUser = inforUser.avatar;
+                    projectMember.isVerified = inforUser.isVerified;
                     projectMember.avatarSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, project.avatar);
                     var positions = await _context.Positions.Where(x => x.idProject == project.idProject).ToListAsync();
                     var viewPosition = _mapper.Map<List<PositionView>>(positions);
@@ -205,6 +208,7 @@ namespace ProjectService.Controllers
                 var infoUser = await GetInfoUser(project.idAccount!);
                 project.fullName = infoUser.fullName;
                 project.avatarUser = infoUser.avatar;
+                project.isVerified = infoUser.isVerified;
                 project.avatarSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, project.avatar);
                 var positions = await _context.Positions.Where(x => x.idProject == project.idProject).ToListAsync();
                 var viewPosition = _mapper.Map<List<PositionView>>(positions);
@@ -225,6 +229,7 @@ namespace ProjectService.Controllers
             var infoUser = await GetInfoUser(result.idAccount!);
             result.fullName = infoUser.fullName;
             result.avatarUser = infoUser.avatar;
+            result.isVerified = infoUser.isVerified;
             result.avatarSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, result.avatar);
             var positions = await _context.Positions.Where(x => x.idProject == project.idProject).ToListAsync();
             var viewPosition = _mapper.Map<List<PositionView>>(positions);
@@ -249,6 +254,7 @@ namespace ProjectService.Controllers
                     var infoUser = await GetInfoUser(member.idAccount!);
                     member.fullName = infoUser.fullName;
                     member.avatar = infoUser.avatar;
+                    member.isVerified = infoUser.isVerified;
                     var postion = await _context.Positions.FirstOrDefaultAsync(x => x.idPosition == member.idPosition);
                     member.namePosition = postion.namePosition;
                 }
@@ -395,6 +401,7 @@ namespace ProjectService.Controllers
                             projectApplication.fullName = infoUser.fullName;
                             projectApplication.email = infoUser.email;
                             projectApplication.avatar = infoUser.avatar;
+                            projectApplication.isVerified = infoUser.isVerified;
                             projectApplication.nameProject = project.name;
                             projectApplication.cvUrlFile = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, projectApplication.cvUrl);
                             var positionName = await _context.Positions.Where(x => x.idProject == projectApplication.idProject).AsNoTracking().ToListAsync();
@@ -437,6 +444,7 @@ namespace ProjectService.Controllers
                             sendInvite.fullName = infoUser.fullName;
                             sendInvite.email = infoUser.email;
                             sendInvite.avatar = infoUser.avatar;
+                            sendInvite.isVerified = infoUser.isVerified;
                             sendInvite.nameProject = project.name;
                             sendInvite.cvUrlFile = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, sendInvite.cvUrl);
                             var positionName = await _context.Positions.FirstOrDefaultAsync(x => x.idPosition == sendInvite.idPosition);
@@ -470,6 +478,7 @@ namespace ProjectService.Controllers
                     var infoUser = await GetInfoUser(project.idAccount);
                     projectInvite.fullName = infoUser.fullName;
                     projectInvite.avatar = infoUser.avatar;
+                    projectInvite.isVerified = infoUser.isVerified;
                     projectInvite.nameProject = project.name;
                     projectInvite.cvUrlFile = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, projectInvite.cvUrl);
                     foreach (var position in projectInvites)
@@ -498,6 +507,7 @@ namespace ProjectService.Controllers
                     var infoUser = await GetInfoUser(project.idAccount);
                     projectApplication.fullName = infoUser.fullName;
                     projectApplication.avatar = infoUser.avatar;
+                    projectApplication.isVerified = infoUser.isVerified;
                     projectApplication.nameProject = project.name;
                     projectApplication.cvUrlFile = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, projectApplication.cvUrl);
                     foreach (var position in projectApplications)
