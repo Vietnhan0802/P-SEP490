@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.VisualBasic;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Text.Json;
@@ -72,12 +71,14 @@ namespace Communication.Controllers
                         var infoUser = await GetInfoUser(conversation.idAccount1);
                         conversation.fullName = infoUser.fullName;
                         conversation.avatar = infoUser.avatar;
+                        conversation.isVerified = infoUser.isVerified;
                     }
                     else
                     {
                         var infoUser = await GetInfoUser(conversation.idAccount2);
                         conversation.fullName = infoUser.fullName;
                         conversation.avatar = infoUser.avatar;
+                        conversation.isVerified = infoUser.isVerified;
                     }
                 }
                 return new Response(HttpStatusCode.OK, "Get all conversations is success!", result);
@@ -163,6 +164,7 @@ namespace Communication.Controllers
                         var infoReceiver = await GetInfoUser(message.idSender);
                         message.nameReceiver = infoReceiver.fullName;
                         message.avatarReceiver = infoReceiver.avatar;
+                        message.isVerifiedReceiver = infoReceiver.isVerified;
                     }
                 }
                 return new Response(HttpStatusCode.OK, "Get message is success!", result);

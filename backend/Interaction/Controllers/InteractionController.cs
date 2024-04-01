@@ -199,6 +199,7 @@ namespace Interaction.Controllers
                     verification.email = infoUser.email;
                     verification.fullName = infoUser.fullName;
                     verification.avatar = infoUser.avatar;
+                    verification.isVerified = infoUser.isVerified;
                 }
                 return new Response(HttpStatusCode.OK, "Get all verifications is success!", result);
             }
@@ -220,6 +221,7 @@ namespace Interaction.Controllers
                     verification.email = infoUser.email;
                     verification.fullName = infoUser.fullName;
                     verification.avatar = infoUser.avatar;
+                    verification.isVerified = infoUser.isVerified;
                 }
                 return new Response(HttpStatusCode.OK, "Get all verifications is success!", result);
             }
@@ -314,6 +316,7 @@ namespace Interaction.Controllers
                     accountReport.emailReporter = infoReporter.email;
                     accountReport.nameReporter = infoReporter.fullName;
                     accountReport.avatarReporter = infoReporter.avatar;
+                    accountReport.isVerified = infoReporter.isVerified;
                     var infoReported = await GetInfoUser(accountReport.idReported);
                     accountReport.emailReported = infoReported.email;
                     accountReport.nameReported = infoReported.fullName;
@@ -396,6 +399,7 @@ namespace Interaction.Controllers
                     postReport.emailReporter = infoUser.email;
                     postReport.nameReporter = infoUser.fullName;
                     postReport.avatarReporter = infoUser.avatar;
+                    postReport.isVerifiedReporter = infoUser.isVerified;
                     var infoPost = await GetInfoPost(postReport.idPosted);
                     postReport.titlePost = infoPost.title;
                     postReport.contentPost = infoPost.content;
@@ -404,6 +408,7 @@ namespace Interaction.Controllers
                     postReport.emailPosted = infoUserPost.email;
                     postReport.namePosted = infoUserPost.fullName;
                     postReport.avatarPosted = infoUserPost.avatar;
+                    postReport.isVerifiedPosted = infoUserPost.isVerified;
                 }
                 return new Response(HttpStatusCode.OK, "Get all post report is success!", result);
             }
@@ -482,6 +487,7 @@ namespace Interaction.Controllers
                     blogReport.emailReporter = infoUser.email;
                     blogReport.nameReporter = infoUser.fullName;
                     blogReport.avatarReporter = infoUser.avatar;
+                    blogReport.isVerifiedReporter = infoUser.isVerified;
                     var infoBlog = await GetInfoBlog(blogReport.idBloged);
                     blogReport.titleBlog = infoBlog.title;
                     blogReport.contentBlog = infoBlog.content;
@@ -490,6 +496,7 @@ namespace Interaction.Controllers
                     blogReport.emailBloged = infoUserBlog.email;
                     blogReport.nameBloged = infoUserBlog.fullName;
                     blogReport.avatarBloged = infoUserBlog.avatar;
+                    blogReport.isVerifiedBloged = infoUserBlog.isVerified;
                 }
                 return new Response(HttpStatusCode.OK, "Get all blog report is success!", result);
             }

@@ -9,6 +9,7 @@
         public string idReceiver { get; set; }
         public string nameReceiver { get; set; }
         public string avatarReceiver { get; set; }
+        public bool isVerifiedReceiver { get; set; }
         public bool isDeletedByReceiver { get; set; }
         public bool isYourself { get; set; }
         public string? content { get; set; }
