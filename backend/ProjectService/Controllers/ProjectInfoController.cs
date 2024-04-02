@@ -883,10 +883,10 @@ namespace ProjectService.Controllers
         }
 
         [HttpGet("GetAllRatingPeople/{idUser}")]
-        public async Task<Response> GetAllRatingPeople(string idRated)
+        public async Task<Response> GetAllRatingPeople(string idUser)
         {
-            var ratings = await _context.Ratings.Where(x => x.idRated == idRated).AsNoTracking().ToListAsync();
-            var ratingStart = GetAllRatingStartPeople(idRated);
+            var ratings = await _context.Ratings.Where(x => x.idRated == idUser).AsNoTracking().ToListAsync();
+            var ratingStart = GetAllRatingStartPeople(idUser);
 
             if (ratings.Count > 0)
             {
