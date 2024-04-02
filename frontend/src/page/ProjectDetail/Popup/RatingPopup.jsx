@@ -1,21 +1,26 @@
 import React, { useState } from 'react'
 import { Button, Modal } from 'react-bootstrap'
 import { Rating } from 'react-simple-star-rating'
-function RatingPopup({ show, onClose }) {
+import { projectInstance } from '../../../axios/axiosConfig'
+import { notifyError, notifySuccess } from '../../../components/notification'
+function RatingPopup({ show, onClose, id, projectid }) {
     const handleRatingProject = () => {
-
+        projectInstance.post(`CreateRatingProject/${id}/${projectid}`, {
+            rating: rating,
+            comment: input
+        })
+        .then((res)=>{notifySuccess(res?.data?.message)})
+        .catch((error)=>{notifyError(error?.data?.message)})
     }
     const [rating, setRating] = useState(0);
     const [input, setInput] = useState('');
 
     const handleFeedbackInput = (event) => {
-        setInput(event.target.value)
+        setInput(event.target.value);
     }
     // Catch Rating value
     const handleRating = (rate) => {
         setRating(rate)
-
-        // other logic
     }
     return (
         <div>
@@ -27,21 +32,21 @@ function RatingPopup({ show, onClose }) {
                 <Modal.Body className="popup-body">
 
                 </Modal.Body>
-                <div className='d-flex justify-content-between align-items-center mb-3 px-5 '>
+                <div className='d-flex justify-content-between align-items-center mb-3 mx-5 '>
                     <p>Project Quality :</p>
                     <Rating
                         onClick={handleRating}
                         className=''
-                    /* Available Props */
                     />
-
-
                 </div>
-                <div className='d-flex justify-content-between align-items-center mb-3 px-5 ' style={{}}>
-                    <input
-                        type="text"  
+                <div className='d-flex justify-content-between align-items-center mx-5 form-floating mb-3' style={{ height: '200px' }}>
+                    <textarea
+                        type="text"
+                        className='form-control w-100 h-100'
                         value={input}
-                        onChange={handleFeedbackInput} />
+                        onChange={handleFeedbackInput}
+                        id="floatingInput" placeholder="Feedback" />
+                    <label htmlFor="floatingInput " className='w-100'>Feedback</label>
                 </div>
 
                 <Modal.Footer>
