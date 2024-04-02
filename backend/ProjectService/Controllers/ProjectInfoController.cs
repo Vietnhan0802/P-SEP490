@@ -397,21 +397,24 @@ namespace ProjectService.Controllers
                 }
                 if (projectInfoUpdate.namePosition != null)
                 {
-                    if (project.Positions != null)
-                    {
-                        _context.Positions.RemoveRange(project.Positions);
-                        await _context.SaveChangesAsync();
-                    }
+                    var existPosition = await _context.Positions.Where(x => x.idProject == project.idProject).AsNoTracking().ToListAsync();
+
+                    var positionRemove = existPosition.Where(x => !projectInfoUpdate.namePosition.Contains(x.namePosition)).ToList();
+                    _context.Positions.RemoveRange(positionRemove);
+
                     foreach (var position in projectInfoUpdate.namePosition)
                     {
-                        Position newPosition = new Position()
+                        if (!existPosition.Any(p => p.namePosition == position))
                         {
-                            idProject = project.idProject,
-                            namePosition = position
-                        };
-                        await _context.Positions.AddAsync(newPosition);
-                        await _context.SaveChangesAsync();
+                            Position newPosition = new Position()
+                            {
+                                idProject = project.idProject,
+                                namePosition = position
+                            };
+                            await _context.Positions.AddAsync(newPosition);
+                        }
                     }
+                    await _context.SaveChangesAsync();
                 }
                 _mapper.Map(projectInfoUpdate, project);
                 var isSuccess = await _context.SaveChangesAsync();
