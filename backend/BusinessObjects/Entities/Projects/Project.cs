@@ -17,5 +17,6 @@ namespace BusinessObjects.Entities.Projects
         public DateTime createdDate { get; set; }
         public ICollection<Position>? Positions { get; set; }
         public ICollection<ProjectMember>? ProjectMembers { get; set; }
+        public ICollection<Rating>? Ratings { get; set; }
     }
 }

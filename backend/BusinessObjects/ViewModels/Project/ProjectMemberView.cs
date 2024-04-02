@@ -16,10 +16,12 @@ namespace BusinessObjects.ViewModels.Project
         public string? nameProject { get; set; }
         public Guid? idPosition { get; set; }
         public string? namePosition { get; set; }
-        public string? cvUrl { get; set; }
+        public string? cv { get; set; }
+        public double ratingAvg { get; set; }
+        public int ratingNum { get; set; }
         public bool isAcept { get; set; }
         public DateTime createdDate { get; set; }
         [NotMapped]
-        public string? cvUrlFile { get; set; }
+        public string? cvSrc { get; set; }
     }
 }

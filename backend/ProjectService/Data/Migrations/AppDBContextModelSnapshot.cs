@@ -117,6 +117,43 @@ namespace ProjectService.Data.Migrations
                     b.ToTable("ProjectMembers");
                 });
 
+            modelBuilder.Entity("BusinessObjects.Entities.Projects.Rating", b =>
+                {
+                    b.Property<Guid>("idRating")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("comment")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("createdDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("idProject")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("idProjectMember")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("idRated")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("idRater")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("rating")
+                        .HasColumnType("int");
+
+                    b.HasKey("idRating");
+
+                    b.HasIndex("idProject");
+
+                    b.HasIndex("idProjectMember");
+
+                    b.ToTable("Ratings");
+                });
+
             modelBuilder.Entity("BusinessObjects.Entities.Projects.Position", b =>
                 {
                     b.HasOne("BusinessObjects.Entities.Projects.Project", "Project")
@@ -143,11 +180,35 @@ namespace ProjectService.Data.Migrations
                     b.Navigation("Project");
                 });
 
+            modelBuilder.Entity("BusinessObjects.Entities.Projects.Rating", b =>
+                {
+                    b.HasOne("BusinessObjects.Entities.Projects.Project", "Project")
+                        .WithMany("Ratings")
+                        .HasForeignKey("idProject");
+
+                    b.HasOne("BusinessObjects.Entities.Projects.ProjectMember", "ProjectMember")
+                        .WithMany("Ratings")
+                        .HasForeignKey("idProjectMember")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Project");
+
+                    b.Navigation("ProjectMember");
+                });
+
             modelBuilder.Entity("BusinessObjects.Entities.Projects.Project", b =>
                 {
                     b.Navigation("Positions");
 
                     b.Navigation("ProjectMembers");
+
+                    b.Navigation("Ratings");
+                });
+
+            modelBuilder.Entity("BusinessObjects.Entities.Projects.ProjectMember", b =>
+                {
+                    b.Navigation("Ratings");
                 });
 #pragma warning restore 612, 618
         }

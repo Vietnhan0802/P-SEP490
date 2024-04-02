@@ -5,7 +5,6 @@ using BusinessObjects.ViewModels.Project;
 using BusinessObjects.ViewModels.Statistic;
 using BusinessObjects.ViewModels.User;
 using Commons.Helpers;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProjectService.Data;
@@ -234,6 +233,9 @@ namespace ProjectService.Controllers
             var positions = await _context.Positions.Where(x => x.idProject == project.idProject).ToListAsync();
             var viewPosition = _mapper.Map<List<PositionView>>(positions);
             result.PositionViews = viewPosition;
+            var ratings = await _context.Ratings.Where(x => x.idProject == idProject).Select(x => x.rating).ToListAsync();
+            result.ratingNum = ratings.Count;
+            result.ratingAvg = ratings.Average();
             return new Response(HttpStatusCode.OK, "Get project is success!", result);
         }
 
@@ -257,6 +259,9 @@ namespace ProjectService.Controllers
                     member.isVerified = infoUser.isVerified;
                     var postion = await _context.Positions.FirstOrDefaultAsync(x => x.idPosition == member.idPosition);
                     member.namePosition = postion.namePosition;
+                    var ratings = await _context.Ratings.Where(x => x.idRated == member.idAccount).Select(x => x.rating).ToListAsync();
+                    member.ratingNum = ratings.Count();
+                    member.ratingAvg = ratings.Average();
                 }
                 return new Response(HttpStatusCode.OK, "Get member in project is success!", result);
             }
@@ -274,7 +279,7 @@ namespace ProjectService.Controllers
                 return new Response(HttpStatusCode.BadRequest, "Invalid data", error);
             }*/
             projectInfoCreate.avatar = await _saveImageService.SaveImage(projectInfoCreate.ImageFile);
-            var project = _mapper.Map<BusinessObjects.Entities.Projects.Project>(projectInfoCreate);
+            var project = _mapper.Map<Project>(projectInfoCreate);
             project.idAccount = idUser;
             project.process = Process.Preparing;
             project.isDeleted = false;
@@ -403,7 +408,7 @@ namespace ProjectService.Controllers
                             projectApplication.avatar = infoUser.avatar;
                             projectApplication.isVerified = infoUser.isVerified;
                             projectApplication.nameProject = project.name;
-                            projectApplication.cvUrlFile = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, projectApplication.cvUrl);
+                            projectApplication.cvSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, projectApplication.cv);
                             var positionName = await _context.Positions.Where(x => x.idProject == projectApplication.idProject).AsNoTracking().ToListAsync();
                             foreach (var position in positionName)
                             {
@@ -446,7 +451,7 @@ namespace ProjectService.Controllers
                             sendInvite.avatar = infoUser.avatar;
                             sendInvite.isVerified = infoUser.isVerified;
                             sendInvite.nameProject = project.name;
-                            sendInvite.cvUrlFile = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, sendInvite.cvUrl);
+                            sendInvite.cvSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, sendInvite.cv);
                             var positionName = await _context.Positions.FirstOrDefaultAsync(x => x.idPosition == sendInvite.idPosition);
                             sendInvite.namePosition = positionName.namePosition;
                         }
@@ -480,7 +485,7 @@ namespace ProjectService.Controllers
                     projectInvite.avatar = infoUser.avatar;
                     projectInvite.isVerified = infoUser.isVerified;
                     projectInvite.nameProject = project.name;
-                    projectInvite.cvUrlFile = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, projectInvite.cvUrl);
+                    projectInvite.cvSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, projectInvite.cv);
                     foreach (var position in projectInvites)
                     {
                         projectInvite.namePosition = position.Position.namePosition;
@@ -509,7 +514,7 @@ namespace ProjectService.Controllers
                     projectApplication.avatar = infoUser.avatar;
                     projectApplication.isVerified = infoUser.isVerified;
                     projectApplication.nameProject = project.name;
-                    projectApplication.cvUrlFile = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, projectApplication.cvUrl);
+                    projectApplication.cvSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, projectApplication.cv);
                     foreach (var position in projectApplications)
                     {
                         projectApplication.namePosition = position.Position.namePosition;
@@ -703,6 +708,124 @@ namespace ProjectService.Controllers
                 return new Response(HttpStatusCode.NoContent, "Remove member is success!");
             }
             return new Response(HttpStatusCode.BadRequest, "Remove member is fail!");
+        }
+
+        /*------------------------------------------------------------Rating------------------------------------------------------------*/
+
+        [HttpGet("GetAllRatingProject/{idProject}")]
+        public async Task<Response> GetAllRatingProject(Guid idProject)
+        {
+            var ratings = await _context.Ratings.Where(x => x.idProject == idProject).AsNoTracking().ToListAsync();
+            if (ratings.Count > 0)
+            {
+                var result = _mapper.Map<List<RatingViewProject>>(ratings);
+                foreach (var rating in result)
+                {
+                    var infoUser = await GetInfoUser(rating.idRater);
+                    rating.email = infoUser.email;
+                    rating.fullName = infoUser.fullName;
+                    rating.avatar = infoUser.avatar;
+                    rating.isVerified = infoUser.isVerified;
+                }
+                return new Response(HttpStatusCode.OK, "Get all rating project is success!", result);
+            }
+            return new Response(HttpStatusCode.NoContent, "Get all rating project is empty!");
+        }
+
+        [HttpGet("GetAllRatingPeople/{idUser}")]
+        public async Task<Response> GetAllRatingPeople(string idRated)
+        {
+            var ratings = await _context.Ratings.Where(x => x.idRated == idRated).AsNoTracking().ToListAsync();
+            if (ratings.Count > 0)
+            {
+                var result = _mapper.Map<List<RatingViewProject>>(ratings);
+                foreach (var rating in result)
+                {
+                    var infoUser = await GetInfoUser(rating.idRater);
+                    rating.email = infoUser.email;
+                    rating.fullName = infoUser.fullName;
+                    rating.avatar = infoUser.avatar;
+                    rating.isVerified = infoUser.isVerified;
+                }
+                return new Response(HttpStatusCode.OK, "Get all rating people is success!", result);
+            }
+            return new Response(HttpStatusCode.NoContent, "Get all rating people is empty!");
+        }
+
+        [HttpPost("CreateRatingProject/{idRater}/{idProject}")]
+        public async Task<Response> CreateRatingProject(string idRater, Guid idProject, RatingCreateUpdate ratingCreateUpdate)
+        {
+            Rating rating = new Rating
+            {
+                idRater = idRater,
+                idProject = idProject,
+                rating = ratingCreateUpdate.rating,
+                comment = ratingCreateUpdate.comment,
+                createdDate = DateTime.Now
+            };
+            await _context.Ratings.AddAsync(rating);
+            var isSuccess = await _context.SaveChangesAsync();
+            if (isSuccess > 0)
+            {
+                return new Response(HttpStatusCode.OK, "Create rating project is success!");
+            }
+            return new Response(HttpStatusCode.BadRequest, "Create rating project is fail!");
+        }
+
+        [HttpPost("CreateRatingPeople/{idRater}/{idRated}/{idProjectMember}")]
+        public async Task<Response> CreateRatingPeople(string idRater, string idRated, Guid idProjectMember, RatingCreateUpdate ratingCreateUpdate)
+        {
+            Rating rating = new Rating
+            {
+                idRater = idRater,
+                idRated = idRated,
+                idProjectMember = idProjectMember,
+                rating = ratingCreateUpdate.rating,
+                comment = ratingCreateUpdate.comment,
+                createdDate = DateTime.Now
+            };
+            await _context.Ratings.AddAsync(rating);
+            var isSuccess = await _context.SaveChangesAsync();
+            if (isSuccess > 0)
+            {
+                return new Response(HttpStatusCode.OK, "Create rating people is success!");
+            }
+            return new Response(HttpStatusCode.BadRequest, "Create rating people is fail!");
+        }
+
+        [HttpPut("UpdateRating/{idRating}")]
+        public async Task<Response> UpdateRating(Guid idRating, RatingCreateUpdate ratingCreateUpdate)
+        {
+            var ratingExist = await _context.Ratings.FindAsync(idRating);
+            if (ratingExist == null)
+            {
+                return new Response(HttpStatusCode.NotFound, "Rating doesn't exists!");
+            }
+            _mapper.Map(ratingCreateUpdate, ratingExist);
+            _context.Ratings.Update(ratingExist);
+            var isSuccess = await _context.SaveChangesAsync();
+            if (isSuccess > 0)
+            {
+                return new Response(HttpStatusCode.NoContent, "Update rating is success!");
+            }
+            return new Response(HttpStatusCode.NoContent, "Update rating is success!");
+        }
+
+        [HttpDelete("RemoveRating/{idRating}")]
+        public async Task<Response> RemoveRating(Guid idRating)
+        {
+            var ratingExist = await _context.Ratings.FindAsync(idRating);
+            if (ratingExist == null)
+            {
+                return new Response(HttpStatusCode.NotFound, "Rating doesn't exists!");
+            }
+            _context.Ratings.Remove(ratingExist);
+            var isSuccess = await _context.SaveChangesAsync();
+            if (isSuccess > 0)
+            {
+                return new Response(HttpStatusCode.NoContent, "Remove rating is success!");
+            }
+            return new Response(HttpStatusCode.BadRequest, "Remove rating is fail!");
         }
     }
 }
