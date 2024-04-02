@@ -76,7 +76,7 @@ function ProjectDetail() {
   const { idProject } = location.state || {};
   const [showRatingPopup, setShowRatingPopup] = useState(false);
   useEffect(() => {
-    projectInstance.get(`/GetProjectById/${idProject}`)
+    projectInstance.get(`/GetProjectById/${currentUserId}/${idProject}`)
       .then((res) => {
         setData(res?.data?.result);
       })
@@ -102,7 +102,6 @@ function ProjectDetail() {
   const resetPage = (value) => {
     setResetProject(prevReset => !prevReset);
   }
-  console.log(showRatingPopup)
   return (
     <Row className="pt-3 ms-0 me-0 pb-3">
       <Col md={3}>
@@ -138,11 +137,11 @@ function ProjectDetail() {
                   </div>
                 </div>
                 <div
-                  onClick={() => setShowRatingPopup(true)}
+                  onClick={() => setShowRatingPopup(data?.idAccount === currentUserId ? false : true)}
                 >
                   <Rating
-                    initialValue={3.75}
-                    readonly={data?.idAccount === currentUserId ? true : false}
+                    initialValue={data?.ratingAvg}
+                    readonly={true}
                     allowFraction={true}
                   // onClick={handleRating}
                   // onPointerEnter={onPointerEnter}
@@ -151,7 +150,7 @@ function ProjectDetail() {
                   /* Available Props */
                   />
                 </div>
-                <RatingPopup show={showRatingPopup} onClose={() => setShowRatingPopup(!showRatingPopup)} />
+                <RatingPopup show={showRatingPopup} id={currentUserId} projectid={idProject} onClose={() => setShowRatingPopup(!showRatingPopup)} />
 
                 {data?.idAccount === currentUserId &&
                   <div className="d-flex ms-2">
@@ -227,7 +226,11 @@ function ProjectDetail() {
                       <th className="w-20 py-3">Full-Name</th>
                       <th className="w-10 py-3 text-center">Date</th>
                       <th className="w-60 py-3">Position</th>
-                      <th className="w-10 py-3 text-center">Remove</th>
+                      {data?.process === 3 ?
+
+                        <th className="w-10 py-3 text-center">Reate</th> :
+                        <th className="w-10 py-3 text-center">Remove</th>
+                      }
                     </tr>
                   </thead>
                   <tbody>
@@ -245,9 +248,15 @@ function ProjectDetail() {
                           <td className="w-60 py-3">
                             {member.namePosition}
                           </td>
-                          <td className="w-10 py-3 text-center  yellow-icon">
-                            <RemoveMember id={member.idProjectMember} project={idProject} resetPage={resetPage} />
-                          </td>
+                          {data?.process === 3 ?
+                            <td className="w-10 py-3 text-center  yellow-icon">
+                              <RemoveMember id={member.idProjectMember} project={idProject} resetPage={resetPage} />
+                            </td>
+                            :
+                            <td className="w-10 py-3 text-center  yellow-icon">
+                              <RemoveMember id={member.idProjectMember} project={idProject} resetPage={resetPage} />
+                            </td>}
+
                         </tr>
                       )) : <tr> {/* Add a single row for the message */}
                         <td colSpan="4" className="text-center py-3"> {/* Use colspan="4" because there are 4 columns */}
