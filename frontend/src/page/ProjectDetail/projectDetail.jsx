@@ -137,20 +137,18 @@ function ProjectDetail() {
                   </div>
                 </div>
                 <div
-                  onClick={() => setShowRatingPopup(data?.idAccount === currentUserId ? false : true)}
+                  onClick={() => setShowRatingPopup(data?.idAccount === currentUserId || data?.isRating === true ? false : true)}
                 >
                   <Rating
                     initialValue={data?.ratingAvg}
                     readonly={true}
                     allowFraction={true}
-                  // onClick={handleRating}
-                  // onPointerEnter={onPointerEnter}
-                  // onPointerLeave={onPointerLeave}
-                  // onPointerMove={onPointerMove}
-                  /* Available Props */
                   />
+                  {data?.isRating || data?.idAccount === currentUserId ? '' :
+                    <p>Not rated</p>
+                  }
                 </div>
-                <RatingPopup show={showRatingPopup} id={currentUserId} projectid={idProject} onClose={() => setShowRatingPopup(!showRatingPopup)} />
+                <RatingPopup show={showRatingPopup} id={currentUserId} projectid={idProject} onClose={() => setShowRatingPopup(!showRatingPopup)} type={'project'} />
 
                 {data?.idAccount === currentUserId &&
                   <div className="d-flex ms-2">
@@ -248,15 +246,24 @@ function ProjectDetail() {
                           <td className="w-60 py-3">
                             {member.namePosition}
                           </td>
-                          {data?.process === 3 ?
-                            <td className="w-10 py-3 text-center  yellow-icon">
-                              <RemoveMember id={member.idProjectMember} project={idProject} resetPage={resetPage} />
-                            </td>
-                            :
-                            <td className="w-10 py-3 text-center  yellow-icon">
-                              <RemoveMember id={member.idProjectMember} project={idProject} resetPage={resetPage} />
-                            </td>}
-
+                          {
+                            data?.process === 3 
+                              ?
+                              <td className="w-10 py-3 text-center  yellow-icon" onClick={() => setShowRatingPopup(member?.idAccount === currentUserId || member?.isRating === true ? false : true)}>
+                                <Rating
+                                  size={12}
+                                  initialValue={member?.ratingAvg}
+                                  readonly={true}
+                                  allowFraction={true}
+                                />
+                              </td>
+                              :
+                              <td className="w-10 py-3 text-center  yellow-icon">
+                                <RemoveMember id={member.idProjectMember} project={idProject} resetPage={resetPage} />
+                              </td>
+                          }
+                          <RatingPopup show={showRatingPopup} id={currentUserId} idRated={member.idAccount }projectid={idProject} onClose={() => setShowRatingPopup(!showRatingPopup)} idProjectMember={member.idProjectMember} type={'member'} />
+                          x``
                         </tr>
                       )) : <tr> {/* Add a single row for the message */}
                         <td colSpan="4" className="text-center py-3"> {/* Use colspan="4" because there are 4 columns */}
