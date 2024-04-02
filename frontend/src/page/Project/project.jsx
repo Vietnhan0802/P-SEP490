@@ -9,7 +9,7 @@ import { Col, Row } from "react-bootstrap";
 import SideBar from "../../components/sidebar";
 import Follow from "../../components/follow";
 import tick from "../../images/common/verifiedTick.png";
-
+import { Rating } from 'react-simple-star-rating'
 const formatDate = (timestamp) => {
   const months = [
     "Jan",
@@ -96,17 +96,33 @@ function Project({ value }) {
                 <hr />
                 <div className="d-flex items-center justify-content-between mt-2">
                   <div className="d-flex items-center">
-                  <div className="position-relative">
-                    <img src={item.avatarUser} alt="profile" className="avatar-contain" />
-                    {item.isVerified && <img src={tick} alt="tick" className="position-absolute bottom-0 end-0" style={{ width: '18px' }} />}
-                  </div>
+                    <div className="position-relative">
+                      <img src={item.avatarUser} alt="profile" className="avatar-contain" />
+                      {item.isVerified && <img src={tick} alt="tick" className="position-absolute bottom-0 end-0" style={{ width: '18px' }} />}
+                    </div>
                     <div className="left-30 d-flex flex-column justify-content-center">
                       <div className="size-20 SFU-heavy d-flex">{item.fullName}</div>
                       <div className="size-14 SFU-reg text-gray-600 d-flex">
                         Date Create: {formatDate(item.createdDate)}
                       </div>
                     </div>
+                    <div className="ms-2 d-flex align-items-center">
+                      <div className="ms-2" style={{ fontSize: '20px', marginTop: '5px' }}>{item?.ratingAvg}</div>
+
+                      <Rating
+                      className="ms-2"
+                        size={20}
+                        initialValue={item?.ratingAvg}
+                        allowFraction={true}
+                        readonly={false}
+                      />
+                      <div className="ms-2" style={{ fontSize: '20px', marginTop: '5px' }}><span>&#10098;</span>{item?.ratingNum}<span>&#10099;</span></div>
+
+                    </div>
+
                   </div>
+
+
                   <div className="d-flex flex-row gap-2">
                     <button className="d-flex flex-row align-items-center btn bg-white text-dark px-4 py-2 rounded btn-light border border-dark"
                       onClick={() => hanldeViewDetail(item.idProject)}

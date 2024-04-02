@@ -9,6 +9,8 @@ import { useNavigate } from "react-router-dom";
 import { Col, Row } from "react-bootstrap";
 import SideBar from "../../components/sidebar";
 import Follow from "../../components/follow";
+import { Rating } from 'react-simple-star-rating'
+
 const formatDate = (timestamp) => {
   const months = [
     "Jan",
@@ -124,6 +126,19 @@ function OwnProject({ value }) {
                       <div className="size-14 SFU-reg text-gray-600 d-flex">
                         Date Create: {formatDate(item.createdDate)}
                       </div>
+                    </div>
+                    <div className="ms-2 d-flex align-items-center">
+                      <div className="ms-2" style={{ fontSize: '20px', marginTop: '5px' }}>{item?.ratingAvg}</div>
+
+                      <Rating
+                      className="ms-2"
+                        size={20}
+                        initialValue={item?.ratingAvg}
+                        allowFraction={true}
+                        readonly={false}
+                      />
+                      <div className="ms-2" style={{ fontSize: '20px', marginTop: '5px' }}><span>&#10098;</span>{item?.ratingNum}<span>&#10099;</span></div>
+
                     </div>
                   </div>
                   <div className="d-flex flex-row gap-2">
