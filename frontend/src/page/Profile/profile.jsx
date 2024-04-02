@@ -62,6 +62,7 @@ function Profile({ handleChangeImg, value, resetFollowing }) {
   const [display, setDisplay] = useState(false);
   const [updateDisplay, setUpdateDisplay] = useState(false);
   const [showRating, setShowRating] = useState(false);
+
   const [inputs, setInputs] = useState({
     userName: "",
     fullName: "",
@@ -240,7 +241,6 @@ function Profile({ handleChangeImg, value, resetFollowing }) {
   const handleEditInfor = () => {
     setUpdateDisplay(true);
   }
-  console.log(user)
   return (
     <>
       <Row className="mx-0 mt-3 pb-2">
@@ -318,7 +318,9 @@ function Profile({ handleChangeImg, value, resetFollowing }) {
               </div>
             </div>
           </div>
-          <RatingProfile show={showRating} onClose={() => setShowRating(false)} />
+          <RatingProfile show={showRating} onClose={() => setShowRating(false)} 
+                  id={currentUserId}
+                  />
         </Col>
         <Col md={6}>
           <UpdateInformationPu value={inputs} id={currentUserId} reset={reset} show={updateDisplay} onClose={() => setUpdateDisplay(false)} handleChangeImg={handleChangeImg} />
