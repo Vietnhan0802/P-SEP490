@@ -15,11 +15,13 @@ namespace BusinessObjects.ViewModels.Project
         public string? avatar { get; set; }
         public Process process { get; set; }
         public Visibility visibility { get; set; }
+        public double ratingAvg { get; set; }
+        public int ratingNum { get; set; }
         public bool isDeleted { get; set; }
         public DateTime createdDate { get; set; }
         public ICollection<PositionView>? PositionViews { get; set; }
 
         [NotMapped]
-        public string avatarSrc { get; set; }
+        public string? avatarSrc { get; set; }
     }
 }

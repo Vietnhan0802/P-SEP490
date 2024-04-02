@@ -1,17 +1,13 @@
 ﻿using AutoMapper;
 using BusinessObjects.Entities.Credential;
-using BusinessObjects.ViewModels.Blog;
 using BusinessObjects.ViewModels.Credential;
 using BusinessObjects.ViewModels.User;
 using Commons.Helpers;
 using Credential.Data;
-using Credential.Validator;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
-using System.Net.Http.Headers;
-using System.Text.Json;
 
 namespace Credential.Controllers
 {

@@ -78,6 +78,35 @@ namespace ProjectService.Data.Migrations
                         principalColumn: "idProject");
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Ratings",
+                columns: table => new
+                {
+                    idRating = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    idRater = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    idRated = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    idProjectMember = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    idProject = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    rating = table.Column<int>(type: "int", nullable: false),
+                    comment = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    createdDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Ratings", x => x.idRating);
+                    table.ForeignKey(
+                        name: "FK_Ratings_ProjectMembers_idProjectMember",
+                        column: x => x.idProjectMember,
+                        principalTable: "ProjectMembers",
+                        principalColumn: "idProjectMember",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Ratings_Projects_idProject",
+                        column: x => x.idProject,
+                        principalTable: "Projects",
+                        principalColumn: "idProject");
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Positions_idProject",
                 table: "Positions",
@@ -92,11 +121,24 @@ namespace ProjectService.Data.Migrations
                 name: "IX_ProjectMembers_idProject",
                 table: "ProjectMembers",
                 column: "idProject");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Ratings_idProject",
+                table: "Ratings",
+                column: "idProject");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Ratings_idProjectMember",
+                table: "Ratings",
+                column: "idProjectMember");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "Ratings");
+
             migrationBuilder.DropTable(
                 name: "ProjectMembers");
 
