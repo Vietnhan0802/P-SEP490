@@ -10,7 +10,7 @@ namespace BusinessObjects.Entities.Projects
         public Guid? idProject { get; set; }
         public Guid? idPosition { get; set; }
         public Enums.Project.Type type { get; set; }
-        public string? cvUrl { get; set; }
+        public string? cv { get; set; }
         public bool? isAcept { get; set; }
         public DateTime confirmedDate { get; set; }
         public DateTime createdDate { get; set; }

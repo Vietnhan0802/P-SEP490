@@ -85,7 +85,7 @@ function ProjectDetail() {
       });
   }, [resetProject, idProject]);
   useEffect(() => {
-    projectInstance.get(`/GetAllMemberInProject/${idProject}`)
+    projectInstance.get(`/GetAllMemberInProject/${currentUserId}/${idProject}`)
       .then((res) => {
         const data = res?.data?.result;
         if (Array.isArray(data) && data?.length > 0) {

@@ -39,7 +39,8 @@ namespace ProjectService.Data
             modelBuilder.Entity<Rating>()
                 .HasOne(p => p.ProjectMember)
                 .WithMany(p => p.Ratings)
-                .HasForeignKey(x => x.idProjectMember);
+                .HasForeignKey(x => x.idProjectMember)
+                .OnDelete(DeleteBehavior.Cascade);
 
             base.OnModelCreating(modelBuilder);
         }
