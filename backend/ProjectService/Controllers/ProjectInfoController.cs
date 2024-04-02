@@ -877,7 +877,7 @@ namespace ProjectService.Controllers
             return new Response(HttpStatusCode.NoContent, "Get all rating start people is empty!");
         }
 
-        [HttpGet("GetAllRatingPeople/{idUser}")]
+        [HttpGet("GetAllRatingPeople/{idRated}")]
         public async Task<Response> GetAllRatingPeople(string idRated)
         {
             var ratings = await _context.Ratings.Where(x => x.idRated == idRated).AsNoTracking().ToListAsync();
