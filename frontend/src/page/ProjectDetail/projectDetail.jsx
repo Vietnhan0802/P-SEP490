@@ -12,7 +12,8 @@ import UpdateProjectForm from "./updateProjectForm";
 import { useLocation, useNavigate } from "react-router-dom";
 import DeletePopup from "./Popup/DeletePopup";
 import RemoveMember from "./Popup/RemoveMember";
-
+import tick from "../../images/common/verifiedTick.png";
+import { Rating } from 'react-simple-star-rating'
 const formatDate = (timestamp) => {
   const months = [
     "Jan",
@@ -122,12 +123,10 @@ function ProjectDetail() {
               <div className="d-flex align-items-center justify-content-between">
                 <div className="d-flex project">
                   <div className="width-auto">
-                    <img
-                      src={data?.avatarUser}
-                      alt="avatar"
-                      className="avatar"
-                      style={{ borderRadius: "50%" }}
-                    />
+                    <div className="position-relative">
+                      <img src={data?.avatarUser} alt="profile" className="avatar-contain" />
+                      {data?.isVerified && <img src={tick} alt="tick" className="position-absolute bottom-0 end-0" style={{ width: '18px' }} />}
+                    </div>
                   </div>
                   <div className="width-auto ps-3">
                     <p className="owner-name fw-bold">{data?.fullName}</p>
@@ -136,8 +135,19 @@ function ProjectDetail() {
                     </p>
                   </div>
                 </div>
+                <div>
+                  <Rating
+                    initialValue={3}
+                    readonly={data?.idAccount === currentUserId ? true : false}
+                  // onClick={handleRating}
+                  // onPointerEnter={onPointerEnter}
+                  // onPointerLeave={onPointerLeave}
+                  // onPointerMove={onPointerMove}
+                  /* Available Props */
+                  />
+                </div>
                 {data?.idAccount === currentUserId &&
-                  <div className="d-flex ">
+                  <div className="d-flex ms-2">
                     <UpdateProjectForm input={data} id={data?.idProject} resetPage={resetPage} />
                     <DeletePopup className='ms-3' id={data?.idProject} />
                   </div>}

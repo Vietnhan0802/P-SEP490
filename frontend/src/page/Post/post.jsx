@@ -6,7 +6,7 @@ import { IoFlagOutline } from "react-icons/io5";
 import { FaHeart } from "react-icons/fa";
 import { CiSearch } from "react-icons/ci";
 import { FiEye } from "react-icons/fi";
-import defaultAvatar from "../../images/common/default.png";
+import tick from "../../images/common/verifiedTick.png";
 import {
   postInstance,
   projectInstance,
@@ -47,7 +47,7 @@ function calculateTimeDifference(targetDate) {
   }
 }
 
-function Post({value}) {
+function Post({ value }) {
   const sessionData = JSON.parse(sessionStorage.getItem("userSession")) || {};
   const navigate = useNavigate();
   const { role, currentUserId } = sessionData;
@@ -70,7 +70,8 @@ function Post({value}) {
     like,
     viewPostImages,
     fullName,
-    isLike
+    isLike,
+    isVerified
   ) => {
     return {
       id,
@@ -83,6 +84,7 @@ function Post({value}) {
       viewPostImages,
       fullName,
       isLike,
+      isVerified
     };
   };
   const handleLikeOrUnlikeBlog = (idBlog) => {
@@ -139,7 +141,8 @@ function Post({value}) {
               element.like,
               element.viewPostImages,
               element.fullName,
-              element.isLike
+              element.isLike,
+              element.isVerified
             ),
           ]);
         });
@@ -167,7 +170,8 @@ function Post({value}) {
               element.like,
               element.viewPostImages,
               element.fullName,
-              element.isLike
+              element.isLike,
+              element.isVerified
             ),
           ]);
         });
@@ -220,6 +224,7 @@ function Post({value}) {
   const toggleTrendList = () => {
     setShowTrendList(!showTrendList);
   };
+  console.log(postList)
   return (
     <Row className="pt-3 ms-0 me-0">
       <Col md={3}>
@@ -253,18 +258,12 @@ function Post({value}) {
             >
               <div className="d-flex justify-content-between align-items-center">
                 <div className="d-flex align-items-center">
-                  <div className="avatar-contain me-2">
-                    <img
-                      src={
-                        item.avatar === "https://localhost:7006/Images/"
-                          ? defaultAvatar
-                          : item.avatar
-                      }
-                      alt="Instructor Cooper Bator"
-                    />
+                  <div className="position-relative">
+                    <img src={item.avatar} alt="profile" className="avatar-contain" />
+                    {item.isVerified && <img src={tick} alt="tick" className="position-absolute bottom-0 end-0" style={{ width: '18px' }} />}
                   </div>
 
-                  <div className="left-30 d-flex flex-column justify-content-center">
+                  <div className=" ms-2 left-30 d-flex flex-column justify-content-center">
                     <div className="size-20 SFU-heavy d-flex">
                       {item.fullName}
                     </div>
@@ -273,7 +272,7 @@ function Post({value}) {
                     </div>
                   </div>
                 </div>
-                <Report id={currentUserId} idItem={item.id} type="post"/>
+                <Report id={currentUserId} idItem={item.id} type="post" />
               </div>
               <h4 className="mt-2">{item.title}</h4>
 
@@ -365,7 +364,7 @@ function Post({value}) {
         </div>
       </Col>
       <Col md={3}>
-        <Follow followValue={value}/>
+        <Follow followValue={value} />
       </Col>
     </Row>
   );

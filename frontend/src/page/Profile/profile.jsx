@@ -17,7 +17,7 @@ import {
 } from "../../axios/axiosConfig";
 import { CgProfile } from "react-icons/cg";
 import { useLocation, useNavigate } from "react-router-dom";
-
+import tick from "../../images/common/verifiedTick.png";
 import UpdateAvatarPu from "./UpdateAvatarPu";
 import Report from "../../components/report-popup/Report";
 import UpdateInformationPu from "./UpdateInformationPu";
@@ -252,6 +252,8 @@ function Profile({ handleChangeImg, value, resetFollowing }) {
                   alt=""
                   className="m-auto"
                 />
+                {user.isVerified && <img src={tick} alt="tick" className="position-absolute bottom-0" style={{width:'50px',height:'50px',right:'16px'}}/>}
+
               </div>
 
               <UpdateAvatarPu

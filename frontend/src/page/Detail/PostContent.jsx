@@ -15,6 +15,7 @@ import { projectInstance } from "../../axios/axiosConfig";
 import AlertProject from "./Popup/Alert";
 import { Button } from "react-bootstrap";
 import { BsThreeDots } from "react-icons/bs";
+import tick from "../../images/common/verifiedTick.png";
 
 function PostContent({ data, handleLikeOrUnlikePost, viewProject, userId }) {
   const navigate = useNavigate();
@@ -65,15 +66,10 @@ function PostContent({ data, handleLikeOrUnlikePost, viewProject, userId }) {
     <>
       <div className="d-flex  justify-content-between">
         <div className="d-flex align-items-center mb-2">
-          <img
-            src={
-              data?.avatar === "https://localhost:7006/Images/"
-                ? defaultAvatar
-                : data?.avatar
-            }
-            alt="profile"
-            className="profile"
-          />
+          <div className="position-relative">
+            <img src={data.avatar} alt="profile" className="profile" />
+            {data.isVerified && <img src={tick} alt="tick" className="position-absolute bottom-0 end-0" style={{ width: '18px' }} />}
+          </div>
           <div className="ms-2">
             <h6 className="mb-0">{data?.fullName}</h6>
             <p className="mb-0">{calculateTimeDifference(data?.createdDate)}</p>

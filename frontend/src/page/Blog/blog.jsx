@@ -244,12 +244,12 @@ function Blog({ value }) {
                 {" "}
                 <div className="d-flex align-items-center">
                   <div className="position-relative">
-                    <img src={item.avatar} alt="user" className="user-image" />
-                    <img src={tick} alt="tick" className="position-absolute bottom-0" style={{ width: '18px', right: '0px' }} />
+                    <img src={item.avatar} alt="user" className="avatar-contain" />
+                    <img src={tick} alt="tick" className="position-absolute bottom-0 end-0" style={{ width: '18px' }} />
                   </div>
                   <div className="ms-2">
-                    <h6 className="mb-0">{item.fullName}</h6>
-                    <p className="mb-0">{item.createdDate}</p>
+                  <h6 className="size-20 SFU-heavy d-flex">{item.fullName}</h6>
+                  <p className="size-14 SFU-reg text-gray-600 d-flex">{item.createdDate}</p>
                   </div>
                 </div>
                 <Report id={currentUserId} idItem={item.id} type="blog" />

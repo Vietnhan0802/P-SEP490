@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo,useRef } from "react";
+import React, { useEffect, useState, useMemo, useRef } from "react";
 import bootstrap from "bootstrap/dist/js/bootstrap.bundle.min";
 import "./detail.scss";
 import avatarDefault from "../../images/common/default.png";
@@ -17,6 +17,7 @@ import Follow from "../../components/follow";
 import Report from "../../components/report-popup/Report";
 import UpdateItem from "./Popup/UpdateItem";
 import DeleteItem from "./Popup/DeleteItem";
+import tick from "../../images/common/verifiedTick.png";
 import Notification, { notifySuccess, notifyError } from "../../components/notification";
 function calculateTimeDifference(targetDate) {
   // Convert the target date string to a Date object
@@ -421,7 +422,10 @@ function BlogDetail({ value }) {
         <div id="BlogDetail" className="p-3 mb-4">
           <div className="d-flex align-items-between justify-content-between mb-2">
             <div className="d-flex align-items-between">
-              <img src={data.avatar} alt="profile" className="profile" />
+              <div className="position-relative">
+                <img src={data.avatar} alt="profile" className="profile" />
+                {data.isVerified && <img src={tick} alt="tick" className="position-absolute bottom-0 end-0" style={{width:'18px'}} />}
+              </div>
               <div className="ms-2">
                 <h6 className="mb-0">{data.fullName}</h6>
                 <p className="mb-0">{dateTime}</p>
@@ -481,66 +485,66 @@ function BlogDetail({ value }) {
             type={'blog'}
           />
           <h3 className="fw-bold">{data.title}</h3>
-          <div dangerouslySetInnerHTML={{__html:data.content}}/>
+          <div dangerouslySetInnerHTML={{ __html: data.content }} />
           <div
-                id={`carouselExampleControls-${data.id}`}
-                className="carousel slide"
-                data-bs-ride="carousel"
-                ref={carouselRef} // Thêm tham chiếu này
-              >
-                <div className="carousel-inner">
-                  {data.viewBlogImages?.map((items, index) => (
-                    <div
-                      className={`carousel-item ${index === 0 ? "active" : ""}`}
-                    >
-                      <div className="image-container d-flex justify-content-center">
-                        <img
-                          src={items.imageSrc}
-                          className="d-block w-100"
-                          alt=""
-                        />
-                      </div>
-                    </div>
-                  ))}
+            id={`carouselExampleControls-${data.id}`}
+            className="carousel slide"
+            data-bs-ride="carousel"
+            ref={carouselRef} // Thêm tham chiếu này
+          >
+            <div className="carousel-inner">
+              {data.viewBlogImages?.map((items, index) => (
+                <div
+                  className={`carousel-item ${index === 0 ? "active" : ""}`}
+                >
+                  <div className="image-container d-flex justify-content-center">
+                    <img
+                      src={items.imageSrc}
+                      className="d-block w-100"
+                      alt=""
+                    />
+                  </div>
                 </div>
+              ))}
+            </div>
 
-                {data.viewBlogImages?.length > 1 && (
-                  <>
-                    <button
-                      className="carousel-control-prev"
-                      type="button"
-                      data-bs-target={`#carouselExampleControls-${data.id}`}
-                      data-bs-slide="prev"
-                    >
-                      <span
-                        className="carousel-control-prev-icon"
-                        style={{
-                          backgroundColor: "rgba(128, 128, 128, 0.6)",
-                          padding: "15px",
-                        }}
-                        aria-hidden="true"
-                      ></span>
-                      <span className="visually-hidden">Previous</span>
-                    </button>
-                    <button
-                      className="carousel-control-next"
-                      type="button"
-                      data-bs-target={`#carouselExampleControls-${data.id}`}
-                      data-bs-slide="next"
-                    >
-                      <span
-                        className="carousel-control-next-icon"
-                        style={{
-                          backgroundColor: "rgba(128, 128, 128, 0.6)",
-                          padding: "15px",
-                        }}
-                        aria-hidden="true"
-                      ></span>
-                      <span className="visually-hidden">Next</span>
-                    </button>
-                  </>
-                )}
-              </div>
+            {data.viewBlogImages?.length > 1 && (
+              <>
+                <button
+                  className="carousel-control-prev"
+                  type="button"
+                  data-bs-target={`#carouselExampleControls-${data.id}`}
+                  data-bs-slide="prev"
+                >
+                  <span
+                    className="carousel-control-prev-icon"
+                    style={{
+                      backgroundColor: "rgba(128, 128, 128, 0.6)",
+                      padding: "15px",
+                    }}
+                    aria-hidden="true"
+                  ></span>
+                  <span className="visually-hidden">Previous</span>
+                </button>
+                <button
+                  className="carousel-control-next"
+                  type="button"
+                  data-bs-target={`#carouselExampleControls-${data.id}`}
+                  data-bs-slide="next"
+                >
+                  <span
+                    className="carousel-control-next-icon"
+                    style={{
+                      backgroundColor: "rgba(128, 128, 128, 0.6)",
+                      padding: "15px",
+                    }}
+                    aria-hidden="true"
+                  ></span>
+                  <span className="visually-hidden">Next</span>
+                </button>
+              </>
+            )}
+          </div>
           <div className="d-flex align-items-center border-bottom pb-3 mt-2 border-dark">
             <div className="d-flex align-items-center me-3">
               <FiEye className="me-2" /> {data.view + 1}
@@ -683,14 +687,14 @@ function BlogDetail({ value }) {
                                     onChange={(e) => handleUpdateInputReplyComment(reply.idBlogReply, e.target.value)}
                                   />
                                   <button className="btn btn-outline-primary" onClick={() => handleUpdateReplyCancel(reply.idBlogReply)}>Cancel</button>
-                                  <button className="ms-3 btn btn-outline-info"onClick={() => handleUpdateReply(reply.idBlogReply, reply.content)}>Save</button>
+                                  <button className="ms-3 btn btn-outline-info" onClick={() => handleUpdateReply(reply.idBlogReply, reply.content)}>Save</button>
                                 </div>
                               }
                             </div>
                             {reply.idAccount === currentUserId ?
                               <Dropdown style={{ width: 'auto' }}>
                                 <Dropdown.Toggle id="dropdown-basic" style={{ border: 'none' }} className="bg-white border-none text-body">
-                                <BsThreeDots />
+                                  <BsThreeDots />
                                 </Dropdown.Toggle>
 
                                 <Dropdown.Menu style={{ minWidth: 'auto' }}>

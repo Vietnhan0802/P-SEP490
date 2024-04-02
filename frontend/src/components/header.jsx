@@ -16,11 +16,11 @@ import Translate from "./translate";
 import { userInstance } from "../axios/axiosConfig";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
+import tick from "../images/common/verifiedTick.png";
 export default function Header({ activeComponent, onItemClick, changeImage }) {
   const { t } = useTranslation()
   const sessionData = JSON.parse(sessionStorage.getItem('userSession')) || {};
   const { currentUserId } = sessionData;
-
   const navigate = useNavigate();
   const [activeItem, setActiveItem] = useState("home");
   const [activePopup, setActivePopup] = useState(false);
@@ -94,7 +94,10 @@ export default function Header({ activeComponent, onItemClick, changeImage }) {
             {filterListUser.length > 0 ? (
               filterListUser.map((user) => (
                 <div key={user.id} className="d-flex align-items-center my-2" onClick={() => handleAvatarClick(user.id)}>
-                  <img src={user.imageSrc === 'https://localhost:7006/Images/' ? defaultImage : user.imageSrc} style={{ width: '50px', height: '50px' }} alt="" />
+                  <div className="position-relative">
+                    <img src={user.imageSrc} style={{ width: '50px', height: '50px' }} alt="" />
+                    {user.isVerified && <img src={tick} alt="tick" className="position-absolute bottom-0 end-0" style={{ width: '18px' }} />}
+                  </div>
                   <div className="ms-2">
                     <p>{user.fullName}</p>
                     <p>{user.email}</p>
@@ -135,7 +138,10 @@ export default function Header({ activeComponent, onItemClick, changeImage }) {
         <Translate />
         <DarkMode />
         <div className=" d-flex align-items-center" onClick={() => handleAvatarClick(currentUserId)}>
-          <img src={value.imageSrc} alt="" className="avatar" />
+          <div className="position-relative">
+            <img src={value.imageSrc} style={{ width: '50px', height: '50px' }} alt="" />
+            {value.isVerified && <img src={tick} alt="tick" className="position-absolute bottom-0 end-0" style={{ width: '18px' }} />}
+          </div>
           <div className="ms-2 t-black">
             <p>{value.fullName}</p>
             <p>{value.email}</p>

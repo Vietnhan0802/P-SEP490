@@ -10,8 +10,9 @@ function Follow({ followValue }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [following, setFollowing] = useState([]);
-  useEffect(()=>{setFollowing(followValue)},[followValue])
-
+  useEffect(() => {
+    setFollowing(followValue)
+  }, [followValue])
   const handleAvatarclick = (value) => {
     navigate('/profile', { state: { userId: value } });
   }
@@ -23,7 +24,7 @@ function Follow({ followValue }) {
           <div className="follow-user d-flex align-items-center mb-2" key={item.idAccount} onClick={() => handleAvatarclick(item.idAccount)}>
             <div className="follow-avata-box">
               <img src={item.avatarAccount} alt="user" className="user-image" />
-              <img src={tick} alt="tick" className="user-tick" />
+              {following.isVerifiedAccount && <img src={tick} alt="tick" className="user-tick" />}
             </div>
             <div className="follow-user-info ms-2">
               <p className="follow-user-name fw-bold">{item.fullNameAccount}</p>
