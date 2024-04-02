@@ -86,7 +86,6 @@ function App() {
     followInstance
       .get(`GetAllFollowings/${currentUserId}`)
       .then((res) => {
-        console.log(res?.data?.result);
         setFollowing(res?.data?.result);
       })
       .catch((error) => {

@@ -5,6 +5,7 @@ import CreatableSelect from 'react-select/creatable';
 import makeAnimated from 'react-select/animated';
 import { Modal, Button } from "react-bootstrap";
 import { projectInstance } from '../../axios/axiosConfig';
+import ReactQuill from 'react-quill';
 import Notification, { notifySuccess, notifyError } from "../../../src/components/notification";
 function CreateProject({ reset }) {
     const sessionData = JSON.parse(sessionStorage.getItem('userSession')) || {};
@@ -135,7 +136,7 @@ function CreateProject({ reset }) {
             setShow(false);
             notifySuccess("Create project is success!");
         })
-        .catch((error) => { notifyError("Create project is fail!"); })
+            .catch((error) => { notifyError("Create project is fail!"); })
     };
     const handleSelectChange = (selectedOptions) => {
         const newOptions = selectedOptions.filter(option => !options.some(existingOption => existingOption.value === option.value));
@@ -145,6 +146,38 @@ function CreateProject({ reset }) {
             namePosition: selectedOptions.map(option => option.value) // Extracting values from selected options
         }));
     };
+    const handleContentChange = (newValue) => {
+        setValue((prev) => ({ ...prev, description: newValue }));
+      };
+    const modules = {
+        toolbar: [
+          [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
+          [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+    
+          ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
+          ['blockquote', 'code-block'],
+          ['link', 'image', 'video', 'formula'],
+    
+          [{ 'header': 1 }, { 'header': 2 }],               // custom button values
+          [{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'list': 'check' }],
+          [{ 'script': 'sub' }, { 'script': 'super' }],      // superscript/subscript
+          [{ 'indent': '-1' }, { 'indent': '+1' }],          // outdent/indent
+          [{ 'direction': 'rtl' }],                         // text direction
+    
+          [{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
+          [{ 'font': [] }],
+          [{ 'align': [] }],
+    
+          ['clean']                                         // remove formatting button
+        ],
+      };
+    
+      const formats = [
+        'header',
+        'bold', 'italic', 'underline', 'strike', 'blockquote',
+        'list', 'bullet', 'indent',
+        'link', 'image'
+      ];
     return (
         <div>
             <div className="project-form p-2">
@@ -168,7 +201,7 @@ function CreateProject({ reset }) {
                                 />
                                 <label for="floatingInput">Project name</label>
                             </div>
-                            <div className='form-floating mb-3'>
+                            {/* <div className='form-floating mb-3'>
                                 <textarea
                                     type="text"
                                     value={value.description}
@@ -178,8 +211,15 @@ function CreateProject({ reset }) {
                                     placeholder="Enter Project Description..."
                                 />
                                 <label for="floatingInput">Project description</label>
-                            </div>
-
+                            </div> */}
+                            <ReactQuill
+                                theme="snow"
+                                value={value.description}
+                                onChange={handleContentChange}
+                                modules={modules}
+                                formats={formats}
+                                className="mb-3 mt-2  cus-h"
+                            />
                             <CreatableSelect
                                 closeMenuOnSelect={false}
                                 components={animatedComponents}

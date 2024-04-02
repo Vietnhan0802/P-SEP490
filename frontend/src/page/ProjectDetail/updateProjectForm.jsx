@@ -7,6 +7,7 @@ import { IoCameraReverse } from "react-icons/io5";
 import CreatableSelect from 'react-select/creatable';
 import makeAnimated from 'react-select/animated';
 import { projectInstance } from "../../axios/axiosConfig";
+import ReactQuill from 'react-quill';
 import Notification, { notifySuccess, notifyError } from "../../components/notification";
 function UpdateProjectForm({ input, id, resetPage }) {
 
@@ -151,8 +152,40 @@ function UpdateProjectForm({ input, id, resetPage }) {
       setShow(false);
       notifySuccess("Update project is success!");
     })
-    .catch((error) => { notifyError("Update project is fail!"); })
+      .catch((error) => { notifyError("Update project is fail!"); })
   };
+  const handleContentChange = (newValue) => {
+    setProject((prev) => ({ ...prev, description: newValue }));
+  };
+  const modules = {
+    toolbar: [
+      [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
+      [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+
+      ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
+      ['blockquote', 'code-block'],
+      ['link', 'image', 'video', 'formula'],
+
+      [{ 'header': 1 }, { 'header': 2 }],               // custom button values
+      [{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'list': 'check' }],
+      [{ 'script': 'sub' }, { 'script': 'super' }],      // superscript/subscript
+      [{ 'indent': '-1' }, { 'indent': '+1' }],          // outdent/indent
+      [{ 'direction': 'rtl' }],                         // text direction
+
+      [{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
+      [{ 'font': [] }],
+      [{ 'align': [] }],
+
+      ['clean']                                         // remove formatting button
+    ],
+  };
+
+  const formats = [
+    'header',
+    'bold', 'italic', 'underline', 'strike', 'blockquote',
+    'list', 'bullet', 'indent',
+    'link', 'image'
+  ];
   return (
     <div className="p-1 ">
       <FiEdit onClick={modalShow} id="btn-update-project" />
@@ -205,7 +238,7 @@ function UpdateProjectForm({ input, id, resetPage }) {
                   </select>
                 </label>
               </div>
-    
+
 
               <div className="status-block size-18">
                 <label htmlFor="" className="">
@@ -242,7 +275,15 @@ function UpdateProjectForm({ input, id, resetPage }) {
                   value={project.namePosition} // Pass selected options as value
                 />
               </div>
-              <div className="form-row description">
+              <ReactQuill
+                theme="snow"
+                value={project.description}
+                onChange={handleContentChange}
+                modules={modules}
+                formats={formats}
+                className="mb-3 mt-2  m-h-2"
+              />
+              {/* <div className="form-row description">
                 <label>Project Description</label>
                 <textarea
                   name="description"
@@ -251,7 +292,7 @@ function UpdateProjectForm({ input, id, resetPage }) {
                   value={project.description}
                   onChange={handleInputChange}
                 ></textarea>
-              </div>
+              </div> */}
             </div>{" "}
             <input
               type="file"
