@@ -35,6 +35,7 @@ namespace User.Controllers
         private readonly HttpClient client;
 
         public string FollowApiUrl { get; }
+        public string ProjectApiUrl { get; }
 
         public UserController(UserManager<Account> userManager, RoleManager<IdentityRole> roleManager, SignInManager<Account> signInManager, IEmailService emailService, IMapper mapper, IConfiguration configuration, SaveImageService saveImageService)
         {
@@ -49,6 +50,7 @@ namespace User.Controllers
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
             client.DefaultRequestHeaders.Accept.Add(contentType);
             FollowApiUrl = "https://localhost:7002/api/Follow";
+            ProjectApiUrl = "https://localhost:7005/api/ProjectInfo";
         }
 
         /*------------------------------------------------------------CallAPI------------------------------------------------------------*/
@@ -105,6 +107,42 @@ namespace User.Controllers
                 return follow;
             }
             return null;
+        }
+
+        [HttpGet("GetRatingAvg/{idUser}")]
+        private async Task<int> GetRatingAvg(string idUser)
+        {
+            HttpResponseMessage response = await client.GetAsync($"{ProjectApiUrl}/GetRatingAvg/{idUser}");
+            if (response.IsSuccessStatusCode)
+            {
+                string strData = await response.Content.ReadAsStringAsync();
+                var option = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true,
+                };
+                var ratingAvg = JsonSerializer.Deserialize<int>(strData, option);
+
+                return ratingAvg!;
+            }
+            return 0;
+        }
+
+        [HttpGet("GetRatingNum/{idUser}")]
+        private async Task<int> GetRatingNum(string idUser)
+        {
+            HttpResponseMessage response = await client.GetAsync($"{ProjectApiUrl}/GetRatingNum/{idUser}");
+            if (response.IsSuccessStatusCode)
+            {
+                string strData = await response.Content.ReadAsStringAsync();
+                var option = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true,
+                };
+                var ratingNum = JsonSerializer.Deserialize<int>(strData, option);
+
+                return ratingNum!;
+            }
+            return 0;
         }
 
         /*------------------------------------------------------------HaveBeenCalled------------------------------------------------------------*/
@@ -254,6 +292,8 @@ namespace User.Controllers
                 var result = _mapper.Map<ViewUser>(user);
                 result.follower = await GetTotalFollowers(result.Id);
                 result.following = await GetTotalFollowings(result.Id);
+                result.ratingAvg = await GetRatingAvg(result.Id);
+                result.ratingNum = await GetRatingNum(result.Id);
                 result.ImageSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, result.avatar);
                 var userRoles = await _userManager.GetRolesAsync(user);
                 result.role = userRoles.FirstOrDefault()!;
@@ -273,6 +313,8 @@ namespace User.Controllers
                 }
                 result.follower = await GetTotalFollowers(result.Id);
                 result.following = await GetTotalFollowings(result.Id);
+                result.ratingAvg = await GetRatingAvg(result.Id);
+                result.ratingNum = await GetRatingNum(result.Id);
                 result.ImageSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, result.avatar);
                 var userRoles = await _userManager.GetRolesAsync(user);
                 result.role = userRoles.FirstOrDefault()!;

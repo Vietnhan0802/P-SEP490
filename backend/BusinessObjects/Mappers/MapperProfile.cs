@@ -64,6 +64,7 @@ namespace BusinessObjects.Mappers
             CreateMap<ProjectMember, ProjectMemberCreateUpdate>().ReverseMap();
             CreateMap<Rating, RatingCreateUpdate>().ReverseMap();
             CreateMap<Rating, RatingViewProject>().ReverseMap();
+            CreateMap<Rating, RatingStart>().ReverseMap();
 
             CreateMap<Blog, ViewStatistic>().ReverseMap();
             CreateMap<Post, ViewStatistic>().ReverseMap();

@@ -20,6 +20,8 @@ namespace BusinessObjects.ViewModels.User
         public int follower { get; set; }
         public int following { get; set; }
         public bool isFollow { get; set; }
+        public double ratingAvg { get; set; }
+        public int ratingNum { get; set; }
         public string? role { get; set; }
         public DateTime createdDate { get; set; }
 
