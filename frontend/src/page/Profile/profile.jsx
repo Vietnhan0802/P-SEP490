@@ -318,9 +318,9 @@ function Profile({ handleChangeImg, value, resetFollowing }) {
               </div>
             </div>
           </div>
-          <RatingProfile show={showRating} onClose={() => setShowRating(false)} 
-                  id={currentUserId}
-                  />
+          <RatingProfile show={showRating} onClose={() => setShowRating(false)}
+            id={currentUserId} formatDateString={formatDateString} role={role}
+          />
         </Col>
         <Col md={6}>
           <UpdateInformationPu value={inputs} id={currentUserId} reset={reset} show={updateDisplay} onClose={() => setUpdateDisplay(false)} handleChangeImg={handleChangeImg} />

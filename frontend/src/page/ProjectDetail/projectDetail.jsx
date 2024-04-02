@@ -15,6 +15,7 @@ import RemoveMember from "./Popup/RemoveMember";
 import tick from "../../images/common/verifiedTick.png";
 import { Rating } from 'react-simple-star-rating'
 import RatingPopup from "./Popup/RatingPopup";
+import RatingFeedback from "./Popup/RatingFeedback";
 const formatDate = (timestamp) => {
   const months = [
     "Jan",
@@ -75,6 +76,8 @@ function ProjectDetail() {
   const [reset, setReset] = useState(false);
   const { idProject } = location.state || {};
   const [showRatingPopup, setShowRatingPopup] = useState(false);
+  const [showRatingMemberPopup, setShowRatingMemberPopup] = useState(false);
+  const [showFeedbackPopup, setShowFeedbackPopup] = useState(false);
   useEffect(() => {
     projectInstance.get(`/GetProjectById/${currentUserId}/${idProject}`)
       .then((res) => {
@@ -136,20 +139,23 @@ function ProjectDetail() {
                     </p>
                   </div>
                 </div>
-                <div
-                  onClick={() => setShowRatingPopup(data?.idAccount === currentUserId || data?.isRating === true ? false : true)}
-                >
-                  <Rating
-                    initialValue={data?.ratingAvg}
-                    readonly={true}
-                    allowFraction={true}
-                  />
-                  {data?.isRating || data?.idAccount === currentUserId ? '' :
-                    <p>Not rated</p>
-                  }
-                </div>
-                <RatingPopup show={showRatingPopup} id={currentUserId} projectid={idProject} onClose={() => setShowRatingPopup(!showRatingPopup)} type={'project'} />
+                {data?.process === 3 &&
+                  <div className="d-flex align-items-center"
+                    onClick={() => data?.isRating ? setShowFeedbackPopup(true) : setShowRatingPopup(data?.idAccount === currentUserId ? false : true)}
+                  >
+                    <Rating
+                      initialValue={data?.ratingAvg}
+                      readonly={true}
+                      allowFraction={true}
+                    />
+                    {data?.isRating || data?.idAccount === currentUserId ? '' :
+                      <p className="ms-2">Not rated</p>
+                    }
+                  </div>
+                }
 
+                <RatingPopup show={showRatingPopup} id={currentUserId} projectid={idProject} onClose={() => setShowRatingPopup(!showRatingPopup)} type={'project'} />
+                <RatingFeedback show={showFeedbackPopup} id={idProject} formatDateString={formatDate} onClose={() => setShowFeedbackPopup(!showFeedbackPopup)} />
                 {data?.idAccount === currentUserId &&
                   <div className="d-flex ms-2">
                     <UpdateProjectForm input={data} id={data?.idProject} resetPage={resetPage} />
@@ -198,8 +204,8 @@ function ProjectDetail() {
           </Row>
           <div className="description-cover">
             <p className="description fw-bold ps-3">Description</p>
-            <p className="description-text ps-3">{data?.description}</p>
-
+            {/* <p className="description-text ps-3">{data?.description}</p> */}
+            <div className="ps-3" dangerouslySetInnerHTML={{__html:data?.description}}/>
           </div>
           <div className="member px-3">
             <div className="d-flex justify-content-between">
@@ -233,7 +239,6 @@ function ProjectDetail() {
                   </thead>
                   <tbody>
                     {projectMembers?.length > 0 ?
-
                       projectMembers?.map((member) => (
                         <tr key={member.idProjectMember}>
                           <td className="w-20 py-3">
@@ -247,9 +252,9 @@ function ProjectDetail() {
                             {member.namePosition}
                           </td>
                           {
-                            data?.process === 3 
+                            data?.process === 3
                               ?
-                              <td className="w-10 py-3 text-center  yellow-icon" onClick={() => setShowRatingPopup(member?.idAccount === currentUserId || member?.isRating === true ? false : true)}>
+                              <td className="w-10 py-3 text-center  yellow-icon" onClick={() => setShowRatingMemberPopup(member?.idAccount === currentUserId || member?.isRating === true ? false : true)}>
                                 <Rating
                                   size={12}
                                   initialValue={member?.ratingAvg}
@@ -262,7 +267,7 @@ function ProjectDetail() {
                                 <RemoveMember id={member.idProjectMember} project={idProject} resetPage={resetPage} />
                               </td>
                           }
-                          <RatingPopup show={showRatingPopup} id={currentUserId} idRated={member.idAccount }projectid={idProject} onClose={() => setShowRatingPopup(!showRatingPopup)} idProjectMember={member.idProjectMember} type={'member'} />
+                          <RatingPopup show={showRatingMemberPopup} id={currentUserId} idRated={member.idAccount} projectid={idProject} onClose={() => setShowRatingMemberPopup(!showRatingMemberPopup)} idProjectMember={member.idProjectMember} type={'member'} />
                           x``
                         </tr>
                       )) : <tr> {/* Add a single row for the message */}

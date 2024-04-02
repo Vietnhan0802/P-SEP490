@@ -60,13 +60,13 @@ export default function Header({ activeComponent, onItemClick, changeImage }) {
 
   const handleItemClick = (itemId) => {
     setActiveItem(itemId);
-    onItemClick(itemId);
   };
   const handleAvatarClick = (id) => {
     setSearchName('');
     navigate('/profile', { state: { userId: id } });
   };
   const hanldeReturnHome = () => {
+
     navigate('/post', { state: { activeItem: 'post' } });
   }
   const searchUser = (event) => {
@@ -122,7 +122,6 @@ export default function Header({ activeComponent, onItemClick, changeImage }) {
             }`}
           onClick={() => handleItemClick("chat")}
         />
-
         <div >
           <IoIosNotificationsOutline
             className={`notify-icon ${activePopup === true ? "active-header-item" : ""

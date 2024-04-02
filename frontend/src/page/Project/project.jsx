@@ -1,6 +1,5 @@
 import React, { useEffect, useRef } from "react";
 import "../OwnProject/ownProject.scss";
-import avatar from "../../images/common/default.png";
 import { CiSearch } from "react-icons/ci";
 import { useState } from "react";
 import { projectInstance } from "../../axios/axiosConfig";

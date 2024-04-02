@@ -333,7 +333,7 @@ namespace ProjectService.Controllers
                     member.isVerified = infoUser.isVerified;
                     var postion = await _context.Positions.FirstOrDefaultAsync(x => x.idPosition == member.idPosition);
                     member.namePosition = postion.namePosition;
-                    var ratings = await _context.Ratings.Where(x => x.idRated == member.idAccount).Select(x => x.rating).ToListAsync();
+                    var ratings = await _context.Ratings.Where(x => x.idRated == member.idAccount && x.idProjectMember == member.idProjectMember).Select(x => x.rating).ToListAsync();
                     member.ratingNum = ratings.Count();
                     if (ratings.Count > 0)
                     {

@@ -1,9 +1,13 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Button, Modal } from 'react-bootstrap'
 import { Rating } from 'react-simple-star-rating'
 import { projectInstance } from '../../../axios/axiosConfig'
 import { notifyError, notifySuccess } from '../../../components/notification'
 function RatingPopup({ show, onClose, id, idRated, projectid, type, idProjectMember }) {
+    useEffect(() => {
+        console.log(type)
+
+    }, [id, type])
     const handleRatingProject = () => {
         if (type === 'project') {
             projectInstance.post(`CreateRatingProject/${id}/${projectid}`, {
@@ -38,9 +42,7 @@ function RatingPopup({ show, onClose, id, idRated, projectid, type, idProjectMem
                 <Modal.Header closeButton>
                     <Modal.Title>Rating {type === 'project' ? 'Project' : 'Member'}</Modal.Title>
                 </Modal.Header>
-
                 <Modal.Body className="popup-body">
-
                 </Modal.Body>
                 <div className='d-flex justify-content-between align-items-center mb-3 mx-5 '>
                     <p>{type === 'project' ? 'Project Quality :' : 'Rate member :'}</p>
@@ -58,7 +60,6 @@ function RatingPopup({ show, onClose, id, idRated, projectid, type, idProjectMem
                         id="floatingInput" placeholder="Feedback" />
                     <label htmlFor="floatingInput " className='w-100'>Feedback</label>
                 </div>
-
                 <Modal.Footer>
                     <Button variant="warning" onClick={() => handleRatingProject()}>
                         Confirm
