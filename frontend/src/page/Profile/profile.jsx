@@ -24,6 +24,8 @@ import UpdateInformationPu from "./UpdateInformationPu";
 import { BsThreeDots } from "react-icons/bs";
 import ChangePass from "./ChangePass";
 import { FiEdit } from "react-icons/fi";
+import { Rating } from 'react-simple-star-rating'
+
 // Import the main component
 import { Viewer } from '@react-pdf-viewer/core';
 
@@ -33,6 +35,7 @@ import { Worker } from '@react-pdf-viewer/core';
 import Verification from "./Verification";
 import Notification, { notifySuccess, notifyError } from "../../../src/components/notification";
 import ProfileTab from "./ProfileTab";
+import RatingProfile from "./RatingProfile";
 function formatDateString(dateString) {
   // Check if the dateString is not empty
   if (dateString) {
@@ -58,6 +61,7 @@ function Profile({ handleChangeImg, value, resetFollowing }) {
   const [resetDegree, setResetDegree] = useState(true);
   const [display, setDisplay] = useState(false);
   const [updateDisplay, setUpdateDisplay] = useState(false);
+  const [showRating, setShowRating] = useState(false);
   const [inputs, setInputs] = useState({
     userName: "",
     fullName: "",
@@ -71,7 +75,9 @@ function Profile({ handleChangeImg, value, resetFollowing }) {
     following: 0,
     isFollow: true,
     role: "",
-    email: ""
+    email: "",
+    ratingAvg: 0,
+    ratingNum: 0
   });
   const [userPost, setUserPost] = useState([]);
   const [userProject, setUserProject] = useState([]);
@@ -98,7 +104,9 @@ function Profile({ handleChangeImg, value, resetFollowing }) {
           following: user?.following,
           isFollow: user?.isFollow,
           role: user?.role,
-          email: user?.email
+          email: user?.email,
+          ratingAvg: user?.ratingAvg,
+          ratingNum: user?.ratingNum
         });
         if (user.role === "Business") {
           postInstance
@@ -232,9 +240,10 @@ function Profile({ handleChangeImg, value, resetFollowing }) {
   const handleEditInfor = () => {
     setUpdateDisplay(true);
   }
+  console.log(user)
   return (
     <>
-      <Row className="mx-0 mt-3 pb-3">
+      <Row className="mx-0 mt-3 pb-2">
         <Col md={3}>
           <div id="sidebar-profile" className="bg-white p-5 position-relative ">
             <div className="text-center mb-3">
@@ -252,7 +261,7 @@ function Profile({ handleChangeImg, value, resetFollowing }) {
                   alt=""
                   className="m-auto"
                 />
-                {user.isVerified && <img src={tick} alt="tick" className="position-absolute bottom-0" style={{width:'50px',height:'50px',right:'16px'}}/>}
+                {user.isVerified && <img src={tick} alt="tick" className="position-absolute bottom-0" style={{ width: '50px', height: '50px', right: '16px' }} />}
 
               </div>
 
@@ -299,7 +308,17 @@ function Profile({ handleChangeImg, value, resetFollowing }) {
               {currentUserId !== userId ? (
                 <Report id={currentUserId} idItem={userId} type="account" />) : ""}
             </div>
+            <div className="bg-white mt-3">
+              <div className="d-flex justify-content-center" onClick={() => setShowRating(true)}>
+                <Rating
+                  initialValue={user.ratingAvg}
+                  readonly={true}
+                  allowFraction={true}
+                />
+              </div>
+            </div>
           </div>
+          <RatingProfile show={showRating} onClose={() => setShowRating(false)} />
         </Col>
         <Col md={6}>
           <UpdateInformationPu value={inputs} id={currentUserId} reset={reset} show={updateDisplay} onClose={() => setUpdateDisplay(false)} handleChangeImg={handleChangeImg} />

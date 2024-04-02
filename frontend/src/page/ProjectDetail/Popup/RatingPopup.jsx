@@ -3,14 +3,24 @@ import { Button, Modal } from 'react-bootstrap'
 import { Rating } from 'react-simple-star-rating'
 import { projectInstance } from '../../../axios/axiosConfig'
 import { notifyError, notifySuccess } from '../../../components/notification'
-function RatingPopup({ show, onClose, id, projectid }) {
+function RatingPopup({ show, onClose, id, idRated, projectid, type, idProjectMember }) {
     const handleRatingProject = () => {
-        projectInstance.post(`CreateRatingProject/${id}/${projectid}`, {
-            rating: rating,
-            comment: input
-        })
-        .then((res)=>{notifySuccess(res?.data?.message)})
-        .catch((error)=>{notifyError(error?.data?.message)})
+        if (type === 'project') {
+            projectInstance.post(`CreateRatingProject/${id}/${projectid}`, {
+                rating: rating,
+                comment: input
+            })
+                .then((res) => { notifySuccess(res?.data?.message) })
+                .catch((error) => { notifyError(error?.data?.message) })
+        } else {
+            projectInstance.post(`CreateRatingPeople/${id}/${idRated}/${idProjectMember}`, {
+                rating: rating,
+                comment: input
+            })
+                .then((res) => { notifySuccess(res?.data?.message) })
+                .catch((error) => { notifyError(error?.data?.message) })
+        }
+
     }
     const [rating, setRating] = useState(0);
     const [input, setInput] = useState('');
@@ -26,14 +36,14 @@ function RatingPopup({ show, onClose, id, projectid }) {
         <div>
             <Modal show={show} onHide={onClose} >
                 <Modal.Header closeButton>
-                    <Modal.Title>Rating Project</Modal.Title>
+                    <Modal.Title>Rating {type === 'project' ? 'Project' : 'Member'}</Modal.Title>
                 </Modal.Header>
 
                 <Modal.Body className="popup-body">
 
                 </Modal.Body>
                 <div className='d-flex justify-content-between align-items-center mb-3 mx-5 '>
-                    <p>Project Quality :</p>
+                    <p>{type === 'project' ? 'Project Quality :' : 'Rate member :'}</p>
                     <Rating
                         onClick={handleRating}
                         className=''
