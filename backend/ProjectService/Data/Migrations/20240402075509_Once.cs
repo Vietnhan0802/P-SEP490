@@ -85,7 +85,7 @@ namespace ProjectService.Data.Migrations
                     idRating = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     idRater = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     idRated = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    idProjectMember = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    idProjectMember = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     idProject = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     rating = table.Column<int>(type: "int", nullable: false),
                     comment = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -98,8 +98,7 @@ namespace ProjectService.Data.Migrations
                         name: "FK_Ratings_ProjectMembers_idProjectMember",
                         column: x => x.idProjectMember,
                         principalTable: "ProjectMembers",
-                        principalColumn: "idProjectMember",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "idProjectMember");
                     table.ForeignKey(
                         name: "FK_Ratings_Projects_idProject",
                         column: x => x.idProject,

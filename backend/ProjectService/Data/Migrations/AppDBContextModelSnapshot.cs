@@ -132,7 +132,7 @@ namespace ProjectService.Data.Migrations
                     b.Property<Guid?>("idProject")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("idProjectMember")
+                    b.Property<Guid?>("idProjectMember")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("idRated")
@@ -188,9 +188,7 @@ namespace ProjectService.Data.Migrations
 
                     b.HasOne("BusinessObjects.Entities.Projects.ProjectMember", "ProjectMember")
                         .WithMany("Ratings")
-                        .HasForeignKey("idProjectMember")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("idProjectMember");
 
                     b.Navigation("Project");
 

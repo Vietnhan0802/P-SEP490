@@ -8,7 +8,7 @@ namespace BusinessObjects.Entities.Projects
         public Guid idRating { get; set; }
         public string idRater { get; set; }
         public string? idRated { get; set; }
-        public Guid idProjectMember { get; set; }
+        public Guid? idProjectMember { get; set; }
         public Guid? idProject { get; set; }
         public int rating { get; set; }
         public string? comment { get; set; }

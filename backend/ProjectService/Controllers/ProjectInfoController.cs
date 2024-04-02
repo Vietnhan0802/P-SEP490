@@ -139,6 +139,16 @@ namespace ProjectService.Controllers
                 var positions = await _context.Positions.Where(x => x.idProject == project.idProject).ToListAsync();
                 var viewPosition = _mapper.Map<List<PositionView>>(positions);
                 project.PositionViews = viewPosition;
+                var ratings = await _context.Ratings.Where(x => x.idProject == project.idProject).Select(x => x.rating).ToListAsync();
+                project.ratingNum = ratings.Count;
+                if (ratings.Count > 0)
+                {
+                    project.ratingAvg = ratings.Average();
+                }
+                else
+                {
+                    project.ratingAvg = 0;
+                }
             }
             return new Response(HttpStatusCode.OK, "Get project list is success!", result);
         }
@@ -162,6 +172,16 @@ namespace ProjectService.Controllers
                 var positions = await _context.Positions.Where(x => x.idProject == project.idProject).ToListAsync();
                 var viewPosition = _mapper.Map<List<PositionView>>(positions);
                 project.PositionViews = viewPosition;
+                var ratings = await _context.Ratings.Where(x => x.idProject == project.idProject).Select(x => x.rating).ToListAsync();
+                project.ratingNum = ratings.Count;
+                if (ratings.Count > 0)
+                {
+                    project.ratingAvg = ratings.Average();
+                }
+                else
+                {
+                    project.ratingAvg = 0;
+                }
             }
             return new Response(HttpStatusCode.OK, "Get project list is success!", result);
         }
@@ -187,6 +207,16 @@ namespace ProjectService.Controllers
                     var positions = await _context.Positions.Where(x => x.idProject == project.idProject).ToListAsync();
                     var viewPosition = _mapper.Map<List<PositionView>>(positions);
                     projectMember.PositionViews = viewPosition;
+                    var ratings = await _context.Ratings.Where(x => x.idProject == project.idProject).Select(x => x.rating).ToListAsync();
+                    projectMember.ratingNum = ratings.Count;
+                    if (ratings.Count > 0)
+                    {
+                        projectMember.ratingAvg = ratings.Average();
+                    }
+                    else
+                    {
+                        projectMember.ratingAvg = 0;
+                    }
                 }
                 return new Response(HttpStatusCode.OK, "Get project list is success!", result);
             }
@@ -212,6 +242,16 @@ namespace ProjectService.Controllers
                 var positions = await _context.Positions.Where(x => x.idProject == project.idProject).ToListAsync();
                 var viewPosition = _mapper.Map<List<PositionView>>(positions);
                 project.PositionViews = viewPosition;
+                var ratings = await _context.Ratings.Where(x => x.idProject == project.idProject).Select(x => x.rating).ToListAsync();
+                project.ratingNum = ratings.Count;
+                if (ratings.Count > 0)
+                {
+                    project.ratingAvg = ratings.Average();
+                }
+                else
+                {
+                    project.ratingAvg = 0;
+                }
             }
             return new Response(HttpStatusCode.OK, "Get project list is success!", result);
         }
