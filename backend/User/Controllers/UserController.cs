@@ -109,8 +109,44 @@ namespace User.Controllers
             return null;
         }
 
+        [HttpGet("GetRatingAvgBusiness/{idUser}")]
+        private async Task<double> GetRatingAvgBusiness(string idUser)
+        {
+            HttpResponseMessage response = await client.GetAsync($"{ProjectApiUrl}/GetRatingAvgBusiness/{idUser}");
+            if (response.IsSuccessStatusCode)
+            {
+                string strData = await response.Content.ReadAsStringAsync();
+                var option = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true,
+                };
+                var ratingAvg = JsonSerializer.Deserialize<double>(strData, option);
+
+                return ratingAvg!;
+            }
+            return 0;
+        }
+
+        [HttpGet("GetRatingNumBusiness/{idUser}")]
+        private async Task<int> GetRatingNumBusiness(string idUser)
+        {
+            HttpResponseMessage response = await client.GetAsync($"{ProjectApiUrl}/GetRatingNumBusiness/{idUser}");
+            if (response.IsSuccessStatusCode)
+            {
+                string strData = await response.Content.ReadAsStringAsync();
+                var option = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true,
+                };
+                var ratingAvg = JsonSerializer.Deserialize<int>(strData, option);
+
+                return ratingAvg!;
+            }
+            return 0;
+        }
+
         [HttpGet("GetRatingAvg/{idUser}")]
-        private async Task<int> GetRatingAvg(string idUser)
+        private async Task<double> GetRatingAvg(string idUser)
         {
             HttpResponseMessage response = await client.GetAsync($"{ProjectApiUrl}/GetRatingAvg/{idUser}");
             if (response.IsSuccessStatusCode)
@@ -120,7 +156,7 @@ namespace User.Controllers
                 {
                     PropertyNameCaseInsensitive = true,
                 };
-                var ratingAvg = JsonSerializer.Deserialize<int>(strData, option);
+                var ratingAvg = JsonSerializer.Deserialize<double>(strData, option);
 
                 return ratingAvg!;
             }
@@ -292,11 +328,19 @@ namespace User.Controllers
                 var result = _mapper.Map<ViewUser>(user);
                 result.follower = await GetTotalFollowers(result.Id);
                 result.following = await GetTotalFollowings(result.Id);
-                result.ratingAvg = await GetRatingAvg(result.Id);
-                result.ratingNum = await GetRatingNum(result.Id);
                 result.ImageSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, result.avatar);
                 var userRoles = await _userManager.GetRolesAsync(user);
                 result.role = userRoles.FirstOrDefault()!;
+                if (result.role == "Member")
+                {
+                    result.ratingAvg = await GetRatingAvg(result.Id);
+                    result.ratingNum = await GetRatingNum(result.Id);
+                }
+                else
+                {
+                    result.ratingAvg = await GetRatingAvgBusiness(result.Id);
+                    result.ratingNum = await GetRatingNumBusiness(result.Id);
+                }
                 return new Response(HttpStatusCode.OK, "Get user is success!", result);
             }
             else if (idUser != idAccount) {
@@ -313,11 +357,19 @@ namespace User.Controllers
                 }
                 result.follower = await GetTotalFollowers(result.Id);
                 result.following = await GetTotalFollowings(result.Id);
-                result.ratingAvg = await GetRatingAvg(result.Id);
-                result.ratingNum = await GetRatingNum(result.Id);
                 result.ImageSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, result.avatar);
                 var userRoles = await _userManager.GetRolesAsync(user);
                 result.role = userRoles.FirstOrDefault()!;
+                if (result.role == "Member")
+                {
+                    result.ratingAvg = await GetRatingAvg(result.Id);
+                    result.ratingNum = await GetRatingNum(result.Id);
+                }
+                else
+                {
+                    result.ratingAvg = await GetRatingAvgBusiness(result.Id);
+                    result.ratingNum = await GetRatingNumBusiness(result.Id);
+                }
                 return new Response(HttpStatusCode.OK, "Get user is success!", result);
             }
             return new Response(HttpStatusCode.BadRequest, "Get user is fail!");

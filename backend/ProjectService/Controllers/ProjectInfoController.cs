@@ -93,6 +93,30 @@ namespace ProjectService.Controllers
             return 0;
         }
 
+        [HttpGet("GetRatingAvgBusiness/{idUser}")]
+        public async Task<double> GetRatingAvgBusiness(string idUser)
+        {
+            var projects = await _context.Projects.Include(x => x.Ratings).Where(x => x.idAccount == idUser).AsNoTracking().ToListAsync();
+            if (projects.Count > 0)
+            {
+                var projectRatings = projects.Where(x => x.Ratings != null).SelectMany(x => x.Ratings.Select(x => x.rating));
+                return projectRatings.Average();
+            }
+            return 0;
+        }
+
+        [HttpGet("GetRatingNumBusiness/{idUser}")]
+        public async Task<double> GetRatingNumBusiness(string idUser)
+        {
+            var projects = await _context.Projects.Include(x => x.Ratings).Where(x => x.idAccount == idUser).AsNoTracking().ToListAsync();
+            if (projects.Count > 0)
+            {
+                var projectRatings = projects.Where(x => x.Ratings != null).SelectMany(x => x.Ratings.Select(x => x.rating));
+                return projectRatings.Count();
+            }
+            return 0;
+        }
+
         [HttpGet("GetRatingAvg/{idUser}")]
         public async Task<double> GetRatingAvg(string idUser)
         {
@@ -333,7 +357,7 @@ namespace ProjectService.Controllers
                     member.isVerified = infoUser.isVerified;
                     var postion = await _context.Positions.FirstOrDefaultAsync(x => x.idPosition == member.idPosition);
                     member.namePosition = postion.namePosition;
-                    var ratings = await _context.Ratings.Where(x => x.idRated == member.idAccount).Select(x => x.rating).ToListAsync();
+                    var ratings = await _context.Ratings.Where(x => x.idRated == member.idAccount && x.idProjectMember == member.idProjectMember).Select(x => x.rating).ToListAsync();
                     member.ratingNum = ratings.Count();
                     if (ratings.Count > 0)
                     {
@@ -800,6 +824,67 @@ namespace ProjectService.Controllers
         }
 
         /*------------------------------------------------------------Rating------------------------------------------------------------*/
+
+        [HttpGet("GetAllRatingStartBusiness/{idUser}")]
+        public RatingStart GetAllRatingStartBusiness(string idUser)
+        {
+            var projects = _context.Projects.Include(x => x.Ratings).Where(x => x.idAccount == idUser).AsNoTracking().ToList();
+            var projectRatings = projects.Where(x => x.Ratings != null).SelectMany(x => x.Ratings.Select(x => x.rating));
+            
+            var totalRatings = projectRatings.Count();
+            var averageRating = totalRatings > 0 ? projectRatings.Average() : 0;
+
+            var rating5 = projectRatings.Count(r => r == 5);
+            var rating4 = projectRatings.Count(r => r == 4);
+            var rating3 = projectRatings.Count(r => r == 3);
+            var rating2 = projectRatings.Count(r => r == 2);
+            var rating1 = projectRatings.Count(r => r == 1);
+
+            return new RatingStart
+            {
+                ratingAvg = averageRating,
+                ratingNum = totalRatings,
+                rating5 = totalRatings > 0 ? (double)rating5 / totalRatings * 100 : 0,
+                rating4 = totalRatings > 0 ? (double)rating4 / totalRatings * 100 : 0,
+                rating3 = totalRatings > 0 ? (double)rating3 / totalRatings * 100 : 0,
+                rating2 = totalRatings > 0 ? (double)rating2 / totalRatings * 100 : 0,
+                rating1 = totalRatings > 0 ? (double)rating1 / totalRatings * 100 : 0
+            };
+        }
+
+        [HttpGet("GetAllRatingBusiness/{idUser}")]
+        public async Task<Response> GetAllRatingBusiness(string idUser)
+        {
+            var projects = await _context.Projects.Include(x => x.Ratings).Where(x => x.idAccount == idUser).AsNoTracking().ToListAsync();
+            if (projects.Count > 0)
+            {
+                List<RatingViewProject> ratingProjects = new List<RatingViewProject>();
+                foreach (var project in projects)
+                {
+                    var ratings = await _context.Ratings.Where(x => x.idProject == project.idProject).OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
+                    if (ratings.Count > 0)
+                    {
+                        var result = _mapper.Map<List<RatingViewProject>>(ratings);
+                        foreach (var rating in result)
+                        {
+                            var infoUser = await GetInfoUser(rating.idRater);
+                            rating.email = infoUser.email;
+                            rating.fullName = infoUser.fullName;
+                            rating.avatar = infoUser.avatar;
+                            rating.isVerified = infoUser.isVerified;
+                            rating.projectName = project.name;
+                        }
+                        ratingProjects.AddRange(result);
+                    }
+                }
+                if (ratingProjects.Count > 0)
+                {
+                    return new Response(HttpStatusCode.OK, "Get all rating project is success!", ratingProjects);
+                }
+                return new Response(HttpStatusCode.OK, "Get all rating business is empty!");
+            }
+            return new Response(HttpStatusCode.NoContent, "Get all project is empty!");
+        }
 
         [HttpGet("GetAllRatingStarProject/{idProject}")]
         public RatingStart GetAllRatingStarProject(Guid idProject)

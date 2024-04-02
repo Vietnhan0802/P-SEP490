@@ -9,6 +9,7 @@
         public string? avatar { get; set; }
         public bool isVerified { get; set; }
         public Guid? idProject { get; set; }
+        public string? projectName { get; set; }
         public int rating { get; set; }
         public string? comment { get; set; }
         public DateTime createdDate { get; set; }
