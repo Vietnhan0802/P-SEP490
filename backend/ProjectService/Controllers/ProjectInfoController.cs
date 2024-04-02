@@ -802,36 +802,37 @@ namespace ProjectService.Controllers
         /*------------------------------------------------------------Rating------------------------------------------------------------*/
 
         [HttpGet("GetAllRatingStartProject/{idProject}")]
-        public RatingStart GetAllRatingStartProject(Guid idProject)
+        public async Task<Response> GetAllRatingStartProject(Guid idProject)
         {
-            var ratings = _context.Ratings.Where(x => x.idProject == idProject).Select(x => x.rating).ToList();
-
-            var totalRatings = ratings.Count;
-            var averageRating = totalRatings > 0 ? ratings.Average() : 0;
-
-            var rating5 = ratings.Count(r => r == 5);
-            var rating4 = ratings.Count(r => r == 4);
-            var rating3 = ratings.Count(r => r == 3);
-            var rating2 = ratings.Count(r => r == 2);
-            var rating1 = ratings.Count(r => r == 1);
-
-            return new RatingStart
+            var ratings = await _context.Ratings.Where(x => x.idProject == idProject).Select(x => x.rating).ToListAsync();
+            if (ratings.Count > 0)
             {
-                ratingAvg = averageRating,
-                ratingNum = totalRatings,
-                rating5 = totalRatings > 0 ? (double)rating5 / totalRatings * 100 : 0,
-                rating4 = totalRatings > 0 ? (double)rating4 / totalRatings * 100 : 0,
-                rating3 = totalRatings > 0 ? (double)rating3 / totalRatings * 100 : 0,
-                rating2 = totalRatings > 0 ? (double)rating2 / totalRatings * 100 : 0,
-                rating1 = totalRatings > 0 ? (double)rating1 / totalRatings * 100 : 0
-            };
+                var totalRatings = ratings.Count;
+                var averageRating = totalRatings > 0 ? ratings.Average() : 0;
+
+                var rating5 = ratings.Count(r => r == 5);
+                var rating4 = ratings.Count(r => r == 4);
+                var rating3 = ratings.Count(r => r == 3);
+                var rating2 = ratings.Count(r => r == 2);
+                var rating1 = ratings.Count(r => r == 1);
+
+                var result = _mapper.Map<RatingStart>(ratings);
+                result.ratingAvg = averageRating;
+                result.ratingNum = totalRatings;
+                result.rating5 = totalRatings > 0 ? (double)rating5 / totalRatings * 100 : 0;
+                result.rating4 = totalRatings > 0 ? (double)rating4 / totalRatings * 100 : 0;
+                result.rating3 = totalRatings > 0 ? (double)rating3 / totalRatings * 100 : 0;
+                result.rating2 = totalRatings > 0 ? (double)rating2 / totalRatings * 100 : 0;
+                result.rating1 = totalRatings > 0 ? (double)rating1 / totalRatings * 100 : 0;
+                return new Response(HttpStatusCode.OK, "Get all rating start project is success!", result);
+            }
+            return new Response(HttpStatusCode.NoContent, "Get all rating start project is empty!");
         }
 
         [HttpGet("GetAllRatingProject/{idProject}")]
         public async Task<Response> GetAllRatingProject(Guid idProject)
         {
             var ratings = await _context.Ratings.Where(x => x.idProject == idProject).AsNoTracking().ToListAsync();
-            var ratingStart = GetAllRatingStartProject(idProject);
             if (ratings.Count > 0)
             {
                 var result = _mapper.Map<List<RatingViewProject>>(ratings);
@@ -842,14 +843,6 @@ namespace ProjectService.Controllers
                     rating.fullName = infoUser.fullName;
                     rating.avatar = infoUser.avatar;
                     rating.isVerified = infoUser.isVerified;
-
-                    rating.ratingAvg = ratingStart.ratingAvg;
-                    rating.ratingNum = ratingStart.ratingNum;
-                    rating.rating5 = ratingStart.rating5;
-                    rating.rating4 = ratingStart.rating4;
-                    rating.rating3 = ratingStart.rating3;
-                    rating.rating2 = ratingStart.rating2;
-                    rating.rating1 = ratingStart.rating1;
                 }
                 return new Response(HttpStatusCode.OK, "Get all rating project is success!", result);
             }
@@ -857,37 +850,37 @@ namespace ProjectService.Controllers
         }
 
         [HttpGet("GetAllRatingStartPeople/{idUser}")]
-        public RatingStart GetAllRatingStartPeople(string idUser)
+        public async Task<Response> GetAllRatingStartPeople(string idUser)
         {
-            var ratings = _context.Ratings.Where(x => x.idRated == idUser).Select(x => x.rating).ToList();
-
-            var totalRatings = ratings.Count;
-            var averageRating = totalRatings > 0 ? ratings.Average() : 0;
-
-            var rating5 = ratings.Count(r => r == 5);
-            var rating4 = ratings.Count(r => r == 4);
-            var rating3 = ratings.Count(r => r == 3);
-            var rating2 = ratings.Count(r => r == 2);
-            var rating1 = ratings.Count(r => r == 1);
-
-            return new RatingStart
+            var ratings = await _context.Ratings.Where(x => x.idRated == idUser).Select(x => x.rating).ToListAsync();
+            if (ratings.Count > 0)
             {
-                ratingAvg = averageRating,
-                ratingNum = totalRatings,
-                rating5 = totalRatings > 0 ? (double)rating5 / totalRatings * 100 : 0,
-                rating4 = totalRatings > 0 ? (double)rating4 / totalRatings * 100 : 0,
-                rating3 = totalRatings > 0 ? (double)rating3 / totalRatings * 100 : 0,
-                rating2 = totalRatings > 0 ? (double)rating2 / totalRatings * 100 : 0,
-                rating1 = totalRatings > 0 ? (double)rating1 / totalRatings * 100 : 0
-            };
+                var totalRatings = ratings.Count;
+                var averageRating = totalRatings > 0 ? ratings.Average() : 0;
+
+                var rating5 = ratings.Count(r => r == 5);
+                var rating4 = ratings.Count(r => r == 4);
+                var rating3 = ratings.Count(r => r == 3);
+                var rating2 = ratings.Count(r => r == 2);
+                var rating1 = ratings.Count(r => r == 1);
+
+                var result = _mapper.Map<RatingStart>(ratings);
+                result.ratingAvg = averageRating;
+                result.ratingNum = totalRatings;
+                result.rating5 = totalRatings > 0 ? (double)rating5 / totalRatings * 100 : 0;
+                result.rating4 = totalRatings > 0 ? (double)rating4 / totalRatings * 100 : 0;
+                result.rating3 = totalRatings > 0 ? (double)rating3 / totalRatings * 100 : 0;
+                result.rating2 = totalRatings > 0 ? (double)rating2 / totalRatings * 100 : 0;
+                result.rating1 = totalRatings > 0 ? (double)rating1 / totalRatings * 100 : 0;
+                return new Response(HttpStatusCode.OK, "Get all rating start people is success!", result);
+            }
+            return new Response(HttpStatusCode.NoContent, "Get all rating start people is empty!");
         }
 
         [HttpGet("GetAllRatingPeople/{idUser}")]
         public async Task<Response> GetAllRatingPeople(string idUser)
         {
-            var ratings = await _context.Ratings.Where(x => x.idRated == idUser).AsNoTracking().ToListAsync();
-            var ratingStart = GetAllRatingStartPeople(idUser);
-
+            var ratings = await _context.Ratings.Where(x => x.idRated == idRated).AsNoTracking().ToListAsync();
             if (ratings.Count > 0)
             {
                 var result = _mapper.Map<List<RatingViewProject>>(ratings);
@@ -898,14 +891,6 @@ namespace ProjectService.Controllers
                     rating.fullName = infoUser.fullName;
                     rating.avatar = infoUser.avatar;
                     rating.isVerified = infoUser.isVerified;
-
-                    rating.ratingAvg = ratingStart.ratingAvg;
-                    rating.ratingNum = ratingStart.ratingNum;
-                    rating.rating5 = ratingStart.rating5;
-                    rating.rating4 = ratingStart.rating4;
-                    rating.rating3 = ratingStart.rating3;
-                    rating.rating2 = ratingStart.rating2;
-                    rating.rating1 = ratingStart.rating1;
                 }
                 return new Response(HttpStatusCode.OK, "Get all rating people is success!", result);
             }
