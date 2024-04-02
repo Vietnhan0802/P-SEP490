@@ -19,6 +19,7 @@ namespace BusinessObjects.ViewModels.Project
         public string? cv { get; set; }
         public double ratingAvg { get; set; }
         public int ratingNum { get; set; }
+        public bool isRating { get; set; }
         public bool isAcept { get; set; }
         public DateTime createdDate { get; set; }
         [NotMapped]

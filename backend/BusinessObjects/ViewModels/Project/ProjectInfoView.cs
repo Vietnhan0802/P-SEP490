@@ -17,6 +17,7 @@ namespace BusinessObjects.ViewModels.Project
         public Visibility visibility { get; set; }
         public double ratingAvg { get; set; }
         public int ratingNum { get; set; }
+        public bool isRating { get; set; }
         public bool isDeleted { get; set; }
         public DateTime createdDate { get; set; }
         public ICollection<PositionView>? PositionViews { get; set; }
