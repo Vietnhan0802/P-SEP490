@@ -14,6 +14,7 @@ import DeletePopup from "./Popup/DeletePopup";
 import RemoveMember from "./Popup/RemoveMember";
 import tick from "../../images/common/verifiedTick.png";
 import { Rating } from 'react-simple-star-rating'
+import RatingPopup from "./Popup/RatingPopup";
 const formatDate = (timestamp) => {
   const months = [
     "Jan",
@@ -73,7 +74,7 @@ function ProjectDetail() {
   const [projectMembers, setProjectMembers] = useState([]);
   const [reset, setReset] = useState(false);
   const { idProject } = location.state || {};
-
+  const [showRatingPopup, setShowRatingPopup] = useState(false);
   useEffect(() => {
     projectInstance.get(`/GetProjectById/${idProject}`)
       .then((res) => {
@@ -101,6 +102,7 @@ function ProjectDetail() {
   const resetPage = (value) => {
     setResetProject(prevReset => !prevReset);
   }
+  console.log(showRatingPopup)
   return (
     <Row className="pt-3 ms-0 me-0 pb-3">
       <Col md={3}>
@@ -135,10 +137,13 @@ function ProjectDetail() {
                     </p>
                   </div>
                 </div>
-                <div>
+                <div
+                  onClick={() => setShowRatingPopup(true)}
+                >
                   <Rating
-                    initialValue={3}
+                    initialValue={3.75}
                     readonly={data?.idAccount === currentUserId ? true : false}
+                    allowFraction={true}
                   // onClick={handleRating}
                   // onPointerEnter={onPointerEnter}
                   // onPointerLeave={onPointerLeave}
@@ -146,6 +151,8 @@ function ProjectDetail() {
                   /* Available Props */
                   />
                 </div>
+                <RatingPopup show={showRatingPopup} onClose={() => setShowRatingPopup(!showRatingPopup)} />
+
                 {data?.idAccount === currentUserId &&
                   <div className="d-flex ms-2">
                     <UpdateProjectForm input={data} id={data?.idProject} resetPage={resetPage} />
