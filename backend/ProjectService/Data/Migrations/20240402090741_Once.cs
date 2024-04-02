@@ -58,7 +58,7 @@ namespace ProjectService.Data.Migrations
                     idProject = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     idPosition = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     type = table.Column<int>(type: "int", nullable: false),
-                    cvUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    cv = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     isAcept = table.Column<bool>(type: "bit", nullable: true),
                     confirmedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     createdDate = table.Column<DateTime>(type: "datetime2", nullable: false)
@@ -98,7 +98,8 @@ namespace ProjectService.Data.Migrations
                         name: "FK_Ratings_ProjectMembers_idProjectMember",
                         column: x => x.idProjectMember,
                         principalTable: "ProjectMembers",
-                        principalColumn: "idProjectMember");
+                        principalColumn: "idProjectMember",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Ratings_Projects_idProject",
                         column: x => x.idProject,

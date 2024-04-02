@@ -1,6 +1,4 @@
-﻿using BusinessObjects.Entities.Projects;
-using Microsoft.AspNetCore.Http;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BusinessObjects.ViewModels.Project
 {
@@ -16,13 +14,13 @@ namespace BusinessObjects.ViewModels.Project
         public string? nameProject { get; set; }
         public Guid? idPosition { get; set; }
         public string? namePosition { get; set; }
-        public string? cv { get; set; }
+        public string? cvUrl { get; set; }
         public double ratingAvg { get; set; }
         public int ratingNum { get; set; }
         public bool isRating { get; set; }
         public bool isAcept { get; set; }
         public DateTime createdDate { get; set; }
         [NotMapped]
-        public string? cvSrc { get; set; }
+        public string? cvUrlFile { get; set; }
     }
 }

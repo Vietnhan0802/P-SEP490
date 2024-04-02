@@ -472,7 +472,7 @@ namespace ProjectService.Controllers
                             projectApplication.avatar = infoUser.avatar;
                             projectApplication.isVerified = infoUser.isVerified;
                             projectApplication.nameProject = project.name;
-                            projectApplication.cvSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, projectApplication.cv);
+                            projectApplication.cvUrlFile = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, projectApplication.cvUrl);
                             var positionName = await _context.Positions.Where(x => x.idProject == projectApplication.idProject).AsNoTracking().ToListAsync();
                             foreach (var position in positionName)
                             {
@@ -515,7 +515,7 @@ namespace ProjectService.Controllers
                             sendInvite.avatar = infoUser.avatar;
                             sendInvite.isVerified = infoUser.isVerified;
                             sendInvite.nameProject = project.name;
-                            sendInvite.cvSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, sendInvite.cv);
+                            sendInvite.cvUrlFile = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, sendInvite.cvUrl);
                             var positionName = await _context.Positions.FirstOrDefaultAsync(x => x.idPosition == sendInvite.idPosition);
                             sendInvite.namePosition = positionName.namePosition;
                         }
@@ -549,7 +549,7 @@ namespace ProjectService.Controllers
                     projectInvite.avatar = infoUser.avatar;
                     projectInvite.isVerified = infoUser.isVerified;
                     projectInvite.nameProject = project.name;
-                    projectInvite.cvSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, projectInvite.cv);
+                    projectInvite.cvUrlFile = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, projectInvite.cvUrl);
                     foreach (var position in projectInvites)
                     {
                         projectInvite.namePosition = position.Position.namePosition;
@@ -578,7 +578,7 @@ namespace ProjectService.Controllers
                     projectApplication.avatar = infoUser.avatar;
                     projectApplication.isVerified = infoUser.isVerified;
                     projectApplication.nameProject = project.name;
-                    projectApplication.cvSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, projectApplication.cv);
+                    projectApplication.cvUrlFile = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, projectApplication.cvUrl);
                     foreach (var position in projectApplications)
                     {
                         projectApplication.namePosition = position.Position.namePosition;
