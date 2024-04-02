@@ -760,7 +760,7 @@ namespace ProjectService.Controllers
         [HttpDelete("RemoveMember/{idProjectMember}")]
         public async Task<Response> RemoveMember(Guid idProjectMember)
         {
-            var member = await _context.ProjectMembers.FirstOrDefaultAsync(x => x.idProjectMember == idProjectMember && x.isAcept == true);
+            var member = await _context.ProjectMembers.Include(x => x.Ratings).FirstOrDefaultAsync(x => x.idProjectMember == idProjectMember && x.isAcept == true);
             if (member == null)
             {
                 return new Response(HttpStatusCode.NotFound, "Member doesn't exists!");
