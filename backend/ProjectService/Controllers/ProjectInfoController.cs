@@ -235,7 +235,14 @@ namespace ProjectService.Controllers
             result.PositionViews = viewPosition;
             var ratings = await _context.Ratings.Where(x => x.idProject == idProject).Select(x => x.rating).ToListAsync();
             result.ratingNum = ratings.Count;
-            result.ratingAvg = ratings.Average();
+            if (ratings.Count > 0)
+            {
+                result.ratingAvg = ratings.Average();
+            }
+            else
+            {
+                result.ratingAvg = 0;
+            }
             return new Response(HttpStatusCode.OK, "Get project is success!", result);
         }
 
@@ -261,7 +268,14 @@ namespace ProjectService.Controllers
                     member.namePosition = postion.namePosition;
                     var ratings = await _context.Ratings.Where(x => x.idRated == member.idAccount).Select(x => x.rating).ToListAsync();
                     member.ratingNum = ratings.Count();
-                    member.ratingAvg = ratings.Average();
+                    if (ratings.Count > 0)
+                    {
+                        member.ratingAvg = ratings.Average();
+                    }
+                    else
+                    {
+                        member.ratingAvg = 0;
+                    }
                 }
                 return new Response(HttpStatusCode.OK, "Get member in project is success!", result);
             }
