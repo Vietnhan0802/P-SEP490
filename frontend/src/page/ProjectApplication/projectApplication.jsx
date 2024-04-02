@@ -7,6 +7,7 @@ import { Col, Row } from "react-bootstrap";
 import SideBar from "../../components/sidebar";
 import { projectInstance } from "../../axios/axiosConfig";
 import CancelItem from "./CancelItem";
+import tick from "../../images/common/verifiedTick.png";
 
 const createData = (
   id,
@@ -15,7 +16,8 @@ const createData = (
   position,
   project,
   imgUrl,
-  cvFile) => {
+  cvFile
+  , isVerified) => {
   return {
     id,
     name,
@@ -24,6 +26,7 @@ const createData = (
     project,
     imgUrl,
     cvFile
+    , isVerified
   }
 };
 
@@ -38,17 +41,15 @@ function ProjectApplication() {
         accessor: "name",
         Cell: ({ row }) => (
           <div style={{ display: "flex", alignItems: "center" }}>
-            <img
-              src={row.original.imgUrl}
-              alt="Avatar"
-              style={{
-                width: "30px",
-                height: "30px",
-                borderRadius: "50%",
-                marginRight: "10px",
-              }}
-            />
-            {row.original.name}
+
+            <div className="position-relative">
+              <img src={row.original.imgUrl} alt="profile" className="avatar-contain" />
+              {row.original.isVerified && <img src={tick} alt="tick" className="position-absolute bottom-0 end-0" style={{ width: '18px' }} />}
+            </div>
+            <div className="ms-2">
+              {row.original.name}
+
+            </div>
           </div>
         ),
       },
@@ -75,7 +76,7 @@ function ProjectApplication() {
                   rel="noopener noreferrer" // Improve security for opening new tabs
                 > View CV
                 </a>
-                <AcceptConfirm id={row.original.id} reset={reset} role={role}  />
+                <AcceptConfirm id={row.original.id} reset={reset} role={role} />
                 <RejectConfirm id={row.original.id} reset={reset} role={role} />
               </div> :
               <CancelItem id={row.original.id} reset={reset} role={role} />}
@@ -98,7 +99,7 @@ function ProjectApplication() {
           const data = res?.data?.result;
           console.log(data)
           if (Array.isArray(data) && data.length > 0) {
-            setApplications(data.map((item) => createData(item.idProjectMember, item.fullName, item.email, item.namePosition, item.nameProject, item.avatar, item.cvUrlFile)));
+            setApplications(data.map((item) => createData(item.idProjectMember, item.fullName, item.email, item.namePosition, item.nameProject, item.avatar, item.cvUrlFile, item.isVerified)));
           } else {
             setApplications([]); // Set to an empty array if the API returns no data
           }
@@ -112,7 +113,7 @@ function ProjectApplication() {
         .then((res) => {
           const data = res?.data?.result;
           if (Array.isArray(data) && data.length > 0) {
-            setApplications(data.map((item) => createData(item.idProjectMember, item.fullName, item.email, item.namePosition, item.nameProject, item.avatar, item.cvUrlFile)));
+            setApplications(data.map((item) => createData(item.idProjectMember, item.fullName, item.email, item.namePosition, item.nameProject, item.avatar, item.cvUrlFile, item.isVerified)));
           } else {
             setApplications([]); // Set to an empty array if the API returns no data
           }

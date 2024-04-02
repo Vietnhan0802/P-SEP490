@@ -1,9 +1,7 @@
 import React, { useEffect } from "react";
 import "./ownProject.scss";
-import avatar from "../../images/common/default.png";
-import sender from "../../images/common/send-01.png";
 import { CiSearch } from "react-icons/ci";
-
+import tick from "../../images/common/verifiedTick.png";
 import { useState } from "react";
 import { projectInstance } from "../../axios/axiosConfig";
 import CreateProject from "./createProject";
@@ -117,11 +115,10 @@ function OwnProject({ value }) {
                 <hr />
                 <div className="d-flex items-center justify-content-between mt-2">
                   <div className="d-flex items-center">
-                    <img
-                      className="avata-s mr-4"
-                      src={item.avatarUser === 'https://localhost:7006/Images/' ? avatar : item.avatarUser}
-                      alt="Instructor Cooper Bator"
-                    />
+                  <div className="position-relative">
+                    <img src={item.avatarUser} alt="profile" className="avatar-contain" />
+                    {item.isVerified && <img src={tick} alt="tick" className="position-absolute bottom-0 end-0" style={{ width: '18px' }} />}
+                  </div>
                     <div className="left-30 d-flex flex-column justify-content-center">
                       <div className="size-20 SFU-heavy d-flex">{item.fullName}</div>
                       <div className="size-14 SFU-reg text-gray-600 d-flex">

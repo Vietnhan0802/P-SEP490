@@ -7,6 +7,7 @@ import AcceptConfirm from './acceptConfirm';
 import RejectConfirm from './rejectConfirm';
 import { projectInstance } from '../../axios/axiosConfig';
 import CancelItem from './CancelItem';
+import tick from "../../images/common/verifiedTick.png";
 
 const createData = (
     id,
@@ -15,7 +16,8 @@ const createData = (
     position,
     project,
     imgUrl,
-    cvFile) => {
+    cvFile,
+    isVerified) => {
     return {
         id,
         name,
@@ -23,7 +25,8 @@ const createData = (
         position,
         project,
         imgUrl,
-        cvFile
+        cvFile,
+        isVerified
     }
 };
 
@@ -38,17 +41,16 @@ function ProjectInviation() {
                 accessor: "name",
                 Cell: ({ row }) => (
                     <div style={{ display: "flex", alignItems: "center" }}>
-                        <img
-                            src={row.original.imgUrl}
-                            alt="Avatar"
-                            style={{
-                                width: "30px",
-                                height: "30px",
-                                borderRadius: "50%",
-                                marginRight: "10px",
-                            }}
-                        />
-                        {row.original.name}
+                        <div style={{ display: "flex", alignItems: "center" }}>
+
+                            <div className="position-relative">
+                                <img src={row.original.imgUrl} alt="profile" className="avatar-contain" />
+                                {row.original.isVerified && <img src={tick} alt="tick" className="position-absolute bottom-0 end-0" style={{ width: '18px' }} />}
+                            </div>
+                            <div className="ms-2">
+                                {row.original.name}
+                            </div>
+                        </div>
                     </div>
                 ),
             },
@@ -93,7 +95,7 @@ function ProjectInviation() {
                 .then((res) => {
                     const data = res?.data?.result;
                     if (Array.isArray(data) && data.length > 0) {
-                        setInvivtation(data.map((item) => createData(item.idProjectMember, item.fullName, item.email, item.namePosition, item.nameProject, item.avatar, item.cvUrlFile)));
+                        setInvivtation(data.map((item) => createData(item.idProjectMember, item.fullName, item.email, item.namePosition, item.nameProject, item.avatar, item.cvUrlFile, item.isVerified)));
                     } else {
                         setInvivtation([]); // Set to an empty array if the API returns no data
                     }
@@ -107,7 +109,7 @@ function ProjectInviation() {
                 .then((res) => {
                     const data = res?.data?.result;
                     if (Array.isArray(data) && data.length > 0) {
-                        setInvivtation(data.map((item) => createData(item.idProjectMember, item.fullName, item.email, item.namePosition, item.nameProject, item.avatar, item.cvUrlFile)));
+                        setInvivtation(data.map((item) => createData(item.idProjectMember, item.fullName, item.email, item.namePosition, item.nameProject, item.avatar, item.cvUrlFile, item.isVerified)));
                     } else {
                         setInvivtation([]); // Set to an empty array if the API returns no data
                     }

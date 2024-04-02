@@ -1,4 +1,5 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
+import bootstrap from "bootstrap/dist/js/bootstrap.bundle.min";
 import { useState } from "react";
 import "../Blog/blog.scss";
 import { FaHeart } from "react-icons/fa";
@@ -12,6 +13,7 @@ import { Col, Row } from "react-bootstrap";
 import Follow from "../../components/follow";
 import SideBar from "../../components/sidebar";
 import Report from "../../components/report-popup/Report";
+import tick from "../../images/common/verifiedTick.png";
 import Notification, { notifySuccess, notifyError } from "../../components/notification";
 
 function calculateTimeDifference(targetDate) {
@@ -42,6 +44,7 @@ function calculateTimeDifference(targetDate) {
 function Blog({ value }) {
   const createData = (
     id,
+    avatar,
     createdDate,
     title,
     content,
@@ -53,6 +56,7 @@ function Blog({ value }) {
   ) => {
     return {
       id,
+      avatar,
       createdDate,
       title,
       content,
@@ -63,7 +67,21 @@ function Blog({ value }) {
       isLike,
     };
   };
+  const carouselRef = useRef(null);
+  useEffect(() => {
+    if (carouselRef.current) {
+      var carouselInstance = new bootstrap.Carousel(carouselRef.current, {
+        interval: 99999999,
+        wrap: true,
+      });
+    }
 
+    return () => {
+      if (carouselInstance) {
+        carouselInstance.dispose();
+      }
+    };
+  }, []);
   //_________________________________________________________//
   const [blogPopups, setBlogPopups] = useState({});
   const [data, setData] = useState([]);
@@ -128,6 +146,7 @@ function Blog({ value }) {
             ...prevData,
             createData(
               element.idBlog,
+              element.avatar,
               time,
               element.title,
               element.content,
@@ -156,6 +175,7 @@ function Blog({ value }) {
             ...prevData,
             createData(
               element.idBlog,
+              element.avatar,
               time,
               element.title,
               element.content,
@@ -172,7 +192,6 @@ function Blog({ value }) {
         console.error(error);
       });
   }, [])
-
   const resetBlog = () => {
     setReset((prevReset) => !prevReset);
   };
@@ -184,10 +203,10 @@ function Blog({ value }) {
     );
     setFilterBlog(filtered);
   }
-  console.log(showTrendList);
   const toggleTrendList = () => {
     setShowTrendList(!showTrendList);
   };
+
   return (
     <Row className="pt-3 ms-0 me-0">
       <Col md={3}>
@@ -224,26 +243,78 @@ function Blog({ value }) {
               <div className="d-flex justify-content-between align-items-center">
                 {" "}
                 <div className="d-flex align-items-center">
-                  <div alt="profile" className="profile ">
-                    <RiAdminLine />
+                  <div className="position-relative">
+                    <img src={item.avatar} alt="user" className="avatar-contain" />
+                    <img src={tick} alt="tick" className="position-absolute bottom-0 end-0" style={{ width: '18px' }} />
                   </div>
                   <div className="ms-2">
-                    <h6 className="mb-0">{item.fullName}</h6>
-                    <p className="mb-0">{item.createdDate}</p>
+                  <h6 className="size-20 SFU-heavy d-flex">{item.fullName}</h6>
+                  <p className="size-14 SFU-reg text-gray-600 d-flex">{item.createdDate}</p>
                   </div>
                 </div>
                 <Report id={currentUserId} idItem={item.id} type="blog" />
               </div>
 
               <h3 className="mt-2">{item.title}</h3>
+              <div dangerouslySetInnerHTML={{ __html: item.content }} />
+              <div
+                id={`carouselExampleControls-${item.id}`}
+                className="carousel slide"
+                data-bs-ride="carousel"
+                ref={carouselRef} // Thêm tham chiếu này
+              >
+                <div className="carousel-inner">
+                  {item.viewBlogImages?.map((items, index) => (
+                    <div
+                      className={`carousel-item ${index === 0 ? "active" : ""}`}
+                    >
+                      <div className="image-container d-flex justify-content-center">
+                        <img
+                          src={items.imageSrc}
+                          className="d-block w-100"
+                          alt=""
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
 
-              <p className="mt-2" style={{ whiteSpace: "pre-wrap" }}>
-                {item.content}
-              </p>
-              <div className="d-flex">
-                {item.viewBlogImages.map((items) => (
-                  <img src={items.imageSrc} alt="" className="w-50 p-2" />
-                ))}
+                {item.viewBlogImages?.length > 1 && (
+                  <>
+                    <button
+                      className="carousel-control-prev"
+                      type="button"
+                      data-bs-target={`#carouselExampleControls-${item.id}`}
+                      data-bs-slide="prev"
+                    >
+                      <span
+                        className="carousel-control-prev-icon"
+                        style={{
+                          backgroundColor: "rgba(128, 128, 128, 0.6)",
+                          padding: "15px",
+                        }}
+                        aria-hidden="true"
+                      ></span>
+                      <span className="visually-hidden">Previous</span>
+                    </button>
+                    <button
+                      className="carousel-control-next"
+                      type="button"
+                      data-bs-target={`#carouselExampleControls-${item.id}`}
+                      data-bs-slide="next"
+                    >
+                      <span
+                        className="carousel-control-next-icon"
+                        style={{
+                          backgroundColor: "rgba(128, 128, 128, 0.6)",
+                          padding: "15px",
+                        }}
+                        aria-hidden="true"
+                      ></span>
+                      <span className="visually-hidden">Next</span>
+                    </button>
+                  </>
+                )}
               </div>
               <div className="d-flex justify-content-between mt-2">
                 <div className="d-flex align-items-center">

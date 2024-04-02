@@ -8,6 +8,8 @@ import { useNavigate } from "react-router-dom";
 import { Col, Row } from "react-bootstrap";
 import SideBar from "../../components/sidebar";
 import Follow from "../../components/follow";
+import tick from "../../images/common/verifiedTick.png";
+
 const formatDate = (timestamp) => {
   const months = [
     "Jan",
@@ -94,11 +96,10 @@ function Project({ value }) {
                 <hr />
                 <div className="d-flex items-center justify-content-between mt-2">
                   <div className="d-flex items-center">
-                    <img
-                      className="avata-s mr-4"
-                      src={item.avatarUser === 'https://localhost:7006/Images/' ? avatar : item.avatarUser}
-                      alt="Instructor Cooper Bator"
-                    />
+                  <div className="position-relative">
+                    <img src={item.avatarUser} alt="profile" className="avatar-contain" />
+                    {item.isVerified && <img src={tick} alt="tick" className="position-absolute bottom-0 end-0" style={{ width: '18px' }} />}
+                  </div>
                     <div className="left-30 d-flex flex-column justify-content-center">
                       <div className="size-20 SFU-heavy d-flex">{item.fullName}</div>
                       <div className="size-14 SFU-reg text-gray-600 d-flex">

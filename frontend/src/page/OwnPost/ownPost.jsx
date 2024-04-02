@@ -5,8 +5,7 @@ import { CiSearch } from "react-icons/ci";
 import { FaHeart } from "react-icons/fa";
 import bootstrap from "bootstrap/dist/js/bootstrap.bundle.min";
 import { FiEye } from "react-icons/fi";
-import defaultAvatar from "../../images/common/default.png"
-
+import tick from "../../images/common/verifiedTick.png";
 import { postInstance, reportInstance } from "../../axios/axiosConfig"
 import PostPu from "./postPu";
 import { useNavigate } from "react-router-dom";
@@ -176,15 +175,17 @@ function OwnPost({ value }) {
                 }`}
             >
               <div className="d-flex align-items-center">
-                <img src={item.avatar === 'https://localhost:7006/Images/' ? defaultAvatar : item.avatar} alt="profile" className="avatar-contain" />
+                <div className="position-relative">
+                  <img src={item.avatar} alt="profile" className="avatar-contain" />
+                  {item.isVerified && <img src={tick} alt="tick" className="position-absolute bottom-0 end-0" style={{ width: '18px' }} />}
+                </div>
                 <div className="ms-2">
                   <h6 className="size-20 SFU-heavy d-flex">{item.fullName}</h6>
                   <p className="size-14 SFU-reg text-gray-600 d-flex">{item.createdDate}</p>
                 </div>
               </div>
               <h4 className="mt-2">{item.title}</h4>
-              <p className="mt-2" style={{ whiteSpace: 'pre-wrap' }}>{item.content}</p>
-
+              <div dangerouslySetInnerHTML={{ __html: item.content }} />
               <div
                 id={`carouselExampleControls-${item.id}`}
                 className="carousel slide"
