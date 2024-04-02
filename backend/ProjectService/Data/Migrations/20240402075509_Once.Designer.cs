@@ -12,7 +12,7 @@ using ProjectService.Data;
 namespace ProjectService.Data.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20240402061815_Once")]
+    [Migration("20240402075509_Once")]
     partial class Once
     {
         /// <inheritdoc />
@@ -135,7 +135,7 @@ namespace ProjectService.Data.Migrations
                     b.Property<Guid?>("idProject")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("idProjectMember")
+                    b.Property<Guid?>("idProjectMember")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("idRated")
@@ -191,9 +191,7 @@ namespace ProjectService.Data.Migrations
 
                     b.HasOne("BusinessObjects.Entities.Projects.ProjectMember", "ProjectMember")
                         .WithMany("Ratings")
-                        .HasForeignKey("idProjectMember")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("idProjectMember");
 
                     b.Navigation("Project");
 
