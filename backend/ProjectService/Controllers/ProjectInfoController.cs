@@ -801,6 +801,7 @@ namespace ProjectService.Controllers
 
         /*------------------------------------------------------------Rating------------------------------------------------------------*/
 
+        [HttpGet("GetAllRatingStartProject/{idProject}")]
         public RatingStart GetAllRatingStartProject(Guid idProject)
         {
             var ratings = _context.Ratings.Where(x => x.idProject == idProject).Select(x => x.rating).ToList();
@@ -855,6 +856,7 @@ namespace ProjectService.Controllers
             return new Response(HttpStatusCode.NoContent, "Get all rating project is empty!");
         }
 
+        [HttpGet("GetAllRatingStartPeople/{idUser}")]
         public RatingStart GetAllRatingStartPeople(string idUser)
         {
             var ratings = _context.Ratings.Where(x => x.idRated == idUser).Select(x => x.rating).ToList();
