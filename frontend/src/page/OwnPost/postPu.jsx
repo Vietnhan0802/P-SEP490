@@ -3,6 +3,8 @@ import { useState } from "react";
 import React, { useEffect } from "react";
 import "./post-pu.scss";
 import Select from 'react-select';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 import Notification, {
   notifySuccess,
   notifyError,
@@ -27,6 +29,35 @@ function PostPu({ reset }) {
     CreateUpdatePostImages: [], // new state for managing multiple images
     project: "",
   });
+  const modules = {
+    toolbar: [
+      [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
+      [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+
+      ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
+      ['blockquote', 'code-block'],
+      ['link', 'image', 'video', 'formula'],
+
+      [{ 'header': 1 }, { 'header': 2 }],               // custom button values
+      [{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'list': 'check' }],
+      [{ 'script': 'sub' }, { 'script': 'super' }],      // superscript/subscript
+      [{ 'indent': '-1' }, { 'indent': '+1' }],          // outdent/indent
+      [{ 'direction': 'rtl' }],                         // text direction
+
+      [{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
+      [{ 'font': [] }],
+      [{ 'align': [] }],
+
+      ['clean']                                         // remove formatting button
+    ],
+  };
+
+  const formats = [
+    'header',
+    'bold', 'italic', 'underline', 'strike', 'blockquote',
+    'list', 'bullet', 'indent',
+    'link', 'image'
+  ];
   useEffect(() => {
     projectInstance
       .get("GetAllProjects")
@@ -102,6 +133,9 @@ function PostPu({ reset }) {
       reader.readAsDataURL(file);
     });
   };
+  const handleContentChange = (newValue) => {
+    setInputs((prev) => ({ ...prev, content: newValue }));
+  };
   const handleInputChange = (event) => {
     const { name, value, type } = event.target;
     if (type === "file") {
@@ -150,17 +184,14 @@ function PostPu({ reset }) {
             />
             <label for="floatingInput">Post Title</label>
           </div>
-          <div className='form-floating mb-3'>
-            <textarea
-              type="text"
-              value={inputs.content}
-              name="content"
-              onChange={handleInputChange}
-              className="input-text form-control mb-3 w-100  cus-h"
-              placeholder="Post Content"
-            />
-            <label for="floatingInput">Post content</label>
-          </div>
+          <ReactQuill
+          theme="snow"
+          value={inputs.content}
+          onChange={handleContentChange}
+          modules={modules}
+          formats={formats}
+          className="mb-3"
+        />
           <Select
             placeholder="Select a project (optional)"
             className="basic-single my-3"

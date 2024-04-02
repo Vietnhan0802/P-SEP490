@@ -1,11 +1,7 @@
-#blogPu{
-    .modal-dialog{
-        max-width: 35vw;
-    }
-    .content{
-        height: 250px;
-    }
-    .cus-h{
-        height: 250px;
-    }
+#blogPu.modal-dialog {
+  max-width: 65vw;
+  max-height: 60vh;
+  .ql-container{
+    height: 300px ;
+  }
 }

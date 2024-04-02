@@ -12,6 +12,11 @@
       }
     }
   }
+  .user-image {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+}
   width: 100%;
   .blog-form {
     background-color: var(--body_mid_background);
@@ -25,9 +30,6 @@
     border-radius: 8px;
     &:not(:first-child) {
       margin-top: 8px;
-    }
-    .profile {
-      font-size: 36px;
     }
     .view-btn {
       background-color: #20becb;
