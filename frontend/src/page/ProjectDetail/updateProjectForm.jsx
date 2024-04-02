@@ -156,7 +156,6 @@ function UpdateProjectForm({ input, id, resetPage }) {
   };
   const handleContentChange = (newValue) => {
     setProject((prev) => ({ ...prev, description: newValue }));
-    console.log(project)
   };
   const modules = {
     toolbar: [

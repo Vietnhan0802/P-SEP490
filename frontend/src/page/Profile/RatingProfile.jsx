@@ -6,7 +6,7 @@ import { projectInstance } from '../../axios/axiosConfig';
 import { Rating } from 'react-simple-star-rating'
 import tick from "../../images/common/verifiedTick.png";
 import Feedback from 'react-bootstrap/esm/Feedback';
-function RatingProfile({ show, onClose, role, id, formatDateString, role }) {
+function RatingProfile({ show, onClose, role, id, formatDateString }) {
     const [memberRating, setMemberRating] = useState({});
     const [memberFeedback, setMemberFeedback] = useState([]);
     useEffect(() => {
@@ -15,16 +15,15 @@ function RatingProfile({ show, onClose, role, id, formatDateString, role }) {
                 .then((res) => { setMemberRating(res?.data); })
                 .catch((error) => { console.log(error) });
             projectInstance.get(`GetAllRatingPeople/${id}`)
-                .then((res) => { setMemberFeedback(res?.data?.result);})
+                .then((res) => { setMemberFeedback(res?.data?.result); })
                 .catch((error) => { console.log(error) });
-        }else{
-            projectInstance.get(`GetAllRatingStarPeople/${id}`)
-            .then((res) => { setMemberRating(res?.data); })
-            .catch((error) => { console.log(error) });
-        projectInstance.get(`GetAllRatingPeople/${id}`)
-            .then((res) => { setMemberFeedback(res?.data?.result);})
-            .catch((error) => { console.log(error) });
-    }else{
+        } else {
+            projectInstance.get(`GetAllRatingStarBusiness/${id}`)
+                .then((res) => { setMemberRating(res?.data); })
+                .catch((error) => { console.log(error) });
+            projectInstance.get(`GetAllRatingBusiness/${id}`)
+                .then((res) => { setMemberFeedback(res?.data?.result); })
+                .catch((error) => { console.log(error) });
         }
 
     }, [id])
@@ -82,7 +81,9 @@ function RatingProfile({ show, onClose, role, id, formatDateString, role }) {
                                     </div>
                                     <p className='ms-3'>{feedback?.fullName}</p>
                                 </div>
-                                <div className='d-flex align-items-center ms-2 mt-2'>
+                                <p  className='d-flex align-items-center ms-2 mt-2'>{feedback?.projectName}</p>
+
+                                <div className='d-flex align-items-center ms-2'>
                                     <div>
                                         <Rating
                                             className='mt-2'
