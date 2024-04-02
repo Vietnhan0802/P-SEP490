@@ -256,8 +256,8 @@ namespace ProjectService.Controllers
             return new Response(HttpStatusCode.OK, "Get project list is success!", result);
         }
 
-        [HttpGet("GetProjectById/{idProject}")]
-        public async Task<Response> GetProjectById(Guid idProject)
+        [HttpGet("GetProjectById/{idUser}/{idProject}")]
+        public async Task<Response> GetProjectById(string idUser, Guid idProject)
         {
             var project = await _context.Projects.FirstOrDefaultAsync(x => x.idProject == idProject && x.isDeleted == false);
             if (project == null)
@@ -283,11 +283,16 @@ namespace ProjectService.Controllers
             {
                 result.ratingAvg = 0;
             }
+            var isRating = await _context.Ratings.FirstOrDefaultAsync(x => x.idRater == idUser && x.idProject == result.idProject);
+            if (isRating != null)
+            {
+                result.isRating = true;
+            }
             return new Response(HttpStatusCode.OK, "Get project is success!", result);
         }
 
-        [HttpGet("GetAllMemberInProject/{idProject}")]
-        public async Task<Response> GetAllMemberInProject(Guid idProject)
+        [HttpGet("GetAllMemberInProject/{idUser}/{idProject}")]
+        public async Task<Response> GetAllMemberInProject(string idUser, Guid idProject)
         {
             var project = await _context.Projects.FirstOrDefaultAsync(x => x.idProject == idProject);
             if (project == null)
@@ -315,6 +320,11 @@ namespace ProjectService.Controllers
                     else
                     {
                         member.ratingAvg = 0;
+                    }
+                    var isRating = await _context.Ratings.FirstOrDefaultAsync(x => x.idRater == idUser && x.idProjectMember == member.idProjectMember);
+                    if (isRating != null)
+                    {
+                        member.isRating = true;
                     }
                 }
                 return new Response(HttpStatusCode.OK, "Get member in project is success!", result);
