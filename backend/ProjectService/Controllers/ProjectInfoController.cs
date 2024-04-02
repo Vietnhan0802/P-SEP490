@@ -825,8 +825,8 @@ namespace ProjectService.Controllers
 
         /*------------------------------------------------------------Rating------------------------------------------------------------*/
 
-        [HttpGet("GetAllRatingStartBusiness/{idUser}")]
-        public RatingStart GetAllRatingStartBusiness(string idUser)
+        [HttpGet("GetAllRatingStarBusiness/{idUser}")]
+        public RatingStart GetAllRatingStarBusiness(string idUser)
         {
             var projects = _context.Projects.Include(x => x.Ratings).Where(x => x.idAccount == idUser).AsNoTracking().ToList();
             var projectRatings = projects.Where(x => x.Ratings != null).SelectMany(x => x.Ratings.Select(x => x.rating));
