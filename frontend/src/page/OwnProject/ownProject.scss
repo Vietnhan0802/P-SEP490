@@ -1,5 +1,4 @@
 #own_project {
-
   .avata-s {
     width: 50px;
     height: 50px;
@@ -9,14 +8,14 @@
   .left-30 {
     margin-left: 10px;
   }
-  .form{
+  .form {
     border-radius: 8px;
   }
   .project-search {
     background-color: var(--header_background_search_box);
     border-radius: 40px;
     padding: 0px 12px;
-  
+
     .search-box {
       background-color: var(--header_background_search_box);
       color: var(--header_search_text);
@@ -48,8 +47,6 @@
   .width-200 {
     max-width: 200px;
   }
-
-
 
   .bor-8 {
     border-radius: 8px;
@@ -87,9 +84,9 @@
     outline: none;
   }
 }
-#cus-project.modal-dialog{
-    max-width: 60vw;
-    .cus-h{
-      height: 300px;
-    }
+#cus-project.modal-dialog {
+  max-width: 60vw;
+  .ql-container {
+    height: 300px;
   }
+}

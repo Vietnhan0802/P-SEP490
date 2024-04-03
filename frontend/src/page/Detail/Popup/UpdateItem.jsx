@@ -4,6 +4,7 @@ import { blogInstance, postInstance, projectInstance } from '../../../axios/axio
 import bootstrap from "bootstrap/dist/js/bootstrap.bundle.min";
 import { RiCameraOffLine } from "react-icons/ri";
 import { IoCameraReverse } from "react-icons/io5";
+import ReactQuill from 'react-quill';
 import "./update.scss";
 import Notification, { notifySuccess, notifyError } from "../../../components/notification";
 function UpdateItem({ show, onClose, value, type }) {
@@ -113,6 +114,9 @@ function UpdateItem({ show, onClose, value, type }) {
 
     }
     const carouselRef = useRef(null);
+    const handleContentChange = (newValue) => {
+        setUpdate((prev) => ({ ...prev, content: newValue }));
+    };
     useEffect(() => {
         if (carouselRef.current) {
             var carouselInstance = new bootstrap.Carousel(carouselRef.current, {
@@ -127,6 +131,35 @@ function UpdateItem({ show, onClose, value, type }) {
             }
         };
     }, []);
+    const modules = {
+        toolbar: [
+            [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
+            [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+
+            ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
+            ['blockquote', 'code-block'],
+            ['link', 'image', 'video', 'formula'],
+
+            [{ 'header': 1 }, { 'header': 2 }],               // custom button values
+            [{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'list': 'check' }],
+            [{ 'script': 'sub' }, { 'script': 'super' }],      // superscript/subscript
+            [{ 'indent': '-1' }, { 'indent': '+1' }],          // outdent/indent
+            [{ 'direction': 'rtl' }],                         // text direction
+
+            [{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
+            [{ 'font': [] }],
+            [{ 'align': [] }],
+
+            ['clean']                                         // remove formatting button
+        ],
+    };
+
+    const formats = [
+        'header',
+        'bold', 'italic', 'underline', 'strike', 'blockquote',
+        'list', 'bullet', 'indent',
+        'link', 'image'
+    ];
     const handleDeleteImage = () => {
         setUpdate((prev) => ({ ...prev, CreateUpdateImages: [] }));
         setDeleteAppear(false);
@@ -139,7 +172,7 @@ function UpdateItem({ show, onClose, value, type }) {
         <div className="">
             <Modal show={show} onHide={onClose} id="cus-w">
                 <Modal.Header closeButton>
-                    <Modal.Title>Update {type === 'post' ? 'post':'blog'}</Modal.Title>
+                    <Modal.Title>Update {type === 'post' ? 'post' : 'blog'}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body className="popup-body" id="form-update-project">
                     <div className="row">
@@ -283,14 +316,22 @@ function UpdateItem({ show, onClose, value, type }) {
                                 className="input-text form-control mb-3"
                                 placeholder="Post Title"
                             />
-                            <textarea
+                            <ReactQuill
+                                theme="snow"
+                                value={update?.content}
+                                onChange={handleContentChange}
+                                modules={modules}
+                                formats={formats}
+                                className="mb-3 mt-2  m-h-2"
+                            />
+                            {/* <textarea
                                 type="text"
                                 value={update?.content}
                                 name="content"
                                 onChange={handleInputChange}
                                 className="input-text form-control mb-3 w-100 h-50"
                                 placeholder="Post Content"
-                            />
+                            /> */}
                         </div>
                     </div>
                     <input

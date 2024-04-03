@@ -1,6 +1,5 @@
 import React, { useEffect, useRef } from "react";
 import "../OwnProject/ownProject.scss";
-import avatar from "../../images/common/default.png";
 import { CiSearch } from "react-icons/ci";
 import { useState } from "react";
 import { projectInstance } from "../../axios/axiosConfig";
@@ -90,9 +89,9 @@ function Project({ value }) {
 
               <div className="mt-2 ">
                 <h2 className="text-xl SFU-bold">{item.name}</h2>
-                <p className="text-gray-600 SFU-reg">
+                {/* <p className="text-gray-600 SFU-reg">
                   {item.description}
-                </p>
+                </p> */}
                 <hr />
                 <div className="d-flex items-center justify-content-between mt-2">
                   <div className="d-flex items-center">

@@ -309,18 +309,21 @@ function Profile({ handleChangeImg, value, resetFollowing }) {
                 <Report id={currentUserId} idItem={userId} type="account" />) : ""}
             </div>
             <div className="bg-white mt-3">
-              <div className="d-flex justify-content-center" onClick={() => setShowRating(true)}>
+              <div className="d-flex justify-content-center align-items-center" onClick={() => setShowRating(true)}>
+                <p className="d-flex justify-content-center align-items-center" style={{ fontSize: '20px' }}>{user.ratingAvg}</p>
                 <Rating
+                  className="ms-2"
                   initialValue={user.ratingAvg}
                   readonly={true}
                   allowFraction={true}
                 />
+                <p className="d-flex justify-content-center align-items-center ms-2" style={{ fontSize: '20px' }}>{`(${user.ratingNum})`}</p>
               </div>
             </div>
           </div>
-          <RatingProfile show={showRating} onClose={() => setShowRating(false)} 
-                  id={currentUserId}
-                  />
+          <RatingProfile show={showRating} onClose={() => setShowRating(false)}
+            id={currentUserId} formatDateString={formatDateString} role={role}
+          />
         </Col>
         <Col md={6}>
           <UpdateInformationPu value={inputs} id={currentUserId} reset={reset} show={updateDisplay} onClose={() => setUpdateDisplay(false)} handleChangeImg={handleChangeImg} />
