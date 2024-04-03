@@ -49,7 +49,7 @@ function PostContent({ data, handleLikeOrUnlikePost, viewProject, userId }) {
   }
   const handleViewProject = () => {
     // First, check if the project with the given ID exists.
-    projectInstance.get(`GetProjectById/${data.idProject}`)
+    projectInstance.get(`GetProjectById/${currentUserId}/${data.idProject}`)
       .then((res) => {
         if (res?.data?.result !== null && res?.data?.result?.visibility !== 2) {
           navigate('/projectdetail', { state: { idProject: data.idProject } });
