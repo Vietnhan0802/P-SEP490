@@ -109,13 +109,12 @@ function ProjectDetail() {
     setResetProject(prevReset => !prevReset);
   }
   const handleMemberRating = (idAccount, idProjectMember) => {
-    if (idAccount !== currentUserId) {
-      setShowRatingMemberPopup(true)
-      setPopupMemberRate({ idAccount: idAccount, idProjectMember: idProjectMember });
-    }
+    setShowRatingMemberPopup(true)
+    setPopupMemberRate({ idAccount: idAccount, idProjectMember: idProjectMember });
+
   }
   const handleMemberRatingFeedback = (idAccount) => {
-    console.log(idAccount);
+    console.log(idAccount)
     setShowMemberFeedbackPopup(true)
     setPopupMemberRateFeedback({ idAccount: idAccount });
   }
@@ -142,7 +141,7 @@ function ProjectDetail() {
                 <div className="d-flex project">
                   <div className="width-auto">
                     <div className="position-relative">
-                      <img src={data?.avatarUser} alt="profile" className="avatar-contain" style={{borderRadius:'50%'}} />
+                      <img src={data?.avatarUser} alt="profile" className="avatar-contain" style={{ borderRadius: '50%' }} />
                       {data?.isVerified && <img src={tick} alt="tick" className="position-absolute bottom-0 end-0" style={{ width: '18px' }} />}
                     </div>
                   </div>
@@ -168,8 +167,9 @@ function ProjectDetail() {
                   </div>
                 }
 
-                <RatingPopup show={showRatingPopup} idRater={currentUserId} projectid={idProject} onClose={() => setShowRatingPopup(!showRatingPopup)} type={'project'} />
-                <RatingFeedback show={showFeedbackPopup} idProject={idProject} formatDateString={formatDate} onClose={() => setShowFeedbackPopup(!showFeedbackPopup)} />
+                {showRatingPopup && <RatingPopup show={showRatingPopup} idRater={currentUserId} projectid={idProject} onClose={() => setShowRatingPopup(!showRatingPopup)} type={'project'} />}
+                {showFeedbackPopup && <RatingFeedback show={showFeedbackPopup} idProject={idProject} formatDateString={formatDate} onClose={() => setShowFeedbackPopup(!showFeedbackPopup)} />}
+
                 {data?.idAccount === currentUserId &&
                   <div className="d-flex ms-2">
                     {data?.process !== 3 &&
@@ -284,7 +284,7 @@ function ProjectDetail() {
                                     readonly={true}
                                     allowFraction={true}
                                   />
-                                  {member?.isRating === false &&
+                                  {member?.isRating === false && member?.idAccount !== currentUserId &&
                                     <p className="ms-2" style={{ fontSize: '10px', color: "black" }}>Note rated</p>
                                   }
                                 </div>
@@ -301,8 +301,13 @@ function ProjectDetail() {
                           There is no member in this project
                         </td>
                       </tr>}
-                    <RatingPopup show={showRatingMemberPopup} idRater={currentUserId} idRated={popupMemberRate.idAccount} projectid={idProject} onClose={() => setShowRatingMemberPopup(!showRatingMemberPopup)} idProjectMember={popupMemberRate.idProjectMember} type={'member'} />
-                    <RatingFeedback show={showMemberFeedbackPopup} idUser={popupMemberRateFeedback.idAccount} idProject={idProject} formatDateString={formatDate} onClose={() => setShowMemberFeedbackPopup(!showMemberFeedbackPopup)} type={'member'} />
+                    {showRatingMemberPopup &&
+                      <RatingPopup show={showRatingMemberPopup} idRater={currentUserId} idRated={popupMemberRate.idAccount} projectid={idProject} onClose={() => setShowRatingMemberPopup(!showRatingMemberPopup)} idProjectMember={popupMemberRate.idProjectMember} type={'member'} />
+                    }
+                    {
+                      showMemberFeedbackPopup &&
+                      <RatingFeedback show={showMemberFeedbackPopup} idUser={popupMemberRateFeedback.idAccount} idProject={idProject} formatDateString={formatDate} onClose={() => setShowMemberFeedbackPopup(!showMemberFeedbackPopup)} type={'member'} />
+                    }
 
                   </tbody>
 

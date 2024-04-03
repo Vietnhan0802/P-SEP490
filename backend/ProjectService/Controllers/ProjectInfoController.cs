@@ -368,7 +368,8 @@ namespace ProjectService.Controllers
                         member.ratingAvg = 0;
                     }
                     var isRating = await _context.Ratings.FirstOrDefaultAsync(x => x.idRater == idUser && x.idProjectMember == member.idProjectMember);
-                    if (isRating != null)
+
+                    if (isRating != null || member.idAccount == idUser)
                     {
                         member.isRating = true;
                     }
