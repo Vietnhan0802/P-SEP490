@@ -258,7 +258,7 @@ function ProjectDetail() {
                           {
                             data?.process === 3
                               ?
-                              <td className="w-10 py-3 text-center  yellow-icon" onClick={() => (member?.isRating || member?.idAccount !== currentUserId) ? setShowMemberFeedbackPopup(true) : setShowRatingMemberPopup(true)}>
+                              <td className="w-10 py-3 text-center  yellow-icon" onClick={() => (member?.isRating ) ? setShowMemberFeedbackPopup(true) : setShowRatingMemberPopup(member?.idAccount === currentUserId ? false : true)}>
                                 <Rating
                                   size={12}
                                   initialValue={member?.ratingAvg}
