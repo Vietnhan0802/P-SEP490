@@ -828,7 +828,7 @@ namespace ProjectService.Controllers
         [HttpGet("GetAllRatingStarPeopleInProject/{idUser}/{idProject}")]
         public async Task<RatingStart> GetAllRatingStarPeopleInProject(string idUser, Guid idProject)
         {
-            var project = await _context.ProjectMembers.FirstOrDefaultAsync(x => x.idProject == idProject);
+            var project = await _context.ProjectMembers.FirstOrDefaultAsync(x => x.idProject == idProject && x.idAccount == idUser);
             var ratings = await _context.Ratings.Where(x => x.idRated == idUser && x.idProjectMember == project.idProjectMember).Select(x => x.rating).ToListAsync();
 
             var totalRatings = ratings.Count();
@@ -855,7 +855,7 @@ namespace ProjectService.Controllers
         [HttpGet("GetAllRatingPeopleInProject/{idUser}/{idProject}")]
         public async Task<Response> GetAllRatingPeopleInProject(string idUser, Guid idProject)
         {
-            var project = await _context.ProjectMembers.FirstOrDefaultAsync(x => x.idProject == idProject);
+            var project = await _context.ProjectMembers.FirstOrDefaultAsync(x => x.idProject == idProject && x.idAccount == idUser);
             var ratings = await _context.Ratings.Where(x => x.idRated == idUser && x.idProjectMember == project.idProjectMember).AsNoTracking().ToListAsync();
             if (ratings.Count > 0)
             {

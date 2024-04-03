@@ -8,7 +8,7 @@ import { projectInstance } from '../../../axios/axiosConfig';
 function RatingFeedback({ show, onClose, formatDateString, idProject, idUser, type }) {
     const [projectRating, setprojectRating] = useState({});
     const [projectFeedback, setprojectFeedback] = useState([]);
-    console.log(type)
+    console.log(idUser)
     useEffect(() => {
         if (type === 'member') {
             projectInstance.get(`GetAllRatingStarPeopleInProject/${idUser}/${idProject}`)

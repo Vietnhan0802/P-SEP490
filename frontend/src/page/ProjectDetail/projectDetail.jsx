@@ -115,6 +115,7 @@ function ProjectDetail() {
     }
   }
   const handleMemberRatingFeedback = (idAccount) => {
+    console.log(idAccount);
     setShowMemberFeedbackPopup(true)
     setPopupMemberRateFeedback({ idAccount: idAccount });
   }
