@@ -26,39 +26,47 @@ function Chat() {
   const location = useLocation();
   const { userId } = location.state || {};
   const [conversations, setConversations] = useState([]);
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState();
+  const [message, setMessage] = useState('');
   const [firstChat, setFirstChat] = useState(false);
+  const [reset, setReset] = useState(false);
   useEffect(() => {
-    chatInstance.get(`GetConversationsByUser/${currentUserId}`)
+    chatInstance.get(`GetMessages/${currentUserId}/${userId}`)
       .then((res) => {
-        setConversations(res.data.result);
-
-        handleConversation(res?.data?.result[0]?.idConversation);
-        console.log(res.data.result);
+        setMessages(res.data.result);
       })
       .catch((error) => {
         console.error(error);
       })
-  }, [currentUserId]);
-
-  const handleConversation = (idConversation) => {
-    chatInstance.get(`GetMessages/${idConversation}/${currentUserId}`)
+    chatInstance.get(`GetConversationsByUser/${currentUserId}`)
       .then((res) => {
-        setMessages(res.data.result);
-        console.log(res.data.result);
+        setConversations(res.data.result);
+      })
+      .catch((error) => {
+        console.error(error);
+      })
+  }, [currentUserId, reset]);
+
+  const handleConversation = () => {
+    chatInstance.get(`GetMessages/${currentUserId}/${userId}`)
+      .then((res) => {
+        if (Array.isArray(res?.data?.result) && res?.data?.result.length !== 0) {
+          setMessages([]);
+        } else {
+          setMessages(res.data.result);
+        }
       })
       .catch((error) => {
         console.error(error);
       })
   };
-  if (userId !== undefined) {
-    chatInstance.post(`CreateConversation/${currentUserId}/${userId}`)
-      .then((res) => {
-        console.log(res?.data?.result);
-      })
-      .catch((error) => {
-        console.error(error);
-      })
+  const handleInputMessage = (event) => {
+    setMessage(event.target.value);
+  }
+  const handleSendMessage = () => {
+    chatInstance.post(`SendMessage/${currentUserId}/${userId}`, { content: message })
+      .then((res) => { console.log(res?.data?.result); setReset(!reset) })
+      .catch((error) => console.error(error));
   }
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -119,19 +127,31 @@ function Chat() {
         <div id="chat-box" className="bg-white ms-3 position-relative">
           <div className="chat-box-header">
             <div className="d-flex align-items-center p-3">
-              {conversations?.length > 0 && (
+              {messages?.idConversation === "00000000-0000-0000-0000-000000000000" ? (
                 <>
                   <img
                     src={
-                      (conversations[0]?.avatar === "https://localhost:7006/Images/"
-                        ? defaultImage
-                        : conversations[0]?.avatar) || ""
+                      (messages?.avatarReceiver)
                     }
                     alt=""
                     className="avatar"
                   />
                   <div className="ms-2">
-                    <p className="mb-0 name">{conversations[0]?.fullName || ""}</p>
+                    <p className="mb-0 name">{messages?.nameReceiver || ""}</p>
+                    <p className="mb-0 text">Online</p>
+                  </div>
+                </>
+              ):(
+                <>
+                  <img
+                    src={
+                      (conversations[0]?.avatar)
+                    }
+                    alt=""
+                    className="avatar"
+                  />
+                  <div className="ms-2">
+                    <p className="mb-0 name">{conversations[0]?.fullName|| ""}</p>
                     <p className="mb-0 text">Online</p>
                   </div>
                 </>
@@ -187,11 +207,14 @@ function Chat() {
                   type="text"
                   placeholder="Message"
                   className="w-100 input-chat"
+                  value={message}
+                  onChange={handleInputMessage}
                 />
               </div>
               <button
                 className="btn btn-primary ms-3 d-flex align-items-center p-3"
-              // style={{ height: "40px" }}
+                // style={{ height: "40px" }}
+                onClick={handleSendMessage}
               >
                 <LuSendHorizonal />
               </button>

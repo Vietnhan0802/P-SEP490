@@ -169,7 +169,7 @@ namespace Communication.Controllers
             return new Response(HttpStatusCode.NoContent, "Get message is fail!");
         }
 
-        [HttpPost("SendMessage/{idCurrentUser}/{idReceiver}/{idConversation}")]
+        [HttpPost("SendMessage/{idCurrentUser}/{idReceiver}")]
         public async Task<Response> SendMessage(string idCurrentUser, string idReceiver, CreateUpdateMessage createUpdateMessage)
         {
             var conversation = await _context.Conversations
