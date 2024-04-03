@@ -399,7 +399,7 @@ function PostDetail({ value }) {
                   : data?.avatar
               }
               alt=""
-              className="profile"
+              className="profile" 
             />
             <input
               type="text"

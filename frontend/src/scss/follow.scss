@@ -1,48 +1,54 @@
 .follow {
-    border-radius: 8px;
-    //background-color: #fff;
-    background-color: var(--header_background);
+  border-radius: 8px;
+  //background-color: #fff;
+  background-color: var(--header_background);
+  color: var(--header_search_text);
+  padding: 13px;
+  .follow-avata-box {
+    position: relative;
+  }
+  .user-tick {
+    position: absolute;
+    bottom: 0px;
+    right: 0px;
+    width: 18px;
+  }
+  .follow-user-name {
+    font-size: 18px;
+    line-height: 1;
+    margin-bottom: 3px;
+  }
+
+  .follow-user-email {
+    font-size: 13px;
+    line-height: 1;
+  }
+
+  .text {
+    color: #175cd3;
+    font-weight: bold;
+    margin-bottom: 15px;
+    font-size: 20px;
+  }
+
+  .user-image {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+  }
+  .follow-list {
+    max-height: 585px; // Adjust the height as needed
+    overflow: hidden;
+  }
+  .follow-scroll {
+    
+  }
+  button {
+    bottom: 10px;
     color: var(--header_search_text);
-    padding: 13px;
-    .follow-avata-box{
-        position: relative;
-    }
-    .user-tick{
-        position: absolute;
-        bottom: 0px;
-        right: 0px;
-        width: 18px;
-    }
-    .follow-user-name {
-        font-size: 18px;
-        line-height: 1;
-        margin-bottom: 3px;
-    }
+  }
 
-    .follow-user-email {
-        font-size: 13px;
-        line-height: 1;
-    }
-
-    .text {
-        color: #175CD3;
-        font-weight: bold;
-        margin-bottom: 15px;
-        font-size: 20px;
-    }
-
-    .user-image {
-        width: 45px;
-        height: 45px;
-        border-radius: 50%;
-    }
-
-    button {
-        bottom: 10px;
-        color: var(--header_search_text);
-    }
-
-    .dot {
-        color: #20BECB;
-    }
+  .dot {
+    color: #20becb;
+  }
 }

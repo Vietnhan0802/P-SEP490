@@ -96,7 +96,7 @@ function Project({ value }) {
                 <div className="d-flex items-center justify-content-between mt-2">
                   <div className="d-flex items-center">
                     <div className="position-relative">
-                      <img src={item.avatarUser} alt="profile" className="avatar-contain" />
+                      <img src={item.avatarUser} alt="profile" className="avatar-contain"  style={{borderRadius:'50%'}}/>
                       {item.isVerified && <img src={tick} alt="tick" className="position-absolute bottom-0 end-0" style={{ width: '18px' }} />}
                     </div>
                     <div className="left-30 d-flex flex-column justify-content-center">
@@ -113,7 +113,7 @@ function Project({ value }) {
                         size={20}
                         initialValue={item?.ratingAvg}
                         allowFraction={true}
-                        readonly={false}
+                        readonly={true}
                       />
                       <div className="ms-2" style={{ fontSize: '20px', marginTop: '5px' }}><span>&#10098;</span>{item?.ratingNum}<span>&#10099;</span></div>
 

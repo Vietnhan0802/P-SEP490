@@ -278,7 +278,7 @@ function Profile({ handleChangeImg, value, resetFollowing }) {
                     className="btn edit-btn mx-3 w-50"
                     onClick={() => handleFollow()}
                   >
-                    {inputs.isFollow ? "UnFollow" : "Follow"}
+                    {inputs.isFollow ? "Unfollow" : "Follow"}
                   </button>
                   <button
                     className="btn edit-btn mx-3 w-50"
@@ -299,7 +299,7 @@ function Profile({ handleChangeImg, value, resetFollowing }) {
               <div className="w-100 text-center">
                 <div className="personal-information-text mt-4"></div>
                 <div className="d-flex align-items-center justify-content-center mt-3">
-                  <CgProfile className="me-3" /> {inputs.follower} followers ·{" "}
+                  <CgProfile className="me-1" /> {inputs.follower} followers ·{" "}
                   {inputs.following} following
                 </div>
               </div>

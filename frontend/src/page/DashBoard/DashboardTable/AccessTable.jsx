@@ -18,7 +18,7 @@ import { GoDotFill } from "react-icons/go";
 import { userInstance } from "../../../axios/axiosConfig";
 import { useNavigate } from "react-router-dom";
 
-function createData(id, avatar, name, email, type, description, isBlock,idAccount) {
+function createData(id, avatar, name, email, type, description, isBlock, idAccount) {
   return {
     id,
     avatar,
@@ -105,7 +105,7 @@ function EnhancedTableHead(props) {
             align={headCell.numeric ? "right" : "left"}
             padding={headCell.disablePadding ? "none" : "normal"}
             sortDirection={orderBy === headCell.id ? order : false}
-            style={{ paddingLeft: "10px" }}
+            style={{ paddingLeft: "16px", }}
           >
             <TableSortLabel
               active={orderBy === headCell.id}
@@ -193,7 +193,7 @@ export default function AccessTable({ value, resetAccount }) {
       )
     ));
     setUserRows(fetchedUserRows);
-console.log(userRows)
+    console.log(userRows)
   }, [value]);
   const handleNavigateUser = (idAccount) => {
     navigate('/profile', { state: { userId: idAccount } });
@@ -247,7 +247,7 @@ console.log(userRows)
                       id={labelId}
                       scope="row"
                       padding="none"
-                      onClick={()=>handleNavigateUser(row.idAccount)}
+                      onClick={() => handleNavigateUser(row.idAccount)}
                     >
                       <div className="ms-2 my-2 d-flex align-items-center">
                         <img

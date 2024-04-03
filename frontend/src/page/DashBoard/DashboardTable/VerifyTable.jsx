@@ -408,7 +408,7 @@ export default function VerifyTable({ value, verified, resetVerify }) {
                                         </TableCell>
                                         <TableCell align="left" className="blur">{row.follow}</TableCell>
                                         <TableCell align="right">
-                                            {activeTab === 'unverfy' ? <div
+                                            {activeTab === 'unverify' ? <div
                                                 className="d-flex align-items-center justify-content-end"
                                             >
                                                 <div className={`block-box accept `} onClick={() => handleVerify(row.id, 1)}>

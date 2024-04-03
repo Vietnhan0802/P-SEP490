@@ -5,27 +5,28 @@ import { Rating } from 'react-simple-star-rating'
 import { MdStar } from "react-icons/md";
 import tick from "../../../images/common/verifiedTick.png";
 import { projectInstance } from '../../../axios/axiosConfig';
-function RatingFeedback({ show, onClose, formatDateString, id, idUser, type }) {
+function RatingFeedback({ show, onClose, formatDateString, idProject, idUser, type }) {
     const [projectRating, setprojectRating] = useState({});
     const [projectFeedback, setprojectFeedback] = useState([]);
+    console.log(type)
     useEffect(() => {
         if (type === 'member') {
-            projectInstance.get(`GetAllRatingStarPeopleInProject/${idUser}/${id}`)
+            projectInstance.get(`GetAllRatingStarPeopleInProject/${idUser}/${idProject}`)
                 .then((res) => { setprojectRating(res?.data); })
                 .catch((error) => { console.log(error) });
-            projectInstance.get(`GetAllRatingPeopleInProject/${idUser}/${id}`)
+            projectInstance.get(`GetAllRatingPeopleInProject/${idUser}/${idProject}`)
                 .then((res) => { setprojectFeedback(res?.data?.result); })
                 .catch((error) => { console.log(error) });
         } else {
-            projectInstance.get(`GetAllRatingStarProject/${id}`)
+            projectInstance.get(`GetAllRatingStarProject/${idProject}`)
                 .then((res) => { setprojectRating(res?.data); })
                 .catch((error) => { console.log(error) });
-            projectInstance.get(`GetAllRatingProject/${id}`)
+            projectInstance.get(`GetAllRatingProject/${idProject}`)
                 .then((res) => { setprojectFeedback(res?.data?.result); })
                 .catch((error) => { console.log(error) });
         }
 
-    }, [id])
+    }, [idProject, idUser, type])
     return (
         <div>
             <Modal show={show} onHide={onClose} id="ratingFeedback">
@@ -72,7 +73,7 @@ function RatingFeedback({ show, onClose, formatDateString, id, idUser, type }) {
                     </Row>
                     <Row>
                         <div>
-                            {projectFeedback?.map((feedback) => <div>
+                            {projectFeedback?.map((feedback, index) => <div key={index}>
                                 <div className='d-flex align-items-center ms-2 mt-2'>
                                     <div className="position-relative">
                                         <img src={feedback?.avatar} style={{ width: '50px', height: '50px' }} alt="" />
