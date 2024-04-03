@@ -106,6 +106,7 @@ function ProjectDetail() {
   const resetPage = (value) => {
     setResetProject(prevReset => !prevReset);
   }
+  console.log(projectMembers);
   return (
     <Row className="pt-3 ms-0 me-0 pb-3">
       <Col md={3}>
@@ -257,7 +258,7 @@ function ProjectDetail() {
                           {
                             data?.process === 3
                               ?
-                              <td className="w-10 py-3 text-center  yellow-icon" onClick={() => setShowRatingMemberPopup(member?.idAccount === currentUserId || member?.isRating === true ? false : true)}>
+                              <td className="w-10 py-3 text-center  yellow-icon" onClick={() => (member?.isRating || member?.idAccount !== currentUserId) ? setShowMemberFeedbackPopup(true) : setShowRatingMemberPopup(true)}>
                                 <Rating
                                   size={12}
                                   initialValue={member?.ratingAvg}
@@ -271,7 +272,7 @@ function ProjectDetail() {
                               </td>
                           }
                           <RatingPopup show={showRatingMemberPopup} id={currentUserId} idRated={member.idAccount} projectid={idProject} onClose={() => setShowRatingMemberPopup(!showRatingMemberPopup)} idProjectMember={member.idProjectMember} type={'member'} />
-                          x``
+                          <RatingFeedback show={showMemberFeedbackPopup} idUser={member?.idAccount} id={idProject} formatDateString={formatDate} onClose={() => setShowMemberFeedbackPopup(!showMemberFeedbackPopup)} type={'member'} />
                         </tr>
                       )) : <tr> {/* Add a single row for the message */}
                         <td colSpan="4" className="text-center py-3"> {/* Use colspan="4" because there are 4 columns */}

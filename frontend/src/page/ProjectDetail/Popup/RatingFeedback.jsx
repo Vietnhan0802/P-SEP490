@@ -5,16 +5,26 @@ import { Rating } from 'react-simple-star-rating'
 import { MdStar } from "react-icons/md";
 import tick from "../../../images/common/verifiedTick.png";
 import { projectInstance } from '../../../axios/axiosConfig';
-function RatingFeedback({ show, onClose, formatDateString, id }) {
+function RatingFeedback({ show, onClose, formatDateString, id, idUser, type }) {
     const [projectRating, setprojectRating] = useState({});
     const [projectFeedback, setprojectFeedback] = useState([]);
     useEffect(() => {
-        projectInstance.get(`GetAllRatingStarProject/${id}`)
-            .then((res) => { setprojectRating(res?.data); })
-            .catch((error) => { console.log(error) });
-        projectInstance.get(`GetAllRatingProject/${id}`)
-            .then((res) => { setprojectFeedback(res?.data?.result); })
-            .catch((error) => { console.log(error) });
+        if (type === 'member') {
+            projectInstance.get(`GetAllRatingStarPeopleInProject/${idUser}/${id}`)
+                .then((res) => { setprojectRating(res?.data); })
+                .catch((error) => { console.log(error) });
+            projectInstance.get(`GetAllRatingPeopleInProject/${idUser}/${id}`)
+                .then((res) => { setprojectFeedback(res?.data?.result); })
+                .catch((error) => { console.log(error) });
+        } else {
+            projectInstance.get(`GetAllRatingStarProject/${id}`)
+                .then((res) => { setprojectRating(res?.data); })
+                .catch((error) => { console.log(error) });
+            projectInstance.get(`GetAllRatingProject/${id}`)
+                .then((res) => { setprojectFeedback(res?.data?.result); })
+                .catch((error) => { console.log(error) });
+        }
+
     }, [id])
     return (
         <div>
