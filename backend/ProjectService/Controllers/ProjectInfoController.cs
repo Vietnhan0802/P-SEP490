@@ -828,7 +828,8 @@ namespace ProjectService.Controllers
         [HttpGet("GetAllRatingStarPeopleInProject/{idUser}/{idProject}")]
         public async Task<RatingStart> GetAllRatingStarPeopleInProject(string idUser, Guid idProject)
         {
-            var ratings = await _context.Ratings.Where(x => x.idRated == idUser && x.idProject == idProject).Select(x => x.rating).ToListAsync();
+            var project = await _context.ProjectMembers.FirstOrDefaultAsync(x => x.idProject == idProject);
+            var ratings = await _context.Ratings.Where(x => x.idRated == idUser && x.idProjectMember == project.idProjectMember).Select(x => x.rating).ToListAsync();
 
             var totalRatings = ratings.Count();
             var averageRating = totalRatings > 0 ? ratings.Average() : 0;
@@ -854,7 +855,8 @@ namespace ProjectService.Controllers
         [HttpGet("GetAllRatingPeopleInProject/{idUser}/{idProject}")]
         public async Task<Response> GetAllRatingPeopleInProject(string idUser, Guid idProject)
         {
-            var ratings = await _context.Ratings.Where(x => x.idRated == idUser && x.idProject == idProject).AsNoTracking().ToListAsync();
+            var project = await _context.ProjectMembers.FirstOrDefaultAsync(x => x.idProject == idProject);
+            var ratings = await _context.Ratings.Where(x => x.idRated == idUser && x.idProjectMember == project.idProjectMember).AsNoTracking().ToListAsync();
             if (ratings.Count > 0)
             {
                 var result = _mapper.Map<List<RatingViewProject>>(ratings);
