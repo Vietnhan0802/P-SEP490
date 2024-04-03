@@ -59,8 +59,9 @@ namespace Communication.Controllers
         [HttpGet("GetConversationsByUser/{idCurrentUser}")]
         public async Task<Response> GetConversationsByUser(string idCurrentUser)
         {
-            var conversations = await _context.Conversations.Where(x => (x.idAccount1 == idCurrentUser && x.isDeletedBySender == false) 
-                                                                     || (x.idAccount2 == idCurrentUser && x.isDeletedByReceiver == false)).OrderByDescending(x => x.createdDate).ToListAsync();
+            var conversations = await _context.Conversations
+                .Where(x => (x.idAccount1 == idCurrentUser && x.isDeletedBySender == false) 
+                         || (x.idAccount2 == idCurrentUser && x.isDeletedByReceiver == false)).OrderByDescending(x => x.Messages.Max(x => x.createdDate)).ToListAsync();
             if (conversations.Count > 0)
             {
                 var result = _mapper.Map<List<ViewConversation>>(conversations);
@@ -84,29 +85,6 @@ namespace Communication.Controllers
                 return new Response(HttpStatusCode.OK, "Get all conversations is success!", result);
             }
             return new Response(HttpStatusCode.NoContent, "Conversation doesn't empty!");
-        }
-
-        [HttpPost("CreateConversation/{idCurrentUser}/{idReceiver}")]
-        public async Task<Response> CreateConversation(string idCurrentUser, string idReceiver)
-        {
-            var conversation = await _context.Conversations.FirstOrDefaultAsync(x => (x.idAccount1 == idCurrentUser && x.idAccount2 == idReceiver) || (x.idAccount1 == idReceiver && x.idAccount2 == idCurrentUser));
-            if (conversation == null)
-            {
-                conversation = new Conversation
-                {
-                    idAccount1 = idCurrentUser,
-                    idAccount2 = idReceiver,
-                    isDeletedBySender = false,
-                    isDeletedByReceiver = false,
-                    createdDate = DateTime.Now,
-                };
-                await _context.Conversations.AddAsync(conversation);
-                await _context.SaveChangesAsync();
-                var result = _mapper.Map<ViewConversation>(conversation);
-                //await _chatHub.Clients.User(idReceiver).SendAsync("StartConversation", idCurrentUser);
-                return new Response(HttpStatusCode.OK, "Create conversation is success!", result);
-            }
-            return new Response(HttpStatusCode.NoContent, "Conversation had been existed!");
         }
 
         [HttpDelete("RemoveConversation/{idCurrentUser}/{idConversation}")]
@@ -144,41 +122,77 @@ namespace Communication.Controllers
         /*------------------------------------------------------------Message------------------------------------------------------------*/
 
         [HttpGet("GetMessages/{idConversation}/{idCurrentUser}")]
-        public async Task<Response> GetMessages(Guid idConversation, string idCurrentUser)
+        public async Task<Response> GetMessages(string idCurrentUser, string idReceiver)
         {
-            var messages = await _context.Messages.Where(x => x.idConversation == idConversation).OrderBy(x => x.createdDate).ToListAsync();
-            if (messages.Count > 0)
+            var conversation = await _context.Conversations
+                .FirstOrDefaultAsync(x => (x.idAccount1 == idCurrentUser && x.idAccount2 == idReceiver)
+                                       || (x.idAccount1 == idReceiver && x.idAccount2 == idCurrentUser));
+            if (conversation == null)
             {
-                var result = _mapper.Map<List<ViewMessage>>(messages);
-                foreach (var message in result)
+                var result = _mapper.Map<ViewConversation>(conversation);
+
+                var infoAcc1 = await GetInfoUser(conversation.idAccount1);
+                result.fullName = infoAcc1.fullName;
+                result.avatar = infoAcc1.avatar;
+                result.isVerified = infoAcc1.isVerified;
+                
+                var infoAcc2 = await GetInfoUser(conversation.idAccount2);
+                result.fullName = infoAcc2.fullName;
+                result.avatar = infoAcc2.avatar;
+                result.isVerified = infoAcc2.isVerified;
+            }
+            else
+            {
+                var messages = await _context.Messages.Where(x => x.idConversation == conversation.idConversation).OrderBy(x => x.createdDate).ToListAsync();
+                if (messages.Count > 0)
                 {
-                    if (message.idSender == idCurrentUser)
+                    var result = _mapper.Map<List<ViewMessage>>(messages);
+                    foreach (var message in result)
                     {
-                        message.isYourself = true;
-                        var infoSender = await GetInfoUser(message.idSender);
-                        message.nameReceiver = infoSender.fullName;
+                        if (message.idSender == idCurrentUser)
+                        {
+                            message.isYourself = true;
+                            var infoSender = await GetInfoUser(message.idSender);
+                            message.nameReceiver = infoSender.fullName;
+                        }
+                        else
+                        {
+                            message.isYourself = false;
+                            var infoReceiver = await GetInfoUser(message.idSender);
+                            message.nameReceiver = infoReceiver.fullName;
+                            message.avatarReceiver = infoReceiver.avatar;
+                            message.isVerifiedReceiver = infoReceiver.isVerified;
+                        }
                     }
-                    else
-                    {
-                        message.isYourself = false;
-                        var infoReceiver = await GetInfoUser(message.idSender);
-                        message.nameReceiver = infoReceiver.fullName;
-                        message.avatarReceiver = infoReceiver.avatar;
-                        message.isVerifiedReceiver = infoReceiver.isVerified;
-                    }
+                    return new Response(HttpStatusCode.OK, "Get message is success!", result);
                 }
-                return new Response(HttpStatusCode.OK, "Get message is success!", result);
             }
             //await _chatHub.GetMessages(result);
             return new Response(HttpStatusCode.NoContent, "Get message is fail!");
         }
 
         [HttpPost("SendMessage/{idCurrentUser}/{idReceiver}/{idConversation}")]
-        public async Task<Response> SendMessage(string idCurrentUser, string idReceiver, Guid idConversation, CreateUpdateMessage createUpdateMessage)
+        public async Task<Response> SendMessage(string idCurrentUser, string idReceiver, CreateUpdateMessage createUpdateMessage)
         {
+            var conversation = await _context.Conversations
+                .FirstOrDefaultAsync(x => (x.idAccount1 == idCurrentUser && x.idAccount2 == idReceiver)
+                                       || (x.idAccount1 == idReceiver && x.idAccount2 == idCurrentUser));
+
+            if (conversation == null)
+            {
+                conversation = new Conversation
+                {
+                    idAccount1 = idCurrentUser,
+                    idAccount2 = idReceiver,
+                    isDeletedBySender = false,
+                    isDeletedByReceiver = false,
+                    createdDate = DateTime.Now
+                };
+                await _context.Conversations.AddAsync(conversation);
+            }
             var message = new Message
             {
-                idConversation = idConversation,
+                idConversation = conversation.idConversation,
                 idSender = idCurrentUser,
                 idReceiver = idReceiver,
                 content = createUpdateMessage.content,
