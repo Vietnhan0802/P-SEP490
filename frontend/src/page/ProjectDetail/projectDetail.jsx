@@ -141,7 +141,7 @@ function ProjectDetail() {
                 <div className="d-flex project">
                   <div className="width-auto">
                     <div className="position-relative">
-                      <img src={data?.avatarUser} alt="profile" className="avatar-contain" />
+                      <img src={data?.avatarUser} alt="profile" className="avatar-contain" style={{borderRadius:'50%'}} />
                       {data?.isVerified && <img src={tick} alt="tick" className="position-absolute bottom-0 end-0" style={{ width: '18px' }} />}
                     </div>
                   </div>

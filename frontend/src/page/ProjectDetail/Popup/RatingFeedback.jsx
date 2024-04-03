@@ -76,7 +76,7 @@ function RatingFeedback({ show, onClose, formatDateString, idProject, idUser, ty
                             {projectFeedback?.map((feedback, index) => <div key={index}>
                                 <div className='d-flex align-items-center ms-2 mt-2'>
                                     <div className="position-relative">
-                                        <img src={feedback?.avatar} style={{ width: '50px', height: '50px' }} alt="" />
+                                        <img src={feedback?.avatar} style={{ width: '50px', height: '50px',borderRadius:'50%' }} alt="" />
                                         {feedback?.isVerified && <img src={tick} alt="tick" className="position-absolute bottom-0 end-0" style={{ width: '18px' }} />}
                                     </div>
                                     <p className='ms-3'>{feedback?.fullName}</p>
