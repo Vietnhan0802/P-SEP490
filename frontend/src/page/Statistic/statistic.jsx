@@ -18,6 +18,9 @@ import { ReportData } from "./Data/ReportData";
 import { AccountData } from "./Data/AccountData";
 import { AccessData } from "./Data/AccessData";
 import SideBar from "../../components/sidebar";
+import PieChart from "./PieChart";
+import { Line } from "rc-progress";
+import LineChart from "./lineChart";
 
 function handleDateSort() {}
 
@@ -298,7 +301,7 @@ function Statistic() {
           <div style={{ width: "100%" }}>
             <BarChart chartData={projectData} />
           </div>
-          {/* <div style={{ width: "100%" }}>
+          <div style={{ width: "100%" }}>
                 <BarChart chartData={postData} />
               </div>
               <div style={{ width: "100%" }}>
@@ -312,10 +315,10 @@ function Statistic() {
               </div>
               <div style={{ width: "100%" }}>
                 <LineChart chartData={accessData} />
-              </div> */}
+              </div>
         </div>
 
-        {/* <div className="sup-bar col-auto">
+        <div className="sup-bar col-auto">
           <div className="d-flex flex-column ">
             <div className="date-filter mb-2">
               <div className="start mb-1">
@@ -334,7 +337,7 @@ function Statistic() {
                 <div className="mb-2 fs-12">Most popular POST </div>
                 <div className="row align-items-center">
                   <div className="avata-contain col-2 d-flex align-items-center justify-content-center">
-                    <img src={TempAvatar} className="avata" alt="Avatar" />
+                    {/* <img src={TempAvatar} className="avata" alt="Avatar" /> */}
                   </div>
                   <div className="descript p-0 row flex-column col-10">
                     <p className="title ellipsis fw-bold ">
@@ -348,7 +351,7 @@ function Statistic() {
               </div>
             </div>
           </div>
-        </div> */}
+        </div>
       </div>
     </section>
     </Col>
