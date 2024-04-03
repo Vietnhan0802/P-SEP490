@@ -43,7 +43,7 @@ function ProjectApplication() {
           <div style={{ display: "flex", alignItems: "center" }}>
 
             <div className="position-relative">
-              <img src={row.original.imgUrl} alt="profile" className="avatar-contain" />
+              <img src={row.original.imgUrl} alt="profile" className="avatar-contain" style={{borderRadius:'50%'}} />
               {row.original.isVerified && <img src={tick} alt="tick" className="position-absolute bottom-0 end-0" style={{ width: '18px' }} />}
             </div>
             <div className="ms-2">

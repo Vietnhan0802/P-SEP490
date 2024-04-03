@@ -79,6 +79,8 @@ function ProjectDetail() {
   const [showRatingMemberPopup, setShowRatingMemberPopup] = useState(false);
   const [showFeedbackPopup, setShowFeedbackPopup] = useState(false);
   const [showMemberFeedbackPopup, setShowMemberFeedbackPopup] = useState(false);
+  const [popupMemberRate, setPopupMemberRate] = useState({});
+  const [popupMemberRateFeedback, setPopupMemberRateFeedback] = useState({});
   useEffect(() => {
     projectInstance.get(`/GetProjectById/${currentUserId}/${idProject}`)
       .then((res) => {
@@ -87,7 +89,7 @@ function ProjectDetail() {
       .catch((error) => {
         console.error(error);
       });
-  }, [resetProject, idProject]);
+  }, [resetProject, idProject, currentUserId]);
   useEffect(() => {
     projectInstance.get(`/GetAllMemberInProject/${currentUserId}/${idProject}`)
       .then((res) => {
@@ -102,11 +104,20 @@ function ProjectDetail() {
         console.error(error);
         setProjectMembers([]);
       });
-  }, [resetProject, idProject]);
+  }, [resetProject, idProject, currentUserId]);
   const resetPage = (value) => {
     setResetProject(prevReset => !prevReset);
   }
-  console.log(projectMembers);
+  const handleMemberRating = (idAccount, idProjectMember) => {
+    if (idAccount !== currentUserId) {
+      setShowRatingMemberPopup(true)
+      setPopupMemberRate({ idAccount: idAccount, idProjectMember: idProjectMember });
+    }
+  }
+  const handleMemberRatingFeedback = (idAccount) => {
+    setShowMemberFeedbackPopup(true)
+    setPopupMemberRateFeedback({ idAccount: idAccount });
+  }
   return (
     <Row className="pt-3 ms-0 me-0 pb-3">
       <Col md={3}>
@@ -156,8 +167,8 @@ function ProjectDetail() {
                   </div>
                 }
 
-                <RatingPopup show={showRatingPopup} id={currentUserId} projectid={idProject} onClose={() => setShowRatingPopup(!showRatingPopup)} type={'project'} />
-                <RatingFeedback show={showFeedbackPopup} id={idProject} formatDateString={formatDate} onClose={() => setShowFeedbackPopup(!showFeedbackPopup)} />
+                <RatingPopup show={showRatingPopup} idRater={currentUserId} projectid={idProject} onClose={() => setShowRatingPopup(!showRatingPopup)} type={'project'} />
+                <RatingFeedback show={showFeedbackPopup} idProject={idProject} formatDateString={formatDate} onClose={() => setShowFeedbackPopup(!showFeedbackPopup)} />
                 {data?.idAccount === currentUserId &&
                   <div className="d-flex ms-2">
                     {data?.process !== 3 &&
@@ -235,8 +246,7 @@ function ProjectDetail() {
                       <th className="w-10 py-3 text-center">Date</th>
                       <th className="w-60 py-3">Position</th>
                       {data?.process === 3 ?
-
-                        <th className="w-10 py-3 text-center">Reate</th> :
+                        <th className="w-10 py-3 text-center">Rate</th> :
                         <th className="w-10 py-3 text-center">Remove</th>
                       }
                     </tr>
@@ -252,33 +262,47 @@ function ProjectDetail() {
                             </div>
                           </td>
                           <td className="w-20 py-3 text-center">{formatDate(member.createdDate)}</td>
-                          <td className="w-60 py-3">
+                          <td className="w-50 py-3">
                             {member.namePosition}
                           </td>
                           {
                             data?.process === 3
                               ?
-                              <td className="w-10 py-3 text-center  yellow-icon" onClick={() => (member?.isRating ) ? setShowMemberFeedbackPopup(true) : setShowRatingMemberPopup(member?.idAccount === currentUserId ? false : true)}>
-                                <Rating
-                                  size={12}
-                                  initialValue={member?.ratingAvg}
-                                  readonly={true}
-                                  allowFraction={true}
-                                />
+                              <td className="w-20 py-3 text-center  yellow-icon" >
+                                <div
+                                  className={`d-flex align-items-center ${member?.isRating === true ? 'justify-content-center' : ''}`}
+                                  onClick={() => (member?.isRating) ?
+                                    handleMemberRatingFeedback(member?.idAccount) :
+                                    // setShowRatingMemberPopup(member?.idAccount === currentUserId ? false : true)
+                                    handleMemberRating(member?.idAccount, member.idProjectMember)
+                                  }
+                                >
+                                  <Rating
+                                    size={12}
+                                    initialValue={member?.ratingAvg}
+                                    readonly={true}
+                                    allowFraction={true}
+                                  />
+                                  {member?.isRating === false &&
+                                    <p className="ms-2" style={{ fontSize: '10px', color: "black" }}>Note rated</p>
+                                  }
+                                </div>
                               </td>
                               :
                               <td className="w-10 py-3 text-center  yellow-icon">
                                 <RemoveMember id={member.idProjectMember} project={idProject} resetPage={resetPage} />
                               </td>
                           }
-                          <RatingPopup show={showRatingMemberPopup} id={currentUserId} idRated={member.idAccount} projectid={idProject} onClose={() => setShowRatingMemberPopup(!showRatingMemberPopup)} idProjectMember={member.idProjectMember} type={'member'} />
-                          <RatingFeedback show={showMemberFeedbackPopup} idUser={member?.idAccount} id={idProject} formatDateString={formatDate} onClose={() => setShowMemberFeedbackPopup(!showMemberFeedbackPopup)} type={'member'} />
+                          {/* ... */}
                         </tr>
                       )) : <tr> {/* Add a single row for the message */}
                         <td colSpan="4" className="text-center py-3"> {/* Use colspan="4" because there are 4 columns */}
                           There is no member in this project
                         </td>
                       </tr>}
+                    <RatingPopup show={showRatingMemberPopup} idRater={currentUserId} idRated={popupMemberRate.idAccount} projectid={idProject} onClose={() => setShowRatingMemberPopup(!showRatingMemberPopup)} idProjectMember={popupMemberRate.idProjectMember} type={'member'} />
+                    <RatingFeedback show={showMemberFeedbackPopup} idUser={popupMemberRateFeedback.idAccount} idProject={idProject} formatDateString={formatDate} onClose={() => setShowMemberFeedbackPopup(!showMemberFeedbackPopup)} type={'member'} />
+
                   </tbody>
 
                 </table>

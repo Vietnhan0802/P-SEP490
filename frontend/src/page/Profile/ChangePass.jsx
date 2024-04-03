@@ -52,7 +52,7 @@ function ChangePass({ email }) {
             <MdOutlineLockPerson onClick={modalShow} size={28} />
             <Modal show={show} onHide={modalClose} id="update-infomation">
                 <Modal.Header closeButton>
-                    <Modal.Title>Update Information</Modal.Title>
+                    <Modal.Title>Change password</Modal.Title>
                 </Modal.Header>
                 <Modal.Body className="popup-body report-popup " id="report-body">
                     {/* Display error messages if any */}

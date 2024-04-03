@@ -25,11 +25,10 @@
 .react-date-picker__wrapper {
   border: none !important;
 }
-.react-date-picker__clear-button{
+.react-date-picker__clear-button {
   display: none !important;
 }
 #profile {
-
   background-color: var(--header_background) !important;
   color: var(--header_search_text);
   .dropdown-toggle::after {
@@ -265,7 +264,7 @@
   position: relative;
   overflow: hidden;
 
-  img{
+  img {
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -274,7 +273,7 @@
     // left: 50%;
     // transform: translate(-50%, -50%);
     border-radius: 50%;
-  } 
+  }
 }
 .avatar-contain.wh-200 {
   width: 200px;

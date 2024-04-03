@@ -131,7 +131,7 @@ export default function SignIn() {
                 </div>
                 <div className="d-flex justify-content-end">
                   <a className="un-decor SFU-book blue55 size-20 pb-2" href="/forgetpassword">
-                    Fogot password?
+                    Forg0t password?
                   </a>
                 </div>
                 <input

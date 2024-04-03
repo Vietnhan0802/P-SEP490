@@ -77,7 +77,7 @@ export default function SignIn() {
 
               </div>
               <div className="d-flex flex-row pt-3 pb-3">
-                <div className="d-flex col-6 google-btn justify-content-end">
+                <div className="d-flex col-12 google-btn justify-content-end">
                   <button
                     className="gray-border white-bg d-flex flex-row rounded-50 align-items-center justify-content-center"
                     type="button"
@@ -85,16 +85,6 @@ export default function SignIn() {
                   >
                     <img src={GGIcon} alt="GGIcon" />
                     <p>Google</p>
-                  </button>
-                </div>
-                <div className="d-flex col-6 facebook-btn">
-                  <button
-                    className="gray-border white-bg d-flex flex-row rounded-50 align-items-center justify-content-center"
-                    type="button"
-                    onClick={handleClickFB}
-                  >
-                    <img src={FBIcon} alt="FBIcon" />
-                    <p>Facebook</p>
                   </button>
                 </div>
               </div>

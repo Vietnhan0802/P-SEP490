@@ -181,12 +181,12 @@ function ProfileTab(props) {
                                                     </div>
                                                 </div>
                                             </div>
-                                            <p className="degree-description ellipsis">
-                                                Post Title: {post.title}
+                                            <p className="degree-description ellipsis mt-2">
+                                                Title: {post.title}
                                             </p>
                                         </div>
                                         <div className="col-2 d-flex justify-content-center align-items-center">
-                                            <button className="btn degree-detail" onClick={() => handleNavigate(post.idPost, 'post')}>
+                                            <button className="btn degree-detail border" onClick={() => handleNavigate(post.idPost, 'post')}>
                                                 View Detail
                                             </button>
                                         </div>
@@ -276,9 +276,9 @@ function ProfileTab(props) {
                                                     <h5 className="mb-1 font-size-17 team-title ellipsis">
                                                         {project.name}
                                                     </h5>
-                                                    <p className="text-muted mb-0 team-description ellipsis">
+                                                    {/* <p className="text-muted mb-0 team-description ellipsis">
                                                         {project.description}
-                                                    </p>
+                                                    </p> */}
                                                 </div>
                                                 <div className="d-flex">
                                                     <div className="avatar-group float-start flex-grow-1 task-assigne">
