@@ -78,6 +78,7 @@ function ProjectDetail() {
   const [showRatingPopup, setShowRatingPopup] = useState(false);
   const [showRatingMemberPopup, setShowRatingMemberPopup] = useState(false);
   const [showFeedbackPopup, setShowFeedbackPopup] = useState(false);
+  const [showMemberFeedbackPopup, setShowMemberFeedbackPopup] = useState(false);
   useEffect(() => {
     projectInstance.get(`/GetProjectById/${currentUserId}/${idProject}`)
       .then((res) => {
@@ -141,7 +142,7 @@ function ProjectDetail() {
                 </div>
                 {data?.process === 3 &&
                   <div className="d-flex align-items-center"
-                    onClick={() => data?.isRating ? setShowFeedbackPopup(true) : setShowRatingPopup(data?.idAccount === currentUserId ? false : true)}
+                    onClick={() => (data?.isRating || data?.idAccount === currentUserId) ? setShowFeedbackPopup(true) : setShowRatingPopup(data?.idAccount !== currentUserId ? true : false)}
                   >
                     <Rating
                       initialValue={data?.ratingAvg}
@@ -158,7 +159,9 @@ function ProjectDetail() {
                 <RatingFeedback show={showFeedbackPopup} id={idProject} formatDateString={formatDate} onClose={() => setShowFeedbackPopup(!showFeedbackPopup)} />
                 {data?.idAccount === currentUserId &&
                   <div className="d-flex ms-2">
-                    <UpdateProjectForm input={data} id={data?.idProject} resetPage={resetPage} />
+                    {data?.process !== 3 &&
+                      <UpdateProjectForm input={data} id={data?.idProject} resetPage={resetPage} />
+                    }
                     <DeletePopup className='ms-3' id={data?.idProject} />
                   </div>}
               </div>
@@ -205,7 +208,7 @@ function ProjectDetail() {
           <div className="description-cover">
             <p className="description fw-bold ps-3">Description</p>
             {/* <p className="description-text ps-3">{data?.description}</p> */}
-            <div className="ps-3" dangerouslySetInnerHTML={{__html:data?.description}}/>
+            <div className="ps-3" dangerouslySetInnerHTML={{ __html: data?.description }} />
           </div>
           <div className="member px-3">
             <div className="d-flex justify-content-between">

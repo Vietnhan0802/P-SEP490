@@ -17,6 +17,7 @@ function UpdateProjectForm({ input, id, resetPage }) {
   const modalClose = () => { setChangeImage(false); setShow(false); };
   const [positionOptions, setPositionOptions] = useState([]);
   const [changeImage, setChangeImage] = useState(false);
+  
   const modalShow = () => {
     setShow(true);
     const positionOptions = input.positionViews.map(item => ({
@@ -186,6 +187,7 @@ function UpdateProjectForm({ input, id, resetPage }) {
     'list', 'bullet', 'indent',
     'link', 'image'
   ];
+  console.log(project.status)
   return (
     <div className="p-1 ">
       <FiEdit onClick={modalShow} id="btn-update-project" />
@@ -213,33 +215,36 @@ function UpdateProjectForm({ input, id, resetPage }) {
                   onChange={handleInputChange}
                 ></textarea>
               </div>
-              <div className="status-block size-18">
-                <label htmlFor="" className="">
-                  Project Status:
-                  <select
-                    value={project.process}
-                    id="projectStatus"
-                    name="process"
-                    onChange={handleInputChange}
-                    className="status-select status preparing"
-                  >
-                    <option value={0} className="status preparing">
-                      Preparing
-                    </option>
-                    <option value={1} className="status process">
-                      Process
-                    </option>
-                    <option value={2} className="status pending">
-                      Pending
-                    </option>
-                    <option value={3} className="status done">
-                      Done
-                    </option>
-                  </select>
-                </label>
+              <div className="d-flex">
+                <div className="status-block size-18">
+                  <label htmlFor="" className="">
+                    Project Status:
+                    <select
+                      value={project.process}
+                      id="projectStatus"
+                      name="process"
+                      onChange={handleInputChange}
+                      className="status-select status preparing"
+                    >
+                      <option value={0} className="status preparing">
+                        Preparing
+                      </option>
+                      <option value={1} className="status process">
+                        Process
+                      </option>
+                      <option value={2} className="status pending">
+                        Pending
+                      </option>
+                      <option value={3} className="status done">
+                        Done
+                      </option>
+                    </select>
+                  </label>
+                </div>
+                {project?.process === 3 &&
+                  <p className="text-danger fs-6 w-50 ms-2"  >When you change the status to "DONE", you can not update the project again</p>
+                }
               </div>
-
-
               <div className="status-block size-18">
                 <label htmlFor="" className="">
                   Access Visibility:
@@ -283,16 +288,6 @@ function UpdateProjectForm({ input, id, resetPage }) {
                 formats={formats}
                 className="mb-3 mt-2  m-h-2"
               />
-              {/* <div className="form-row description">
-                <label>Project Description</label>
-                <textarea
-                  name="description"
-                  id=""
-                  className="form-control m-h-2"
-                  value={project.description}
-                  onChange={handleInputChange}
-                ></textarea>
-              </div> */}
             </div>{" "}
             <input
               type="file"

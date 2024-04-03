@@ -60,13 +60,15 @@ export default function Header({ activeComponent, onItemClick, changeImage }) {
 
   const handleItemClick = (itemId) => {
     setActiveItem(itemId);
+    onItemClick(itemId);
   };
   const handleAvatarClick = (id) => {
     setSearchName('');
     navigate('/profile', { state: { userId: id } });
   };
-  const hanldeReturnHome = () => {
-
+  const hanldeReturnHome = (itemId) => {
+    setActiveItem(itemId);
+    onItemClick(itemId);
     navigate('/post', { state: { activeItem: 'post' } });
   }
   const searchUser = (event) => {
@@ -115,7 +117,7 @@ export default function Header({ activeComponent, onItemClick, changeImage }) {
         <LuHome
           className={`home-icon ${activeItem === "home" ? "active-header-item" : ""
             }`}
-          onClick={() => hanldeReturnHome()}
+          onClick={() => hanldeReturnHome("home")}
         />
         <IoChatbubblesOutline
           className={`chat-icon ${activeItem === "chat" ? "active-header-item" : ""
