@@ -4,10 +4,6 @@ import { Rating } from 'react-simple-star-rating'
 import { projectInstance } from '../../../axios/axiosConfig'
 import { notifyError, notifySuccess } from '../../../components/notification'
 function RatingPopup({ show, onClose, id, idRated, projectid, type, idProjectMember }) {
-    useEffect(() => {
-        console.log(type)
-
-    }, [id, type])
     const handleRatingProject = () => {
         if (type === 'project') {
             projectInstance.post(`CreateRatingProject/${id}/${projectid}`, {

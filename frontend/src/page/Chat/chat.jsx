@@ -96,11 +96,11 @@ function Chat() {
           <div className="chat-list">
             {conversations?.length > 0 ? (
               conversations?.map((item) => (
-                <div className="chat-item" key={item.idConversation} onClick={() => handleConversation(item.idConversation)}>
+                <div className="chat-item" key={item?.idConversation} onClick={() => handleConversation(item?.idConversation)}>
                   <div className="d-flex align-items-center" >
-                    <img src={item.avatar === "https://localhost:7006/Images/" ? defaultImage : item.avatar} alt="" className="avatar" />
+                    <img src={item?.avatar === "https://localhost:7006/Images/" ? defaultImage : item?.avatar} alt="" className="avatar" />
                     <div className="ms-2">
-                      <p className="mb-0 name">{item.fullName}</p>
+                      <p className="mb-0 name">{item?.fullName}</p>
                       <p className="mb-0 text">This is a text</p>
                     </div>
                   </div>
@@ -119,7 +119,7 @@ function Chat() {
         <div id="chat-box" className="bg-white ms-3 position-relative">
           <div className="chat-box-header">
             <div className="d-flex align-items-center p-3">
-              {conversations.length > 0 && (
+              {conversations?.length > 0 && (
                 <>
                   <img
                     src={
@@ -140,9 +140,9 @@ function Chat() {
           </div>
           <div className="chat-box-body">
             {messages?.map((item) => (
-              <div key={item.idMessage}
+              <div key={item?.idMessage}
                 style={{ marginTop: "22px" }}
-                className={`chat-content ${item.isYourself ? "d-flex justify-content-end" : ""
+                className={`chat-content ${item?.isYourself ? "d-flex justify-content-end" : ""
                   }`}
               >
                 <div>
@@ -150,21 +150,21 @@ function Chat() {
                     className="d-flex align-items-center p-3"
                     style={{ width: "500px" }}
                   >
-                    {item.isYourself ? (
+                    {item?.isYourself ? (
                       ""
                     ) : (
-                      <img src={item.avatarReceiver === "https://localhost:7006/Images/" ? defaultImage : item.avatarReceiver} alt="" className="avatar" />
+                      <img src={item.avatarReceiver === "https://localhost:7006/Images/" ? defaultImage : item?.avatarReceiver} alt="" className="avatar" />
                     )}
                     <div className="ms-2 w-100">
                       <div className="d-flex justify-content-between">
-                        <p className="mb-0 name">{item.nameReceiver}</p>
-                        <p className="mb-0 text">{formatDate(item.createdDate)}</p>
+                        <p className="mb-0 name">{item?.nameReceiver}</p>
+                        <p className="mb-0 text">{formatDate(item?.createdDate)}</p>
                       </div>
                       <p
-                        className={`mb ${item.isYourself ? "self-content" : "content"
+                        className={`mb ${item?.isYourself ? "self-content" : "content"
                           }`}
                       >
-                        {item.content}
+                        {item?.content}
                       </p>
                     </div>
                   </div>
