@@ -121,7 +121,7 @@ namespace Communication.Controllers
 
         /*------------------------------------------------------------Message------------------------------------------------------------*/
 
-        [HttpGet("GetMessages/{idConversation}/{idCurrentUser}")]
+        [HttpGet("GetMessages/{idCurrentUser}/{idReceiver}")]
         public async Task<Response> GetMessages(string idCurrentUser, string idReceiver)
         {
             var conversation = await _context.Conversations
@@ -129,17 +129,15 @@ namespace Communication.Controllers
                                        || (x.idAccount1 == idReceiver && x.idAccount2 == idCurrentUser));
             if (conversation == null)
             {
-                var result = _mapper.Map<ViewConversation>(conversation);
-
-                var infoAcc1 = await GetInfoUser(conversation.idAccount1);
-                result.fullName = infoAcc1.fullName;
-                result.avatar = infoAcc1.avatar;
-                result.isVerified = infoAcc1.isVerified;
-                
-                var infoAcc2 = await GetInfoUser(conversation.idAccount2);
-                result.fullName = infoAcc2.fullName;
-                result.avatar = infoAcc2.avatar;
-                result.isVerified = infoAcc2.isVerified;
+                var infoSender = await GetInfoUser(idCurrentUser);
+                var infoReceiver = await GetInfoUser(idReceiver);
+                var result = new ViewMessage
+                {
+                    nameReceiver = infoReceiver.fullName,
+                    avatarReceiver = infoReceiver.avatar,
+                    isVerifiedReceiver = infoReceiver.isVerified
+                };
+                return new Response(HttpStatusCode.OK, "Get message is success!", result);
             }
             else
             {
