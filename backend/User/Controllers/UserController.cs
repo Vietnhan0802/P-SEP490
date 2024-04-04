@@ -405,7 +405,7 @@ namespace User.Controllers
             var userExits = await _userManager.FindByIdAsync(idUser);
             if (userExits != null)
             {
-                if (userExits.avatar != null)
+                if (userExits.avatar != null && userExits.avatar != "default.png")
                 {
                     _saveImageService.DeleteImage(userExits.avatar);
                 }
