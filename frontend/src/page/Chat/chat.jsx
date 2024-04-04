@@ -4,14 +4,6 @@ import { IoSearchSharp } from "react-icons/io5";
 import { LuSendHorizonal } from "react-icons/lu";
 import defaultImage from "../../images/common/default.png";
 import "../Chat/chat.scss";
-import Nolan from "../../images/chat/Nolan.png";
-import Angel from "../../images/chat/Angel.png";
-import Davis from "../../images/chat/Davis.png";
-import Desirae from "../../images/chat/Desirae.png";
-import Ryan from "../../images/chat/Ryan.png";
-import Roger from "../../images/chat/Roger.png";
-import Carla from "../../images/chat/Carla.png";
-import Brandon from "../../images/chat/Brandon.png";
 import { FaRegFolder } from "react-icons/fa";
 import { FaRegImage } from "react-icons/fa6";
 import { FaLink } from "react-icons/fa6";
@@ -29,6 +21,7 @@ function Chat() {
   const [messages, setMessages] = useState();
   const [message, setMessage] = useState('');
   const [firstChat, setFirstChat] = useState(false);
+  const [activeUser, setActiveUser] = useState(null);
   const [reset, setReset] = useState(false);
   useEffect(() => {
     chatInstance.get(`GetMessages/${currentUserId}/${userId}`)
@@ -47,13 +40,17 @@ function Chat() {
       })
   }, [currentUserId, reset]);
 
-  const handleConversation = () => {
-    chatInstance.get(`GetMessages/${currentUserId}/${userId}`)
+  const handleConversation = (idAccount2) => {
+    chatInstance.get(`GetMessages/${currentUserId}/${idAccount2}`)
       .then((res) => {
         if (Array.isArray(res?.data?.result) && res?.data?.result.length !== 0) {
-          setMessages([]);
-        } else {
           setMessages(res.data.result);
+          setActiveUser({
+            avatar: res?.data?.result[0].avatarReceiver,
+            name: res?.data?.result[0].nameReceiver,
+          })
+        } else {
+          setMessages([]);
         }
       })
       .catch((error) => {
@@ -104,7 +101,7 @@ function Chat() {
           <div className="chat-list">
             {conversations?.length > 0 ? (
               conversations?.map((item) => (
-                <div className="chat-item" key={item?.idConversation} onClick={() => handleConversation(item?.idConversation)}>
+                <div className="chat-item" key={item?.idConversation} onClick={() => handleConversation(item?.idAccount2)}>
                   <div className="d-flex align-items-center" >
                     <img src={item?.avatar === "https://localhost:7006/Images/" ? defaultImage : item?.avatar} alt="" className="avatar" />
                     <div className="ms-2">
@@ -141,56 +138,72 @@ function Chat() {
                     <p className="mb-0 text">Online</p>
                   </div>
                 </>
-              ):(
-                <>
-                  <img
-                    src={
-                      (conversations[0]?.avatar)
-                    }
-                    alt=""
-                    className="avatar"
-                  />
-                  <div className="ms-2">
-                    <p className="mb-0 name">{conversations[0]?.fullName|| ""}</p>
-                    <p className="mb-0 text">Online</p>
-                  </div>
-                </>
-              )}
+              ) :
+                activeUser !== null ?
+                  <>
+                    <img
+                      src={
+                        (activeUser.avatar)
+                      }
+                      alt=""
+                      className="avatar"
+                    />
+                    <div className="ms-2">
+                      <p className="mb-0 name">{activeUser.name || ""}</p>
+                      <p className="mb-0 text">Online</p>
+                    </div>
+                  </> :
+                  <>
+                    <img
+                      src={
+                        (conversations[0]?.avatar)
+                      }
+                      alt=""
+                      className="avatar"
+                    />
+                    <div className="ms-2">
+                      <p className="mb-0 name">{conversations[0]?.fullName || ""}</p>
+                      <p className="mb-0 text">Online</p>
+                    </div>
+                  </>
+              }
             </div>
           </div>
           <div className="chat-box-body">
-            {messages?.map((item) => (
-              <div key={item?.idMessage}
-                style={{ marginTop: "22px" }}
-                className={`chat-content ${item?.isYourself ? "d-flex justify-content-end" : ""
-                  }`}
-              >
-                <div>
-                  <div
-                    className="d-flex align-items-center p-3"
-                    style={{ width: "500px" }}
+            {
+              Array.isArray(messages) && messages?.length > 0 ?
+                messages?.map((item) => (
+                  <div key={item?.idMessage}
+                    style={{ marginTop: "22px" }}
+                    className={`chat-content ${item?.isYourself ? "d-flex justify-content-end" : ""
+                      }`}
                   >
-                    {item?.isYourself ? (
-                      ""
-                    ) : (
-                      <img src={item.avatarReceiver === "https://localhost:7006/Images/" ? defaultImage : item?.avatarReceiver} alt="" className="avatar" />
-                    )}
-                    <div className="ms-2 w-100">
-                      <div className="d-flex justify-content-between">
-                        <p className="mb-0 name">{item?.nameReceiver}</p>
-                        <p className="mb-0 text">{formatDate(item?.createdDate)}</p>
-                      </div>
-                      <p
-                        className={`mb ${item?.isYourself ? "self-content" : "content"
-                          }`}
+                    <div>
+                      <div
+                        className="d-flex align-items-center p-3"
+                        style={{ width: "500px" }}
                       >
-                        {item?.content}
-                      </p>
+                        {item?.isYourself ? (
+                          ""
+                        ) : (
+                          <img src={item.avatarReceiver === "https://localhost:7006/Images/" ? defaultImage : item?.avatarReceiver} alt="" className="avatar" />
+                        )}
+                        <div className="ms-2 w-100">
+                          <div className="d-flex justify-content-between">
+                            <p className="mb-0 name">{item?.nameReceiver}</p>
+                            <p className="mb-0 text">{formatDate(item?.createdDate)}</p>
+                          </div>
+                          <p
+                            className={`mb ${item?.isYourself ? "self-content" : "content"
+                              }`}
+                          >
+                            {item?.content}
+                          </p>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </div>
-            ))}
+                )) : ''}
           </div>
           <div className="chat-box-input position-absolute bottom-0 w-100">
             <div className="w-100 d-flex justify-content-center icon-chat">
