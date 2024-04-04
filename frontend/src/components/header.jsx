@@ -97,7 +97,7 @@ export default function Header({ activeComponent, onItemClick, changeImage }) {
               filterListUser.map((user) => (
                 <div key={user.id} className="d-flex align-items-center my-2" onClick={() => handleAvatarClick(user.id)}>
                   <div className="position-relative">
-                    <img src={user.imageSrc} style={{ width: '50px', height: '50px',borderRadius:'50%' }} alt="" />
+                    <img src={user.imageSrc} style={{ width: '50px', height: '50px', borderRadius: '50%' }} alt="" />
                     {user.isVerified && <img src={tick} alt="tick" className="position-absolute bottom-0 end-0" style={{ width: '18px' }} />}
                   </div>
                   <div className="ms-2">
@@ -140,7 +140,10 @@ export default function Header({ activeComponent, onItemClick, changeImage }) {
         <DarkMode />
         <div className=" d-flex align-items-center" onClick={() => handleAvatarClick(currentUserId)}>
           <div className="position-relative">
-            <img src={value.imageSrc} style={{ width: '50px', height: '50px',borderRadius:'50%  ' }} alt="" />
+            <div className="profile"  style={{ width: '40px', height: '40px', borderRadius: '50%  ' }}>
+              <img src={value.imageSrc} alt="" />
+            </div>
+
             {value.isVerified && <img src={tick} alt="tick" className="position-absolute bottom-0 end-0" style={{ width: '18px' }} />}
           </div>
           <div className="ms-2 t-black">

@@ -392,15 +392,14 @@ function PostDetail({ value }) {
           />
           <p className="cmt fw-bold my-3">COMMENT</p>
           <div className="cmt-input d-flex">
-            <div className=" avatar-contain" style={{width:'40px',height:'40px'}}>
+            <div className=" profile">
               <img
                 src={
                   data?.avatar === "https://localhost:7006/Images/"
                     ? defaultAvatar
                     : data?.avatar
                 }
-                alt="profile"                
-                style={{ objectFit: 'cover' }}
+                alt="profile"
               />
             </div>
 
@@ -423,7 +422,7 @@ function PostDetail({ value }) {
                 className={`d-flex pb-3 mt-2 cmt-item ${item.type === "reply-comment" ? "ms-5" : ""
                   }`}
               >
-                <div className="avatar-contain"  style={{width:'40px',height:'40px'}}>
+                <div className="profile" >
                   <img
                     src={
                       item?.avatar === "https://localhost:7006/Images/"
@@ -432,7 +431,6 @@ function PostDetail({ value }) {
                     }
                     alt="profile"
                     className=""
-                    style={{ objectFit: 'cover' }}
                   />
                 </div>
 
@@ -563,7 +561,7 @@ function PostDetail({ value }) {
                         </p>
                       ) : (
                         <div className="cmt-input d-flex align-items-center mt-2">
-                          <div className="avatar-contain">
+                          <div className="profile">
                             <img
                               src={
                                 user?.imageSrc ===
@@ -573,7 +571,6 @@ function PostDetail({ value }) {
                               }
                               alt="profile"
                               className=""
-                              style={{ objectFit: 'cover' }}
                             />
                           </div>
 

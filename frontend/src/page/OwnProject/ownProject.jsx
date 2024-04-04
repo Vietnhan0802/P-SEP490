@@ -117,10 +117,12 @@ function OwnProject({ value }) {
                 <hr />
                 <div className="d-flex items-center justify-content-between mt-2">
                   <div className="d-flex items-center">
-                  <div className="position-relative">
-                    <img src={item.avatarUser} alt="profile" className="avatar-contain" style={{borderRadius:'50%'}} />
-                    {item.isVerified && <img src={tick} alt="tick" className="position-absolute bottom-0 end-0" style={{ width: '18px' }} />}
-                  </div>
+                    <div className="position-relative">
+                      <div className="profile">
+                        <img src={item.avatarUser} alt="profile" />
+                      </div>
+                      {item.isVerified && <img src={tick} alt="tick" className="position-absolute bottom-0 end-0" style={{ width: '18px' }} />}
+                    </div>
                     <div className="left-30 d-flex flex-column justify-content-center">
                       <div className="size-20 SFU-heavy d-flex">{item.fullName}</div>
                       <div className="size-14 SFU-reg text-gray-600 d-flex">
@@ -131,7 +133,7 @@ function OwnProject({ value }) {
                       <div className="ms-2" style={{ fontSize: '20px', marginTop: '5px' }}>{item?.ratingAvg}</div>
 
                       <Rating
-                      className="ms-2"
+                        className="ms-2"
                         size={20}
                         initialValue={item?.ratingAvg}
                         allowFraction={true}

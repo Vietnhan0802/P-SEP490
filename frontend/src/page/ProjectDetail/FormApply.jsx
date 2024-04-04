@@ -80,7 +80,7 @@ function FormApply({ projectId, positionOption }) {
         <Modal.Body className="popup-body" id="member-apply">
           <div className="confirmation-box">
             <h2>Are you sure you want to apply for this project?</h2>
-            <p>(Upload your CV to Continue )</p>
+            <p className="mb-2">(Upload your CV to Continue )</p>
             <input
               type="file"
               name="file"
@@ -88,7 +88,6 @@ function FormApply({ projectId, positionOption }) {
               accept=".pdf,.doc,.docx"
               className="form-control"
               required
-
             />
             <br />
             <Select
@@ -98,12 +97,6 @@ function FormApply({ projectId, positionOption }) {
             <button onClick={handleApply} className="mt-3">Confirm</button>
           </div>
         </Modal.Body>
-        {/* 
-        <Modal.Footer>
-          <Button variant="secondary" onClick={modalClose}>
-            Close
-          </Button>
-        </Modal.Footer> */}
       </Modal>
     </div>
   );
