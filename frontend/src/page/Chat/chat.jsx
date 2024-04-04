@@ -24,7 +24,7 @@ function Chat() {
   const [activeUser, setActiveUser] = useState(null);
   const [reset, setReset] = useState(false);
   const connection = new signalR.HubConnectionBuilder()
-    .withUrl("https://localhost:7001/api/ChatHub") // Replace with your server URL
+    .withUrl("https://localhost:7001/chatHub") // Replace with your server URL
     .build();
   connection.on("ReceiveMessage", (sender, receiver, message) => {
     // Handle received message
@@ -77,8 +77,6 @@ function Chat() {
   }, [currentUserId, reset]);
 
   const handleConversation = (idAccount2) => {
-    console.log(currentUserId)
-    console.log(idAccount2)
     chatInstance.get(`GetMessages/${currentUserId}/${idAccount2}`)
       .then((res) => {
         if (Array.isArray(res?.data?.result) && res?.data?.result.length !== 0) {
