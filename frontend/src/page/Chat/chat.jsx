@@ -52,14 +52,13 @@ function Chat() {
       .then((res) => {
         setConversations(res.data.result);
         if (userId === undefined) {
-          chatInstance.get(`GetMessages/${currentUserId}/${currentUserId === conversations[0].idAccount1 ? conversations[0].idAccount2 : conversations[0].idAccount1}`)
+          chatInstance.get(`GetMessages/${currentUserId}/${currentUserId === res.data.result[0].idAccount1 ? res.data.result[0].idAccount2 : res.data.result[0].idAccount1}`)
             .then((res) => {
               setMessages(res.data.result);
-              console.log(messages)
             })
             .catch((error) => {
               console.error(error);
-            })
+            });
         }
         if (userId !== undefined) {
           chatInstance.get(`GetMessages/${currentUserId}/${userId}`)
@@ -68,14 +67,13 @@ function Chat() {
             })
             .catch((error) => {
               console.error(error);
-            })
+            });
         }
       })
       .catch((error) => {
         console.error(error);
-      })
-
-  }, [currentUserId, reset]);
+      });
+  }, [currentUserId, reset, userId]);
 
   const handleConversation = (idAccount2) => {
     chatInstance.get(`GetMessages/${currentUserId}/${idAccount2}`)

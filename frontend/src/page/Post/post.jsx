@@ -259,7 +259,9 @@ function Post({ value }) {
               <div className="d-flex justify-content-between align-items-center">
                 <div className="d-flex align-items-center">
                   <div className="position-relative">
-                    <img src={item.avatar} alt="profile" className="avatar-contain" style={{borderRadius:'50%'}} />
+                    <div className="profile">
+                      <img src={item.avatar} alt="profile" />
+                    </div>
                     {item.isVerified && <img src={tick} alt="tick" className="position-absolute bottom-0 end-0" style={{ width: '18px' }} />}
                   </div>
 
