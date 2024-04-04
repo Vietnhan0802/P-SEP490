@@ -156,7 +156,7 @@ namespace Communication.Controllers
                         else
                         {
                             message.isYourself = false;
-                            var infoReceiver = await GetInfoUser(message.idSender);
+                            var infoReceiver = await GetInfoUser(message.idReceiver);
                             message.nameReceiver = infoReceiver.fullName;
                             message.avatarReceiver = infoReceiver.avatar;
                             message.isVerifiedReceiver = infoReceiver.isVerified;
