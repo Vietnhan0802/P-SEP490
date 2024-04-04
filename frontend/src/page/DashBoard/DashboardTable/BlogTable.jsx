@@ -300,7 +300,7 @@ export default function BlogTable({ value, resetBlog }) {
                     <TableCell align="left" >{row.time}</TableCell>
                     <TableCell align="left" onClick={() => handleViewBlog(row.id)}>
                       <p style={{ fontSize: "16px", fontWeight: "500" }}>{row.title}</p>
-                      <p className="ellipsis" style={{ maxWidth: '300px' }}>{row.content}</p>
+                      <div className="ellipsis" style={{ maxWidth: '300px', maxHeight: '30px', overflow: 'hidden' }} dangerouslySetInnerHTML={{ __html: row.content }} />
                     </TableCell>
                     <TableCell align="right" onClick={() => handleBlockBlog(row.id)}>
                       <div className="d-flex align-items-center justify-content-end">

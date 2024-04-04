@@ -46,14 +46,13 @@ function Chat() {
         console.error("Failed to establish SignalR connection:", err);
       });
   }, []);
+  console.log(userId === undefined)
   useEffect(() => {
     chatInstance.get(`GetConversationsByUser/${currentUserId}`)
       .then((res) => {
         setConversations(res.data.result);
-        const chatUser = res.data.result[0];
-
         if (userId === undefined) {
-          chatInstance.get(`GetMessages/${currentUserId}/${currentUserId === chatUser.idAccount1 ? chatUser.idAccount2 : chatUser.idAccount1}`)
+          chatInstance.get(`GetMessages/${currentUserId}/${currentUserId === conversations[0].idAccount1 ? conversations[0].idAccount2 : conversations[0].idAccount1}`)
             .then((res) => {
               setMessages(res.data.result);
               console.log(messages)
@@ -61,7 +60,8 @@ function Chat() {
             .catch((error) => {
               console.error(error);
             })
-        } else {
+        }
+        if (userId !== undefined) {
           chatInstance.get(`GetMessages/${currentUserId}/${userId}`)
             .then((res) => {
               setMessages(res.data.result);
@@ -74,6 +74,7 @@ function Chat() {
       .catch((error) => {
         console.error(error);
       })
+
   }, [currentUserId, reset]);
 
   const handleConversation = (idAccount2) => {
@@ -190,17 +191,26 @@ function Chat() {
                     </div>
                   </> :
                   <>
-                    <img
-                      src={
-                        (conversations[0]?.avatar)
-                      }
-                      alt=""
-                      className="avatar"
-                    />
-                    <div className="ms-2">
-                      <p className="mb-0 name">{conversations[0]?.fullName || ""}</p>
-                      <p className="mb-0 text">Online</p>
-                    </div>
+                    {Array.isArray(conversations) && conversations.length > 0 ?
+                      <div className="d-flex">
+                        <img
+                          src={
+                            (conversations[0]?.avatar)
+                          }
+                          alt=""
+                          className="avatar"
+                        />
+                        <div className="ms-2">
+                          <p className="mb-0 name">{conversations[0]?.fullName || ""}</p>
+                          <p className="mb-0 text">Online</p>
+                        </div>
+                      </div> : <img
+                        src={
+                          defaultImage}
+                        alt=""
+                        className="avatar"
+                      />}
+
                   </>
               }
             </div>
