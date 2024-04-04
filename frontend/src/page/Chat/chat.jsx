@@ -154,7 +154,7 @@ function Chat() {
                     </div>
                   </> :
                   <>
-                    <img
+                    {/* <img
                       src={
                         (conversations[0]?.avatar)
                       }
@@ -164,7 +164,7 @@ function Chat() {
                     <div className="ms-2">
                       <p className="mb-0 name">{conversations[0]?.fullName || ""}</p>
                       <p className="mb-0 text">Online</p>
-                    </div>
+                    </div> */}
                   </>
               }
             </div>
@@ -190,7 +190,7 @@ function Chat() {
                         )}
                         <div className="ms-2 w-100">
                           <div className="d-flex justify-content-between">
-                            <p className="mb-0 name">{item?.nameReceiver}</p>
+                            <p className="mb-0 name">{item?.isYourself ? item?.nameSender : item?.nameReceiver}</p>
                             <p className="mb-0 text">{formatDate(item?.createdDate)}</p>
                           </div>
                           <p

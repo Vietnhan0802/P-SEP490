@@ -151,15 +151,21 @@ namespace Communication.Controllers
                         {
                             message.isYourself = true;
                             var infoSender = await GetInfoUser(message.idSender);
-                            message.nameReceiver = infoSender.fullName;
+                            message.nameSender = infoSender.fullName;
+                            var infoReceiver = await GetInfoUser (message.idReceiver);
+                            message.nameReceiver = infoReceiver.fullName;
+                            message.avatarReceiver = infoReceiver.avatar;
+                            message.isVerifiedReceiver = infoReceiver.isVerified;
                         }
                         else
                         {
                             message.isYourself = false;
+                            var infoSender = await GetInfoUser(message.idSender);
+                            message.avatarReceiver = infoSender.avatar;
+                            message.nameReceiver = infoSender.fullName;
+                            message.isVerifiedReceiver = infoSender.isVerified;
                             var infoReceiver = await GetInfoUser(message.idReceiver);
-                            message.nameReceiver = infoReceiver.fullName;
-                            message.avatarReceiver = infoReceiver.avatar;
-                            message.isVerifiedReceiver = infoReceiver.isVerified;
+                            message.nameSender = infoReceiver.fullName;
                         }
                     }
                     return new Response(HttpStatusCode.OK, "Get message is success!", result);

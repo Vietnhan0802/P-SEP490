@@ -405,7 +405,7 @@ backend/ProjectService/Images/*.pdf
 
 backend/User/Images/*.jpg
 backend/User/Images/*.jpeg
-backend/User/Images/*.png
+# backend/User/Images/*.png
 backend/User/Images/*.gif
 backend/User/Images/*.bmp
 backend/User/Images/*.tiff
