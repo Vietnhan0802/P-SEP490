@@ -3,21 +3,21 @@ import { Button, Modal } from 'react-bootstrap'
 import { Rating } from 'react-simple-star-rating'
 import { projectInstance } from '../../../axios/axiosConfig'
 import { notifyError, notifySuccess } from '../../../components/notification'
-function RatingPopup({ show, onClose, idRater, idRated, projectid, type, idProjectMember }) {   
+function RatingPopup({ show, onClose, idRater, idRated, projectid, type, idProjectMember, resetPage }) {
     const handleRatingProject = () => {
         if (type === 'project') {
             projectInstance.post(`CreateRatingProject/${idRater}/${projectid}`, {
                 rating: rating,
                 comment: input
             })
-                .then((res) => { notifySuccess(res?.data?.message) })
+                .then((res) => { notifySuccess(res?.data?.message); resetPage(); })
                 .catch((error) => { notifyError(error?.data?.message) })
         } else {
             projectInstance.post(`CreateRatingPeople/${idRater}/${idRated}/${idProjectMember}`, {
                 rating: rating,
                 comment: input
             })
-                .then((res) => { notifySuccess(res?.data?.message) })
+                .then((res) => { notifySuccess(res?.data?.message); resetPage(); })
                 .catch((error) => { notifyError(error?.data?.message) })
         }
 

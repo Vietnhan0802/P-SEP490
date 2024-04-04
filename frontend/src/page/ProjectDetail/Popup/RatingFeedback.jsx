@@ -5,23 +5,23 @@ import { Rating } from 'react-simple-star-rating'
 import { MdStar } from "react-icons/md";
 import tick from "../../../images/common/verifiedTick.png";
 import { projectInstance } from '../../../axios/axiosConfig';
-function RatingFeedback({ show, onClose, formatDateString, idProject, idUser, type }) {
+function RatingFeedback({ show, onClose, formatDateString, idProject, idUser, type, resetPage }) {
     const [projectRating, setprojectRating] = useState({});
     const [projectFeedback, setprojectFeedback] = useState([]);
     useEffect(() => {
         if (type === 'member') {
             projectInstance.get(`GetAllRatingStarPeopleInProject/${idUser}/${idProject}`)
-                .then((res) => { setprojectRating(res?.data); })
+                .then((res) => { setprojectRating(res?.data); resetPage(); })
                 .catch((error) => { console.log(error) });
             projectInstance.get(`GetAllRatingPeopleInProject/${idUser}/${idProject}`)
-                .then((res) => { setprojectFeedback(res?.data?.result); })
+                .then((res) => { setprojectFeedback(res?.data?.result);resetPage(); })
                 .catch((error) => { console.log(error) });
         } else {
             projectInstance.get(`GetAllRatingStarProject/${idProject}`)
-                .then((res) => { setprojectRating(res?.data); })
+                .then((res) => { setprojectRating(res?.data);resetPage(); })
                 .catch((error) => { console.log(error) });
             projectInstance.get(`GetAllRatingProject/${idProject}`)
-                .then((res) => { setprojectFeedback(res?.data?.result); })
+                .then((res) => { setprojectFeedback(res?.data?.result);resetPage(); })
                 .catch((error) => { console.log(error) });
         }
 
@@ -75,7 +75,7 @@ function RatingFeedback({ show, onClose, formatDateString, idProject, idUser, ty
                             {projectFeedback?.map((feedback, index) => <div key={index}>
                                 <div className='d-flex align-items-center ms-2 mt-2'>
                                     <div className="position-relative">
-                                        <img src={feedback?.avatar} style={{ width: '50px', height: '50px',borderRadius:'50%' }} alt="" />
+                                        <img src={feedback?.avatar} style={{ width: '50px', height: '50px', borderRadius: '50%' }} alt="" />
                                         {feedback?.isVerified && <img src={tick} alt="tick" className="position-absolute bottom-0 end-0" style={{ width: '18px' }} />}
                                     </div>
                                     <p className='ms-3'>{feedback?.fullName}</p>

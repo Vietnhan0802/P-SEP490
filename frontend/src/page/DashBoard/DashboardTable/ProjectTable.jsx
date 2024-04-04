@@ -326,7 +326,7 @@ export default function ProjectTable({ value }) {
                       <p style={{ fontSize: "16px", fontWeight: "500" }}>
                         {row.name}
                       </p>
-                      <p className="ellipsis" style={{ maxWidth: '300px' }}>{row.description}</p>
+                      <div className="ellipsis" style={{ maxWidth: '300px' }} dangerouslySetInnerHTML={{ __html: row.description }} />
                     </TableCell>
                     <TableCell align="left">{projectStatus(row.process)}</TableCell>
                     <TableCell align="left">{projectVisibility(row.visibility)}</TableCell>

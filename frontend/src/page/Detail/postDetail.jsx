@@ -391,16 +391,19 @@ function PostDetail({ value }) {
             handleLikeOrUnlikePost={handleLikeOrUnlikePost}
           />
           <p className="cmt fw-bold my-3">COMMENT</p>
-          <div className="cmt-input d-flex ">
-            <img
-              src={
-                data?.avatar === "https://localhost:7006/Images/"
-                  ? defaultAvatar
-                  : data?.avatar
-              }
-              alt=""
-              className="profile" 
-            />
+          <div className="cmt-input d-flex">
+            <div className=" avatar-contain" style={{width:'40px',height:'40px'}}>
+              <img
+                src={
+                  data?.avatar === "https://localhost:7006/Images/"
+                    ? defaultAvatar
+                    : data?.avatar
+                }
+                alt="profile"                
+                style={{ objectFit: 'cover' }}
+              />
+            </div>
+
             <input
               type="text"
               className="w-100 ps-3"
@@ -420,15 +423,19 @@ function PostDetail({ value }) {
                 className={`d-flex pb-3 mt-2 cmt-item ${item.type === "reply-comment" ? "ms-5" : ""
                   }`}
               >
-                <img
-                  src={
-                    item?.avatar === "https://localhost:7006/Images/"
-                      ? avatarDefault
-                      : item?.avatar
-                  }
-                  alt=""
-                  className="profile"
-                />
+                <div className="avatar-contain"  style={{width:'40px',height:'40px'}}>
+                  <img
+                    src={
+                      item?.avatar === "https://localhost:7006/Images/"
+                        ? avatarDefault
+                        : item?.avatar
+                    }
+                    alt="profile"
+                    className=""
+                    style={{ objectFit: 'cover' }}
+                  />
+                </div>
+
                 <div className="ms-3  w-100 ">
                   <div className="form-control">
                     <div className="d-flex  justify-content-between">
@@ -441,9 +448,9 @@ function PostDetail({ value }) {
                             as={Button}
                             variant="white"
                             className="border-none text-body"
-                           
+
                           >
-                            <BsThreeDots   />
+                            <BsThreeDots />
                           </Dropdown.Toggle>
 
                           <Dropdown.Menu style={{ minWidth: "auto" }}>
@@ -492,7 +499,7 @@ function PostDetail({ value }) {
                           }
                         />
                         <button
-                        className="btn btn-outline-primary"
+                          className="btn btn-outline-primary"
                           onClick={() =>
                             handleUpdateCommentCancel(item.idPostComment)
                           }
@@ -500,7 +507,7 @@ function PostDetail({ value }) {
                           Cancel
                         </button>
                         <button
-                        className="ms-3 btn btn-outline-info"
+                          className="ms-3 btn btn-outline-info"
                           onClick={() =>
                             handleUpdateComment(item.idPostComment, item.content)
                           }
@@ -556,16 +563,20 @@ function PostDetail({ value }) {
                         </p>
                       ) : (
                         <div className="cmt-input d-flex align-items-center mt-2">
-                          <img
-                            src={
-                              user?.imageSrc ===
-                                "https://localhost:7006/Images/"
-                                ? avatarDefault
-                                : user?.imageSrc
-                            }
-                            alt=""
-                            className="profile"
-                          />
+                          <div className="avatar-contain">
+                            <img
+                              src={
+                                user?.imageSrc ===
+                                  "https://localhost:7006/Images/"
+                                  ? avatarDefault
+                                  : user?.imageSrc
+                              }
+                              alt="profile"
+                              className=""
+                              style={{ objectFit: 'cover' }}
+                            />
+                          </div>
+
                           <input
                             type="text"
                             className="w-100 ps-3"
@@ -661,7 +672,7 @@ function PostDetail({ value }) {
                                   style={{ border: "none" }}
                                   className="bg-white border-none text-body"
                                 >
-                                  <BsThreeDots  />
+                                  <BsThreeDots />
                                 </Dropdown.Toggle>
 
                                 <Dropdown.Menu style={{ minWidth: "auto" }}>

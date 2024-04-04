@@ -248,7 +248,6 @@ function BlogDetail({ value }) {
           // Revert to the previous like state and count
           const revertedIsLiked = !prevData.isLike;
           const revertedLikeCount = revertedIsLiked ? prevData.like + 1 : prevData.like - 1;
-
           return { ...prevData, isLike: revertedIsLiked, like: revertedLikeCount };
         });
       });
@@ -353,15 +352,12 @@ function BlogDetail({ value }) {
                     like: revertedLikeCount,
                   };
                 }
-
                 // Return the reply object unchanged
                 return reply;
               });
-
               // Return the comment with reverted replies
               return { ...comment, viewBlogReplies: revertedReplies };
             }
-
             // Return the comment object unchanged
             return comment;
           })
@@ -423,8 +419,10 @@ function BlogDetail({ value }) {
           <div className="d-flex align-items-between justify-content-between mb-2">
             <div className="d-flex align-items-between">
               <div className="position-relative">
-                <img src={data.avatar} alt="profile" className="profile" />
-                {data.isVerified && <img src={tick} alt="tick" className="position-absolute bottom-0 end-0" style={{width:'18px'}} />}
+                <div className="avatar-contain">
+                  <img src={data.avatar} alt="profile" style={{ objectFit: 'cover' }} />
+                </div>
+                {data.isVerified && <img src={tick} alt="tick" className="position-absolute bottom-0 end-0" style={{ width: '18px' }} />}
               </div>
               <div className="ms-2">
                 <h6 className="mb-0">{data.fullName}</h6>
@@ -557,7 +555,10 @@ function BlogDetail({ value }) {
           </div>
           <p className="cmt fw-bold my-3">COMMENT</p>
           <div className="cmt-input d-flex align-items-center">
-            <img src={user?.imageSrc === 'https://localhost:7006/Images/' ? avatarDefault : user?.imageSrc} alt="" className="profile" />
+            {/* <img src={user?.imageSrc === 'https://localhost:7006/Images/' ? avatarDefault : user?.imageSrc} alt="" className="profile" /> */}
+            <div className="avatar-contain"  style={{width:'40px',height:'40px'}} >
+              <img src={user?.imageSrc} alt="profile" style={{ objectFit: 'cover' }} />
+            </div>
             <input
               type="text"
               className="w-100 ps-3"
@@ -574,7 +575,10 @@ function BlogDetail({ value }) {
                 className={`d-flex pb-3 mt-2 cmt-item ${item.type === "reply-comment" ? "ms-5" : ""
                   }`}
               >
-                <img src={item?.avatar === 'https://localhost:7006/Images/' ? avatarDefault : item?.avatar} alt="" className="profile" />
+                <div className="avatar-contain"   style={{width:'40px',height:'40px'}}>
+                  <img src={item?.avatar} alt="profile" style={{ objectFit: 'cover' }} />
+                </div>
+                {/* <img src={item?.avatar === 'https://localhost:7006/Images/' ? avatarDefault : item?.avatar} alt="" className="profile" /> */}
                 <div className="ms-3  w-100 ">
                   <div className="form-control">
                     <div className="d-flex  justify-content-between">
@@ -650,7 +654,6 @@ function BlogDetail({ value }) {
                             placeholder="Type your Reply"
                             value={inputReply[item.idBlogComment] || ''}
                             onChange={(e) => handleInputReplyComment(item.idBlogComment, e.target.value)}
-
                           />
                           <VscSend style={{ fontSize: "30px" }}
                             onClick={() => handleCreateReplyComment(item.idBlogComment)}
@@ -662,7 +665,9 @@ function BlogDetail({ value }) {
                       item?.viewBlogReplies?.map((reply) => (
                         <>
                           <div className="d-flex">
-                            <img src={reply.avatar === 'https://localhost:7006/Images/' ? avatarDefault : reply.avatar} alt="" className="profile reply-cmt" />
+                            <div className="avatar-contain">
+                              <img src={reply?.avatar} alt="profile" style={{ objectFit: 'cover' }} />
+                            </div>
                             <div className="ms-3 w-100">
                               <h6 className="mb-2 d-flex align-items-center h-40 ms">
                                 {reply.fullName}
