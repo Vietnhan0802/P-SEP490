@@ -23,17 +23,53 @@ function Chat() {
   const [firstChat, setFirstChat] = useState(false);
   const [activeUser, setActiveUser] = useState(null);
   const [reset, setReset] = useState(false);
+  const connection = new signalR.HubConnectionBuilder()
+    .withUrl("https://localhost:7001/api/ChatHub") // Replace with your server URL
+    .build();
+  connection.on("ReceiveMessage", (sender, receiver, message) => {
+    // Handle received message
+    console.log(`Received message from ${sender} to ${receiver}:`, message);
+    // Update the state or UI accordingly
+  });
+
+  connection.on("MessageRecalled", (sender, messageId) => {
+    // Handle recalled message
+    console.log(`Message with ID ${messageId} was recalled by ${sender}`);
+    // Update the state or UI accordingly
+  });
   useEffect(() => {
-    chatInstance.get(`GetMessages/${currentUserId}/${userId}`)
-      .then((res) => {
-        setMessages(res.data.result);
+    connection.start()
+      .then(() => {
+        console.log("SignalR connection established.");
       })
-      .catch((error) => {
-        console.error(error);
-      })
+      .catch((err) => {
+        console.error("Failed to establish SignalR connection:", err);
+      });
+  }, []);
+  useEffect(() => {
     chatInstance.get(`GetConversationsByUser/${currentUserId}`)
       .then((res) => {
         setConversations(res.data.result);
+        const chatUser = res.data.result[0];
+
+        if (userId === undefined) {
+          chatInstance.get(`GetMessages/${currentUserId}/${currentUserId === chatUser.idAccount1 ? chatUser.idAccount2 : chatUser.idAccount1}`)
+            .then((res) => {
+              setMessages(res.data.result);
+              console.log(messages)
+            })
+            .catch((error) => {
+              console.error(error);
+            })
+        } else {
+          chatInstance.get(`GetMessages/${currentUserId}/${userId}`)
+            .then((res) => {
+              setMessages(res.data.result);
+            })
+            .catch((error) => {
+              console.error(error);
+            })
+        }
       })
       .catch((error) => {
         console.error(error);
@@ -41,6 +77,8 @@ function Chat() {
   }, [currentUserId, reset]);
 
   const handleConversation = (idAccount2) => {
+    console.log(currentUserId)
+    console.log(idAccount2)
     chatInstance.get(`GetMessages/${currentUserId}/${idAccount2}`)
       .then((res) => {
         if (Array.isArray(res?.data?.result) && res?.data?.result.length !== 0) {
@@ -101,7 +139,7 @@ function Chat() {
           <div className="chat-list">
             {conversations?.length > 0 ? (
               conversations?.map((item) => (
-                <div className="chat-item" key={item?.idConversation} onClick={() => handleConversation(item?.idAccount2)}>
+                <div className="chat-item" key={item?.idConversation} onClick={() => handleConversation(currentUserId === item?.idAccount1 ? item?.idAccount2 : item?.idAccount1)}>
                   <div className="d-flex align-items-center" >
                     <img src={item?.avatar === "https://localhost:7006/Images/" ? defaultImage : item?.avatar} alt="" className="avatar" />
                     <div className="ms-2">
@@ -154,7 +192,7 @@ function Chat() {
                     </div>
                   </> :
                   <>
-                    {/* <img
+                    <img
                       src={
                         (conversations[0]?.avatar)
                       }
@@ -164,7 +202,7 @@ function Chat() {
                     <div className="ms-2">
                       <p className="mb-0 name">{conversations[0]?.fullName || ""}</p>
                       <p className="mb-0 text">Online</p>
-                    </div> */}
+                    </div>
                   </>
               }
             </div>
