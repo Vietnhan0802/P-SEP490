@@ -95,8 +95,20 @@ function Chat() {
   const handleInputMessage = (event) => {
     setMessage(event.target.value);
   }
+  const getUserId = () => {
+    if (conversations.length > 0) {
+      const firstConversation = conversations[0];
+      const currentUserId = sessionData.currentUserId;
+    return currentUserId === firstConversation.idAccount1
+      ? firstConversation.idAccount2
+      : firstConversation.idAccount1;
+    }
+    return null;
+  };
+  console.log(getUserId());
   const handleSendMessage = () => {
-    chatInstance.post(`SendMessage/${currentUserId}/${userId}`, { content: message })
+    const receiverId = getUserId();
+    chatInstance.post(`SendMessage/${currentUserId}/${receiverId}`, { content: message })
       .then((res) => { console.log(res?.data?.result); setReset(!reset) })
       .catch((error) => console.error(error));
   }
