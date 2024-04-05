@@ -107,10 +107,17 @@ function Chat() {
   };
   console.log(getUserId());
   const handleSendMessage = () => {
-    const receiverId = getUserId();
-    chatInstance.post(`SendMessage/${currentUserId}/${receiverId}`, { content: message })
-      .then((res) => { console.log(res?.data?.result); setReset(!reset) })
+    if (userId != null) {
+      chatInstance.post(`SendMessage/${currentUserId}/${userId}`, { content: message })
+      .then((res) => { console.log(res?.data?.result); setReset(!reset); setMessage('');})
       .catch((error) => console.error(error));
+    }
+    else {
+      const receiverId = getUserId();
+      chatInstance.post(`SendMessage/${currentUserId}/${receiverId}`, { content: message })
+      .then((res) => { console.log(res?.data?.result); setReset(!reset); setMessage('');})
+      .catch((error) => console.error(error));
+    }
   }
   const formatDate = (dateString) => {
     const date = new Date(dateString);
