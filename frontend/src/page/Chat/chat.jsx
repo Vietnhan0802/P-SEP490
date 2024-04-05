@@ -29,7 +29,7 @@ function Chat() {
     const newConnection = new signalR.HubConnectionBuilder()
       .withUrl("https://localhost:7001/chatHub") // Replace with your server URL
       .withAutomaticReconnect()
-      .build(); 
+      .build();
     setConnection(newConnection);
   }, []);
 
@@ -37,7 +37,7 @@ function Chat() {
     if (connection) {
       connection.start()
         .then(() => {
-          console.log('Connected to SignalR hub');
+          // console.log('Connected to SignalR hub');
           connection.on('ReceiveMessage', (currentUserId, idReceiver, messageText) => {
             setMessages(prevMessages => {
               if (Array.isArray(prevMessages)) {
@@ -46,9 +46,9 @@ function Chat() {
                 return [messageText];
               }
             });
-            console.log('ReceiveMessage currentUserId:' + currentUserId);
-            console.log('ReceiveMessage userId:' + idReceiver);
-            console.log(messageText); 
+            // console.log('ReceiveMessage currentUserId:' + currentUserId);
+            // console.log('ReceiveMessage userId:' + idReceiver);
+            // console.log(messageText); 
           });
 
         })
@@ -66,6 +66,12 @@ function Chat() {
           chatInstance.get(`GetMessages/${currentUserId}/${currentUserId === res.data.result[0].idAccount1 ? res.data.result[0].idAccount2 : res.data.result[0].idAccount1}`)
             .then((res) => {
               setMessages(res.data.result);
+              console.log(res.data.result)
+              setActiveUser({
+                avatar: res?.data?.result[0].avatarReceiver,
+                name: res?.data?.result[0].nameReceiver,
+                receiverId: res?.data?.result[0].idReceiver
+              });
             })
             .catch((error) => {
               console.error(error);
@@ -94,7 +100,10 @@ function Chat() {
           setActiveUser({
             avatar: res?.data?.result[0].avatarReceiver,
             name: res?.data?.result[0].nameReceiver,
-          })
+            receiverId: res?.data?.result[0].idReceiver
+          });
+          console.log(activeUser.receiverId);
+          console.log(res.data.result)
         } else {
           setMessages([]);
         }
@@ -126,9 +135,9 @@ function Chat() {
           if (connection && message) {
             try {
               connection.invoke('SendMessage', currentUserId, userId, res?.data?.result);
-              console.log('SendMessage currentUserId:' + currentUserId);
-              console.log('SendMessage userId:' + userId);
-              console.log('SendMessage result:' + res?.data?.result);
+              // console.log('SendMessage currentUserId:' + currentUserId);
+              // console.log('SendMessage userId:' + userId);
+              // console.log('SendMessage result:' + res?.data?.result);
               setMessage('');
             } catch (error) {
               console.error('Error sending message: ', error);
@@ -138,8 +147,9 @@ function Chat() {
         .catch((error) => console.error(error));
     }
     else {
-      const receiverId = getUserId();
-      chatInstance.post(`SendMessage/${currentUserId}/${receiverId}`, { content: message })
+      // const receiverId = getUserId();
+      // console.log(receiverId)
+      chatInstance.post(`SendMessage/${currentUserId}/${activeUser.receiverId}`, { content: message })
         .then((res) => {
           console.log(res?.data?.result); setReset(!reset); setMessage('');
           console.log(connection && message)
