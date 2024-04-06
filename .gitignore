@@ -372,6 +372,16 @@ backend/BlogService/Images/*.tif
 backend/BlogService/Images/*.webp
 backend/BlogService/Images/*.svg
 
+backend/Communication/Images/*.jpg
+backend/Communication/Images/*.jpeg
+backend/Communication/Images/*.png
+backend/Communication/Images/*.gif
+backend/Communication/Images/*.bmp
+backend/Communication/Images/*.tiff
+backend/Communication/Images/*.tif
+backend/Communication/Images/*.webp
+backend/Communication/Images/*.svg
+
 backend/Credential/Images/*.jpg
 backend/Credential/Images/*.jpeg
 backend/Credential/Images/*.png

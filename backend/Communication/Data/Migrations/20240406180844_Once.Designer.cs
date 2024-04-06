@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Communication.Data.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20240326202224_Once")]
+    [Migration("20240406180844_Once")]
     partial class Once
     {
         /// <inheritdoc />
@@ -65,6 +65,9 @@ namespace Communication.Data.Migrations
                     b.Property<DateTime>("createdDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("file")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<Guid>("idConversation")
                         .HasColumnType("uniqueidentifier");
 
@@ -74,6 +77,9 @@ namespace Communication.Data.Migrations
 
                     b.Property<string>("idSender")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("image")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("isDeletedByReceiver")

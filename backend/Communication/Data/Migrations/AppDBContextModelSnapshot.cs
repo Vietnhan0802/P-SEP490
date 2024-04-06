@@ -62,6 +62,9 @@ namespace Communication.Data.Migrations
                     b.Property<DateTime>("createdDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("file")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<Guid>("idConversation")
                         .HasColumnType("uniqueidentifier");
 
@@ -71,6 +74,9 @@ namespace Communication.Data.Migrations
 
                     b.Property<string>("idSender")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("image")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("isDeletedByReceiver")
