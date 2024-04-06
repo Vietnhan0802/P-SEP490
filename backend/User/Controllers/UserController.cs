@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using AutoMapper.Execution;
 using BusinessObjects.Entities.User;
 using BusinessObjects.Enums.User;
 using BusinessObjects.ViewModels.Follow;
@@ -264,6 +265,31 @@ namespace User.Controllers
 
         /*------------------------------------------------------------Statistic------------------------------------------------------------*/
 
+        [HttpGet("GetAllAccountInSystem")]
+        public async Task<List<ViewAccountStatistic>> GetAllAccountInSystem()
+        {
+            var memberRole = _roleManager.Roles.Single(x => x.Name == TypeUser.Member.ToString()).Id;
+            var businessRole = _roleManager.Roles.Single(x => x.Name == TypeUser.Business.ToString()).Id;
+
+            var member = await _userManager.GetUsersInRoleAsync(TypeUser.Member.ToString());
+            var business = await _userManager.GetUsersInRoleAsync(TypeUser.Business.ToString());
+
+            var memberVerified = member.Count(x => x.isVerified == true);
+            var memberUnverified = member.Count(x => x.isVerified == false);
+            var businessVerified = business.Count(x => x.isVerified == true);
+            var businessUnverified = business.Count(x => x.isVerified == false);
+            var blocked = await _userManager.Users.CountAsync(x => x.isBlock == true);
+
+            return new List<ViewAccountStatistic>
+            {
+                new ViewAccountStatistic { type = "Member Account (Verified)", count = memberVerified },
+                new ViewAccountStatistic { type = "Member Account (Not Verified)", count = memberUnverified },
+                new ViewAccountStatistic { type = "Business Account (Verified)", count = businessVerified },
+                new ViewAccountStatistic { type = "Business Account (Not Verified)", count = businessUnverified },
+                new ViewAccountStatistic { type = "Account Blocked", count = blocked },
+            };
+        }
+
         [HttpGet("GetUserStatistic")]
         public async Task<List<ViewStatistic>> GetUserStatistic(DateTime? startDate, DateTime? endDate)
         {
@@ -465,7 +491,7 @@ namespace User.Controllers
                         EmailRequest emailRequest = new EmailRequest();
                         emailRequest.ToEmail = user.Email!;
                         emailRequest.Subject = "Confirmation Email";
-                        emailRequest.Body = GetHtmlContent(user.fullName!, confirmLink!);
+                        emailRequest.Body = GetHtmlContent(user.fullName!, confirmLink!, "active your account", "Active Account");
                         await _emailService.SendEmailAsync(emailRequest);
                         return new Response(HttpStatusCode.NoContent, "User create & send email is success!");
                     }
@@ -516,7 +542,7 @@ namespace User.Controllers
                         EmailRequest emailRequest = new EmailRequest();
                         emailRequest.ToEmail = user.Email!;
                         emailRequest.Subject = "Confirmation Email";
-                        emailRequest.Body = GetHtmlContent(user.fullName!, confirmLink!);
+                        emailRequest.Body = GetHtmlContent(user.fullName!, confirmLink!, "active your account", "Active Account");
                         await _emailService.SendEmailAsync(emailRequest);
                         return new Response(HttpStatusCode.NoContent, "User creates & sends email successfully!");
                     }
@@ -537,10 +563,10 @@ namespace User.Controllers
                 {
                     return new Response(HttpStatusCode.Unauthorized, "User has been blocked!");
                 }
-                /*if (!await _userManager.IsEmailConfirmedAsync(user))
+                if (!await _userManager.IsEmailConfirmedAsync(user))
                 {
                     return new Response(HttpStatusCode.Unauthorized, "Please confirm your email before logging in!");
-                }*/
+                }
 
                 var userRoles = await _userManager.GetRolesAsync(user);
                 var authClaims = new List<Claim>
@@ -599,7 +625,7 @@ namespace User.Controllers
                 EmailRequest emailRequest = new EmailRequest();
                 emailRequest.ToEmail = user.Email;
                 emailRequest.Subject = "Change Password";
-                emailRequest.Body = GetHtmlContent(user.fullName, link!);
+                emailRequest.Body = GetHtmlContent(user.fullName, link!, "reset your password", "Reset Password");
                 await _emailService.SendEmailAsync(emailRequest);
                 return new Response(HttpStatusCode.NoContent, "User send request change password to email successfully!");
             }
@@ -655,16 +681,9 @@ namespace User.Controllers
             return BadRequest("User doesn't exists!");
         }
 
-        private string GetHtmlContent(string fullname, string url)
+        private string GetHtmlContent(string fullname, string url, string content, string btnContent)
         {
-            string response = "<div style = \"width:100%; background-color:lightblue; text-align:center; margin:10px\">";
-            response += $"<h1> Welcome to {fullname}</h1>";
-            response += "<img src = \"https://inkythuatso.com/uploads/thumbnails/800/2023/01/1-meme-meo-cam-sung-sieu-ba-dao-17-15-34-21.jpg\">";
-            response += "<h2>Thanks for subscribing!</h2>";
-            response += $"<a href = \"{url}\">Please confirm by click the link!</a>";
-            response += "<div><h1> Contact us: vantoitran2002@gmail.com</h1></div>";
-            response += "</div>";
-            return response;
+           string response = $"<div style=\"display: none; font-size: 1px; color: #fefefe; line-height: 1px; font-family: 'Lato', Helvetica, Arial, sans-serif; max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden;\"> We're thrilled to have you here!.\r\n    </div>\r\n    <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\r\n        <!-- LOGO -->\r\n        <tr>\r\n            <td bgcolor=\"#FFA73B\" align=\"center\">\r\n                <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"max-width: 600px;\">\r\n                    <tr>\r\n                        <td align=\"center\" valign=\"top\" style=\"padding: 40px 10px 40px 10px;\"> </td>\r\n                    </tr>\r\n                </table>\r\n            </td>\r\n        </tr>\r\n        <tr>\r\n            <td bgcolor=\"#FFA73B\" align=\"center\" style=\"padding: 0px 10px 0px 10px;\">\r\n                <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"max-width: 600px;\">\r\n                    <tr>\r\n                        <td bgcolor=\"#ffffff\" align=\"center\" valign=\"top\" style=\"padding: 40px 20px 20px 20px; border-radius: 4px 4px 0px 0px; color: #111111; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 48px; font-weight: 400; letter-spacing: 4px; line-height: 48px;\">\r\n                            <h1 style=\"font-size: 48px; font-weight: 400; margin: 2;\">Welcome {fullname}!</h1> <img src=\" https://img.icons8.com/clouds/100/000000/handshake.png\" width=\"125\" height=\"120\" style=\"display: block; border: 0px;\" />\r\n                        </td>\r\n                    </tr>\r\n                </table>\r\n            </td>\r\n        </tr>\r\n        <tr>\r\n            <td bgcolor=\"#f4f4f4\" align=\"center\" style=\"padding: 0px 10px 0px 10px;\">\r\n                <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"max-width: 600px;\">\r\n                    <tr>\r\n                        <td bgcolor=\"#ffffff\" align=\"left\" style=\"padding: 20px 30px 40px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;\">\r\n                            <p style=\"margin: 0; text-align: center\">Press the button below to {content}.</p>\r\n                        </td>\r\n                    </tr>\r\n                    <tr>\r\n                        <td bgcolor=\"#ffffff\" align=\"left\">\r\n                            <table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\r\n                                <tr>\r\n                                    <td bgcolor=\"#ffffff\" align=\"center\" style=\"padding: 20px 30px 60px 30px;\">\r\n                                        <table border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\r\n                                            <tr>\r\n                                                <td align=\"center\" style=\"border-radius: 3px;\" bgcolor=\"#FFA73B\"><a href=\"{url}\" target=\"_blank\" style=\"font-size: 20px; font-family: Helvetica, Arial, sans-serif; color: #ffffff; text-decoration: none; color: #ffffff; text-decoration: none; padding: 15px 25px; border-radius: 2px; border: 1px solid #FFA73B; display: inline-block;\">{btnContent}</a></td>\r\n                                            </tr>\r\n                                        </table>\r\n                                    </td>\r\n                                </tr>\r\n                            </table>\r\n                        </td>\r\n                    </tr> <!-- COPY -->\r\n                \r\n                    <tr>\r\n                        <td bgcolor=\"#ffffff\" align=\"left\" style=\"padding: 0px 30px 20px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;\">\r\n                            <p style=\"margin: 0;\">If you have any questions, just reply to this email&mdash;we're always happy to help out.</p>\r\n                        </td>\r\n                    </tr>\r\n                    <tr>\r\n                        <td bgcolor=\"#ffffff\" align=\"left\" style=\"padding: 0px 30px 40px 30px; border-radius: 0px 0px 4px 4px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;\">\r\n                            <p style=\"margin: 0;\">Cheers,<br>PEITCS Team</p>\r\n                        </td>\r\n                    </tr>\r\n                </table>\r\n            </td>\r\n        </tr>\r\n     \r\n        <tr>\r\n            <td bgcolor=\"#f4f4f4\" align=\"center\" style=\"padding: 0px 10px 0px 10px;\">\r\n                <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"max-width: 600px;\">\r\n                    <tr>\r\n                        <td bgcolor=\"#f4f4f4\" align=\"left\" style=\"padding: 0px 30px 30px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 14px; font-weight: 400; line-height: 18px;\"> <br>\r\n                            <p style=\"margin: 0;\">If these emails get annoying, please feel free to <a href=\"#\" target=\"_blank\" style=\"color: #111111; font-weight: 700;\">unsubscribe</a>.</p>\r\n                        </td>\r\n                    </tr>\r\n                </table>\r\n            </td>\r\n        </tr>\r\n    </table>";    return response;
         }
 
         [HttpGet("TokenResetPassword")]
