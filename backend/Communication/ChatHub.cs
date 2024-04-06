@@ -1,10 +1,17 @@
-﻿using BusinessObjects.ViewModels.Communication;
+﻿using BusinessObjects.Entities.Communication;
+using BusinessObjects.ViewModels.Communication;
 using Microsoft.AspNetCore.SignalR;
 
 namespace Communication
 {
     public class ChatHub : Hub
     {
+        public async Task SendMessage(string idCurrentUser, string idReceiver, ViewMessage viewMessage)
+        {
+            await Clients.All.SendAsync("ReceiveMessage", idCurrentUser, idReceiver, viewMessage);
+       
+        }
+
         public async Task StartConversation(string idCurrentUser, string idReceiver)
         {
             await Clients.User(idReceiver).SendAsync("StartConversation", idCurrentUser);
@@ -15,11 +22,11 @@ namespace Communication
             await Clients.Caller.SendAsync("GetMessage", viewMessage);
         }
 
-        public async Task SendMessage(string idCurrentUser, string idReceiver, ViewMessage viewMessage)
+        /*public async Task SendMessage(string idCurrentUser, string idReceiver, ViewMessage viewMessage)
         {
             await Clients.User(idCurrentUser).SendAsync("ReceiverMessage", viewMessage);
             await Clients.User(idReceiver).SendAsync("ReceiverMessage", viewMessage);
-        }
+        }*/
 
         public async Task RecallMessage (string idReceiver, Guid idMessage)
         {
