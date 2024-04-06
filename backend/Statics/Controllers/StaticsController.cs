@@ -177,6 +177,23 @@ namespace Statics.Controllers
 
         /*------------------------------------------------------------StatisticUser------------------------------------------------------------*/
 
+        [HttpGet("GetAllAccountInSystem")]
+        public async Task<Response> GetAllAccountInSystem()
+        {
+            HttpResponseMessage response = await client.GetAsync($"{UserApiUrl}/GetAllAccountInSystem");
+            string strData = await response.Content.ReadAsStringAsync();
+            var option = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true,
+            };
+            var accountStatistic = JsonSerializer.Deserialize<List<ViewAccountStatistic>>(strData, option);
+            if (accountStatistic != null)
+            {
+                return new Response(HttpStatusCode.OK, "Get number account in system is success!", accountStatistic);
+            }
+            return new Response(HttpStatusCode.NoContent, "Get number account in system is empty!");
+        }
+
         [HttpGet("CallUserStatistic")]
         public async Task<Response> CallUserStatistic(DateTime? startDate, DateTime? endDate)
         {
