@@ -14,14 +14,14 @@ function RatingFeedback({ show, onClose, formatDateString, idProject, idUser, ty
                 .then((res) => { setprojectRating(res?.data); resetPage(); })
                 .catch((error) => { console.log(error) });
             projectInstance.get(`GetAllRatingPeopleInProject/${idUser}/${idProject}`)
-                .then((res) => { setprojectFeedback(res?.data?.result);resetPage(); })
+                .then((res) => { setprojectFeedback(res?.data?.result); resetPage(); })
                 .catch((error) => { console.log(error) });
         } else {
             projectInstance.get(`GetAllRatingStarProject/${idProject}`)
-                .then((res) => { setprojectRating(res?.data);resetPage(); })
+                .then((res) => { setprojectRating(res?.data); resetPage(); })
                 .catch((error) => { console.log(error) });
             projectInstance.get(`GetAllRatingProject/${idProject}`)
-                .then((res) => { setprojectFeedback(res?.data?.result);resetPage(); })
+                .then((res) => { setprojectFeedback(res?.data?.result); resetPage(); })
                 .catch((error) => { console.log(error) });
         }
 
@@ -60,7 +60,7 @@ function RatingFeedback({ show, onClose, formatDateString, idProject, idUser, ty
                         </Col>
                         <Col md={4}>
                             <div className='d-flex flex-column align-items-center'>
-                                <h1 className='my-3'>{projectRating?.ratingAvg}</h1>
+                                <h1 className='my-3'>{Math.round(projectRating?.ratingAvg * 100) / 100}</h1>
                                 <Rating
                                     readonly={true}
                                     allowFraction={true}

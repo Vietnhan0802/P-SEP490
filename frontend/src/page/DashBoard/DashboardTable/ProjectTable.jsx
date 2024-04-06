@@ -323,10 +323,10 @@ export default function ProjectTable({ value }) {
                       {row.time}
                     </TableCell>
                     <TableCell align="left" onClick={() => handleView(row.id, 'project')}>
-                      <p style={{ fontSize: "16px", fontWeight: "500" }}>
+                      <p >
                         {row.name}
                       </p>
-                      <div className="ellipsis" style={{ maxWidth: '300px' }} dangerouslySetInnerHTML={{ __html: row.description }} />
+                      {/* <div className="ellipsis" style={{ maxWidth: '300px', height: '20px', overflow: 'hidden' }} dangerouslySetInnerHTML={{ __html: row.description.replace(/<h[1-6]/g, '<h6').replace(/<\/h[1-6]>/g, '</h6>') }} /> */}
                     </TableCell>
                     <TableCell align="left">{projectStatus(row.process)}</TableCell>
                     <TableCell align="left">{projectVisibility(row.visibility)}</TableCell>

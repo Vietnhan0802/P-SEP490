@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../scss/header.scss";
-import { Row, Col, Image, Popover } from "react-bootstrap";
+import { Row, Col, Image } from "react-bootstrap";
 import { CiSearch } from "react-icons/ci";
 import { LuHome } from "react-icons/lu";
 import logoImg from "../images/common/logo.png";
@@ -52,18 +52,20 @@ export default function Header({ activeComponent, onItemClick, changeImage }) {
       .catch((err) => {
         console.log(err.response.data);
       })
-  }, [changeImage]);
+  }, [changeImage, currentUserId]);
   const handlePopup = () => {
     setShowPopup(!showPopup);
     setActivePopup(!activePopup);
   };
 
-  const handleItemClick = (itemId) => {
+  const handleItemClick = (itemId) => {   
     setActiveItem(itemId);
     onItemClick(itemId);
   };
   const handleAvatarClick = (id) => {
     setSearchName('');
+    setActiveItem(id);
+    onItemClick(id);
     navigate('/profile', { state: { userId: id } });
   };
   const hanldeReturnHome = (itemId) => {
@@ -84,10 +86,14 @@ export default function Header({ activeComponent, onItemClick, changeImage }) {
       ));
     }
   }
+  const close = () => {
+    setShowPopup(prev => !prev);
+    setActivePopup(prev => !prev);
+  }
   return (
     <Row id="header" className="m-0">
       <Col className="d-flex align-items-center" sm={4}>
-        <Image src={logoImg} className="logo" onClick={() => hanldeReturnHome()} />
+        <Image src={logoImg} className="logo" onClick={() => hanldeReturnHome("home")} />
         <div className="d-flex search align-items-center position-relative w-50">
           <CiSearch className="" />
           <input type="text" placeholder={t('search')} value={searchName} className="search-box w-100" onChange={searchUser} />
@@ -131,7 +137,7 @@ export default function Header({ activeComponent, onItemClick, changeImage }) {
             onClick={() => handlePopup()}
           />
           <Popup trigger={showPopup}>
-            <Notify />
+            <Notify close={close} />
           </Popup>
         </div>
       </Col>
@@ -140,7 +146,7 @@ export default function Header({ activeComponent, onItemClick, changeImage }) {
         <DarkMode />
         <div className=" d-flex align-items-center" onClick={() => handleAvatarClick(currentUserId)}>
           <div className="position-relative">
-            <div className="profile"  style={{ width: '40px', height: '40px', borderRadius: '50%  ' }}>
+            <div className="profile" style={{ width: '45px', height: '45px', borderRadius: '50%' }}>
               <img src={value.imageSrc} alt="" />
             </div>
 

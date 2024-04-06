@@ -10,7 +10,6 @@ import tick from "../../images/common/verifiedTick.png";
 import {
   postInstance,
   projectInstance,
-  reportInstance,
 } from "../../axios/axiosConfig";
 import { useNavigate } from "react-router-dom";
 
@@ -106,6 +105,7 @@ function Post({ value }) {
       postInstance
         .post(`LikeOrUnlikePost/${currentUserId}/${idBlog}`)
         .then(() => {
+          setResetPage(!resetPage);
           // If the API call is successful, you can optionally refresh the data from the server
           // to ensure the UI is in sync with the backend state
         })
@@ -150,7 +150,7 @@ function Post({ value }) {
       .catch((error) => {
         console.error(error);
       });
-  }, [resetPage]);
+  }, [resetPage,currentUserId]);
   useEffect(() => {
     postInstance.get(`GetAllPostsTrend/${currentUserId}`)
       .then((res) => {
@@ -179,7 +179,7 @@ function Post({ value }) {
       .catch((error) => {
         console.error(error);
       });
-  }, [])
+  }, [resetPage,,currentUserId])
 
   useEffect(() => {
     projectInstance
@@ -224,7 +224,6 @@ function Post({ value }) {
   const toggleTrendList = () => {
     setShowTrendList(!showTrendList);
   };
-  console.log(postList)
   return (
     <Row className="pt-3 ms-0 me-0">
       <Col md={3}>
@@ -277,8 +276,9 @@ function Post({ value }) {
                 <Report id={currentUserId} idItem={item.id} type="post" />
               </div>
               <h4 className="mt-2">{item.title}</h4>
-
-              <div dangerouslySetInnerHTML={{ __html: item.content }} />
+              <div style={{ maxHeight: '200px', overflow: 'hidden' }}>
+                <div dangerouslySetInnerHTML={{ __html: item.content }} />
+              </div>
               <div
                 id={`carouselExampleControls-${item.id}`}
                 className="carousel slide"

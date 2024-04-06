@@ -129,8 +129,8 @@ function OwnProject({ value }) {
                         Date Create: {formatDate(item.createdDate)}
                       </div>
                     </div>
-                    <div className="ms-2 d-flex align-items-center">
-                      <div className="ms-2" style={{ fontSize: '20px', marginTop: '5px' }}>{item?.ratingAvg}</div>
+                    <div className="ms-3 d-flex align-items-center">
+                      <div className="ms-2" style={{ fontSize: '20px', marginTop: '5px' }}>{Math.round(item?.ratingAvg * 100) / 100}</div>
 
                       <Rating
                         className="ms-2"
