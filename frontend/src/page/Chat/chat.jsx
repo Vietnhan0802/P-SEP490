@@ -23,48 +23,62 @@ function Chat() {
   const [firstChat, setFirstChat] = useState(false);
   const [activeUser, setActiveUser] = useState(null);
   const [reset, setReset] = useState(false);
+  const [activeAccount, setActiveAccount] = useState({});
+  const [isConnected, setIsConnected] = useState(false);
+
   const connection = new signalR.HubConnectionBuilder()
-    .withUrl("https://localhost:7001/chatHub") // Replace with your server URL
+    .withUrl("https://localhost:7001/chatHub")
+    .configureLogging(signalR.LogLevel.Information) // Replace with your server URL
     .build();
   connection.on("ReceiveMessage", (sender, receiver, message) => {
     // Handle received message
     console.log(`Received message from ${sender} to ${receiver}:`, message);
     // Update the state or UI accordingly
+    setMessages((prevMessages) => [...prevMessages, message]);
   });
 
-  connection.on("MessageRecalled", (sender, messageId) => {
-    // Handle recalled message
-    console.log(`Message with ID ${messageId} was recalled by ${sender}`);
-    // Update the state or UI accordingly
-  });
+  const start = async () => {
+    try {
+      await connection.start();
+      console.log("Connected to signal r hub");
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  // useEffect(() => {
+  //   const startConnection = async () => {
+  //     try {
+  //       await connection.start();
+  //       console.log("SignalR connection established.");
+  //       setIsConnected(true);
+  //     } catch (err) {
+  //       console.error("Failed to establish SignalR connection:", err);
+  //     }
+  //   };
+  //   startConnection();
+  // }, [currentUserId, userId]);
   useEffect(() => {
-    connection.start()
-      .then(() => {
-        console.log("SignalR connection established.");
-      })
-      .catch((err) => {
-        console.error("Failed to establish SignalR connection:", err);
-      });
-  }, []);
-  console.log(userId === undefined)
-  useEffect(() => {
+    await start();
     chatInstance.get(`GetConversationsByUser/${currentUserId}`)
       .then((res) => {
         setConversations(res.data.result);
+        const chatUser = res.data.result[0];
+
         if (userId === undefined) {
-          chatInstance.get(`GetMessages/${currentUserId}/${currentUserId === conversations[0].idAccount1 ? conversations[0].idAccount2 : conversations[0].idAccount1}`)
+          chatInstance.get(`GetMessages/${currentUserId}/${currentUserId === chatUser.idAccount1 ? chatUser.idAccount2 : chatUser.idAccount1}`)
             .then((res) => {
               setMessages(res.data.result);
-              console.log(messages)
+              setActiveAccount({idAccount1 : currentUserId, idAccount2: currentUserId === chatUser.idAccount1 ? chatUser.idAccount2 : chatUser.idAccount1})
             })
             .catch((error) => {
               console.error(error);
             })
-        }
-        if (userId !== undefined) {
+        } else {
           chatInstance.get(`GetMessages/${currentUserId}/${userId}`)
             .then((res) => {
               setMessages(res.data.result);
+              setActiveAccount({idAccount1 : currentUserId, idAccount2: userId})
             })
             .catch((error) => {
               console.error(error);
@@ -74,8 +88,7 @@ function Chat() {
       .catch((error) => {
         console.error(error);
       })
-
-  }, [currentUserId, reset]);
+  }, [currentUserId, reset, userId]);
 
   const handleConversation = (idAccount2) => {
     chatInstance.get(`GetMessages/${currentUserId}/${idAccount2}`)
@@ -98,8 +111,21 @@ function Chat() {
     setMessage(event.target.value);
   }
   const handleSendMessage = () => {
-    chatInstance.post(`SendMessage/${currentUserId}/${userId}`, { content: message })
-      .then((res) => { console.log(res?.data?.result); setReset(!reset) })
+    chatInstance.post(`SendMessage/${activeAccount.idAccount1}/${activeAccount.idAccount2}`, { content: message })
+      .then((res) => { 
+        console.log(res?.data?.result); 
+        setReset(!reset); 
+        // if (isConnected) {
+        //   connection.invoke("SendMessage", currentUserId, userId, res.data.result); 
+        // } else {
+        //   console.error("SignalR connection is not established");
+        // }
+        // if (connection.state === signalR.HubConnectionState.Connected) {
+        //   connection.invoke("SendMessage", currentUserId, userId, res.data.result); 
+        // } else {
+        //   console.error("SignalR connection is not established");
+        // }
+      })
       .catch((error) => console.error(error));
   }
   const formatDate = (dateString) => {
@@ -191,26 +217,17 @@ function Chat() {
                     </div>
                   </> :
                   <>
-                    {Array.isArray(conversations) && conversations.length > 0 ?
-                      <div className="d-flex">
-                        <img
-                          src={
-                            (conversations[0]?.avatar)
-                          }
-                          alt=""
-                          className="avatar"
-                        />
-                        <div className="ms-2">
-                          <p className="mb-0 name">{conversations[0]?.fullName || ""}</p>
-                          <p className="mb-0 text">Online</p>
-                        </div>
-                      </div> : <img
-                        src={
-                          defaultImage}
-                        alt=""
-                        className="avatar"
-                      />}
-
+                    <img
+                      src={
+                        (conversations[0]?.avatar)
+                      }
+                      alt=""
+                      className="avatar"
+                    />
+                    <div className="ms-2">
+                      <p className="mb-0 name">{conversations[0]?.fullName || ""}</p>
+                      <p className="mb-0 text">Online</p>
+                    </div>
                   </>
               }
             </div>

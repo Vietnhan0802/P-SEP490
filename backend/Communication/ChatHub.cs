@@ -5,25 +5,20 @@ namespace Communication
 {
     public class ChatHub : Hub
     {
-        public async Task StartConversation(string idCurrentUser, string idReceiver)
+        public async Task JoinRoom(ViewConversation conversation)
         {
-            await Clients.User(idReceiver).SendAsync("StartConversation", idCurrentUser);
+            await Groups.AddToGroupAsync(Context.ConnectionId, conversation.idConversation.ToString());
+            await Clients.Groups(conversation.idConversation.ToString()).SendAsync("ReceiveMessage", $"{conversation.idAccount1} and {conversation.idAccount2} has joined {conversation.idConversation}");
         }
 
-        public async Task GetMessages(List<ViewMessage> viewMessage)
+        public async Task SendMessage(string sender, string receiver, ViewMessage message)
         {
-            await Clients.Caller.SendAsync("GetMessage", viewMessage);
+            await Clients.User(receiver).SendAsync("ReceiveMessage", sender, receiver, message);
         }
 
-        public async Task SendMessage(string idCurrentUser, string idReceiver, ViewMessage viewMessage)
+        public async Task ReceiveMessage(ViewMessage message)
         {
-            await Clients.User(idCurrentUser).SendAsync("ReceiverMessage", viewMessage);
-            await Clients.User(idReceiver).SendAsync("ReceiverMessage", viewMessage);
-        }
-
-        public async Task RecallMessage (string idReceiver, Guid idMessage)
-        {
-            await Clients.User(idReceiver).SendAsync("RecallMessage", idMessage);
+            await Clients.Caller.SendAsync("ReceiveMessage", message);
         }
     }
 }

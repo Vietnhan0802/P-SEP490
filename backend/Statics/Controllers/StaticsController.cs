@@ -141,6 +141,40 @@ namespace Statics.Controllers
             return new Response(HttpStatusCode.NoContent, "Get project statistic is empty!");
         }
 
+        [HttpGet("GetTop1Freelancer")]
+        public async Task<Response> GetTop1Freelancer()
+        {
+            HttpResponseMessage response = await client.GetAsync($"{ProjectApiUrl}/GetTop1Freelancer");
+            string strData = await response.Content.ReadAsStringAsync();
+            var option = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true,
+            };
+            var projectMemberStatistic = JsonSerializer.Deserialize<ViewFreelancerStatistic>(strData, option);
+            if (projectMemberStatistic != null)
+            {
+                return new Response(HttpStatusCode.OK, "Get top 1 freelancer is success!", projectMemberStatistic);
+            }
+            return new Response(HttpStatusCode.NoContent, "Get top 1 freelancer is empty!");
+        }
+
+        [HttpGet("GetTop1Project")]
+        public async Task<Response> GetTop1Project()
+        {
+            HttpResponseMessage response = await client.GetAsync($"{ProjectApiUrl}/GetTop1Project");
+            string strData = await response.Content.ReadAsStringAsync();
+            var option = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true,
+            };
+            var projectRatingStatistic = JsonSerializer.Deserialize<ViewProjectStatistic>(strData, option);
+            if (projectRatingStatistic != null)
+            {
+                return new Response(HttpStatusCode.OK, "Get top 1 project is success!", projectRatingStatistic);
+            }
+            return new Response(HttpStatusCode.NoContent, "Get top 1 project is empty!");
+        }
+
         /*------------------------------------------------------------StatisticUser------------------------------------------------------------*/
 
         [HttpGet("CallUserStatistic")]
