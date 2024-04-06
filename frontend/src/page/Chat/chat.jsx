@@ -282,7 +282,6 @@ function Chat() {
                         alt=""
                         className="avatar"
                       />}
-
                   </>
               }
             </div>

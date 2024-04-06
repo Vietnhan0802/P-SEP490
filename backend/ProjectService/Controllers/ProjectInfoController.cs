@@ -82,6 +82,55 @@ namespace ProjectService.Controllers
 
         /*------------------------------------------------------------HaveBeenCalled------------------------------------------------------------*/
 
+        [HttpGet("GetTop1Freelancer")]
+        public async Task<ViewFreelancerStatistic> GetTop1Freelancer()
+        {
+            var projectMembers = await _context.ProjectMembers
+                .Where(x => x.type == BusinessObjects.Enums.Project.Type.Invited && x.isAcept == true)
+                .GroupBy(x => x.idAccount)
+                .Select(x => new
+                {
+                    idAccount = x.Key,
+                    inviteCount = x.Count()
+                })
+                .OrderByDescending(x => x.inviteCount)
+                .FirstOrDefaultAsync();
+            var infoUser = await GetInfoUser(projectMembers.idAccount);
+            return new ViewFreelancerStatistic
+            {
+                idAccount = projectMembers.idAccount,
+                fullName = infoUser.fullName,
+                avatar = infoUser.avatar,
+                inviteCount = projectMembers.inviteCount
+            };
+        }
+
+        /*[HttpGet("GetTop1Business")]
+        public Task<ViewBusinessStatistic> GetTop1Business()
+        {
+
+        }*/
+
+        [HttpGet("GetTop1Project")]
+        public async Task<ViewProjectStatistic> GetTop1Project()
+        {
+            var projects = await _context.Projects.Include(x => x.Ratings).AsNoTracking().ToListAsync();
+
+            var result = projects.OrderByDescending(x => x.Ratings.Sum(x => x.rating)).FirstOrDefault();
+            var infoUser = await GetInfoUser(result.idAccount);
+            return new ViewProjectStatistic
+            {
+                idProject = result.idProject,
+                nameProject = result.name,
+                avatarProject = result.avatar,
+                idAccount = result.idAccount,
+                fullname = infoUser.fullName,
+                avatar = infoUser.avatar,
+                ratingSum = result.Ratings.Sum(x => x.rating),
+                commentSum = result.Ratings.Count(x => !string.IsNullOrEmpty(x.comment))
+            };
+        }
+
         [HttpGet("GetTotalProjects/{idUser}")]
         public async Task<int> GetTotalProjects(string idUser)
         {
