@@ -11,6 +11,7 @@ import Header from "./components/header";
 import Profile from "./page/Profile/profile";
 import Notify from "./page/Notify/notify";
 import ForgetPassword from "./page/Password/forgetPassword";
+import Confirmemail from "./page/Password/confirmemail";
 import ResetPassword from "./page/Password/resetPassword";
 import { ToastContainer } from "react-toastify";
 import "../src/i18n/i18n";
@@ -70,6 +71,7 @@ function App() {
     location.pathname === "/" ||
     location.pathname === "/signup" ||
     location.pathname === "/forgetpassword" ||
+    location.pathname === "/confirmemail" ||
     location.pathname === "/resetpassword"
   );
   const resetFollowing = (value) => {
@@ -133,6 +135,7 @@ function App() {
         />
         <Route path="/notify" element={<Notify />} />
         <Route path="/forgetpassword" element={<ForgetPassword />} />
+        <Route path="/confirmemail" element={<Confirmemail />} />
         <Route path="/resetpassword" element={<ResetPassword />} />
       </Routes>
       <ToastContainer
