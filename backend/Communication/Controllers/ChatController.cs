@@ -2,6 +2,7 @@
 using BusinessObjects.Entities.Communication;
 using BusinessObjects.ViewModels.Communication;
 using BusinessObjects.ViewModels.User;
+using Commons.Helpers;
 using Communication.Data;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
@@ -20,15 +21,17 @@ namespace Communication.Controllers
     {
         private readonly AppDBContext _context;
         private readonly IMapper _mapper;
+        private readonly SaveImageService _saveImageService;
         private readonly IHubContext<ChatHub> _chatHub;
         private readonly HttpClient client;
 
         public string UserApiUrl { get; }
 
-        public ChatController(AppDBContext context, IMapper mapper, IHubContext<ChatHub> chatHub)
+        public ChatController(AppDBContext context, IMapper mapper, SaveImageService saveImageService, IHubContext<ChatHub> chatHub)
         {
             _context = context;
             _mapper = mapper;
+            _saveImageService = saveImageService;
             _chatHub = chatHub;
             client = new HttpClient();
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
@@ -147,6 +150,14 @@ namespace Communication.Controllers
                     var result = _mapper.Map<List<ViewMessage>>(messages);
                     foreach (var message in result)
                     {
+                        if (message.image != null && message.file == null && message.content == null)
+                        {
+                            message.ImageSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, message.image);
+                        }
+                        else if (message.image == null && message.file != null && message.content == null)
+                        {
+                            message.FileSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, message.file);
+                        }
                         if (message.idSender == idCurrentUser)
                         {
                             message.isYourself = true;
@@ -178,7 +189,7 @@ namespace Communication.Controllers
         }
 
         [HttpPost("SendMessage/{idCurrentUser}/{idReceiver}")]
-        public async Task<Response> SendMessage(string idCurrentUser, string idReceiver, CreateUpdateMessage createUpdateMessage)
+        public async Task<Response> SendMessage(string idCurrentUser, string idReceiver, [FromForm] CreateUpdateMessage createUpdateMessage)
         {
             var conversation = await _context.Conversations
                 .FirstOrDefaultAsync(x => (x.idAccount1 == idCurrentUser && x.idAccount2 == idReceiver)
@@ -196,43 +207,129 @@ namespace Communication.Controllers
                 };
                 await _context.Conversations.AddAsync(conversation);
             }
-            var newMessage = new Message
+            if (createUpdateMessage.ImageFile != null && createUpdateMessage.FileFile == null && createUpdateMessage.content == null)
             {
-                idConversation = conversation.idConversation,
-                idSender = idCurrentUser,
-                idReceiver = idReceiver,
-                content = createUpdateMessage.content,
-                isDeletedBySender = false,
-                isDeletedByReceiver = false,
-                createdDate = DateTime.Now,
-            };
-            await _context.Messages.AddAsync(newMessage);
-            await _context.SaveChangesAsync();
-            var result = _mapper.Map<ViewMessage>(newMessage);
-            if (result.idSender != idCurrentUser)
+                var newMessage = new Message
+                {
+                    idConversation = conversation.idConversation,
+                    idSender = idCurrentUser,
+                    idReceiver = idReceiver,
+                    image = await _saveImageService.SaveImage(createUpdateMessage.ImageFile),
+                    isDeletedBySender = false,
+                    isDeletedByReceiver = false,
+                    createdDate = DateTime.Now,
+                };
+
+                await _context.Messages.AddAsync(newMessage);
+                await _context.SaveChangesAsync();
+                var result = _mapper.Map<ViewMessage>(newMessage);
+                if (result.idSender != idCurrentUser)
+                {
+                    result.isYourself = true;
+                    var infoSender = await GetInfoUser(result.idSender);
+                    result.nameSender = infoSender.fullName;
+                    result.avatarSender = infoSender.avatar;
+                    var infoReceiver = await GetInfoUser(result.idReceiver);
+                    result.nameReceiver = infoReceiver.fullName;
+                    result.avatarReceiver = infoReceiver.avatar;
+                    result.isVerifiedReceiver = infoReceiver.isVerified;
+                }
+                else
+                {
+                    result.isYourself = false;
+                    var infoSender = await GetInfoUser(result.idSender);
+                    result.avatarReceiver = infoSender.avatar;
+                    result.nameReceiver = infoSender.fullName;
+                    result.isVerifiedReceiver = infoSender.isVerified;
+                    var infoReceiver = await GetInfoUser(result.idReceiver);
+                    result.nameSender = infoReceiver.fullName;
+                    result.avatarSender = infoReceiver.avatar;
+                }
+
+                return new Response(HttpStatusCode.OK, "Send message is success!", result);
+            }
+            else if (createUpdateMessage.ImageFile == null && createUpdateMessage.content == null && createUpdateMessage.FileFile != null)
             {
-                result.isYourself = true;
-                var infoSender = await GetInfoUser(result.idSender);
-                result.nameSender = infoSender.fullName;
-                result.avatarSender = infoSender.avatar;
-                var infoReceiver = await GetInfoUser(result.idReceiver);
-                result.nameReceiver = infoReceiver.fullName;
-                result.avatarReceiver = infoReceiver.avatar;
-                result.isVerifiedReceiver = infoReceiver.isVerified;
+                var newMessage = new Message
+                {
+                    idConversation = conversation.idConversation,
+                    idSender = idCurrentUser,
+                    idReceiver = idReceiver,
+                    file = await _saveImageService.SaveImage(createUpdateMessage.FileFile),
+                    isDeletedBySender = false,
+                    isDeletedByReceiver = false,
+                    createdDate = DateTime.Now,
+                };
+
+                await _context.Messages.AddAsync(newMessage);
+                await _context.SaveChangesAsync();
+                var result = _mapper.Map<ViewMessage>(newMessage);
+                if (result.idSender != idCurrentUser)
+                {
+                    result.isYourself = true;
+                    var infoSender = await GetInfoUser(result.idSender);
+                    result.nameSender = infoSender.fullName;
+                    result.avatarSender = infoSender.avatar;
+                    var infoReceiver = await GetInfoUser(result.idReceiver);
+                    result.nameReceiver = infoReceiver.fullName;
+                    result.avatarReceiver = infoReceiver.avatar;
+                    result.isVerifiedReceiver = infoReceiver.isVerified;
+                }
+                else
+                {
+                    result.isYourself = false;
+                    var infoSender = await GetInfoUser(result.idSender);
+                    result.avatarReceiver = infoSender.avatar;
+                    result.nameReceiver = infoSender.fullName;
+                    result.isVerifiedReceiver = infoSender.isVerified;
+                    var infoReceiver = await GetInfoUser(result.idReceiver);
+                    result.nameSender = infoReceiver.fullName;
+                    result.avatarSender = infoReceiver.avatar;
+                }
+
+                return new Response(HttpStatusCode.OK, "Send message is success!", result);
             }
             else
             {
-                result.isYourself = false;
-                var infoSender = await GetInfoUser(result.idSender);
-                result.avatarReceiver = infoSender.avatar;
-                result.nameReceiver = infoSender.fullName;
-                result.isVerifiedReceiver = infoSender.isVerified;
-                var infoReceiver = await GetInfoUser(result.idReceiver);
-                result.nameSender = infoReceiver.fullName;
-                result.avatarSender = infoReceiver.avatar;
-            }
-            //await _chatHub.SendMessage(idCurrentUser, idReceiver, result);
-            return new Response(HttpStatusCode.OK, "Send message is success!", result);
+                var newMessage = new Message
+                {
+                    idConversation = conversation.idConversation,
+                    idSender = idCurrentUser,
+                    idReceiver = idReceiver,
+                    content = createUpdateMessage.content,
+                    isDeletedBySender = false,
+                    isDeletedByReceiver = false,
+                    createdDate = DateTime.Now,
+                };
+
+                await _context.Messages.AddAsync(newMessage);
+                await _context.SaveChangesAsync();
+                var result = _mapper.Map<ViewMessage>(newMessage);
+                if (result.idSender != idCurrentUser)
+                {
+                    result.isYourself = true;
+                    var infoSender = await GetInfoUser(result.idSender);
+                    result.nameSender = infoSender.fullName;
+                    result.avatarSender = infoSender.avatar;
+                    var infoReceiver = await GetInfoUser(result.idReceiver);
+                    result.nameReceiver = infoReceiver.fullName;
+                    result.avatarReceiver = infoReceiver.avatar;
+                    result.isVerifiedReceiver = infoReceiver.isVerified;
+                }
+                else
+                {
+                    result.isYourself = false;
+                    var infoSender = await GetInfoUser(result.idSender);
+                    result.avatarReceiver = infoSender.avatar;
+                    result.nameReceiver = infoSender.fullName;
+                    result.isVerifiedReceiver = infoSender.isVerified;
+                    var infoReceiver = await GetInfoUser(result.idReceiver);
+                    result.nameSender = infoReceiver.fullName;
+                    result.avatarSender = infoReceiver.avatar;
+                }
+
+                return new Response(HttpStatusCode.OK, "Send message is success!", result);
+            }            
         }
 
         [HttpDelete("DeleteMessage/{idMessage}/{idCurrentUser}")]

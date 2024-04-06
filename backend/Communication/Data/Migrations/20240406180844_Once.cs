@@ -38,6 +38,8 @@ namespace Communication.Data.Migrations
                     idReceiver = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     isDeletedByReceiver = table.Column<bool>(type: "bit", nullable: false),
                     content = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    image = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    file = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     isRecall = table.Column<bool>(type: "bit", nullable: false),
                     createdDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
