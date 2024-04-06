@@ -136,72 +136,122 @@ function Statistic() {
   // const handleTabClick = (tab) => {
   //   setActiveTab(tab);
   // };
+  const renderChart = () => {
+    switch (activeTab) {
+      case 'account':
+        return (
+          <div style={{ width: "100%" }}>
+            <PieChart chartData={accountData} />
+          </div>
+        );
+      case 'post':
+        return (
+          <div style={{ width: "100%" }}>
+            <BarChart chartData={postData} />
+          </div>
+        );
+      case 'blog':
+        return (
+          <div style={{ width: "100%" }}>
+            <BarChart chartData={blogData} />
+          </div>
+        );
+      case 'project':
+        return (
+          <div style={{ width: "100%" }}>
+            <BarChart chartData={projectData} />
+          </div>
+        );
+      case 'report':
+        return (
+          <div style={{ width: "100%" }}>
+            <PieChart chartData={reportData} />
+          </div>
+        );
+      case 'verification':
+        return (
+          <div style={{ width: "100%" }}>
+            <LineChart chartData={accessData} />
+          </div>
+        );
+      default:
+        return (
+          <div style={{ width: "100%" }}>
+            <PieChart chartData={accountData} />
+          </div>
+        );
+    }
+  }
   return (
     <Row className="pt-3 ms-0 me-0">
-      <Col md={2} >
+      <Col md={3} >
         <SideBar />
       </Col>
-      <Col md={10}>
-        <section id="sta-page" className="size-20">
-          <Row>
-            <Col md={2} className="px-0">
-              <CardItem
-                icon={<VscAccount />}
-                title="Account"
-                count={8}
-                active={activeTab === 'access'}
-                onClick={() => handleTabClick('access')}
-              />
-            </Col>
-            <Col md={2} className="px-0">
-              <CardItem
-                icon={<VscAccount />}
-                title="Post"
-                count={8}
-                active={activeTab === 'access'}
-                onClick={() => handleTabClick('access')}
-              />
-            </Col>
-            <Col md={2} className="px-0">
-              <CardItem
-                icon={<VscAccount />}
-                title="Blog"
-                count={8}
-                active={activeTab === 'access'}
-                onClick={() => handleTabClick('access')}
-              />
-            </Col>
-            <Col md={2} className="px-0">
-              <CardItem
-                icon={<VscAccount />}
-                title="Project"
-                count={8}
-                active={activeTab === 'access'}
-                onClick={() => handleTabClick('access')}
-              />
-            </Col>
-            <Col md={2} className="px-0">
-              <CardItem
-                icon={<VscAccount />}
-                title="Repost"
-                count={8}
-                active={activeTab === 'access'}
-                onClick={() => handleTabClick('access')}
-              />
-            </Col>
-            <Col md={2} className="px-0">
-              <CardItem
-                icon={<VscAccount />}
-                title="Verification"
-                count={8}
-                active={activeTab === 'access'}
-                onClick={() => handleTabClick('access')}
-              />
-            </Col>
-          </Row>
-          <div className="chart-section ">
-            <div className="chart-all p-3">
-              <div style={{ width: "100%" }}>
+      <Col md={9}>
+        <Row>
+
+        </Row>
+        <Row>
+          <Col md={2} className="px-0">
+            <CardItem
+              icon={<VscAccount />}
+              title="Account"
+              count={8}
+              active={activeTab === 'account'}
+              onClick={() => handleTabClick('account')}
+            />
+          </Col>
+          <Col md={2} className="px-0">
+            <CardItem
+              icon={<VscAccount />}
+              title="Post"
+              count={8}
+              active={activeTab === 'post'}
+              onClick={() => handleTabClick('post')}
+            />
+          </Col>
+          <Col md={2} className="px-0">
+            <CardItem
+              icon={<VscAccount />}
+              title="Blog"
+              count={8}
+              active={activeTab === 'blog'}
+              onClick={() => handleTabClick('blog')}
+            />
+          </Col>
+          <Col md={2} className="px-0">
+            <CardItem
+              icon={<VscAccount />}
+              title="Project"
+              count={8}
+              active={activeTab === 'project'}
+              onClick={() => handleTabClick('project')}
+            />
+          </Col>
+          <Col md={2} className="px-0">
+            <CardItem
+              icon={<VscAccount />}
+              title="Report"
+              count={8}
+              active={activeTab === 'report'}
+              onClick={() => handleTabClick('report')}
+            />
+          </Col>
+          <Col md={2} className="px-0">
+            <CardItem
+              icon={<VscAccount />}
+              title="Verification"
+              count={8}
+              active={activeTab === 'verification'}
+              onClick={() => handleTabClick('verification')}
+            />
+          </Col>
+        </Row>
+        <Row>
+
+          <Col md={6}>
+            <div className="chart-all bg-white p-3">
+              {/* <div style={{ width: "100%" }}>
                 <BarChart chartData={projectData} />
               </div>
               <div style={{ width: "100%" }}>
@@ -218,12 +268,15 @@ function Statistic() {
               </div>
               <div style={{ width: "100%" }}>
                 <LineChart chartData={accessData} />
-              </div>
+              </div> */}
+              {renderChart()}
             </div>
+          </Col>
+          <Col md={6}>
 
             <div className="sup-bar col-auto">
               <div className="d-flex flex-column ">
-                <div className="date-filter mb-2">
+                <div className="date-filter mb-2 d-flex w-100">
                   <div className="start mb-1">
                     <input type="date" className="form-control" />
                   </div>
@@ -234,12 +287,11 @@ function Statistic() {
                     Submit
                   </button>
                 </div>
-
-
               </div>
             </div>
-          </div>
-        </section>
+          </Col>
+        </Row>
+
       </Col>
 
     </Row>

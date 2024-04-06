@@ -11,6 +11,8 @@ import { LuSmile } from "react-icons/lu";
 import { chatInstance } from "../../axios/axiosConfig";
 import * as signalR from "@microsoft/signalr";
 import { useLocation } from "react-router-dom";
+import data from '@emoji-mart/data'
+import Picker from '@emoji-mart/react'
 function Chat() {
 
   const sessionData = JSON.parse(sessionStorage.getItem("userSession")) || {};
@@ -24,7 +26,7 @@ function Chat() {
   const [activeUser, setActiveUser] = useState(null);
   const [reset, setReset] = useState(false);
   const [connection, setConnection] = useState(null);
-
+  const [showEmojiBox, setShowEmojiBox] = useState(false);
   useEffect(() => {
     const newConnection = new signalR.HubConnectionBuilder()
       .withUrl("https://localhost:7001/chatHub") // Replace with your server URL
@@ -56,8 +58,11 @@ function Chat() {
     }
   }, [connection]);
 
-
-
+  const handleKeyDown = (event) => {
+    if (event.key === 'Enter') {
+      handleSendMessage();
+    }
+  }
   useEffect(() => {
     chatInstance.get(`GetConversationsByUser/${currentUserId}`)
       .then((res) => {
@@ -114,6 +119,10 @@ function Chat() {
   };
   const handleInputMessage = (event) => {
     setMessage(event.target.value);
+  }
+  const handleSetEmoji = (e) => {
+    setMessage(mes => mes + e);
+    console.log(e)
   }
   const getUserId = () => {
     if (conversations?.length > 0) {
@@ -325,11 +334,17 @@ function Chat() {
           </div>
           <div className="chat-box-input position-absolute bottom-0 w-100">
             <div className="w-100 d-flex justify-content-center icon-chat">
-              <div className="w-auto fw-bold fs-3 icon-item">
+              <div className="w-auto fw-bold fs-3 icon-item d-flex align-items-center">
                 <FaRegFolder className="mx-3" />
                 <FaRegImage className="mx-3" />
-                <FaLink className="mx-3" />
-                <LuSmile className="mx-3" />
+                <div className="mx-3 w-auto" >
+                  <div className="position-relative">
+                    <div className="position-absolute bottom-0 start-0">
+                      {showEmojiBox && <Picker data={data} onEmojiSelect={(e) => handleSetEmoji(e.native)} emojiButtonSize={28} emojiSize={20} />}
+                    </div>
+                  </div>
+                  <LuSmile onClick={() => setShowEmojiBox(!showEmojiBox)} />
+                </div>
               </div>
             </div>
             <div className="d-flex align-items-center p-3 w-100">
@@ -340,6 +355,7 @@ function Chat() {
                   className="w-100 input-chat"
                   value={message}
                   onChange={handleInputMessage}
+                  onKeyDown={handleKeyDown}
                 />
               </div>
               <button
