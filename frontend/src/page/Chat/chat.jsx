@@ -62,8 +62,6 @@ function Chat() {
     chatInstance.get(`GetConversationsByUser/${currentUserId}`)
       .then((res) => {
         setConversations(res.data.result);
-        const chatUser = res.data.result[0];
-
         if (userId === undefined) {
           chatInstance.get(`GetMessages/${currentUserId}/${currentUserId === res.data.result[0].idAccount1 ? res.data.result[0].idAccount2 : res.data.result[0].idAccount1}`)
             .then((res) => {
@@ -83,7 +81,6 @@ function Chat() {
           chatInstance.get(`GetMessages/${currentUserId}/${userId}`)
             .then((res) => {
               setMessages(res.data.result);
-              setActiveAccount({idAccount1 : currentUserId, idAccount2: userId})
             })
             .catch((error) => {
               console.error(error);
@@ -266,17 +263,25 @@ function Chat() {
                     </div>
                   </> :
                   <>
-                    <img
-                      src={
-                        (conversations[0]?.avatar)
-                      }
-                      alt=""
-                      className="avatar"
-                    />
-                    <div className="ms-2">
-                      <p className="mb-0 name">{conversations[0]?.fullName || ""}</p>
-                      <p className="mb-0 text">Online</p>
-                    </div>
+                    {Array.isArray(conversations) && conversations.length > 0 ?
+                      <div className="d-flex">
+                        <img
+                          src={
+                            (conversations[0]?.avatar)
+                          }
+                          alt=""
+                          className="avatar"
+                        />
+                        <div className="ms-2">
+                          <p className="mb-0 name">{conversations[0]?.fullName || ""}</p>
+                          <p className="mb-0 text">Online</p>
+                        </div>
+                      </div> : <img
+                        src={
+                          defaultImage}
+                        alt=""
+                        className="avatar"
+                      />}
                   </>
               }
             </div>
