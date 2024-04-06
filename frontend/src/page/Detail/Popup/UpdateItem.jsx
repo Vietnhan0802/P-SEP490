@@ -8,6 +8,7 @@ import ReactQuill from 'react-quill';
 import "./update.scss";
 import Notification, { notifySuccess, notifyError } from "../../../components/notification";
 function UpdateItem({ show, onClose, value, type }) {
+    const quillRef = useRef(null);
     const [deleteAppear, setDeleteAppear] = useState(false);
     const [update, setUpdate] = useState({
         id: '',
@@ -26,6 +27,7 @@ function UpdateItem({ show, onClose, value, type }) {
         });
 
     }, [show])
+
     const readFileAsDataURL = (file) => {
         return new Promise((resolve, reject) => {
             const reader = new FileReader();
@@ -59,28 +61,54 @@ function UpdateItem({ show, onClose, value, type }) {
                         ? [...values.CreateUpdateImages, ...convertedImages]
                         : [...convertedImages], // This ensures it's always an array
                 }));
+                if (convertedImages.length > 0) {
+                    setDeleteAppear(true);
+                }
             });
+
         } else {
             setUpdate((values) => ({ ...values, [name]: value }));
         }
     };
+    console.log(type)
     const handleUpdatePost = () => {
+        const quillInstance = quillRef.current?.getEditor();
+
+        if (!quillInstance) {
+            notifyError('Failed to get Quill instance');
+            return;
+        }
+        const quillContents = quillInstance.getContents();
+
+        // Validate the title
+        if (!update.title.trim()) {
+            notifyError('Please enter a title');
+            return;
+        }
+
+        // Validate the content
+        if (quillContents.ops.length === 1 && quillContents.ops[0].insert === '\n') {
+            notifyError('Please enter some content');
+            return;
+        }
         const formData = new FormData();
         formData.append("title", update.title);
         formData.append("content", update.content);
         // update.UpdateImages.length
         if (update?.CreateUpdateImages?.length > 0 && type === 'post') {
-            update.CreateUpdateImages.forEach((imageInfo, index) => {
-                formData.append(
-                    `CreateUpdatePostImages[${index}].image`,
-                    imageInfo.image
-                );
-                formData.append(
-                    `CreateUpdatePostImages[${index}].imageFile`,
-                    imageInfo.imageFile
-                );
+            if (update?.CreateUpdateImages?.length > 0) {
+                update.CreateUpdateImages.forEach((imageInfo, index) => {
+                    formData.append(
+                        `CreateUpdatePostImages[${index}].image`,
+                        imageInfo.image
+                    );
+                    formData.append(
+                        `CreateUpdatePostImages[${index}].imageFile`,
+                        imageInfo.imageFile
+                    );
 
-            });
+                });
+            }
             postInstance.put(`/UpdatePost/${update.id}`, formData, {
                 headers: {
                     "Content-Type": "multipart/form-data",
@@ -89,28 +117,30 @@ function UpdateItem({ show, onClose, value, type }) {
             })
                 .then((res) => { console.log(res?.data?.result); notifySuccess("Update post successfully!"); })
                 .catch((error) => { console.error(error); notifyError("Update post failed!"); });
-        } else if (update?.CreateUpdateImages?.length > 0) {
-            update.CreateUpdateImages.forEach((imageInfo, index) => {
-                formData.append(
-                    `CreateUpdateBlogImages[${index}].image`,
-                    imageInfo.image
-                );
-                formData.append(
-                    `CreateUpdateBlogImages[${index}].imageFile`,
-                    imageInfo.imageFile
-                );
+        } else {
+            if (update?.CreateUpdateImages?.length > 0) {
+                update.CreateUpdateImages.forEach((imageInfo, index) => {
+                    formData.append(
+                        `CreateUpdateBlogImages[${index}].image`,
+                        imageInfo.image
+                    );
+                    formData.append(
+                        `CreateUpdateBlogImages[${index}].imageFile`,
+                        imageInfo.imageFile
+                    );
+                });
+            }
+            blogInstance.put(`/UpdateBlog/${update.id}`, formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                    accept: "application/json",
+                },
+            })
+                .then((res) => { console.log(res?.data?.result); notifySuccess("Update blog successfully!"); })
+                .catch((error) => { console.error(error); notifyError("Update blog failed!"); });
 
-            });
         }
 
-        blogInstance.put(`/UpdateBlog/${update.id}`, formData, {
-            headers: {
-                "Content-Type": "multipart/form-data",
-                accept: "application/json",
-            },
-        })
-            .then((res) => { console.log(res?.data?.result); notifySuccess("Update blog successfully!"); })
-            .catch((error) => { console.error(error); notifyError("Update blog failed!"); });
 
     }
     const carouselRef = useRef(null);
@@ -166,11 +196,10 @@ function UpdateItem({ show, onClose, value, type }) {
     }
     const handleClick = () => {
         fileInputRef.current.click();
-        setDeleteAppear(true);
     };
     return (
         <div className="">
-            <Modal show={show} onHide={onClose} id="cus-w">
+            <Modal show={show} onHide={onClose} id="cus-update-w">
                 <Modal.Header closeButton>
                     <Modal.Title>Update {type === 'post' ? 'post' : 'blog'}</Modal.Title>
                 </Modal.Header>
@@ -323,6 +352,8 @@ function UpdateItem({ show, onClose, value, type }) {
                                 modules={modules}
                                 formats={formats}
                                 className="mb-3 mt-2  m-h-2"
+
+                                ref={quillRef}
                             />
                             {/* <textarea
                                 type="text"
@@ -349,9 +380,7 @@ function UpdateItem({ show, onClose, value, type }) {
                     <Button variant="secondary" onClick={(onClose)}>
                         Close
                     </Button>
-                    <Button variant="primary"
-                        onClick={handleUpdatePost}
-                    >
+                    <Button variant="primary" onClick={handleUpdatePost}        >
                         Submit
                     </Button>
                 </Modal.Footer>

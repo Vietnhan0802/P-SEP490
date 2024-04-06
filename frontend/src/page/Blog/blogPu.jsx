@@ -1,5 +1,5 @@
 import { Modal, Button } from "react-bootstrap";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import React, { useEffect } from "react";
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
@@ -10,6 +10,7 @@ import {
 } from "../../components/notification";
 import { blogInstance } from "../../axios/axiosConfig";
 function BlogPu({ resetBlog }) {
+  const quillRef = useRef(null);
   const [show, setShow] = useState(false);
 
   const modalClose = () => setShow(false);
@@ -95,6 +96,25 @@ const [inputs, setInputs] = useState({
   CreateUpdateBlogImages: [], // new state for managing multiple images
 });
 const handleCreateBlog = () => {
+  const quillInstance = quillRef.current?.getEditor();
+
+    if (!quillInstance) {
+      notifyError('Failed to get Quill instance');
+      return;
+    }
+    const quillContents = quillInstance.getContents();
+
+    // Validate the title
+    if (!inputs.title.trim()) {
+      notifyError('Please enter a title');
+      return;
+    }
+
+    // Validate the content
+    if (quillContents.ops.length === 1 && quillContents.ops[0].insert === '\n') {
+      notifyError('Please enter some content');
+      return;
+    }
   const formData = new FormData();
   formData.append("title", inputs.title);
   formData.append("content", inputs.content);
@@ -164,6 +184,7 @@ return (
           modules={modules}
           formats={formats}
           className="mb-3"
+          ref={quillRef}
         />
         <input
           type="file"
