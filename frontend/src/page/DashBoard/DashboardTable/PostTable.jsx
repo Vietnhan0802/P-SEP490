@@ -303,10 +303,10 @@ export default function PostTable({ value, resetTable }) {
                         {row.time}
                       </TableCell>
                       <TableCell align="left" onClick={() => handleViewPost(row.id)}>
-                        <p style={{ fontSize: "16px", fontWeight: "500" }}>
+                        <p >
                           {row.title}
                         </p>
-                        <div className="ellipsis" style={{ maxWidth: '300px', maxHeight: '30px', overflow: 'hidden' }} dangerouslySetInnerHTML={{ __html: row.content }} />
+                        {/* <div className="ellipsis" style={{ maxWidth: '300px', maxHeight: '20px', overflow: 'hidden' }} dangerouslySetInnerHTML={{ __html: row.content }} /> */}
                       </TableCell>
                       <TableCell align="right" onClick={() => handleBlockPost(row.id)}>
                         <div className="d-flex align-items-center justify-content-end">

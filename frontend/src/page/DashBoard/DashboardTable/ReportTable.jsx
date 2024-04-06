@@ -269,13 +269,13 @@ export default function ReportTable({ accountValue, postValue, blogValue, resetR
                 {row.date}
               </TableCell>
               <TableCell align="left" onClick={() => handleView(row.idPosted, 'post')}>
-                <p style={{ fontSize: "16px", fontWeight: "500" }}>
+                <p >
                   {row.title}
                 </p>
-                <p className="blur">{row.content}</p>
+                {/* <p className="blur">{row.content}</p> */}
               </TableCell>
               <TableCell align="left">
-                <p style={{ fontSize: "16px", fontWeight: "500" }}>
+                <p>
                   {row.description}
                 </p>
               </TableCell>
@@ -412,13 +412,13 @@ export default function ReportTable({ accountValue, postValue, blogValue, resetR
                 {row.date}
               </TableCell>
               <TableCell align="left" onClick={() => handleView(row.idBloged, 'blog')}>
-                <p style={{ fontSize: "16px", fontWeight: "500" }}>
+                <p>
                   {row.title}
                 </p>
-                <p className="blur">{row.content}</p>
+                {/* <p className="blur">{row.content}</p> */}
               </TableCell>
               <TableCell align="left">
-                <p style={{ fontSize: "16px", fontWeight: "500" }}>
+                <p>
                   {row.description}
                 </p>
               </TableCell>

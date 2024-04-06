@@ -187,7 +187,9 @@ function OwnPost({ value }) {
                 </div>
               </div>
               <h4 className="mt-2">{item.title}</h4>
-              <div dangerouslySetInnerHTML={{ __html: item.content }} />
+              <div style={{maxHeight:'200px',overflow:'hidden'}}>
+                <div dangerouslySetInnerHTML={{ __html: item.content }} />
+              </div>
               <div
                 id={`carouselExampleControls-${item.id}`}
                 className="carousel slide"

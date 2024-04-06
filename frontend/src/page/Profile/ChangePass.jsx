@@ -3,45 +3,45 @@ import { Button, Modal } from 'react-bootstrap'
 import { MdOutlineLockPerson } from "react-icons/md";
 import { userInstance } from '../../axios/axiosConfig';
 import Notification, { notifySuccess, notifyError } from "../../../src/components/notification";
-
+import { IoIosWarning } from "react-icons/io";
+import { useForm } from 'react-hook-form';
 function ChangePass({ email }) {
     const [show, setShow] = useState(false);
     const [password, setPassword] = useState({});
     const [errorText, setErrorText] = useState([]);
     const modalShow = () => setShow(true);
+    const { register, handleSubmit, formState: { errors }, reset, watch } = useForm();
+    const oldPass = watch('oldpassword');
+    const newPass = watch('newpassword');
+    const confirmPass = watch('confirmpassword');
     const modalClose = () => {
         setShow(false);
         setErrorText([]); // Clear errors when modal is closed};
         // Modified modalSubmit function to include password check
     }
-    const modalSubmit = () => {
-        let errors = []; // Temporary array to hold errors
-        // Check if the new password is the same as the old password
-        if (password.newpassword === password.oldpassword) {
-            errors.push("The new password cannot be the same as the old password.");
-        }
-        // Check if the new password matches the confirm password
-        if (password.newpassword !== password.confirmpassword) {
-            errors.push("The new password and confirm password do not match.");
-        }
+    const modalSubmit = handleSubmit((data) => {
+        userInstance
+            .post(`ChangePassword/${email}`, {
+                password: data.oldpassword,
+                newPassword: data.newpassword,
+            })
+            .then((res) => {
 
-        if (errors.length > 0) {
-            setErrorText(errors); // Set the collected errors
-            return; // Prevent further actions if there are errors
-        }
-        if (errors.length === 0) {
-            userInstance.post(`ChangePassword/${email}`,
-                { password: password.oldpassword, newPassword: password.newpassword })
-                .then((res) => {
-                    setShow(false);
-                    setErrorText([]); // Optionally clear errors on successful action
-                    console.log(res?.data?.result);
-                    notifySuccess("Change passsword is success!");
-                })
-                .catch((error) => { console.error(error); notifyError("Change password is fail!"); })
-        }
+                setShow(false);
+                reset(); // Reset the form after successful submission
+                console.log(res?.data?.result);
+                if (res?.data?.status === 'BadRequest') {
+                    notifyError('Change password is fail!');
+                } else {
+                    notifySuccess('Change password is success!');
+                }
 
-    };
+            })
+            .catch((error) => {
+                console.error(error);
+                notifyError('Change password is fail!');
+            });
+    });
 
     const handleChange = (event) => {
         const { name, value } = event.target;
@@ -55,48 +55,77 @@ function ChangePass({ email }) {
                     <Modal.Title>Change password</Modal.Title>
                 </Modal.Header>
                 <Modal.Body className="popup-body report-popup " id="report-body">
-                    {/* Display error messages if any */}
-                    {errorText.length > 0 && (
-                        <ul>
-                            {errorText.map((error, index) => (
-                                <li key={index} style={{ color: 'red' }}>
-                                    {error}
-                                </li>
-                            ))}
-                        </ul>
-                    )}
                     <label className="mt-2">Old Password</label>
                     <input
                         type="password"
                         className="form-control"
-                        name="oldpassword"
-                        onChange={handleChange}
+                        {...register('oldpassword', { required: 'Old password is required' })}
                         aria-label="Old password"
                     />
-
+                    {errors.oldpassword && (
+                        <div className='d-flex align-items-center'>
+                            <p style={{ color: 'red' }}><IoIosWarning className='me-2' /></p>
+                            <p style={{ color: 'red' }}>{errors.oldpassword.message}</p>
+                        </div>
+                    )}
                     <label className="mt-2">
                         New password
                     </label>
                     <input
                         type="password"
-                        name="newpassword"
-                        // value={user?.date}
-                        onChange={handleChange}
+                        {...register('newpassword', {
+                            required: 'New password is required',
+                            validate: (value) => {
+                                if (value === oldPass) {
+                                    return 'New password cannot be the same as the old password'
+                                }
+                                // Thêm các validate khác nếu cần
+                            }, pattern: {
+                                value: /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}/,
+                                message: 'Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters',
+                            },
+                        })}
                         className="form-control"
                         aria-label="New password"
-
                     />
+                    {errors.newpassword && (
+                        <div className='d-flex align-items-center'>
+                            <p style={{ color: 'red' }}><IoIosWarning className='me-2' /></p>
+                            <p style={{ color: 'red' }}>{errors.newpassword.message}</p>
+                        </div>
+                    )}
                     <label className="mt-2">
                         Confirm password
                     </label>
                     <input
                         type="password"
-                        name="confirmpassword"
-                        // value={user?.date}
-                        onChange={handleChange}
+                        {...register('confirmpassword', {
+                            required: 'Confirm password is required',
+                            validate: (value) => {
+                                if (!value) {
+                                    return 'Confirm password is required';
+                                } else if (value === oldPass) {
+                                    return 'Confirm password cannot be the same as old password';
+                                } else if (value !== newPass) {
+                                    return 'Confirm password cannot be the different old password';
+                                } else {
+                                    return true;
+                                }
+                            }, pattern: {
+                                value: /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}/,
+                                message: 'Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters',
+                            },
+                        })}
                         className="form-control"
                         aria-label="Confirm password"
                     />
+                    {errors.confirmpassword && (
+                        <div className='d-flex align-items-center'>
+                            <p style={{ color: 'red' }}><IoIosWarning className='me-2' /></p>
+                            <p style={{ color: 'red' }}>{errors.confirmpassword.message}</p>
+                        </div>
+
+                    )}
                 </Modal.Body>
 
                 <Modal.Footer>

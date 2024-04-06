@@ -308,9 +308,9 @@ function Profile({ handleChangeImg, value, resetFollowing }) {
               {currentUserId !== userId ? (
                 <Report id={currentUserId} idItem={userId} type="account" />) : ""}
             </div>
-            <div className="bg-white mt-3">
+            {role !== 'Admin' && <div className="bg-white mt-3">
               <div className="d-flex justify-content-center align-items-center" onClick={() => setShowRating(true)}>
-                <p className="d-flex justify-content-center align-items-center" style={{ fontSize: '20px' }}>{user.ratingAvg}</p>
+                <p className="d-flex justify-content-center align-items-center" style={{ fontSize: '20px' }}>{Math.round(user.ratingAvg * 100) / 100}</p>
                 <Rating
                   className="ms-2"
                   initialValue={user.ratingAvg}
@@ -319,8 +319,10 @@ function Profile({ handleChangeImg, value, resetFollowing }) {
                 />
                 <p className="d-flex justify-content-center align-items-center ms-2" style={{ fontSize: '20px' }}>{`(${user.ratingNum})`}</p>
               </div>
-            </div>
+            </div>}
+
           </div>
+
           <RatingProfile show={showRating} onClose={() => setShowRating(false)}
             id={currentUserId} formatDateString={formatDateString} role={role}
           />

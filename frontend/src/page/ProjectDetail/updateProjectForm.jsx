@@ -17,7 +17,7 @@ function UpdateProjectForm({ input, id, resetPage }) {
   const modalClose = () => { setChangeImage(false); setShow(false); };
   const [positionOptions, setPositionOptions] = useState([]);
   const [changeImage, setChangeImage] = useState(false);
-  
+
   const modalShow = () => {
     setShow(true);
     const positionOptions = input.positionViews.map(item => ({
@@ -242,7 +242,7 @@ function UpdateProjectForm({ input, id, resetPage }) {
                   </label>
                 </div>
                 {project?.process === 3 &&
-                  <p className="text-danger fs-6 w-50 ms-2"  >When you change the status to "DONE", you can not update the project again</p>
+                  <p className="text-danger fs-6 ms-2 mt-2" style={{ maxWidth: '70%' }} >When you change the status to "DONE", you can not update the project again</p>
                 }
               </div>
               <div className="status-block size-18">

@@ -556,8 +556,11 @@ function BlogDetail({ value }) {
           <p className="cmt fw-bold my-3">COMMENT</p>
           <div className="cmt-input d-flex align-items-center">
             {/* <img src={user?.imageSrc === 'https://localhost:7006/Images/' ? avatarDefault : user?.imageSrc} alt="" className="profile" /> */}
-            <div className="profile" >
-              <img src={user?.imageSrc} alt="profile" />
+            <div className="position-relative" >
+              <div className="profile" >
+                <img src={user?.imageSrc} alt="profile" />
+              </div>
+              {user?.isVerified && <img src={tick} alt="tick" className="position-absolute bottom-0 end-0" style={{ width: '18px' }} />}
             </div>
             <input
               type="text"
@@ -575,8 +578,11 @@ function BlogDetail({ value }) {
                 className={`d-flex pb-3 mt-2 cmt-item ${item.type === "reply-comment" ? "ms-5" : ""
                   }`}
               >
-                <div className="profile">
-                  <img src={item?.avatar} alt="profile" />
+                <div className="position-relative" style={{ height: '50px' }} >
+                  <div className="profile" >
+                    <img src={item?.avatar} alt="profile" />
+                  </div>
+                  {item?.isVerified && <img src={tick} alt="tick" className="position-absolute bottom-0 end-0" style={{ width: '18px' }} />}
                 </div>
                 <div className="ms-3  w-100 ">
                   <div className="form-control">
@@ -622,8 +628,6 @@ function BlogDetail({ value }) {
                       </>
                     )}
                   </div>
-
-
                   <div className="rep d-flex w-100" >
                     <div className={`d-flex justify-content-between w-100 align-items-center ${viewReply !== item.idBlogComment ? 'justify-content-end' : "justify-content-between"}`}>
                       {viewReply !== item.idBlogComment ?
@@ -646,8 +650,11 @@ function BlogDetail({ value }) {
                       {replyComment === item.idBlogComment ?
                         <p onClick={() => handleShowReplyComment(item.idBlogComment)}>Reply</p> :
                         <div className="cmt-input d-flex align-items-center mt-2">
-                          <div className="profile">
-                            <img src={user?.imageSrc} alt="" />
+                          <div className="position-relative" >
+                            <div className="profile" >
+                              <img src={user?.imageSrc} alt="profile" />
+                            </div>
+                            {user?.isVerified && <img src={tick} alt="tick" className="position-absolute bottom-0 end-0" style={{ width: '18px' }} />}
                           </div>
                           <input
                             type="text"
@@ -665,9 +672,12 @@ function BlogDetail({ value }) {
                     {viewReply === item.idBlogComment ? (
                       item?.viewBlogReplies?.map((reply) => (
                         <>
-                          <div className="d-flex">
-                            <div className="profile">
-                              <img src={reply?.avatar} alt="profile" />
+                          <div className="d-flex cmt-input mt-2">
+                            <div className="position-relative" style={{ height: '50px' }} >
+                              <div className="profile" >
+                                <img src={reply?.avatar} alt="profile" />
+                              </div>
+                              {item?.isVerified && <img src={tick} alt="tick" className="position-absolute bottom-0 end-0" style={{ width: '18px' }} />}
                             </div>
                             <div className="ms-3 w-100">
                               <h6 className="mb-2 d-flex align-items-center h-40 ms">

@@ -118,6 +118,7 @@ function Blog({ value }) {
       blogInstance
         .post(`LikeOrUnlikeBlog/${currentUserId}/${idBlog}`)
         .then(() => {
+          setReset(!reset);
           // If the API call is successful, you can optionally refresh the data from the server
           // to ensure the UI is in sync with the backend state
         })
@@ -191,7 +192,7 @@ function Blog({ value }) {
       .catch((error) => {
         console.error(error);
       });
-  }, [])
+  }, [reset, currentUserId])
   const resetBlog = () => {
     setReset((prevReset) => !prevReset);
   };
@@ -258,7 +259,10 @@ function Blog({ value }) {
               </div>
 
               <h3 className="mt-2">{item.title}</h3>
-              <div dangerouslySetInnerHTML={{ __html: item.content }} />
+              <div style={{ maxHeight: '200px', overflow: 'hidden' }}>
+                <div dangerouslySetInnerHTML={{ __html: item.content }} />
+              </div>
+
               <div
                 id={`carouselExampleControls-${item.id}`}
                 className="carousel slide"

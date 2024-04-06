@@ -18,6 +18,7 @@ function Follow({ followValue }) {
   const handleAvatarclick = (value) => {
     navigate('/profile', { state: { userId: value } });
   }
+  console.log(following)
   return (
     <div className="follow position-relative">
       <div>
@@ -27,7 +28,7 @@ function Follow({ followValue }) {
             <div className="follow-user d-flex align-items-center mb-2" key={item.idAccount} onClick={() => handleAvatarclick(item.idAccount)}>
               <div className="follow-avata-box">
                 <img src={item.avatarAccount} alt="user" className="user-image" />
-                {following.isVerifiedAccount && <img src={tick} alt="tick" className="user-tick" />}
+                {item.isVerifiedAccount && <img src={tick} alt="tick" className="user-tick" />}
               </div>
               <div className="follow-user-info ms-2">
                 <p className="follow-user-name fw-bold">{item.fullNameAccount}</p>
