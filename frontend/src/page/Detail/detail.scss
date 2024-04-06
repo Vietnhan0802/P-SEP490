@@ -9,14 +9,24 @@
 
   .profile {
     border-radius: 50%;
-    width: 40px;
-    height: 40px;
+    width: 50px;
+    height: 50px;
+    overflow: hidden; /* hide any part of the image that exceeds the div */
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
   }
   .dropdown-toggle::after {
     display: none;
     border-color: none;
   }
-  .btn-check:checked+.btn, .btn.active, .btn.show, .btn:first-child:active, :not(.btn-check)+.btn:active {
+  .btn-check:checked + .btn,
+  .btn.active,
+  .btn.show,
+  .btn:first-child:active,
+  :not(.btn-check) + .btn:active {
     border-color: transparent;
   }
   .reply-cmt {

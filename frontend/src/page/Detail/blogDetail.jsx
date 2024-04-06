@@ -419,8 +419,8 @@ function BlogDetail({ value }) {
           <div className="d-flex align-items-between justify-content-between mb-2">
             <div className="d-flex align-items-between">
               <div className="position-relative">
-                <div className="avatar-contain">
-                  <img src={data.avatar} alt="profile" style={{ objectFit: 'cover' }} />
+                <div className="profile">
+                  <img src={data.avatar} alt="profile" />
                 </div>
                 {data.isVerified && <img src={tick} alt="tick" className="position-absolute bottom-0 end-0" style={{ width: '18px' }} />}
               </div>
@@ -556,8 +556,8 @@ function BlogDetail({ value }) {
           <p className="cmt fw-bold my-3">COMMENT</p>
           <div className="cmt-input d-flex align-items-center">
             {/* <img src={user?.imageSrc === 'https://localhost:7006/Images/' ? avatarDefault : user?.imageSrc} alt="" className="profile" /> */}
-            <div className="avatar-contain"  style={{width:'40px',height:'40px'}} >
-              <img src={user?.imageSrc} alt="profile" style={{ objectFit: 'cover' }} />
+            <div className="profile" >
+              <img src={user?.imageSrc} alt="profile" />
             </div>
             <input
               type="text"
@@ -575,10 +575,9 @@ function BlogDetail({ value }) {
                 className={`d-flex pb-3 mt-2 cmt-item ${item.type === "reply-comment" ? "ms-5" : ""
                   }`}
               >
-                <div className="avatar-contain"   style={{width:'40px',height:'40px'}}>
-                  <img src={item?.avatar} alt="profile" style={{ objectFit: 'cover' }} />
+                <div className="profile">
+                  <img src={item?.avatar} alt="profile" />
                 </div>
-                {/* <img src={item?.avatar === 'https://localhost:7006/Images/' ? avatarDefault : item?.avatar} alt="" className="profile" /> */}
                 <div className="ms-3  w-100 ">
                   <div className="form-control">
                     <div className="d-flex  justify-content-between">
@@ -647,7 +646,9 @@ function BlogDetail({ value }) {
                       {replyComment === item.idBlogComment ?
                         <p onClick={() => handleShowReplyComment(item.idBlogComment)}>Reply</p> :
                         <div className="cmt-input d-flex align-items-center mt-2">
-                          <img src={user?.imageSrc === 'https://localhost:7006/Images/' ? avatarDefault : user?.imageSrc} alt="" className="profile" />
+                          <div className="profile">
+                            <img src={user?.imageSrc} alt="" />
+                          </div>
                           <input
                             type="text"
                             className="w-100 ps-3"
@@ -665,8 +666,8 @@ function BlogDetail({ value }) {
                       item?.viewBlogReplies?.map((reply) => (
                         <>
                           <div className="d-flex">
-                            <div className="avatar-contain">
-                              <img src={reply?.avatar} alt="profile" style={{ objectFit: 'cover' }} />
+                            <div className="profile">
+                              <img src={reply?.avatar} alt="profile" />
                             </div>
                             <div className="ms-3 w-100">
                               <h6 className="mb-2 d-flex align-items-center h-40 ms">

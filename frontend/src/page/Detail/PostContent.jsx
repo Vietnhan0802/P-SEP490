@@ -4,7 +4,6 @@ import { FaHeart } from "react-icons/fa";
 import Dropdown from "react-bootstrap/Dropdown";
 import { FiEye } from "react-icons/fi";
 import { calculateTimeDifference } from "../Detail/helpers";
-import defaultAvatar from "../../images/common/default.png";
 import Report from "../../components/report-popup/Report";
 import { GrUpdate } from "react-icons/gr";
 import { MdDelete } from "react-icons/md";
@@ -67,8 +66,8 @@ function PostContent({ data, handleLikeOrUnlikePost, viewProject, userId }) {
       <div className="d-flex  justify-content-between">
         <div className="d-flex align-items-center mb-2">
           <div className="position-relative">
-            <div className="avatar-contain">
-              <img src={data?.avatar} alt="profile" style={{ objectFit: 'cover' }} />
+            <div className="profile">
+              <img src={data?.avatar} alt="profile" />
             </div>
             {data?.isVerified && <img src={tick} alt="tick" className="position-absolute bottom-0 end-0" style={{ width: '18px' }} />}
           </div>

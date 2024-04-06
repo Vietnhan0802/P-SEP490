@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Row, Col } from "react-bootstrap";
 import { IoSearchSharp } from "react-icons/io5";
 import { LuSendHorizonal } from "react-icons/lu";
@@ -23,58 +23,63 @@ function Chat() {
   const [firstChat, setFirstChat] = useState(false);
   const [activeUser, setActiveUser] = useState(null);
   const [reset, setReset] = useState(false);
-  const [activeAccount, setActiveAccount] = useState({});
-  const [isConnected, setIsConnected] = useState(false);
+  const [connection, setConnection] = useState(null);
 
-  const connection = new signalR.HubConnectionBuilder()
-    .withUrl("https://localhost:7001/chatHub")
-    .configureLogging(signalR.LogLevel.Information) // Replace with your server URL
-    .build();
-  connection.on("ReceiveMessage", (sender, receiver, message) => {
-    // Handle received message
-    console.log(`Received message from ${sender} to ${receiver}:`, message);
-    // Update the state or UI accordingly
-    setMessages((prevMessages) => [...prevMessages, message]);
-  });
-
-  const start = async () => {
-    try {
-      await connection.start();
-      console.log("Connected to signal r hub");
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  // useEffect(() => {
-  //   const startConnection = async () => {
-  //     try {
-  //       await connection.start();
-  //       console.log("SignalR connection established.");
-  //       setIsConnected(true);
-  //     } catch (err) {
-  //       console.error("Failed to establish SignalR connection:", err);
-  //     }
-  //   };
-  //   startConnection();
-  // }, [currentUserId, userId]);
   useEffect(() => {
-    await start();
+    const newConnection = new signalR.HubConnectionBuilder()
+      .withUrl("https://localhost:7001/chatHub") // Replace with your server URL
+      .withAutomaticReconnect()
+      .build();
+    setConnection(newConnection);
+  }, []);
+
+  useEffect(() => {
+    if (connection) {
+      connection.start()
+        .then(() => {
+          // console.log('Connected to SignalR hub');
+          connection.on('ReceiveMessage', (currentUserId, idReceiver, messageText) => {
+            setMessages(prevMessages => {
+              if (Array.isArray(prevMessages)) {
+                return [...prevMessages, messageText];
+              } else {
+                return [messageText];
+              }
+            });
+            // console.log('ReceiveMessage currentUserId:' + currentUserId);
+            // console.log('ReceiveMessage userId:' + idReceiver);
+            // console.log(messageText); 
+          });
+
+        })
+        .catch(error => console.log('Error connecting to SignalR hub: ', error));
+    }
+  }, [connection]);
+
+
+
+  useEffect(() => {
     chatInstance.get(`GetConversationsByUser/${currentUserId}`)
       .then((res) => {
         setConversations(res.data.result);
         const chatUser = res.data.result[0];
 
         if (userId === undefined) {
-          chatInstance.get(`GetMessages/${currentUserId}/${currentUserId === chatUser.idAccount1 ? chatUser.idAccount2 : chatUser.idAccount1}`)
+          chatInstance.get(`GetMessages/${currentUserId}/${currentUserId === res.data.result[0].idAccount1 ? res.data.result[0].idAccount2 : res.data.result[0].idAccount1}`)
             .then((res) => {
               setMessages(res.data.result);
-              setActiveAccount({idAccount1 : currentUserId, idAccount2: currentUserId === chatUser.idAccount1 ? chatUser.idAccount2 : chatUser.idAccount1})
+              console.log(res.data.result)
+              setActiveUser({
+                avatar: res?.data?.result[0].avatarReceiver,
+                name: res?.data?.result[0].nameReceiver,
+                receiverId: res?.data?.result[0].idReceiver
+              });
             })
             .catch((error) => {
               console.error(error);
-            })
-        } else {
+            });
+        }
+        if (userId !== undefined) {
           chatInstance.get(`GetMessages/${currentUserId}/${userId}`)
             .then((res) => {
               setMessages(res.data.result);
@@ -82,12 +87,12 @@ function Chat() {
             })
             .catch((error) => {
               console.error(error);
-            })
+            });
         }
       })
       .catch((error) => {
         console.error(error);
-      })
+      });
   }, [currentUserId, reset, userId]);
 
   const handleConversation = (idAccount2) => {
@@ -98,7 +103,10 @@ function Chat() {
           setActiveUser({
             avatar: res?.data?.result[0].avatarReceiver,
             name: res?.data?.result[0].nameReceiver,
-          })
+            receiverId: res?.data?.result[0].idReceiver
+          });
+          console.log(activeUser.receiverId);
+          console.log(res.data.result)
         } else {
           setMessages([]);
         }
@@ -110,24 +118,60 @@ function Chat() {
   const handleInputMessage = (event) => {
     setMessage(event.target.value);
   }
+  const getUserId = () => {
+    if (conversations?.length > 0) {
+      const firstConversation = conversations[0];
+      const currentUserId = sessionData.currentUserId;
+      return currentUserId === firstConversation.idAccount1
+        ? firstConversation.idAccount2
+        : firstConversation.idAccount1;
+    }
+    return null;
+  };
   const handleSendMessage = () => {
-    chatInstance.post(`SendMessage/${activeAccount.idAccount1}/${activeAccount.idAccount2}`, { content: message })
-      .then((res) => { 
-        console.log(res?.data?.result); 
-        setReset(!reset); 
-        // if (isConnected) {
-        //   connection.invoke("SendMessage", currentUserId, userId, res.data.result); 
-        // } else {
-        //   console.error("SignalR connection is not established");
-        // }
-        // if (connection.state === signalR.HubConnectionState.Connected) {
-        //   connection.invoke("SendMessage", currentUserId, userId, res.data.result); 
-        // } else {
-        //   console.error("SignalR connection is not established");
-        // }
-      })
-      .catch((error) => console.error(error));
+    if (userId != null) {
+      chatInstance.post(`SendMessage/${currentUserId}/${userId}`, { content: message })
+        .then((res) => {
+          setReset(!reset);
+          // setMessage('');
+          console.log(connection && message)
+          if (connection && message) {
+            try {
+              connection.invoke('SendMessage', currentUserId, userId, res?.data?.result);
+              // console.log('SendMessage currentUserId:' + currentUserId);
+              // console.log('SendMessage userId:' + userId);
+              // console.log('SendMessage result:' + res?.data?.result);
+              setMessage('');
+            } catch (error) {
+              console.error('Error sending message: ', error);
+            }
+          }
+        })
+        .catch((error) => console.error(error));
+    }
+    else {
+      // const receiverId = getUserId();
+      // console.log(receiverId)
+      chatInstance.post(`SendMessage/${currentUserId}/${activeUser.receiverId}`, { content: message })
+        .then((res) => {
+          console.log(res?.data?.result); setReset(!reset); setMessage('');
+          console.log(connection && message)
+          if (connection && message) {
+            try {
+              connection.invoke('SendMessage', currentUserId, userId, res?.data?.result);
+              setMessage('');
+              console.log('SendMessage currentUserId:' + currentUserId);
+              console.log('SendMessage userId:' + userId);
+              console.log(res?.data?.result);
+            } catch (error) {
+              console.error('Error sending message: ', error);
+            }
+          }
+        })
+        .catch((error) => console.error(error));
+    }
   }
+
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     const now = new Date();
@@ -148,7 +192,12 @@ function Chat() {
       return `${day}/${month}/${year}, ${time}`;
     }
   };
-
+  const chatBoxBodyRef = useRef(null);
+  useEffect(() => {
+    if (chatBoxBodyRef.current) {
+      chatBoxBodyRef.current.scrollTop = chatBoxBodyRef.current.scrollHeight;
+    }
+  }, [messages]);
   return (
 
     <Row className="m-3" style={{ height: "calc(100vh - 97px)", paddingBottom: "16px" }}>
@@ -232,7 +281,7 @@ function Chat() {
               }
             </div>
           </div>
-          <div className="chat-box-body">
+          <div className="chat-box-body" ref={chatBoxBodyRef}>
             {
               Array.isArray(messages) && messages?.length > 0 ?
                 messages?.map((item) => (
@@ -249,7 +298,7 @@ function Chat() {
                         {item?.isYourself ? (
                           ""
                         ) : (
-                          <img src={item.avatarReceiver === "https://localhost:7006/Images/" ? defaultImage : item?.avatarReceiver} alt="" className="avatar" />
+                          <img src={item.idSender !== currentUserId ? item.avatarReceiver : item?.avatarSender} alt="" className="avatar" />
                         )}
                         <div className="ms-2 w-100">
                           <div className="d-flex justify-content-between">

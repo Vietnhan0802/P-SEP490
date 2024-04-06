@@ -62,7 +62,6 @@ function Project({ value }) {
       </Col>
       <Col md={6}>
         <div id="own_project">
-
           <div className="bg-white p-2 d-flex flex-grid align-items-center justify-content-between row m-0 form mb-3">
             <div className="d-flex project-search align-items-center position-relative col">
               <CiSearch className="" />
@@ -96,7 +95,9 @@ function Project({ value }) {
                 <div className="d-flex items-center justify-content-between mt-2">
                   <div className="d-flex items-center">
                     <div className="position-relative">
-                      <img src={item.avatarUser} alt="profile" className="avatar-contain"  style={{borderRadius:'50%'}}/>
+                      <div className="profile">
+                        <img src={item.avatarUser} alt="profile" />
+                      </div>
                       {item.isVerified && <img src={tick} alt="tick" className="position-absolute bottom-0 end-0" style={{ width: '18px' }} />}
                     </div>
                     <div className="left-30 d-flex flex-column justify-content-center">
@@ -109,7 +110,7 @@ function Project({ value }) {
                       <div className="ms-2" style={{ fontSize: '20px', marginTop: '5px' }}>{item?.ratingAvg}</div>
 
                       <Rating
-                      className="ms-2"
+                        className="ms-2"
                         size={20}
                         initialValue={item?.ratingAvg}
                         allowFraction={true}

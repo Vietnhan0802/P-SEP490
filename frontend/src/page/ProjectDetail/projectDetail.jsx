@@ -141,7 +141,9 @@ function ProjectDetail() {
                 <div className="d-flex project">
                   <div className="width-auto">
                     <div className="position-relative">
-                      <img src={data?.avatarUser} alt="profile" className="avatar-contain" style={{ borderRadius: '50%' }} />
+                      <div className="profile">
+                        <img src={data?.avatarUser} alt="profile" />
+                      </div>
                       {data?.isVerified && <img src={tick} alt="tick" className="position-absolute bottom-0 end-0" style={{ width: '18px' }} />}
                     </div>
                   </div>
@@ -177,8 +179,8 @@ function ProjectDetail() {
                     <DeletePopup className='ms-3' id={data?.idProject} />
                   </div>}
               </div>
-              {showRatingPopup && <RatingPopup show={showRatingPopup} idRater={currentUserId} projectid={idProject} onClose={() => setShowRatingPopup(!showRatingPopup)} type={'project'} resetPage={resetPage}/>}
-              {showFeedbackPopup && <RatingFeedback show={showFeedbackPopup} idProject={idProject} formatDateString={formatDate} onClose={() => setShowFeedbackPopup(!showFeedbackPopup)} resetPage={resetPage}/>}
+              {showRatingPopup && <RatingPopup show={showRatingPopup} idRater={currentUserId} projectid={idProject} onClose={() => setShowRatingPopup(!showRatingPopup)} type={'project'} resetPage={resetPage} />}
+              {showFeedbackPopup && <RatingFeedback show={showFeedbackPopup} idProject={idProject} formatDateString={formatDate} onClose={() => setShowFeedbackPopup(!showFeedbackPopup)} resetPage={resetPage} />}
               <div className="status-block size-18 d-flex mt-3">
                 <div>
                   <p className="fw-bold">
@@ -260,7 +262,10 @@ function ProjectDetail() {
                         <tr key={member.idProjectMember}>
                           <td className="w-20 py-3">
                             <div className="d-flex align-items-center">
-                              <img src={member.avatar === 'https://localhost:7006/Images/' ? defaultAvatar : member.avatar} className="member-img" alt="avatar" />
+                              <div className="profile" style={{width:'30px',height:'30px'}}>
+                                <img src={member.avatar }alt="avatar"  />
+                              </div>
+
                               <p className="ps-3">{member.fullName}</p>
                             </div>
                           </td>
