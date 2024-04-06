@@ -1,4 +1,6 @@
-﻿namespace BusinessObjects.ViewModels.Communication
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace BusinessObjects.ViewModels.Communication
 {
     public class ViewMessage
     {
@@ -15,7 +17,13 @@
         public bool isDeletedByReceiver { get; set; }
         public bool isYourself { get; set; }
         public string? content { get; set; }
+        public string? image { get; set; }
+        public string? file { get; set; }
         public bool? isRecall { get; set; }
         public DateTime createdDate { get; set; }
+        [NotMapped]
+        public string ImageSrc { get; set; }
+        [NotMapped]
+        public string FileSrc { get; set; }
     }
 }
