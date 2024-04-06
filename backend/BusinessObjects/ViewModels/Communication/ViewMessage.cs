@@ -6,6 +6,7 @@
         public Guid idConversation { get; set; }
         public string idSender { get; set; }
         public string nameSender { get; set; }
+        public string avatarSender { get; set; }
         public bool isDeletedBySender { get; set; }
         public string idReceiver { get; set; }
         public string nameReceiver { get; set; }
