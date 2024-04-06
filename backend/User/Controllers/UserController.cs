@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using AutoMapper.Execution;
 using BusinessObjects.Entities.User;
 using BusinessObjects.Enums.User;
 using BusinessObjects.ViewModels.Follow;
@@ -263,6 +264,31 @@ namespace User.Controllers
         }
 
         /*------------------------------------------------------------Statistic------------------------------------------------------------*/
+
+        [HttpGet("GetAllAccountInSystem")]
+        public async Task<List<ViewAccountStatistic>> GetAllAccountInSystem()
+        {
+            var memberRole = _roleManager.Roles.Single(x => x.Name == TypeUser.Member.ToString()).Id;
+            var businessRole = _roleManager.Roles.Single(x => x.Name == TypeUser.Business.ToString()).Id;
+
+            var member = await _userManager.GetUsersInRoleAsync(TypeUser.Member.ToString());
+            var business = await _userManager.GetUsersInRoleAsync(TypeUser.Business.ToString());
+
+            var memberVerified = member.Count(x => x.isVerified == true);
+            var memberUnverified = member.Count(x => x.isVerified == false);
+            var businessVerified = business.Count(x => x.isVerified == true);
+            var businessUnverified = business.Count(x => x.isVerified == false);
+            var blocked = await _userManager.Users.CountAsync(x => x.isBlock == true);
+
+            return new List<ViewAccountStatistic>
+            {
+                new ViewAccountStatistic { type = "Member Account (Verified)", count = memberVerified },
+                new ViewAccountStatistic { type = "Member Account (Not Verified)", count = memberUnverified },
+                new ViewAccountStatistic { type = "Business Account (Verified)", count = businessVerified },
+                new ViewAccountStatistic { type = "Business Account (Not Verified)", count = businessUnverified },
+                new ViewAccountStatistic { type = "Account Blocked", count = blocked },
+            };
+        }
 
         [HttpGet("GetUserStatistic")]
         public async Task<List<ViewStatistic>> GetUserStatistic(DateTime? startDate, DateTime? endDate)
