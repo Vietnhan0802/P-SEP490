@@ -123,7 +123,7 @@ namespace Communication.Controllers
 
         [HttpGet("GetMessages/{idCurrentUser}/{idReceiver}")]
         public async Task<Response> GetMessages(string idCurrentUser, string idReceiver)
-        {
+      {
             var conversation = await _context.Conversations
                 .FirstOrDefaultAsync(x => (x.idAccount1 == idCurrentUser && x.idAccount2 == idReceiver)
                                        || (x.idAccount1 == idReceiver && x.idAccount2 == idCurrentUser));
@@ -152,6 +152,7 @@ namespace Communication.Controllers
                             message.isYourself = true;
                             var infoSender = await GetInfoUser(message.idSender);
                             message.nameSender = infoSender.fullName;
+                            message.avatarSender = infoSender.avatar;
                             var infoReceiver = await GetInfoUser (message.idReceiver);
                             message.nameReceiver = infoReceiver.fullName;
                             message.avatarReceiver = infoReceiver.avatar;
@@ -166,6 +167,7 @@ namespace Communication.Controllers
                             message.isVerifiedReceiver = infoSender.isVerified;
                             var infoReceiver = await GetInfoUser(message.idReceiver);
                             message.nameSender = infoReceiver.fullName;
+                            message.avatarSender = infoReceiver.avatar;
                         }
                     }
                     return new Response(HttpStatusCode.OK, "Get message is success!", result);
@@ -194,7 +196,7 @@ namespace Communication.Controllers
                 };
                 await _context.Conversations.AddAsync(conversation);
             }
-            var message = new Message
+            var newMessage = new Message
             {
                 idConversation = conversation.idConversation,
                 idSender = idCurrentUser,
@@ -204,10 +206,32 @@ namespace Communication.Controllers
                 isDeletedByReceiver = false,
                 createdDate = DateTime.Now,
             };
-            await _context.Messages.AddAsync(message);
+            await _context.Messages.AddAsync(newMessage);
             await _context.SaveChangesAsync();
-            var result = _mapper.Map<ViewMessage>(message);
-            await _chatHub.Clients.User(idReceiver).SendAsync("ReceiveMessage", idCurrentUser, idReceiver, result);
+            var result = _mapper.Map<ViewMessage>(newMessage);
+            if (result.idSender != idCurrentUser)
+            {
+                result.isYourself = true;
+                var infoSender = await GetInfoUser(result.idSender);
+                result.nameSender = infoSender.fullName;
+                result.avatarSender = infoSender.avatar;
+                var infoReceiver = await GetInfoUser(result.idReceiver);
+                result.nameReceiver = infoReceiver.fullName;
+                result.avatarReceiver = infoReceiver.avatar;
+                result.isVerifiedReceiver = infoReceiver.isVerified;
+            }
+            else
+            {
+                result.isYourself = false;
+                var infoSender = await GetInfoUser(result.idSender);
+                result.avatarReceiver = infoSender.avatar;
+                result.nameReceiver = infoSender.fullName;
+                result.isVerifiedReceiver = infoSender.isVerified;
+                var infoReceiver = await GetInfoUser(result.idReceiver);
+                result.nameSender = infoReceiver.fullName;
+                result.avatarSender = infoReceiver.avatar;
+            }
+            //await _chatHub.SendMessage(idCurrentUser, idReceiver, result);
             return new Response(HttpStatusCode.OK, "Send message is success!", result);
         }
 
