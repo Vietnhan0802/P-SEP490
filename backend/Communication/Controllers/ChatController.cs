@@ -173,7 +173,7 @@ namespace Communication.Controllers
                     return new Response(HttpStatusCode.OK, "Get message is success!", result);
                 }
             }
-            //await _chatHub.GetMessages(result);
+
             return new Response(HttpStatusCode.NoContent, "Get message is fail!");
         }
 
@@ -265,7 +265,7 @@ namespace Communication.Controllers
             }
             message.isRecall = true;
             await _context.SaveChangesAsync();
-            //await _chatHub.RecallMessage(idCurrentUser, idMessage);
+
             return new Response(HttpStatusCode.OK, "Recall message is success!");
         }
     }
