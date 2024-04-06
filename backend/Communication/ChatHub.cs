@@ -14,8 +14,12 @@ namespace Communication
 
         public async Task StartConversation(string idCurrentUser, string idReceiver)
         {
-            await Groups.AddToGroupAsync(Context.ConnectionId, conversation.idConversation.ToString());
-            await Clients.Groups(conversation.idConversation.ToString()).SendAsync("ReceiveMessage", $"{conversation.idAccount1} and {conversation.idAccount2} has joined {conversation.idConversation}");
+            await Clients.User(idReceiver).SendAsync("StartConversation", idCurrentUser);
+        }
+
+        public async Task GetMessages(List<ViewMessage> viewMessage)
+        {
+            await Clients.Caller.SendAsync("GetMessage", viewMessage);
         }
 
         /*public async Task SendMessage(string idCurrentUser, string idReceiver, ViewMessage viewMessage)
@@ -24,9 +28,9 @@ namespace Communication
             await Clients.User(idReceiver).SendAsync("ReceiverMessage", viewMessage);
         }*/
 
-        public async Task ReceiveMessage(ViewMessage message)
+        public async Task RecallMessage (string idReceiver, Guid idMessage)
         {
-            await Clients.Caller.SendAsync("ReceiveMessage", message);
+            await Clients.User(idReceiver).SendAsync("RecallMessage", idMessage);
         }
     }
 }
