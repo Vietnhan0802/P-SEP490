@@ -1,5 +1,4 @@
-﻿using BusinessObjects.Enums.Project;
-using BusinessObjects.ViewModels.Statistic;
+﻿using BusinessObjects.ViewModels.Statistic;
 using BusinessObjects.ViewModels.User;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -15,6 +14,7 @@ namespace Statics.Controllers
         private readonly HttpClient client;
 
         public string BlogApiUrl { get; }
+        public string InteractionApiUrl { get; }
         public string PostApiUrl { get; }
         public string ProjectApiUrl { get; }
         public string UserApiUrl { get; }
@@ -25,6 +25,7 @@ namespace Statics.Controllers
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
             client.DefaultRequestHeaders.Accept.Add(contentType);
             BlogApiUrl = "https://localhost:7007/api/Blog";
+            InteractionApiUrl = "https://localhost:7004/api/Interaction";
             PostApiUrl = "https://localhost:7008/api/Post";
             ProjectApiUrl = "https://localhost:7005/api/ProjectInfo";
             UserApiUrl = "https://localhost:7006/api/User";
@@ -47,6 +48,42 @@ namespace Statics.Controllers
                 return new Response(HttpStatusCode.OK, "Get blog statistic is success!", blogStatistic);
             }
             return new Response(HttpStatusCode.NoContent, "Get blog statistic is empty!");
+        }
+
+        /*------------------------------------------------------------StatisticInteraction------------------------------------------------------------*/
+
+        [HttpGet("GetAllStatusVerificationInSystem")]
+        public async Task<Response> GetAllStatusVerificationInSystem()
+        {
+            HttpResponseMessage response = await client.GetAsync($"{InteractionApiUrl}/GetAllStatusVerificationInSystem");
+            string strData = await response.Content.ReadAsStringAsync();
+            var option = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true,
+            };
+            var verificationStatistic = JsonSerializer.Deserialize<List<ViewAccountStatistic>>(strData, option);
+            if (verificationStatistic != null)
+            {
+                return new Response(HttpStatusCode.OK, "Get number status verification in system is success!", verificationStatistic);
+            }
+            return new Response(HttpStatusCode.NoContent, "Get number status verification in system is empty!");
+        }
+
+        [HttpGet("GetAllReportInSystem")]
+        public async Task<Response> GetAllReportInSystem()
+        {
+            HttpResponseMessage response = await client.GetAsync($"{InteractionApiUrl}/GetAllReportInSystem");
+            string strData = await response.Content.ReadAsStringAsync();
+            var option = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true,
+            };
+            var reportStatistic = JsonSerializer.Deserialize<List<ViewAccountStatistic>>(strData, option);
+            if (reportStatistic != null)
+            {
+                return new Response(HttpStatusCode.OK, "Get number status verification in system is success!", reportStatistic);
+            }
+            return new Response(HttpStatusCode.NoContent, "Get number status verification in system is empty!");
         }
 
         /*------------------------------------------------------------StatisticPost------------------------------------------------------------*/
@@ -104,38 +141,55 @@ namespace Statics.Controllers
             return new Response(HttpStatusCode.NoContent, "Get number process project in system is empty!");
         }
 
-        [HttpGet("GetTop1Freelancer")]
-        public async Task<Response> GetTop1Freelancer()
+        [HttpGet("GetTop3Business")]
+        public async Task<Response> GetTop3Business()
         {
-            HttpResponseMessage response = await client.GetAsync($"{ProjectApiUrl}/GetTop1Freelancer");
+            HttpResponseMessage response = await client.GetAsync($"{ProjectApiUrl}/GetTop3Business");
             string strData = await response.Content.ReadAsStringAsync();
             var option = new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true,
             };
-            var projectMemberStatistic = JsonSerializer.Deserialize<ViewFreelancerStatistic>(strData, option);
-            if (projectMemberStatistic != null)
+            var top3Business = JsonSerializer.Deserialize<List<ViewBusinessStatistic>>(strData, option);
+            if (top3Business != null)
             {
-                return new Response(HttpStatusCode.OK, "Get top 1 freelancer is success!", projectMemberStatistic);
+                return new Response(HttpStatusCode.OK, "Get top 3 business is success!", top3Business);
             }
-            return new Response(HttpStatusCode.NoContent, "Get top 1 freelancer is empty!");
+            return new Response(HttpStatusCode.NoContent, "Get top 3 business is empty!");
         }
 
-        [HttpGet("GetTop1Project")]
-        public async Task<Response> GetTop1Project()
+        [HttpGet("GetTop3Freelancer")]
+        public async Task<Response> GetTop3Freelancer()
         {
-            HttpResponseMessage response = await client.GetAsync($"{ProjectApiUrl}/GetTop1Project");
+            HttpResponseMessage response = await client.GetAsync($"{ProjectApiUrl}/GetTop3Freelancer");
             string strData = await response.Content.ReadAsStringAsync();
             var option = new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true,
             };
-            var projectRatingStatistic = JsonSerializer.Deserialize<ViewProjectStatistic>(strData, option);
-            if (projectRatingStatistic != null)
+            var top3Freelancer = JsonSerializer.Deserialize<List<ViewFreelancerStatistic>>(strData, option);
+            if (top3Freelancer != null)
             {
-                return new Response(HttpStatusCode.OK, "Get top 1 project is success!", projectRatingStatistic);
+                return new Response(HttpStatusCode.OK, "Get top 3 freelancer is success!", top3Freelancer);
             }
-            return new Response(HttpStatusCode.NoContent, "Get top 1 project is empty!");
+            return new Response(HttpStatusCode.NoContent, "Get top 3 freelancer is empty!");
+        }
+
+        [HttpGet("GetTop3Project")]
+        public async Task<Response> GetTop3Project()
+        {
+            HttpResponseMessage response = await client.GetAsync($"{ProjectApiUrl}/GetTop3Project");
+            string strData = await response.Content.ReadAsStringAsync();
+            var option = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true,
+            };
+            var top3project = JsonSerializer.Deserialize<List<ViewProjectStatistic>>(strData, option);
+            if (top3project != null)
+            {
+                return new Response(HttpStatusCode.OK, "Get top 3 project is success!", top3project);
+            }
+            return new Response(HttpStatusCode.NoContent, "Get top 3 project is empty!");
         }
 
         /*------------------------------------------------------------StatisticUser------------------------------------------------------------*/
@@ -155,41 +209,6 @@ namespace Statics.Controllers
                 return new Response(HttpStatusCode.OK, "Get number account in system is success!", accountStatistic);
             }
             return new Response(HttpStatusCode.NoContent, "Get number account in system is empty!");
-        }
-
-        [HttpGet("CallUserStatistic")]
-        public async Task<Response> CallUserStatistic(DateTime? startDate, DateTime? endDate)
-        {
-            var formattedStartDate = startDate?.ToString("yyyy-MM-dd");
-            var formattedEndDate = endDate?.ToString("yyyy-MM-dd");
-            HttpResponseMessage response;
-            if (formattedStartDate != null && formattedEndDate != null)
-            {
-                response = await client.GetAsync($"{UserApiUrl}/GetUserStatistic?startDate={formattedStartDate}&endDate={formattedEndDate}");
-            }
-            else if (formattedStartDate != null && formattedEndDate == null)
-            {
-                response = await client.GetAsync($"{UserApiUrl}/GetUserStatistic?startDate={formattedStartDate}");
-            }
-            else if (formattedStartDate == null && formattedEndDate != null)
-            {
-                response = await client.GetAsync($"{UserApiUrl}/GetUserStatistic?endDate={formattedEndDate}");
-            }
-            else
-            {
-                response = await client.GetAsync($"{UserApiUrl}/GetUserStatistic");
-            }
-            string strData = await response.Content.ReadAsStringAsync();
-            var option = new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true,
-            };
-            var userStatistic = JsonSerializer.Deserialize<List<ViewStatistic>>(strData, option);
-            if (userStatistic != null)
-            {
-                return new Response(HttpStatusCode.OK, "Get user statistic is success!", userStatistic);
-            }
-            return new Response(HttpStatusCode.NoContent, "Get user statistic is empty!");
         }
     }
 }
