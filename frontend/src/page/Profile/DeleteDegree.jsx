@@ -1,8 +1,13 @@
 import React from 'react'
 import { Modal, Button } from "react-bootstrap";
-function DeleteDegree({ show, onClose }) {
+import { credentialInstance } from '../../axios/axiosConfig';
+import { notifyError, notifySuccess } from '../../components/notification';
+function DeleteDegree({ show, onClose, idDegree, resetTab }) {
+    console.log(idDegree)
     const modalSubmit = () => {
-
+        credentialInstance.delete(`RemoveDegree/${idDegree}`)
+            .then((res) => { notifySuccess(res?.data?.message); resetTab(); onClose(); })
+            .catch((error) => { notifyError(error) })
     }
     return (
         <div>

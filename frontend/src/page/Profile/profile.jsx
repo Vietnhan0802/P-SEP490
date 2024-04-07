@@ -153,7 +153,7 @@ function Profile({ handleChangeImg, value, resetFollowing }) {
             });
         }
       });
-  }, [userId, resetAvatar, resetDegree]);
+  }, [userId, resetAvatar, resetDegree,currentUserId]);
   // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   const projectStatus = (process) => {
     switch (process) {
@@ -240,6 +240,9 @@ function Profile({ handleChangeImg, value, resetFollowing }) {
   }
   const handleEditInfor = () => {
     setUpdateDisplay(true);
+  }
+  const resetTab = () => {
+    setResetDegree(!resetDegree);
   }
   return (
     <>
@@ -424,7 +427,9 @@ function Profile({ handleChangeImg, value, resetFollowing }) {
               userBlog={userBlog}
               userProject={userProject}
               formatDateString={formatDateString}
-              projectStatus={projectStatus} />
+              projectStatus={projectStatus}
+              resetTab={resetTab}
+            />
           </section>
         </Col>
         <Col md={3}>

@@ -5,7 +5,7 @@ import { credentialInstance } from "../../axios/axiosConfig";
 import Notification, { notifySuccess, notifyError } from "../../../src/components/notification";
 
 function DegreePu({ ...props }) {
-  const { user } = props;
+  const { user, resetTab } = props;
   const [show, setShow] = useState(false);
   const [inputs, setInputs] = useState({
     name: "",
@@ -51,6 +51,7 @@ function DegreePu({ ...props }) {
         },
       })
       .then((res) => {
+        resetTab();
         setInputs({
           name: "",
           institution: "",
@@ -58,6 +59,7 @@ function DegreePu({ ...props }) {
           FileFile: null,
         });
         notifySuccess("Create degree is success!");
+
       })
       .catch((error) => {
         console.error(error);
