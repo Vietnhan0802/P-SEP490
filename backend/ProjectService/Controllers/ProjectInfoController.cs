@@ -65,6 +65,24 @@ namespace ProjectService.Controllers
             return BadRequest("Create notification is fail!");
         }
 
+        [HttpGet("GetAllBusiness")]
+        private async Task<List<ViewUser>> GetAllBusiness()
+        {
+            HttpResponseMessage response = await client.GetAsync($"{UserApiUrl}/GetAllBusiness");
+            if (response.IsSuccessStatusCode)
+            {
+                string strData = await response.Content.ReadAsStringAsync();
+                var option = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true,
+                };
+                var user = JsonSerializer.Deserialize<List<ViewUser>>(strData, option);
+
+                return user;
+            }
+            return null;
+        }
+
         [HttpGet("GetInfoUser/{idUser}")]
         private async Task<ViewUser> GetInfoUser(string idUser)
         {
@@ -83,56 +101,7 @@ namespace ProjectService.Controllers
             return null;
         }
 
-        /*------------------------------------------------------------HaveBeenCalled------------------------------------------------------------*/
-
-        [HttpGet("GetTop1Freelancer")]
-        public async Task<ViewFreelancerStatistic> GetTop1Freelancer()
-        {
-            var projectMembers = await _context.ProjectMembers
-                .Where(x => x.type == BusinessObjects.Enums.Project.Type.Invited && x.isAcept == true)
-                .GroupBy(x => x.idAccount)
-                .Select(x => new
-                {
-                    idAccount = x.Key,
-                    inviteCount = x.Count()
-                })
-                .OrderByDescending(x => x.inviteCount)
-                .FirstOrDefaultAsync();
-            var infoUser = await GetInfoUser(projectMembers.idAccount);
-            return new ViewFreelancerStatistic
-            {
-                idAccount = projectMembers.idAccount,
-                fullName = infoUser.fullName,
-                avatar = infoUser.avatar,
-                inviteCount = projectMembers.inviteCount
-            };
-        }
-
-        /*[HttpGet("GetTop1Business")]
-        public Task<ViewBusinessStatistic> GetTop1Business()
-        {
-
-        }*/
-
-        [HttpGet("GetTop1Project")]
-        public async Task<ViewProjectStatistic> GetTop1Project()
-        {
-            var projects = await _context.Projects.Include(x => x.Ratings).AsNoTracking().ToListAsync();
-
-            var result = projects.OrderByDescending(x => x.Ratings.Sum(x => x.rating)).FirstOrDefault();
-            var infoUser = await GetInfoUser(result.idAccount);
-            return new ViewProjectStatistic
-            {
-                idProject = result.idProject,
-                nameProject = result.name,
-                avatarProject = result.avatar,
-                idAccount = result.idAccount,
-                fullname = infoUser.fullName,
-                avatar = infoUser.avatar,
-                ratingSum = result.Ratings.Sum(x => x.rating),
-                commentSum = result.Ratings.Count(x => !string.IsNullOrEmpty(x.comment))
-            };
-        }
+        /*------------------------------------------------------------HaveBeenCalled------------------------------------------------------------*/        
 
         [HttpGet("GetTotalProjects/{idUser}")]
         public async Task<int> GetTotalProjects(string idUser)
@@ -192,6 +161,91 @@ namespace ProjectService.Controllers
         }
 
         /*------------------------------------------------------------Statistic------------------------------------------------------------*/
+
+        [HttpGet("GetTop3Business")]
+        public async Task<List<ViewBusinessStatistic>> GetTop3Business()
+        {
+            var businessList = await GetAllBusiness();
+
+            var projects = await _context.Projects.Include(x => x.Ratings).AsNoTracking().ToListAsync();
+
+            var projectRatings = projects.Select(p => new
+            {
+                idProject = p.idProject,
+                idAccount = p.idAccount,
+                ratingSum = p.Ratings.Count > 0 ? p.Ratings.Average(r => r.rating) : 0,
+                commentSum = p.Ratings.Count(x => !string.IsNullOrEmpty(x.comment))
+            }).ToList();
+
+            var businessRatings = projectRatings.GroupBy(p => p.idAccount)
+                .Select(g => new
+                {
+                    idAcount = g.Key,
+                    totalRating = g.Average(p => p.ratingSum),
+                    totalComment = g.Sum(p => p.commentSum)
+                })
+                .OrderByDescending(b => b.totalRating).Take(3).ToList();
+
+            var top3Business = await Task.WhenAll(
+                businessRatings.Select(async b => new ViewBusinessStatistic
+                {
+                    idAccount = b.idAcount,
+                    fullName = (await GetInfoUser(b.idAcount)).fullName,
+                    avatar = (await GetInfoUser(b.idAcount)).avatar,
+                    ratingAvg = b.totalRating,
+                    commentSum = b.totalComment
+                })
+            );
+            return top3Business.ToList();
+        }
+
+        [HttpGet("GetTop3Freelancer")]
+        public async Task<List<ViewFreelancerStatistic>> GetTop3Freelancer()
+        {
+            var projectMembers = await _context.ProjectMembers
+                .Where(x => x.type == BusinessObjects.Enums.Project.Type.Invited && x.isAcept == true)
+                .GroupBy(x => x.idAccount)
+                .Select(x => new
+                {
+                    idAccount = x.Key,
+                    inviteCount = x.Count()
+                })
+                .OrderByDescending(x => x.inviteCount)
+                .Take(3)
+                .ToListAsync();
+
+            var top3Freelancers = await Task.WhenAll(
+                projectMembers.Select(async x => new ViewFreelancerStatistic
+                {
+                    idAccount = x.idAccount,
+                    fullName = (await GetInfoUser(x.idAccount)).fullName,
+                    avatar = (await GetInfoUser(x.idAccount)).avatar,
+                    inviteCount = x.inviteCount
+                })
+            );
+            return top3Freelancers.ToList();
+        }
+
+        [HttpGet("GetTop3Project")]
+        public async Task<List<ViewProjectStatistic>> GetTop3Project()
+        {
+            var projects = await _context.Projects.Include(x => x.Ratings).AsNoTracking().ToListAsync();
+
+            var top3Project = await Task.WhenAll(projects.OrderByDescending(x => x.Ratings.Count > 0 ? x.Ratings.Average(r => r.rating) : 0)
+                .Take(3).Select(async x => new ViewProjectStatistic
+                {
+                    idProject = x.idProject,
+                    nameProject = x.name,
+                    avatarProject = x.avatar,
+                    idAccount = x.idAccount,
+                    fullname = (await GetInfoUser(x.idAccount)).fullName,
+                    avatar = (await GetInfoUser(x.idAccount)).avatar,
+                    ratingAvg = x.Ratings.Count > 0 ? x.Ratings.Average(r => r.rating) : 0,
+                    commentSum = x.Ratings.Count(x => !string.IsNullOrEmpty(x.comment))
+                })
+            );
+            return top3Project.ToList();
+        }
 
         [HttpGet("GetAllProcessProjectInSystem")]
         public async Task<List<ViewAccountStatistic>> GetAllProcessProjectInSystem()
