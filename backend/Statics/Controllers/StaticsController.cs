@@ -32,11 +32,10 @@ namespace Statics.Controllers
 
         /*------------------------------------------------------------StatisticBlog------------------------------------------------------------*/
 
-        [HttpGet("CallBlogStatistic/{startDate}/{statisticType}")]
-        public async Task<Response> CallBlogStatistic(DateTime? startDate, string statisticType)
+        [HttpGet("CallBlogStatistic/{statisticType}")]
+        public async Task<Response> CallBlogStatistic(string statisticType)
         {
-            var formattedStartDate = startDate?.ToString("yyyy-MM-dd");
-            HttpResponseMessage response = await client.GetAsync($"{BlogApiUrl}/GetBlogStatistic/{formattedStartDate}/{statisticType}");
+            HttpResponseMessage response = await client.GetAsync($"{BlogApiUrl}/GetBlogStatistic/{statisticType}");
             string strData = await response.Content.ReadAsStringAsync();
             var option = new JsonSerializerOptions
             {
