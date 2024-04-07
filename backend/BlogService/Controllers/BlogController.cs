@@ -142,19 +142,21 @@ namespace BlogService.Controllers
 
         /*------------------------------------------------------------Statistic------------------------------------------------------------*/
 
-        [HttpGet("GetBlogStatistic/{startDate}/{statisticType}")]
-        public async Task<List<ViewStatistic>> GetBlogStatistic(DateTime startDate, string statisticType)
+        [HttpGet("GetBlogStatistic/{statisticType}")]
+        public async Task<List<ViewStatistic>> GetBlogStatistic(string statisticType)
         {
-            var startOfWeek = startDate.AddDays(-(int)startDate.DayOfWeek);
+            var startDate = DateTime.Now.ToString("yyyy-MM-dd");
+
+            var startOfWeek = DateTime.Parse(startDate).AddDays(-(int)DateTime.Parse(startDate).DayOfWeek);
             var endOfWeek = startOfWeek.AddDays(7);
-            var startOfMonth = new DateTime(startDate.Year, startDate.Month, 1);
+            var startOfMonth = new DateTime(DateTime.Parse(startDate).Year, DateTime.Parse(startDate).Month, 1);
             var endOfMonth = startOfMonth.AddMonths(1);
-            var startOfYear = new DateTime(startDate.Year, 1, 1);
+            var startOfYear = new DateTime(DateTime.Parse(startDate).Year, 1, 1);
             var endOfYear = startOfYear.AddYears(1);
             if (statisticType == "today")
             {
                 var blogs = await _context.Blogs
-                .Where(x => x.createdDate >= startDate && x.createdDate < startDate.AddDays(1))
+                .Where(x => x.createdDate >= DateTime.Parse(startDate) && x.createdDate < DateTime.Parse(startDate).AddDays(1))
                 .ToListAsync();
 
                 var blogStatistic = blogs
