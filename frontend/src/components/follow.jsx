@@ -18,7 +18,6 @@ function Follow({ followValue }) {
   const handleAvatarclick = (value) => {
     navigate('/profile', { state: { userId: value } });
   }
-  console.log(following)
   return (
     <div className="follow position-relative">
       <div>
