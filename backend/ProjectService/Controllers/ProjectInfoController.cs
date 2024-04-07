@@ -8,6 +8,7 @@ using Commons.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProjectService.Data;
+using System.Globalization;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Text.Json;
@@ -190,27 +191,90 @@ namespace ProjectService.Controllers
 
         /*------------------------------------------------------------Statistic------------------------------------------------------------*/
 
-        [HttpGet("GetProjectStatistic")]
-        public async Task<List<ViewStatistic>> GetProjectStatistic(DateTime? startDate, DateTime? endDate)
+        [HttpGet("GetProjectStatistic/{statisticType}")]
+        public async Task<List<ViewStatistic>> GetProjectStatistic(string statisticType)
         {
-            if (startDate == null)
-            {
-                startDate = DateTime.Today.AddDays(-30);
-            }
-            if (endDate == null)
-            {
-                endDate = new DateTime(3999, 1, 1);
-            }
+            var startDate = DateTime.Now.ToString("yyyy-MM-dd");
 
-            var projectStatistic = await _context.Projects.Where(x => x.createdDate >= startDate && x.createdDate <= endDate)
+            var startOfWeek = DateTime.Parse(startDate).AddDays(-(int)DateTime.Parse(startDate).DayOfWeek);
+            var endOfWeek = startOfWeek.AddDays(7);
+            var startOfMonth = new DateTime(DateTime.Parse(startDate).Year, DateTime.Parse(startDate).Month, 1);
+            var endOfMonth = startOfMonth.AddMonths(1);
+            var startOfYear = new DateTime(DateTime.Parse(startDate).Year, 1, 1);
+            var endOfYear = startOfYear.AddYears(1);
+            if (statisticType == "today")
+            {
+                var projects = await _context.Projects
+                .Where(x => x.createdDate >= DateTime.Parse(startDate) && x.createdDate < DateTime.Parse(startDate).AddDays(1))
+                .ToListAsync();
+
+                var projectStatistic = projects
+                .GroupBy(x => x.createdDate.Hour)
+                .Select(result => new ViewStatistic
+                {
+                    hourInDay = result.Key,
+                    count = result.Count()
+                })
+                .OrderBy(x => x.hourInDay)
+                .ToList();
+
+                return projectStatistic;
+            }
+            else if (statisticType == "week")
+            {
+                var projects = await _context.Projects
+                .Where(x => x.createdDate >= startOfWeek && x.createdDate < endOfWeek)
+                .ToListAsync();
+
+                var projectStatistic = projects
+                .GroupBy(x => x.createdDate.DayOfWeek)
+                .Select(result => new ViewStatistic
+                {
+                    dayInWeek = result.Key.ToString(),
+                    count = result.Count()
+                })
+                .OrderBy(x => x.dayInWeek)
+                .ToList();
+
+                return projectStatistic;
+            }
+            else if (statisticType == "month")
+            {
+                var projects = await _context.Projects
+                .Where(x => x.createdDate >= startOfMonth && x.createdDate < endOfMonth)
+                .ToListAsync();
+
+                var projectStatistic = projects
                 .GroupBy(x => x.createdDate.Date)
                 .Select(result => new ViewStatistic
                 {
                     dayInMonth = result.Key,
                     count = result.Count()
                 })
-                .OrderBy(x => x.dayInMonth).ToListAsync();
-            return projectStatistic;
+                .OrderBy(x => x.dayInMonth)
+                .ToList();
+
+                return projectStatistic;
+            }
+            else if (statisticType == "year")
+            {
+                var projects = await _context.Projects
+                .Where(x => x.createdDate >= startOfYear && x.createdDate < endOfYear)
+                .ToListAsync();
+
+                var projectStatistic = projects
+                .GroupBy(x => x.createdDate.Month)
+                .Select(result => new ViewStatistic
+                {
+                    monthInYear = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(result.Key),
+                    count = result.Count()
+                })
+                .OrderBy(x => x.dayInMonth)
+                .ToList();
+
+                return projectStatistic;
+            }
+            return null;
         }
 
         /*------------------------------------------------------------ProjectInfo------------------------------------------------------------*/

@@ -51,28 +51,10 @@ namespace Statics.Controllers
 
         /*------------------------------------------------------------StatisticPost------------------------------------------------------------*/
 
-        [HttpGet("CallPostStatistic")]
-        public async Task<Response> CallPostStatistic(DateTime? startDate, DateTime? endDate)
+        [HttpGet("CallPostStatistic/{statisticType}")]
+        public async Task<Response> CallPostStatistic(string statisticType)
         {
-            var formattedStartDate = startDate?.ToString("yyyy-MM-dd");
-            var formattedEndDate = endDate?.ToString("yyyy-MM-dd");
-            HttpResponseMessage response;
-            if (formattedStartDate != null && formattedEndDate != null)
-            {
-                response = await client.GetAsync($"{PostApiUrl}/GetPostStatistic?startDate={formattedStartDate}&endDate={formattedEndDate}");
-            }
-            else if (formattedStartDate != null && formattedEndDate == null)
-            {
-                response = await client.GetAsync($"{PostApiUrl}/GetPostStatistic?startDate={formattedStartDate}");
-            }
-            else if (formattedStartDate == null && formattedEndDate != null)
-            {
-                response = await client.GetAsync($"{PostApiUrl}/GetPostStatistic?endDate={formattedEndDate}");
-            }
-            else
-            {
-                response = await client.GetAsync($"{PostApiUrl}/GetPostStatistic");
-            }
+            HttpResponseMessage response = await client.GetAsync($"{PostApiUrl}/GetPostStatistic/{statisticType}");
             string strData = await response.Content.ReadAsStringAsync();
             var option = new JsonSerializerOptions
             {
@@ -88,37 +70,19 @@ namespace Statics.Controllers
 
         /*------------------------------------------------------------StatisticProject------------------------------------------------------------*/
 
-        [HttpGet("CallProjectStatistic")]
-        public async Task<Response> CallProjectStatistic(DateTime? startDate, DateTime? endDate)
+        [HttpGet("CallProjectStatistic/{statisticType}")]
+        public async Task<Response> CallProjectStatistic(string statisticType)
         {
-            var formattedStartDate = startDate?.ToString("yyyy-MM-dd");
-            var formattedEndDate = endDate?.ToString("yyyy-MM-dd");
-            HttpResponseMessage response;
-            if (formattedStartDate != null && formattedEndDate != null)
-            {
-                response = await client.GetAsync($"{ProjectApiUrl}/GetProjectStatistic?startDate={formattedStartDate}&endDate={formattedEndDate}");
-            }
-            else if (formattedStartDate != null && formattedEndDate == null)
-            {
-                response = await client.GetAsync($"{ProjectApiUrl}/GetProjectStatistic?startDate={formattedStartDate}");
-            }
-            else if (formattedStartDate == null && formattedEndDate != null)
-            {
-                response = await client.GetAsync($"{ProjectApiUrl}/GetProjectStatistic?endDate={formattedEndDate}");
-            }
-            else
-            {
-                response = await client.GetAsync($"{ProjectApiUrl}/GetProjectStatistic");
-            }
+            HttpResponseMessage response = await client.GetAsync($"{ProjectApiUrl}/GetProjectStatistic/{statisticType}");
             string strData = await response.Content.ReadAsStringAsync();
             var option = new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true,
             };
-            var postStatistic = JsonSerializer.Deserialize<List<ViewStatistic>>(strData, option);
-            if (postStatistic != null)
+            var projectStatistic = JsonSerializer.Deserialize<List<ViewStatistic>>(strData, option);
+            if (projectStatistic != null)
             {
-                return new Response(HttpStatusCode.OK, "Get project statistic is success!", postStatistic);
+                return new Response(HttpStatusCode.OK, "Get project statistic is success!", projectStatistic);
             }
             return new Response(HttpStatusCode.NoContent, "Get project statistic is empty!");
         }
