@@ -7,6 +7,7 @@ using Commons.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PostService.Data;
+using System.Globalization;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Text.Json;
@@ -141,27 +142,90 @@ namespace PostService.Controllers
 
         /*------------------------------------------------------------Statistic------------------------------------------------------------*/
 
-        [HttpGet("GetPostStatistic")]
-        public async Task<List<ViewStatistic>> GetPostStatistic(DateTime? startDate, DateTime? endDate)
+        [HttpGet("GetPostStatistic/{statisticType}")]
+        public async Task<List<ViewStatistic>> GetPostStatistic(string statisticType)
         {
-            if (startDate == null)
-            {
-                startDate = DateTime.Today.AddDays(-30);
-            }
-            if (endDate == null)
-            {
-                endDate = new DateTime(3999, 1, 1);
-            }
+            var startDate = DateTime.Now.ToString("yyyy-MM-dd");
 
-            var postStatistic = await _context.Posts.Where(x => x.createdDate >= startDate && x.createdDate <= endDate)
+            var startOfWeek = DateTime.Parse(startDate).AddDays(-(int)DateTime.Parse(startDate).DayOfWeek);
+            var endOfWeek = startOfWeek.AddDays(7);
+            var startOfMonth = new DateTime(DateTime.Parse(startDate).Year, DateTime.Parse(startDate).Month, 1);
+            var endOfMonth = startOfMonth.AddMonths(1);
+            var startOfYear = new DateTime(DateTime.Parse(startDate).Year, 1, 1);
+            var endOfYear = startOfYear.AddYears(1);
+            if (statisticType == "today")
+            {
+                var posts = await _context.Posts
+                .Where(x => x.createdDate >= DateTime.Parse(startDate) && x.createdDate < DateTime.Parse(startDate).AddDays(1))
+                .ToListAsync();
+
+                var postStatistic = posts
+                .GroupBy(x => x.createdDate.Hour)
+                .Select(result => new ViewStatistic
+                {
+                    hourInDay = result.Key,
+                    count = result.Count()
+                })
+                .OrderBy(x => x.hourInDay)
+                .ToList();
+
+                return postStatistic;
+            }
+            else if (statisticType == "week")
+            {
+                var posts = await _context.Posts
+                .Where(x => x.createdDate >= startOfWeek && x.createdDate < endOfWeek)
+                .ToListAsync();
+
+                var postStatistic = posts
+                .GroupBy(x => x.createdDate.DayOfWeek)
+                .Select(result => new ViewStatistic
+                {
+                    dayInWeek = result.Key.ToString(),
+                    count = result.Count()
+                })
+                .OrderBy(x => x.dayInWeek)
+                .ToList();
+
+                return postStatistic;
+            }
+            else if (statisticType == "month")
+            {
+                var posts = await _context.Posts
+                .Where(x => x.createdDate >= startOfMonth && x.createdDate < endOfMonth)
+                .ToListAsync();
+
+                var postStatistic = posts
                 .GroupBy(x => x.createdDate.Date)
                 .Select(result => new ViewStatistic
                 {
                     dayInMonth = result.Key,
                     count = result.Count()
                 })
-                .OrderBy(x => x.dayInMonth).ToListAsync();
-            return postStatistic;
+                .OrderBy(x => x.dayInMonth)
+                .ToList();
+
+                return postStatistic;
+            }
+            else if (statisticType == "year")
+            {
+                var posts = await _context.Posts
+                .Where(x => x.createdDate >= startOfYear && x.createdDate < endOfYear)
+                .ToListAsync();
+
+                var postStatistic = posts
+                .GroupBy(x => x.createdDate.Month)
+                .Select(result => new ViewStatistic
+                {
+                    monthInYear = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(result.Key),
+                    count = result.Count()
+                })
+                .OrderBy(x => x.dayInMonth)
+                .ToList();
+
+                return postStatistic;
+            }
+            return null;
         }
 
         /*------------------------------------------------------------Post------------------------------------------------------------*/
