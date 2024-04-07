@@ -13,6 +13,7 @@ import * as signalR from "@microsoft/signalr";
 import { useLocation } from "react-router-dom";
 import data from '@emoji-mart/data'
 import Picker from '@emoji-mart/react'
+import { FaRegFileAlt } from "react-icons/fa";
 function Chat() {
 
   const sessionData = JSON.parse(sessionStorage.getItem("userSession")) || {};
@@ -20,13 +21,26 @@ function Chat() {
   const location = useLocation();
   const { userId } = location.state || {};
   const [conversations, setConversations] = useState([]);
+  const [filterConversations, setFilterConversations] = useState([]);
   const [messages, setMessages] = useState();
   const [message, setMessage] = useState('');
-  const [firstChat, setFirstChat] = useState(false);
   const [activeUser, setActiveUser] = useState(null);
   const [reset, setReset] = useState(false);
   const [connection, setConnection] = useState(null);
   const [showEmojiBox, setShowEmojiBox] = useState(false);
+  const [search, setSearch] = useState('');
+  const handleSearchChange = (event) => {
+    setSearch(event.target.value);
+    if (event.target.value === '') { // corrected condition
+      const originalUsers = JSON.parse(sessionStorage.getItem('originalUserList')) || [];
+      // console.log(originalUsers)
+      setFilterConversations(originalUsers);
+    } else {
+      setFilterConversations(conversations.filter(
+        conversation => conversation.fullName.toLowerCase().includes(event.target.value.toLowerCase())
+      ));
+    }
+  }
   useEffect(() => {
     const newConnection = new signalR.HubConnectionBuilder()
       .withUrl("https://localhost:7001/chatHub") // Replace with your server URL
@@ -67,15 +81,15 @@ function Chat() {
     chatInstance.get(`GetConversationsByUser/${currentUserId}`)
       .then((res) => {
         setConversations(res.data.result);
+        console.log(conversations)
         if (userId === undefined) {
           chatInstance.get(`GetMessages/${currentUserId}/${currentUserId === res.data.result[0].idAccount1 ? res.data.result[0].idAccount2 : res.data.result[0].idAccount1}`)
             .then((res) => {
               setMessages(res.data.result);
-              console.log(res.data.result)
               setActiveUser({
                 avatar: res?.data?.result[0].avatarReceiver,
                 name: res?.data?.result[0].nameReceiver,
-                receiverId: res?.data?.result[0].idReceiver
+                receiverId: res?.data?.result[0].idReceiver === currentUserId ? res?.data?.result[0].idSender : res?.data?.result[0].idReceiver
               });
             })
             .catch((error) => {
@@ -105,10 +119,8 @@ function Chat() {
           setActiveUser({
             avatar: res?.data?.result[0].avatarReceiver,
             name: res?.data?.result[0].nameReceiver,
-            receiverId: res?.data?.result[0].idReceiver
+            receiverId: res?.data?.result[0].idReceiver === currentUserId ? res?.data?.result[0].idSender : res?.data?.result[0].idReceiver
           });
-          console.log(activeUser.receiverId);
-          console.log(res.data.result)
         } else {
           setMessages([]);
         }
@@ -122,21 +134,18 @@ function Chat() {
   }
   const handleSetEmoji = (e) => {
     setMessage(mes => mes + e);
-    console.log(e)
   }
-  const getUserId = () => {
-    if (conversations?.length > 0) {
-      const firstConversation = conversations[0];
-      const currentUserId = sessionData.currentUserId;
-      return currentUserId === firstConversation.idAccount1
-        ? firstConversation.idAccount2
-        : firstConversation.idAccount1;
-    }
-    return null;
-  };
+
   const handleSendMessage = () => {
-    if (userId != null) {
-      chatInstance.post(`SendMessage/${currentUserId}/${userId}`, { content: message })
+    const formData = new FormData();
+    formData.append('content', message)
+    if (userId !== undefined) {
+      chatInstance.post(`SendMessage/${currentUserId}/${userId}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          accept: "application/json",
+        },
+      })
         .then((res) => {
           setReset(!reset);
           // setMessage('');
@@ -156,12 +165,15 @@ function Chat() {
         .catch((error) => console.error(error));
     }
     else {
-      // const receiverId = getUserId();
-      // console.log(receiverId)
-      chatInstance.post(`SendMessage/${currentUserId}/${activeUser.receiverId}`, { content: message })
+      chatInstance.post(`SendMessage/${currentUserId}/${activeUser.receiverId}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          accept: "application/json",
+        },
+      })
         .then((res) => {
-          console.log(res?.data?.result); setReset(!reset); setMessage('');
-          console.log(connection && message)
+          setReset(!reset);
+          setMessage('');
           if (connection && message) {
             try {
               connection.invoke('SendMessage', currentUserId, userId, res?.data?.result);
@@ -177,7 +189,64 @@ function Chat() {
         .catch((error) => console.error(error));
     }
   }
-
+  const handleFileUpload = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const formData = new FormData();
+      formData.append('FileFile', file);
+      // Send the file to the server using an HTTP POST request
+      chatInstance.post(`SendMessage/${currentUserId}/${activeUser.receiverId}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      })
+        .then((res) => {
+          if (connection && message) {
+            try {
+              connection.invoke('SendMessage', currentUserId, userId, res?.data?.result);
+              setMessage('');
+              console.log('SendMessage currentUserId:' + currentUserId);
+              console.log('SendMessage userId:' + userId);
+              console.log(res?.data?.result);
+            } catch (error) {
+              console.error('Error sending message: ', error);
+            }
+          }
+        })
+        .catch((error) => {
+          console.error('Error uploading file:', error);
+        });
+    }
+  };
+  const handleImageUpload = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const formData = new FormData();
+      formData.append('ImageFile', file);
+      // Send the file to the server using an HTTP POST request
+      chatInstance.post(`SendMessage/${currentUserId}/${activeUser.receiverId}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      })
+        .then((res) => {
+          if (connection && message) {
+            try {
+              connection.invoke('SendMessage', currentUserId, userId, res?.data?.result);
+              setMessage('');
+              console.log('SendMessage currentUserId:' + currentUserId);
+              console.log('SendMessage userId:' + userId);
+              console.log(res?.data?.result);
+            } catch (error) {
+              console.error('Error sending message: ', error);
+            }
+          }
+        })
+        .catch((error) => {
+          console.error('Error uploading file:', error);
+        });
+    }
+  };
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     const now = new Date();
@@ -204,16 +273,47 @@ function Chat() {
       chatBoxBodyRef.current.scrollTop = chatBoxBodyRef.current.scrollHeight;
     }
   }, [messages]);
+
   return (
 
     <Row className="m-3" style={{ height: "calc(100vh - 97px)", paddingBottom: "16px" }}>
       <Col md={2} className="bg-custom bg-white p-3 h-100">
         <div id="chat">
           <h1>Chat</h1>
-          <div className="chat-search ">
+          <div className="chat-search position-relative">
             <div className="d-flex align-items-center">
               <IoSearchSharp className="me-2 icon-search" />
-              <input className="bg-search" type="text" placeholder="Search" />
+              <input
+                className="bg-search w-100"
+                type="text"
+                placeholder="Search"
+                value={search}
+                onChange={handleSearchChange}
+              />
+
+            </div>
+            <div className={`position-absolute w-100 form-control overflow-hidden ${search === '' ? 'hidden-box' : ''}`} style={{
+              textOverflow: 'ellipsis', 
+              top: ' 41px',
+              left: '0px'
+            }} >
+              {filterConversations.length > 0 ? (
+                filterConversations.map((user) => (
+                  <div key={user.id} className="d-flex align-items-center my-2" onClick={() => handleConversation(currentUserId === user?.idAccount1 ? user?.idAccount2 : user?.idAccount1)}>
+                    <div className="position-relative">
+                      <img src={user.avatar} style={{ width: '50px', height: '50px', borderRadius: '50%' }} alt="" />
+                      {/* {user.isVerified && <img src={tick} alt="tick" className="position-absolute bottom-0 end-0" style={{ width: '18px' }} />} */}
+                    </div>
+                    <div className="ms-2">
+                      <p>{user.fullName}</p>
+                      {/* <p>{user.email}</p> */}
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div>No match item</div>
+              )}
+
             </div>
           </div>
           <div className="chat-list">
@@ -319,12 +419,39 @@ function Chat() {
                             <p className="mb-0 name">{item?.isYourself ? item?.nameSender : item?.nameReceiver}</p>
                             <p className="mb-0 text">{formatDate(item?.createdDate)}</p>
                           </div>
-                          <p
-                            className={`mb ${item?.isYourself ? "self-content" : "content"
-                              }`}
-                          >
-                            {item?.content}
-                          </p>
+                          {item?.content &&
+                            <p
+                              className={`mb ${item?.isYourself ? "self-content" : "content"
+                                }`}
+                            >
+                              {item?.content}
+                            </p>}
+                          {
+                            console.log(item?.file)
+                          }
+                          {item?.file &&
+                            <a className="text-white"
+                              href={` https://localhost:7001/Images/${item?.file}`} // Directly use the cvFile URL here
+                              target="_blank" // Ensure it opens in a new tab
+                              rel="noopener noreferrer" // Improve security for opening new tabs
+                              download
+
+                            >
+                              <div
+                                className={`mb ${item?.isYourself ? "self-content" : "content"
+                                  }`}
+                              >
+                                <FaRegFileAlt /> {item?.file}
+                              </div>
+                            </a>}
+                          {item?.image &&
+                            <img
+                              src={`https://localhost:7001/Images/${item?.image}`} // Directly use the cvFile URL here
+                              alt="text_image"
+                              className="text-white"
+                              style={{ borderRadius: '8px', maxWidth: '460px' }}
+                            />
+                          }
                         </div>
                       </div>
                     </div>
@@ -334,8 +461,25 @@ function Chat() {
           <div className="chat-box-input position-absolute bottom-0 w-100">
             <div className="w-100 d-flex justify-content-center icon-chat">
               <div className="w-auto fw-bold fs-3 icon-item d-flex align-items-center">
-                <FaRegFolder className="mx-3" />
-                <FaRegImage className="mx-3" />
+                <label htmlFor="file-input" className="mx-3" >
+                  <FaRegFolder />
+                </label>
+                <input
+                  id="file-input"
+                  type="file"
+                  style={{ display: 'none' }}
+                  onChange={handleFileUpload}
+                />
+                <label htmlFor="image-input">
+                  <FaRegImage className="mx-3" />
+                </label>
+                <input
+                  id="image-input"
+                  type="file"
+                  accept="image/*"
+                  style={{ display: 'none' }}
+                  onChange={handleImageUpload}
+                />
                 <div className="mx-3 w-auto" >
                   <div className="position-relative">
                     <div className="position-absolute bottom-0 start-0">
