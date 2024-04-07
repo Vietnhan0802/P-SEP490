@@ -87,6 +87,23 @@ namespace Statics.Controllers
             return new Response(HttpStatusCode.NoContent, "Get project statistic is empty!");
         }
 
+        [HttpGet("GetAllProcessProjectInSystem")]
+        public async Task<Response> GetAllProcessProjectInSystem()
+        {
+            HttpResponseMessage response = await client.GetAsync($"{ProjectApiUrl}/GetAllProcessProjectInSystem");
+            string strData = await response.Content.ReadAsStringAsync();
+            var option = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true,
+            };
+            var projectStatistic = JsonSerializer.Deserialize<List<ViewAccountStatistic>>(strData, option);
+            if (projectStatistic != null)
+            {
+                return new Response(HttpStatusCode.OK, "Get number process project in system is success!", projectStatistic);
+            }
+            return new Response(HttpStatusCode.NoContent, "Get number process project in system is empty!");
+        }
+
         [HttpGet("GetTop1Freelancer")]
         public async Task<Response> GetTop1Freelancer()
         {

@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
 using BusinessObjects.Entities.Projects;
 using BusinessObjects.Enums.Project;
+using BusinessObjects.Enums.User;
 using BusinessObjects.ViewModels.Project;
 using BusinessObjects.ViewModels.Statistic;
 using BusinessObjects.ViewModels.User;
 using Commons.Helpers;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProjectService.Data;
@@ -190,6 +192,23 @@ namespace ProjectService.Controllers
         }
 
         /*------------------------------------------------------------Statistic------------------------------------------------------------*/
+
+        [HttpGet("GetAllProcessProjectInSystem")]
+        public async Task<List<ViewAccountStatistic>> GetAllProcessProjectInSystem()
+        {
+            var projectPreparing = await _context.Projects.CountAsync(x => x.process == Process.Preparing);
+            var projectProcessing = await _context.Projects.CountAsync(x => x.process == Process.Processing);
+            var projectPending = await _context.Projects.CountAsync(x => x.process == Process.Pending);
+            var projectDone = await _context.Projects.CountAsync(x => x.process == Process.Done);
+
+            return new List<ViewAccountStatistic>
+            {
+                new ViewAccountStatistic { type = "Project is preparing", count = projectPreparing },
+                new ViewAccountStatistic { type = "Project is processing", count = projectProcessing },
+                new ViewAccountStatistic { type = "Project is pending", count = projectPending },
+                new ViewAccountStatistic { type = "Project is done", count = projectDone },
+            };
+        }
 
         [HttpGet("GetProjectStatistic/{statisticType}")]
         public async Task<List<ViewStatistic>> GetProjectStatistic(string statisticType)
