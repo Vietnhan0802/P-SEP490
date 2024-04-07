@@ -220,7 +220,6 @@ export default function AccessTable({ value, resetAccount }) {
           <input type="text" name="" className="search" value={searchTerm}
             onChange={handleSearch} id="" />
         </div>
-        <div className="line"></div>
         <TableContainer>
           <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle" >
             <EnhancedTableHead

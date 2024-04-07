@@ -6,10 +6,11 @@ import { formatDistanceToNow, parseISO } from 'date-fns';
 import { notifyInstance } from "../../axios/axiosConfig";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
-function Notify() {
+import { FaLessThanEqual } from "react-icons/fa";
+function Notify({ close }) {
   const { t } = useTranslation()
   const navigate = useNavigate();
-
+  const [reset, setReset] = useState(false);
   const sessionData = JSON.parse(sessionStorage.getItem("userSession")) || {};
   const { currentUserId } = sessionData;
 
@@ -20,6 +21,7 @@ function Notify() {
   }
 
   const [notifications, setNotifications] = useState([]);
+  const [filterNotifications, setFilterNotifications] = useState([]);
 
   useEffect(() => {
     notifyInstance.get(`GetNotificationByUser/${currentUserId}`)
@@ -31,12 +33,12 @@ function Notify() {
           };
         });
         setNotifications(formattedNotifi);
+        setFilterNotifications(formattedNotifi);
       })
       .catch((error) => {
         console.error(error);
       })
-  }, [currentUserId]);
-
+  }, [currentUserId, reset]);
   function getContent(contentKey) {
     switch (contentKey) {
       case 'content_notifollow':
@@ -61,14 +63,14 @@ function Notify() {
   const handleNotifiClick = (idNotification, id, url, idUrl) => {
     notifyInstance.put(`ReadNotification/${idNotification}`)
       .then((res) => {
-        const updateNotifi = notifications.map(notify => {
+        const updateNotifi = filterNotifications.map(notify => {
           if (notify.idNotification === idNotification) {
             return { ...notify, isRead: true };
           }
           return notify;
         });
-        console.log(url)
-        setNotifications(updateNotifi);
+        close();
+        setFilterNotifications(updateNotifi);
         switch (url) {
           case 'Follow':
             return navigate('/profile', { state: { userId: id } });
@@ -80,8 +82,10 @@ function Notify() {
           case 'BlogLike':
           case 'BlogReply':
             return navigate('/blogdetail', { state: { idBlog: idUrl } });
-          // case  :
-          // return ;
+          case 'ProjectInvite':
+            return navigate('/invitation', { state: { activeItem: 'invitation' } });
+          case 'ProjectApply':
+            return navigate('/projectapplication', { state: { activeItem: 'projectapplication' } });
           default:
             return;
         }
@@ -90,7 +94,13 @@ function Notify() {
         console.error(error);
       });
   };
+  const handleViewUnread = () => {
+    setFilterNotifications(notifications.filter((item) => { return item.isRead === false; }));
 
+  }
+  const handleViewAll = () => {
+    setFilterNotifications(notifications);
+  }
   return (
     <div
       md={6}
@@ -100,18 +110,18 @@ function Notify() {
       <div className="d-flex justify-content-between align-items-center">
         <div>
           <h2 className="mb-2">{t('title_noti')}</h2>
-          <button className="btn btn-outline-secondary me-3">{t('viewnoti')}</button>
-          <button className="btn btn-outline-secondary">{t('notread')}</button>
+          <button className="btn btn-outline-secondary me-3" onClick={handleViewAll}>{t('viewnoti')}</button>
+          <button className="btn btn-outline-secondary" onClick={handleViewUnread}>{t('notread')}</button>
         </div>
       </div>
       <div className="mt-3">
-        {notifications.map((item) => (
+        {filterNotifications.map((item) => (
           <div className="d-flex align-items-center justify-content-between py-3 notification-item" onClick={() => handleNotifiClick(item.idNotification, item.idSender, item.url, item.idUrl)}>
             <div className="d-flex align-items-center" key={item.idNotification}>
               <img src={item.avatar === "https://localhost:7006/Images/" ? defaultImage : item.avatar} alt="profile" className="profile" />
               <div className="ms-2 content">
                 <p className="mb-0">
-                  <span className="fw-bold">{item.nameSender}</span>{item.count === null || 0 ? `${getContent(item.content)}` : ` ${t('and')} ${item.count} ${t('people')} ${getContent(item.content)}`} 
+                  <span className="fw-bold">{item.nameSender}</span>{item.count === null || 0 ? `${getContent(item.content)}` : ` ${t('and')} ${item.count} ${t('people')} ${getContent(item.content)}`}
                 </p>
                 <p className={`mb-0 date ${item.isRead === false ? "notRead" : "read"
                   }`}>{item.timeAgo}</p>

@@ -156,7 +156,7 @@ function ProjectDetail() {
                 </div>
                 {data?.process === 3 &&
                   <div className="d-flex align-items-center"
-                    onClick={() => (data?.isRating || data?.idAccount === currentUserId) ? setShowFeedbackPopup(true) : setShowRatingPopup(true)}
+                    onClick={() => (data?.isRating || data?.idAccount === currentUserId || role === 'Admin') ? setShowFeedbackPopup(true) : setShowRatingPopup(true)}
                   >
                     <Rating
                       initialValue={data?.ratingAvg}
@@ -262,10 +262,9 @@ function ProjectDetail() {
                         <tr key={member.idProjectMember}>
                           <td className="w-20 py-3">
                             <div className="d-flex align-items-center">
-                              <div className="profile" style={{width:'30px',height:'30px'}}>
-                                <img src={member.avatar }alt="avatar"  />
+                              <div className="profile" style={{ width: '30px', height: '30px' }}>
+                                <img src={member.avatar} alt="avatar" />
                               </div>
-
                               <p className="ps-3">{member.fullName}</p>
                             </div>
                           </td>
@@ -279,7 +278,7 @@ function ProjectDetail() {
                               <td className="w-20 py-3 text-center  yellow-icon" >
                                 <div
                                   className={`d-flex align-items-center ${member?.isRating || role === 'Admin' ? 'justify-content-center' : ''}`}
-                                  onClick={() => (member?.isRating) ?
+                                  onClick={() => (member?.isRating || role === 'Admin') ?
                                     handleMemberRatingFeedback(member?.idAccount) :
                                     // setShowRatingMemberPopup(member?.idAccount === currentUserId ? false : true)
                                     handleMemberRating(member?.idAccount, member.idProjectMember)

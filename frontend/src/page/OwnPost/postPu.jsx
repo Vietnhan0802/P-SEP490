@@ -1,5 +1,5 @@
 import { Modal, Button } from "react-bootstrap";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import React, { useEffect } from "react";
 import "./post-pu.scss";
 import Select from 'react-select';
@@ -16,6 +16,7 @@ import {
 } from "../../axios/axiosConfig";
 
 function PostPu({ reset }) {
+  const quillRef = useRef(null);
   const [show, setShow] = useState(false);
   const [project, setProject] = useState();
   const modalClose = () => setShow(false);
@@ -73,6 +74,7 @@ function PostPu({ reset }) {
         console.error(error);
       });
   }, []);
+
   const handleSelctProject = (selectedOption) => {
     setInputs(prevState => ({
       ...prevState,
@@ -80,6 +82,25 @@ function PostPu({ reset }) {
     }));
   }
   const handleCreatePost = () => {
+    const quillInstance = quillRef.current?.getEditor();
+
+    if (!quillInstance) {
+      notifyError('Failed to get Quill instance');
+      return;
+    }
+    const quillContents = quillInstance.getContents();
+
+    // Validate the title
+    if (!inputs.title.trim()) {
+      notifyError('Please enter a title');
+      return;
+    }
+
+    // Validate the content
+    if (quillContents.ops.length === 1 && quillContents.ops[0].insert === '\n') {
+      notifyError('Please enter some content');
+      return;
+    }
     const formData = new FormData();
     formData.append("title", inputs.title);
     formData.append("content", inputs.content);
@@ -185,13 +206,14 @@ function PostPu({ reset }) {
             <label for="floatingInput">Post Title</label>
           </div>
           <ReactQuill
-          theme="snow"
-          value={inputs.content}
-          onChange={handleContentChange}
-          modules={modules}
-          formats={formats}
-          className="mb-3"
-        />
+            theme="snow"
+            value={inputs.content}
+            onChange={handleContentChange}
+            modules={modules}
+            formats={formats}
+            className="mb-3"
+            ref={quillRef}
+          />
           <Select
             placeholder="Select a project (optional)"
             className="basic-single my-3"

@@ -66,7 +66,7 @@ function PostContent({ data, handleLikeOrUnlikePost, viewProject, userId }) {
       <div className="d-flex  justify-content-between">
         <div className="d-flex align-items-center mb-2">
           <div className="position-relative">
-            <div className="profile">
+            <div className="profile" style={{width:'50px'}}>
               <img src={data?.avatar} alt="profile" />
             </div>
             {data?.isVerified && <img src={tick} alt="tick" className="position-absolute bottom-0 end-0" style={{ width: '18px' }} />}

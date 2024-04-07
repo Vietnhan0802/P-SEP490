@@ -12,6 +12,23 @@
       }
     }
   }
+  .image-container {
+    max-height: 60vh;
+    /* Hoặc bất kỳ chiều cao nào bạn muốn */
+    background-color: #f0f0f0;
+    /* Màu của background cho phần bị thừa */
+    overflow: hidden;
+    /* Ẩn phần của ảnh không vừa với container */
+  }
+  
+  .image-container img {
+    width: 100%;
+    object-fit: contain;
+    /* Giữ tỷ lệ của ảnh nhưng vẫn che đầy container */
+    object-position: center;
+    /* Căn giữa ảnh */
+    border-radius: 8px;
+  }
   .user-image {
     width: 45px;
     height: 45px;
