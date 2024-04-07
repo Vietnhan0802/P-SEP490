@@ -10,14 +10,14 @@ function RatingPopup({ show, onClose, idRater, idRated, projectid, type, idProje
                 rating: rating,
                 comment: input
             })
-                .then((res) => { notifySuccess(res?.data?.message); resetPage(); })
+                .then((res) => { notifySuccess(res?.data?.message); resetPage(); onClose(); })
                 .catch((error) => { notifyError(error?.data?.message) })
         } else {
             projectInstance.post(`CreateRatingPeople/${idRater}/${idRated}/${idProjectMember}`, {
                 rating: rating,
                 comment: input
             })
-                .then((res) => { notifySuccess(res?.data?.message); resetPage(); })
+                .then((res) => { notifySuccess(res?.data?.message); resetPage(); onClose(); })
                 .catch((error) => { notifyError(error?.data?.message) })
         }
 

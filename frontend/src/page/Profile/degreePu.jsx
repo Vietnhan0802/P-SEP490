@@ -66,7 +66,7 @@ function DegreePu({ ...props }) {
     setShow(false);
   };
   return (
-    <div className="">
+    <div>
       <Button variant="m-0 btn btn-primary me-2" onClick={modalShow}>
         Add Degree
       </Button>

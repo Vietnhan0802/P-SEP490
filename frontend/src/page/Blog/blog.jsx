@@ -194,7 +194,7 @@ function Blog({ value }) {
       });
   }, [reset, currentUserId])
   const resetBlog = () => {
-    setReset((prevReset) => !prevReset);
+    setReset(!reset);
   };
   const handleSearchPost = (event) => {
     setSearch(event.target.value);
