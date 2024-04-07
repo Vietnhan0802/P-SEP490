@@ -7,6 +7,7 @@ using BusinessObjects.ViewModels.User;
 using Commons.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Text.Json;
@@ -141,27 +142,88 @@ namespace BlogService.Controllers
 
         /*------------------------------------------------------------Statistic------------------------------------------------------------*/
 
-        [HttpGet("GetBlogStatistic")]
-        public async Task<List<ViewStatistic>> GetBlogStatistic(DateTime? startDate, DateTime? endDate)
+        [HttpGet("GetBlogStatistic/{startDate}/{statisticType}")]
+        public async Task<List<ViewStatistic>> GetBlogStatistic(DateTime startDate, string statisticType)
         {
-            if (startDate == null)
+            var startOfWeek = startDate.AddDays(-(int)startDate.DayOfWeek);
+            var endOfWeek = startOfWeek.AddDays(7);
+            var startOfMonth = new DateTime(startDate.Year, startDate.Month, 1);
+            var endOfMonth = startOfMonth.AddMonths(1);
+            var startOfYear = new DateTime(startDate.Year, 1, 1);
+            var endOfYear = startOfYear.AddYears(1);
+            if (statisticType == "today")
             {
-                startDate = DateTime.Today.AddDays(-30);
-            }
-            if (endDate == null)
-            {
-                endDate = new DateTime(3999, 1, 1);
-            }
+                var blogs = await _context.Blogs
+                .Where(x => x.createdDate >= startDate && x.createdDate < startDate.AddDays(1))
+                .ToListAsync();
 
-            var blogStatistic = await _context.Blogs.Where(x => x.createdDate >= startDate && x.createdDate <= endDate)
+                var blogStatistic = blogs
+                .GroupBy(x => x.createdDate.Hour)
+                .Select(result => new ViewStatistic
+                {
+                    hourInDay = result.Key,
+                    count = result.Count()
+                })
+                .OrderBy(x => x.hourInDay)
+                .ToList();
+
+                return blogStatistic;
+            }
+            else if (statisticType == "week")
+            {
+                var blogs = await _context.Blogs
+                .Where(x => x.createdDate >= startOfWeek && x.createdDate < endOfWeek)
+                .ToListAsync();
+
+                var blogStatistic = blogs
+                .GroupBy(x => x.createdDate.DayOfWeek)
+                .Select(result => new ViewStatistic
+                {
+                    dayInWeek = result.Key.ToString(),
+                    count = result.Count()
+                })
+                .OrderBy(x => x.dayInWeek)
+                .ToList();
+
+                return blogStatistic;
+            }
+            else if (statisticType == "month")
+            {
+                var blogs = await _context.Blogs
+                .Where(x => x.createdDate >= startOfMonth && x.createdDate < endOfMonth)
+                .ToListAsync();
+
+                var blogStatistic = blogs
                 .GroupBy(x => x.createdDate.Date)
                 .Select(result => new ViewStatistic
                 {
-                    dateTime = result.Key,
+                    dayInMonth = result.Key,
                     count = result.Count()
                 })
-                .OrderBy(x => x.dateTime).ToListAsync();
-            return blogStatistic;
+                .OrderBy(x => x.dayInMonth)
+                .ToList();
+
+                return blogStatistic;
+            }
+            else if (statisticType == "year")
+            {
+                var blogs = await _context.Blogs
+                .Where(x => x.createdDate >= startOfYear && x.createdDate < endOfYear)
+                .ToListAsync();
+
+                var blogStatistic = blogs
+                .GroupBy(x => x.createdDate.Month)
+                .Select(result => new ViewStatistic
+                {
+                    monthInYear = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(result.Key),
+                    count = result.Count()
+                })
+                .OrderBy(x => x.dayInMonth)
+                .ToList();
+
+                return blogStatistic;
+            }
+            return null;
         }
 
         /*------------------------------------------------------------Blog------------------------------------------------------------*/

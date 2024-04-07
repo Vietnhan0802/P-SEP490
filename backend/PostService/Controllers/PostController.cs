@@ -157,10 +157,10 @@ namespace PostService.Controllers
                 .GroupBy(x => x.createdDate.Date)
                 .Select(result => new ViewStatistic
                 {
-                    dateTime = result.Key,
+                    dayInMonth = result.Key,
                     count = result.Count()
                 })
-                .OrderBy(x => x.dateTime).ToListAsync();
+                .OrderBy(x => x.dayInMonth).ToListAsync();
             return postStatistic;
         }
 
