@@ -184,6 +184,14 @@ namespace User.Controllers
 
         /*------------------------------------------------------------HaveBeenCalled------------------------------------------------------------*/
 
+        [HttpGet("GetAllBusiness")]
+        public async Task<List<ViewUser>> GetAllBusiness()
+        {
+            var business = await _userManager.GetUsersInRoleAsync(TypeUser.Business.ToString());
+            var result = _mapper.Map<List<ViewUser>>(business);
+            return result.ToList();
+        }
+
         [HttpGet("GetInfoUser/{idUser}")]
         public async Task<ActionResult<ViewUser>> GetInfoUser(string idUser)
         {

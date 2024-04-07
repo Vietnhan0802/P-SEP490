@@ -4,6 +4,7 @@ using BusinessObjects.Enums.Interaction.Verification;
 using BusinessObjects.ViewModels.Blog;
 using BusinessObjects.ViewModels.Interaction;
 using BusinessObjects.ViewModels.Post;
+using BusinessObjects.ViewModels.Statistic;
 using BusinessObjects.ViewModels.User;
 using Interaction.Data;
 using Microsoft.AspNetCore.Mvc;
@@ -180,7 +181,37 @@ namespace Interaction.Controllers
 
         /*------------------------------------------------------------HaveBeenCalled------------------------------------------------------------*/
 
+        /*------------------------------------------------------------Statistic------------------------------------------------------------*/
 
+        [HttpGet("GetAllStatusVerificationInSystem")]
+        public async Task<List<ViewAccountStatistic>> GetAllStatusVerificationInSystem()
+        {
+            var verificationWaiting = await _context.Verifications.CountAsync(x => x.status == Status.Waiting);
+            var verificationAccept = await _context.Verifications.CountAsync(x => x.status == Status.Accept);
+            var verificationDeny = await _context.Verifications.CountAsync(x => x.status == Status.Deny);
+
+            return new List<ViewAccountStatistic>
+            {
+                new ViewAccountStatistic { type = "Verification is waiting", count = verificationWaiting },
+                new ViewAccountStatistic { type = "Verification is accept", count = verificationAccept },
+                new ViewAccountStatistic { type = "Verification is deny", count = verificationDeny },
+            };
+        }
+
+        [HttpGet("GetAllReportInSystem")]
+        public async Task<List<ViewAccountStatistic>> GetAllReportInSystem()
+        {
+            var reportAccount = await _context.AccountReports.CountAsync();
+            var reportBlog = await _context.BlogReports.CountAsync();
+            var reportPost = await _context.PostReports.CountAsync();
+
+            return new List<ViewAccountStatistic>
+            {
+                new ViewAccountStatistic { type = "Report Account", count = reportAccount },
+                new ViewAccountStatistic { type = "Report Blog", count = reportBlog },
+                new ViewAccountStatistic { type = "Report Post", count = reportPost },
+            };
+        }
 
         /*------------------------------------------------------------Verification------------------------------------------------------------*/
 
