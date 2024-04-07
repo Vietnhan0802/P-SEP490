@@ -2,7 +2,10 @@
 {
     public class ViewStatistic
     {
-        public DateTime dateTime { get; set; }
+        public int hourInDay { get; set; }
+        public string dayInWeek { get; set; }
+        public DateTime dayInMonth { get; set; }
+        public string monthInYear { get; set; }
         public int count { get; set; }
     }
 }
