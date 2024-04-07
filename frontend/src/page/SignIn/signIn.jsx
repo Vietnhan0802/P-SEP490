@@ -7,7 +7,7 @@ import { userInstance } from "../../axios/axiosConfig";
 import { GoogleLogin } from '@react-oauth/google';
 import { jwtDecode } from "jwt-decode";
 import Cookies from 'js-cookie';
-import Notification, { notifySuccess, notifyError } from "../../components/notification";
+import Notification, { notifySuccess, notifyError, notifyInfo, notifyWarn } from "../../components/notification";
 
 export default function SignIn() {
   Cookies.remove('user');
@@ -38,6 +38,12 @@ export default function SignIn() {
         const loginChannel = new BroadcastChannel('login_channel');
         loginChannel.postMessage({ action: 'login', userSession: { userId: decode.Id, role: response?.data?.result.role } });
         navigate("/post", { state: { activeItem: 'post' } });
+      } else if (response?.data?.message === "Invalid input attempt!") {
+        notifyWarn('Invalid input, please check again!');
+      } else if (response?.data?.message === "User has been blocked!") {
+        notifyWarn('Your account has been locked!');
+      } else if (response?.data?.message === "Please confirm your email before logging in!") {
+        notifyWarn('Please confirm your email before sign in!');
       } else {
         notifyError('Sign in failed!');
       }

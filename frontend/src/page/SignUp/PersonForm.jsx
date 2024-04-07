@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import {userInstance} from "../../axios/axiosConfig";
 
-import Notification, { notifySuccess, notifyError } from "../../components/notification";
+import Notification, { notifySuccess, notifyError, notifyWarn } from "../../components/notification";
 
 export default function PersonForm() {
   const [inputs, setInputs] = useState({
@@ -18,16 +18,22 @@ export default function PersonForm() {
     address: "",
   });
   const navigate = useNavigate();
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      userInstance.post("/SignUpMember", inputs);
-      console.log("Sign up successful");
-      notifySuccess("Sign up for member successfully!");
-      navigate("/");
+      const response = await userInstance.post("/SignUpMember", inputs);
+      if (response?.data?.message === "User create & send email is success!") {
+        notifySuccess("Sign up successfully, please check your confirmation email!");
+        navigate("/");
+      } else if (response?.data?.message === "User already exists!") {
+        notifyWarn('Account already exists!');
+      } else if (response?.data?.message === "Invalid data") {
+        notifyWarn('Invalid data');
+      } else {
+        notifyError("Sign up failed!");
+      }
     } catch (error) {
       console.error("Sign up failed", error.response.data);
-      notifyError("Sign up for member failed!");
     }
   };
 

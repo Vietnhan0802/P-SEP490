@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {userInstance} from "../../axios/axiosConfig";
 
-import Notification, { notifySuccess, notifyError } from "../../components/notification";
+import Notification, { notifySuccess, notifyError, notifyWarn } from "../../components/notification";
 
 export default function BusinessForm() {
   const [inputs, setInputs] = useState({});
@@ -18,12 +18,18 @@ export default function BusinessForm() {
     console.log(inputs);
     try {
       const response = await userInstance.post("/SignUpBusiness", inputs);
-      console.log("Sign up successful", response.data);
-      notifySuccess("Sign up for business successfully!");
-      navigate("/");
+      if (response?.data?.message === "User create & send email is success!") {
+        notifySuccess("Sign up successfully, please check your confirmation email!");
+        navigate("/");
+      } else if (response?.data?.message === "User already exists!") {
+        notifyWarn('Account already exists!');
+      } else if (response?.data?.message === "Invalid data") {
+        notifyWarn('Invalid data');
+      } else {
+        notifyError("Sign up failed!");
+      }
     } catch (error) {
       console.error("Sign up failed", error.response.data);
-      notifyError("Sign up for business failed!");
     }
   };
   return (
