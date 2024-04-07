@@ -32,28 +32,11 @@ namespace Statics.Controllers
 
         /*------------------------------------------------------------StatisticBlog------------------------------------------------------------*/
 
-        [HttpGet("CallBlogStatistic")]
-        public async Task<Response> CallBlogStatistic(DateTime? startDate, DateTime? endDate)
+        [HttpGet("CallBlogStatistic/{startDate}/{statisticType}")]
+        public async Task<Response> CallBlogStatistic(DateTime? startDate, string statisticType)
         {
             var formattedStartDate = startDate?.ToString("yyyy-MM-dd");
-            var formattedEndDate = endDate?.ToString("yyyy-MM-dd");
-            HttpResponseMessage response;
-            if (formattedStartDate != null && formattedEndDate != null)
-            {
-                response = await client.GetAsync($"{BlogApiUrl}/GetBlogStatistic?startDate={formattedStartDate}&endDate={formattedEndDate}");
-            }
-            else if (formattedStartDate != null && formattedEndDate == null)
-            {
-                response = await client.GetAsync($"{BlogApiUrl}/GetBlogStatistic?startDate={formattedStartDate}");
-            }
-            else if (formattedStartDate == null && formattedEndDate != null)
-            {
-                response = await client.GetAsync($"{BlogApiUrl}/GetBlogStatistic?endDate={formattedEndDate}");
-            }
-            else 
-            {
-                response = await client.GetAsync($"{BlogApiUrl}/GetBlogStatistic");
-            }
+            HttpResponseMessage response = await client.GetAsync($"{BlogApiUrl}/GetBlogStatistic/{formattedStartDate}/{statisticType}");
             string strData = await response.Content.ReadAsStringAsync();
             var option = new JsonSerializerOptions
             {
