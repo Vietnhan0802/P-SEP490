@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Org.BouncyCastle.Crypto;
 using System.Data;
+using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using System.Net.Http.Headers;
@@ -272,6 +273,92 @@ namespace User.Controllers
         }
 
         /*------------------------------------------------------------Statistic------------------------------------------------------------*/
+
+        [HttpGet("GetAccountStatistic/{statisticType}")]
+        public async Task<List<ViewStatistic>> GetAccountStatistic(string statisticType)
+        {
+            var startDate = DateTime.Now.ToString("yyyy-MM-dd");
+
+            var startOfWeek = DateTime.Parse(startDate).AddDays(-(int)DateTime.Parse(startDate).DayOfWeek);
+            var endOfWeek = startOfWeek.AddDays(7);
+            var startOfMonth = new DateTime(DateTime.Parse(startDate).Year, DateTime.Parse(startDate).Month, 1);
+            var endOfMonth = startOfMonth.AddMonths(1);
+            var startOfYear = new DateTime(DateTime.Parse(startDate).Year, 1, 1);
+            var endOfYear = startOfYear.AddYears(1);
+            if (statisticType == "today")
+            {
+                var users = await _userManager.Users
+                .Where(x => x.createdDate >= DateTime.Parse(startDate) && x.createdDate < DateTime.Parse(startDate).AddDays(1))
+                .ToListAsync();
+
+                var userStatistic = users
+                .GroupBy(x => x.createdDate.Hour)
+                .Select(result => new ViewStatistic
+                {
+                    hourInDay = result.Key,
+                    count = result.Count()
+                })
+                .OrderBy(x => x.hourInDay)
+                .ToList();
+
+                return userStatistic;
+            }
+            else if (statisticType == "week")
+            {
+                var users = await _userManager.Users
+                .Where(x => x.createdDate >= startOfWeek && x.createdDate < endOfWeek)
+                .ToListAsync();
+
+                var userStatistic = users
+                .GroupBy(x => x.createdDate.DayOfWeek)
+                .Select(result => new ViewStatistic
+                {
+                    dayInWeek = result.Key.ToString(),
+                    count = result.Count()
+                })
+                .OrderBy(x => x.dayInWeek)
+                .ToList();
+
+                return userStatistic;
+            }
+            else if (statisticType == "month")
+            {
+                var users = await _userManager.Users
+                .Where(x => x.createdDate >= startOfMonth && x.createdDate < endOfMonth)
+                .ToListAsync();
+
+                var userStatistic = users
+                .GroupBy(x => x.createdDate.Date)
+                .Select(result => new ViewStatistic
+                {
+                    dayInMonth = result.Key,
+                    count = result.Count()
+                })
+                .OrderBy(x => x.dayInMonth)
+                .ToList();
+
+                return userStatistic;
+            }
+            else if (statisticType == "year")
+            {
+                var users = await _userManager.Users
+                .Where(x => x.createdDate >= startOfYear && x.createdDate < endOfYear)
+                .ToListAsync();
+
+                var userStatistic = users
+                .GroupBy(x => x.createdDate.Month)
+                .Select(result => new ViewStatistic
+                {
+                    monthInYear = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(result.Key),
+                    count = result.Count()
+                })
+                .OrderBy(x => x.dayInMonth)
+                .ToList();
+
+                return userStatistic;
+            }
+            return null;
+        }
 
         [HttpGet("GetAllAccountInSystem")]
         public async Task<List<ViewAccountStatistic>> GetAllAccountInSystem()
