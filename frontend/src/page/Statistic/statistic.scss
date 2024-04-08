@@ -5,76 +5,106 @@
 // }
 
 .auto-scale {
-    height: 50%;
+  height: 50%;
 }
+.active-tab {
+  border: 1px solid rgba(0, 0, 0, 0.4);
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.4)
 
-
+}
+.avatar-img-container{
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  overflow: hidden; /* hide any part of the image that exceeds the div */
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+.post-img-container{
+  border-radius: 8px;
+  width: 80px;
+  height: 40px;
+  overflow: hidden; /* hide any part of the image that exceeds the div */
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+.txt-overflow{
+  white-space: nowrap; 
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 #sta-page {
-    border-radius: 8px;
+  border-radius: 8px;
 
-    // .card-section, .chart-section {
-    //     border-radius: 8px;
-    //     background-color: white;
+  // .card-section, .chart-section {
+  //     border-radius: 8px;
+  //     background-color: white;
 
-    // }
-    .chart-section {
-        .chart-all {
-            border-radius: 8px;
-            background-color: white;
-        }
+  // }
+  .chart-section {
+    .chart-all {
+      border-radius: 8px;
+      background-color: white;
+    }
+  }
 
+  #content-for-post {
+    .avata {
+      max-width: 50px;
+      max-height: 50px;
+      height: 100%;
+      width: auto;
+      border-radius: 50%;
+      background-size: cover;
+      padding: 0px;
     }
 
-    #content-for-post {
-        .avata {
-            max-width: 50px;
-            max-height: 50px;
-            height: 100%;
-            width: auto;
-            border-radius: 50%;
-            background-size: cover;
-            padding: 0px;
-        }
-
-        .avata-contain {
-            height: 100%;
-        }
-
-        .card {
-            box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
-        }
-
+    .avata-contain {
+      height: 100%;
     }
 
     .card {
-        border-radius: 8px;
-        background-color: white;
-        padding: 12px;
-        border: 2px solid var(--m-4, #a4aab0);
-
+      box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
     }
+  }
 
-    .content {
-        border-bottom: solid 2px rgb(112, 112, 112, 0.4);
+  .card {
+    border-radius: 8px;
+    background-color: white;
+    padding: 12px;
+    border: 2px solid var(--m-4, #a4aab0);
+  }
+
+  .content {
+    border-bottom: solid 2px rgb(112, 112, 112, 0.4);
+  }
+
+  .action {
+    padding-top: 10px;
+    padding-right: 13px;
+
+    button {
+      background-color: white;
     }
+  }
 
-    .action {
-        padding-top: 10px;
-        padding-right: 13px;
+  .sup-bar {
+    max-width: 350px;
+  }
 
-        button {
-            background-color: white;
-        }
-    }
-
-    .sup-bar {
-        max-width: 350px;
-    }
-
-    .date-filter {
-        border-radius: 8px;
-        background-color: white;
-        padding: 12px;
-        border: 2px solid var(--m-4, #a4aab0);
-    }
+  .date-filter {
+    border-radius: 8px;
+    background-color: white;
+    padding: 12px;
+    border: 2px solid var(--m-4, #a4aab0);
+  }
+}
+canvas {
+  width: 100% !important;
 }
