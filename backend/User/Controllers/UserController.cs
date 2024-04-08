@@ -285,21 +285,22 @@ namespace User.Controllers
             var endOfMonth = startOfMonth.AddMonths(1);
             var startOfYear = new DateTime(DateTime.Parse(startDate).Year, 1, 1);
             var endOfYear = startOfYear.AddYears(1);
+            var userStatistic = new List<ViewStatistic>();
             if (statisticType == "today")
             {
                 var users = await _userManager.Users
                 .Where(x => x.createdDate >= DateTime.Parse(startDate) && x.createdDate < DateTime.Parse(startDate).AddDays(1))
                 .ToListAsync();
 
-                var userStatistic = users
-                .GroupBy(x => x.createdDate.Hour)
-                .Select(result => new ViewStatistic
+                for (int hour = 0; hour < 24; hour++)
                 {
-                    hourInDay = result.Key,
-                    count = result.Count()
-                })
-                .OrderBy(x => x.hourInDay)
-                .ToList();
+                    var count = users.Count(x => x.createdDate.Hour == hour);
+                    userStatistic.Add(new ViewStatistic
+                    {
+                        hourInDay = hour,
+                        count = count
+                    });
+                }
 
                 return userStatistic;
             }
@@ -309,15 +310,16 @@ namespace User.Controllers
                 .Where(x => x.createdDate >= startOfWeek && x.createdDate < endOfWeek)
                 .ToListAsync();
 
-                var userStatistic = users
-                .GroupBy(x => x.createdDate.DayOfWeek)
-                .Select(result => new ViewStatistic
+                for (int day = 0; day < 7; day++)
                 {
-                    dayInWeek = result.Key.ToString(),
-                    count = result.Count()
-                })
-                .OrderBy(x => x.dayInWeek)
-                .ToList();
+                    var dayOfWeek = (DayOfWeek)day;
+                    var count = users.Count(x => x.createdDate.DayOfWeek == dayOfWeek);
+                    userStatistic.Add(new ViewStatistic
+                    {
+                        dayInWeek = dayOfWeek.ToString(),
+                        count = count
+                    });
+                }
 
                 return userStatistic;
             }
@@ -327,15 +329,17 @@ namespace User.Controllers
                 .Where(x => x.createdDate >= startOfMonth && x.createdDate < endOfMonth)
                 .ToListAsync();
 
-                var userStatistic = users
-                .GroupBy(x => x.createdDate.Date)
-                .Select(result => new ViewStatistic
+                var daysInMonth = (endOfMonth - startOfMonth).Days;
+                for (int day = 0; day < daysInMonth; day++)
                 {
-                    dayInMonth = result.Key,
-                    count = result.Count()
-                })
-                .OrderBy(x => x.dayInMonth)
-                .ToList();
+                    var date = startOfMonth.AddDays(day);
+                    var count = users.Count(x => x.createdDate.Date == date.Date);
+                    userStatistic.Add(new ViewStatistic
+                    {
+                        dayInMonth = date.Date,
+                        count = count
+                    });
+                }
 
                 return userStatistic;
             }
@@ -345,15 +349,16 @@ namespace User.Controllers
                 .Where(x => x.createdDate >= startOfYear && x.createdDate < endOfYear)
                 .ToListAsync();
 
-                var userStatistic = users
-                .GroupBy(x => x.createdDate.Month)
-                .Select(result => new ViewStatistic
+                for (int month = 1; month <= 12; month++)
                 {
-                    monthInYear = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(result.Key),
-                    count = result.Count()
-                })
-                .OrderBy(x => x.dayInMonth)
-                .ToList();
+                    var monthName = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(month);
+                    var count = users.Count(x => x.createdDate.Month == month);
+                    userStatistic.Add(new ViewStatistic
+                    {
+                        monthInYear = monthName,
+                        count = count
+                    });
+                }
 
                 return userStatistic;
             }
