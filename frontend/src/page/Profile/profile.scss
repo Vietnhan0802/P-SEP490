@@ -291,3 +291,21 @@
   border-end-start-radius: 8px;
   padding: 12px;
 }
+#degree-tab{
+  .dropdown-toggle::after {
+    display: none;
+    border-color: none;
+  }
+  .btn:hover {
+    border-color: transparent;
+    background-color: transparent;
+  }
+  .btn-check:checked + .btn,
+  .btn.active,
+  .btn.show,
+  .btn:first-child:active,
+  :not(.btn-check) + .btn:active {
+    border-color: transparent;
+    background-color: transparent;
+  }
+}

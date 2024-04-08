@@ -180,7 +180,7 @@ function ProjectDetail() {
                   </div>}
               </div>
               {showRatingPopup && <RatingPopup show={showRatingPopup} idRater={currentUserId} projectid={idProject} onClose={() => setShowRatingPopup(!showRatingPopup)} type={'project'} resetPage={resetPage} />}
-              {showFeedbackPopup && <RatingFeedback show={showFeedbackPopup} idProject={idProject} formatDateString={formatDate} onClose={() => setShowFeedbackPopup(!showFeedbackPopup)} resetPage={resetPage} />}
+              {showFeedbackPopup && <RatingFeedback show={showFeedbackPopup} idProject={idProject} formatDateString={formatDate} onClose={() => setShowFeedbackPopup(!showFeedbackPopup)} resetPage={resetPage} currentUserId={currentUserId} />}
               <div className="status-block size-18 d-flex mt-3">
                 <div>
                   <p className="fw-bold">
@@ -313,7 +313,7 @@ function ProjectDetail() {
                     }
                     {
                       showMemberFeedbackPopup &&
-                      <RatingFeedback show={showMemberFeedbackPopup} idUser={popupMemberRateFeedback.idAccount} idProject={idProject} formatDateString={formatDate} onClose={() => setShowMemberFeedbackPopup(!showMemberFeedbackPopup)} type={'member'} resetPage={resetPage} />
+                      <RatingFeedback show={showMemberFeedbackPopup} idUser={popupMemberRateFeedback.idAccount} idProject={idProject} formatDateString={formatDate} onClose={() => setShowMemberFeedbackPopup(!showMemberFeedbackPopup)} type={'member'} resetPage={resetPage} currentUserId={currentUserId} />
                     }
                   </tbody>
 

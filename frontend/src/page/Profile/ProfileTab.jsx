@@ -1,18 +1,25 @@
 import React, { useEffect, useState } from 'react'
 import DegreePu from "./degreePu";
+import './profile.scss'
 import defaultProject from "../../images/common/default_project.webp";
 import degree from "../../images/common/degree.png";
 import { useNavigate } from 'react-router-dom';
-
+import { Button } from 'react-bootstrap'
+import Dropdown from "react-bootstrap/Dropdown";
+import { MdDelete } from "react-icons/md";
+import { BsThreeDots } from "react-icons/bs";
+import DeleteDegree from './DeleteDegree';
 function ProfileTab(props) {
-    const { tabs, user, currentUserId, userDegree, userPost, userBlog, userProject, formatDateString, projectStatus } = props;
+    const { tabs, user, currentUserId, userDegree, userPost, userBlog, userProject, formatDateString, projectStatus, resetTab } = props;
     const navigate = useNavigate();
     const [tab, setTab] = useState("");
     const [showAllItems, setShowAllItems] = useState(false);
+    const [showDeleteDegreeForId, setShowDeleteDegreeForId] = useState(null);
     const hanldeSetTab = (tab) => {
         setTab(tab);
         setShowAllItems(!showAllItems);
     };
+
     const handleNavigate = (id, type) => {
         switch (type) {
             case ('post'):
@@ -25,6 +32,7 @@ function ProfileTab(props) {
                 return "";
         }
     }
+
     useEffect(() => {
         if (user.role === "Admin") {
             setTab("blog");
@@ -56,7 +64,7 @@ function ProfileTab(props) {
                 </div>
                 <div className="action-user d-flex flex-row align-items-center justify-content-end">
                     {user.role === "Member" && tab === "degree" && (
-                        <DegreePu user={currentUserId} />
+                        <DegreePu user={currentUserId} resetTab={resetTab} />
                     )}
                     {user.role === "Member" && tab === "degree" && (
                         <button
@@ -102,49 +110,67 @@ function ProfileTab(props) {
             </div>
             <div>
                 {user.role === "Member" && tab === "degree" && (
-                    <div className={`degree tab-content ${showAllItems ? "scrollable" : ""}`}>
+                    <div className={`degree tab-content${showAllItems ? "scrollable" : ""}`}>
                         {userDegree?.length !== 0 ? userDegree
                             .slice(0, showAllItems ? userDegree?.length : 3)
                             .map((item) => (
-                                <div className="row mb-4" key={item.idDegree}>
-                                    <div className="col-2 d-flex justify-content-center img-contain">
-                                        <img src={degree} alt="" className="image" />
+                                <>
+                                    <div className="row mb-4 position-relative" key={item.idDegree}>
+                                        <div className="col-2 d-flex justify-content-center img-contain">
+                                            <img src={degree} alt="" className="image" />
+                                        </div>
+                                        <div className="col-6 d-flex flex-column justify-content-center">
+                                            <p className="degree-title ellipsis">
+                                                Degree title:
+                                                {item.name}
+                                            </p>
+                                            <p className="degree-description ellipsis">
+                                                Degree institution:
+                                                {item.institution}
+                                            </p>
+                                        </div>
+                                        <div className="col-4 d-flex justify-content-center align-items-center">
+                                            <a
+                                                href={item.fileSrc} // Link to the PDF file
+                                                target="_blank" // Open in a new tab
+                                                rel="noopener noreferrer" // Security best practice
+                                                className="btn degree-detail btn-info text-white"
+                                            >
+                                                View Detail
+                                            </a>
+                                        </div>
+                                        <div className='position-absolute top-0 end-0 w-auto'>
+                                            <Dropdown id='degree-tab'>
+                                                <Dropdown.Toggle
+                                                    as={Button}
+                                                    variant="white"
+                                                    className="border-none text-body"
+
+                                                >
+                                                    <BsThreeDots size={20} />
+                                                </Dropdown.Toggle>
+
+                                                <Dropdown.Menu style={{ minWidth: "auto",top:'10px !important',left:'20px' }}>
+                                                    <Dropdown.Item
+                                                        className="d-flex justify-content-center"
+                                                        onClick={() => setShowDeleteDegreeForId(item.idDegree)}
+                                                    >
+                                                        <MdDelete size={20} />
+                                                    </Dropdown.Item>
+                                                </Dropdown.Menu>
+                                            </Dropdown>
+                                        </div>
                                     </div>
-                                    <div className="col-7 d-flex flex-column justify-content-center">
-                                        <p className="degree-title ellipsis">
-                                            Degree title:
-                                            {item.name}
-                                        </p>
-                                        <p className="degree-description ellipsis">
-                                            Degree institution:
-                                            {item.institution}
-                                        </p>
-                                    </div>
-                                    <div className="col-3 d-flex justify-content-center align-items-center">
-                                        <a
-                                            href={item.fileSrc} // Link to the PDF file
-                                            target="_blank" // Open in a new tab
-                                            rel="noopener noreferrer" // Security best practice
-                                            className="btn degree-detail btn-info text-white"
-                                        >
-                                            View Detail
-                                        </a>
-                                        {/* <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
-                                  <div
-                                    style={{
-                                      border: '1px solid rgba(0, 0, 0, 0.3)',
-                                      height: '750px',
-                                    }}
-                                  >
-                                    <Viewer fileUrl={item.fileSrc}
-                                     />
-                                  </div>
-                                </Worker> */}
-                                    </div>
-                                </div>
+                                </>
                             )) : <p>There is no degree</p>}
+
+
                     </div>
                 )}
+                {showDeleteDegreeForId && (
+                    <DeleteDegree idDegree={showDeleteDegreeForId} show={showDeleteDegreeForId !== null} onClose={() => setShowDeleteDegreeForId(null)} resetTab={resetTab} />
+                )}
+
                 {/* DegreeTab */}
                 {user.role === "Business" && tab === "post" && (
                     <div className={`post tab-content ${showAllItems ? "scrollable" : ""

@@ -2,10 +2,10 @@ import React from "react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
-import {userInstance} from "../../axios/axiosConfig";
-
+import { userInstance } from "../../axios/axiosConfig";
+import { GoogleLogin } from '@react-oauth/google';
 import Notification, { notifySuccess, notifyError, notifyWarn } from "../../components/notification";
-
+import { jwtDecode } from "jwt-decode";
 export default function PersonForm() {
   const [inputs, setInputs] = useState({
     email: "",
@@ -44,6 +44,46 @@ export default function PersonForm() {
       ...prevInputs,
       [name]: type === "checkbox" ? checked : value,
     }));
+  };
+  const handleClickGG = async (googleResponse) => {
+    try {
+      console.log("Google login response:", googleResponse);
+      const { credential } = googleResponse;
+      const decodedGG = jwtDecode(credential); // Assuming the JWT format response
+
+      // Implement your logic for successful Google login here.
+      // For demonstration, let's just log the decoded JWT
+      console.log("Decoded JWT from Google:", decodedGG);
+      const email = decodedGG.email; // Might have been 'email' instead of 'Email'
+      const fullName = decodedGG.name; // Might have been 'name' instead of 'FullName'
+
+      console.log(email, fullName);
+
+      const apiResponse = await userInstance.post(`/SignInGoogle/${email}`);
+      if (apiResponse?.data?.status === "OK") {
+        notifySuccess('Sign in successfully!');
+        const decodeJwt = jwtDecode(apiResponse?.data?.result.token);
+        sessionStorage.setItem('userSession', JSON.stringify({
+          currentUserId: decodeJwt.Id,
+          userName: decodeJwt.FullName,
+          userEmail: decodeJwt.Email,
+          token: apiResponse?.data?.result.token,
+          role: apiResponse?.data?.result.role,
+        }));
+        // Broadcast the login event to other tabs
+        const loginChannel = new BroadcastChannel('login_channel');
+        loginChannel.postMessage({ action: 'login', userSession: { userId: decodeJwt.Id, role: apiResponse?.data?.result.role } });
+        navigate("/post", { state: { activeItem: 'post' } });
+      } else {
+        notifyError('Sign in failed!');
+      }
+    } catch (error) {
+      console.error("Error during sign in:", error);
+    }
+  };
+
+  const errorMessage = (error) => {
+    console.error("Google login error:", error);
   };
   return (
     <div>
@@ -119,8 +159,8 @@ export default function PersonForm() {
             </label>
 
             <label className="size-20 blue2f SFU-heavy pb-1 input-field  d-flex align-items-center" >
-              <input 
-              className=" radius-size me-3"
+              <input
+                className=" radius-size me-3"
                 type="radio"
                 name="isMale"
                 checked={!inputs.isMale}
@@ -179,6 +219,11 @@ export default function PersonForm() {
           Sign up
         </button>
       </form>
+      <div className="d-flex flex-row pt-3 pb-3">
+        <div className="d-flex col-12 google-btn justify-content-center">
+          <GoogleLogin onSuccess={handleClickGG} onError={errorMessage} />
+        </div>
+      </div>
     </div>
   );
 }
