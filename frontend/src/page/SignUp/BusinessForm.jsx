@@ -23,9 +23,9 @@ export default function BusinessForm() {
         notifySuccess("Sign up successfully, please check your confirmation email!");
         navigate("/");
       } else if (response?.data?.message === "User already exists!") {
-        notifyWarn('Account already exists!');
+        notifyError('Account already exists!');
       } else if (response?.data?.message === "Invalid data") {
-        notifyWarn('Invalid data');
+        notifyError('Invalid data');
       } else {
         notifyError("Sign up failed!");
       }
@@ -47,23 +47,14 @@ export default function BusinessForm() {
 
       console.log(email, fullName);
 
-      const apiResponse = await userInstance.post(`/SignInGoogle/${email}`);
-      if (apiResponse?.data?.status === "OK") {
-        notifySuccess('Sign in successfully!');
-        const decodeJwt = jwtDecode(apiResponse?.data?.result.token);
-        sessionStorage.setItem('userSession', JSON.stringify({
-          currentUserId: decodeJwt.Id,
-          userName: decodeJwt.FullName,
-          userEmail: decodeJwt.Email,
-          token: apiResponse?.data?.result.token,
-          role: apiResponse?.data?.result.role,
-        }));
-        // Broadcast the login event to other tabs
-        const loginChannel = new BroadcastChannel('login_channel');
-        loginChannel.postMessage({ action: 'login', userSession: { userId: decodeJwt.Id, role: apiResponse?.data?.result.role } });
-        navigate("/post", { state: { activeItem: 'post' } });
+      const apiResponse = await userInstance.post(`/SignUpGoogleBusiness/${email}/${fullName}`);
+      if (apiResponse?.data?.message === "User creates is success!") {
+        notifySuccess('Sign up successfully!');
+        navigate("/");
+      } else if (apiResponse?.data?.message === "User already exists!") {
+        notifyError('Account already exists!');
       } else {
-        notifyError('Sign in failed!');
+        notifyError("Sign up failed!");
       }
     } catch (error) {
       console.error("Error during sign in:", error);

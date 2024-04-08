@@ -38,12 +38,12 @@ export default function SignIn() {
         const loginChannel = new BroadcastChannel('login_channel');
         loginChannel.postMessage({ action: 'login', userSession: { userId: decode.Id, role: response?.data?.result.role } });
         navigate("/post", { state: { activeItem: 'post' } });
-      } else if (response?.data?.message === "Invalid input attempt!") {
-        notifyWarn('Invalid input, please check again!');
+      } else if (response?.data?.message === "Invalid input or didn't sign up!") {
+        notifyError('Invalid input, please check again!');
       } else if (response?.data?.message === "User has been blocked!") {
-        notifyWarn('Your account has been locked!');
+        notifyError('Your account has been locked!');
       } else if (response?.data?.message === "Please confirm your email before logging in!") {
-        notifyWarn('Please confirm your email before sign in!');
+        notifyError('Please confirm your email before sign in!');
       } else {
         notifyError('Sign in failed!');
       }
@@ -81,6 +81,10 @@ export default function SignIn() {
         const loginChannel = new BroadcastChannel('login_channel');
         loginChannel.postMessage({ action: 'login', userSession: { userId: decodeJwt.Id, role: apiResponse?.data?.result.role } });
         navigate("/post", { state: { activeItem: 'post' } });
+      } else if (apiResponse?.data?.message === "Invalid input attempt!") {
+        notifyError("Invalid input or didn't sign up!");
+      } else if (apiResponse?.data?.message === "User has been blocked!") {
+        notifyError('Your account has been locked!');
       } else {
         notifyError('Sign in failed!');
       }

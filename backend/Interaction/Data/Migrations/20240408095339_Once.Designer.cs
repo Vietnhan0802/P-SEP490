@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Interaction.Data.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20240326202344_Once")]
+    [Migration("20240408095339_Once")]
     partial class Once
     {
         /// <inheritdoc />
@@ -37,7 +37,7 @@ namespace Interaction.Data.Migrations
                     b.Property<string>("content")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("createdDate")
+                    b.Property<DateTime>("createdDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("idReported")
@@ -68,7 +68,7 @@ namespace Interaction.Data.Migrations
                     b.Property<string>("content")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("createdDate")
+                    b.Property<DateTime>("createdDate")
                         .HasColumnType("datetime2");
 
                     b.Property<Guid>("idBloged")
@@ -98,7 +98,7 @@ namespace Interaction.Data.Migrations
                     b.Property<string>("content")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("createdDate")
+                    b.Property<DateTime>("createdDate")
                         .HasColumnType("datetime2");
 
                     b.Property<Guid>("idPosted")
@@ -125,7 +125,7 @@ namespace Interaction.Data.Migrations
                     b.Property<DateTime?>("confirmedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("createdDate")
+                    b.Property<DateTime>("createdDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("idAccount")

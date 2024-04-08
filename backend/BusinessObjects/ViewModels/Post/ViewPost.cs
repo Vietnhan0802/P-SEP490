@@ -7,7 +7,7 @@
         public string? fullName { get; set; }
         public string? avatar { get; set; }
         public bool isVerified { get; set; }
-        public Guid idProject { get; set; }
+        public Guid? idProject { get; set; }
         public string? title { get; set; }
         public string? content { get; set; }
         public int view { get; set; }

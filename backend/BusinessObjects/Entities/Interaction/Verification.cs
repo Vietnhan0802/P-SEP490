@@ -10,7 +10,7 @@ namespace BusinessObjects.Entities.Interaction
         public Guid idVerification { get; set; }
         public string idAccount { get; set; }
         public Status? status { get; set; }
-        public DateTime? createdDate { get; set; }
+        public DateTime createdDate { get; set; }
         public DateTime? confirmedDate { get; set; }
     }
 }

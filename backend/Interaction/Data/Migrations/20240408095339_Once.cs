@@ -20,7 +20,7 @@ namespace Interaction.Data.Migrations
                     idReported = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     content = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     status = table.Column<int>(type: "int", nullable: true),
-                    createdDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    createdDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     confirmedDate = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
@@ -37,7 +37,7 @@ namespace Interaction.Data.Migrations
                     idBloged = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     status = table.Column<int>(type: "int", nullable: true),
                     content = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    createdDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    createdDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     confirmedDate = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
@@ -54,7 +54,7 @@ namespace Interaction.Data.Migrations
                     idPosted = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     status = table.Column<int>(type: "int", nullable: true),
                     content = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    createdDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    createdDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     confirmedDate = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
@@ -69,7 +69,7 @@ namespace Interaction.Data.Migrations
                     idVerification = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     idAccount = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     status = table.Column<int>(type: "int", nullable: true),
-                    createdDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    createdDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     confirmedDate = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>

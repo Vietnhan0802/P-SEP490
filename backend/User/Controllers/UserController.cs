@@ -810,6 +810,7 @@ namespace User.Controllers
                     UserName = email,
                     Email = email,
                     fullName = fullName,
+                    avatar = "default.png",
                     isVerified = false,
                     isBlock = false,
                     createdDate = DateTime.Now,
@@ -841,6 +842,7 @@ namespace User.Controllers
                     UserName = email,
                     Email = email,
                     fullName = fullName,
+                    avatar = "default.png",
                     isVerified = false,
                     isBlock = false,
                     createdDate = DateTime.Now,
@@ -861,7 +863,7 @@ namespace User.Controllers
             return new Response(HttpStatusCode.Conflict, "User already exists!");
         }
         [HttpPost("SignInGoogle/{email}")]
-        public async Task<Response> SignInGoogleMember(string email)
+        public async Task<Response> SignInGoogle(string email)
         {
             var user = await _userManager.FindByEmailAsync(email);
             if (user != null)

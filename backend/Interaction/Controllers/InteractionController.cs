@@ -9,6 +9,7 @@ using BusinessObjects.ViewModels.User;
 using Interaction.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Text.Json;
@@ -198,6 +199,97 @@ namespace Interaction.Controllers
             };
         }
 
+        [HttpGet("GetVerificationStatistic/{statisticType}")]
+        public async Task<List<ViewStatistic>> GetVerificationStatistic(string statisticType)
+        {
+            var startDate = DateTime.Now.ToString("yyyy-MM-dd");
+
+            var startOfWeek = DateTime.Parse(startDate).AddDays(-(int)DateTime.Parse(startDate).DayOfWeek);
+            var endOfWeek = startOfWeek.AddDays(7);
+            var startOfMonth = new DateTime(DateTime.Parse(startDate).Year, DateTime.Parse(startDate).Month, 1);
+            var endOfMonth = startOfMonth.AddMonths(1);
+            var startOfYear = new DateTime(DateTime.Parse(startDate).Year, 1, 1);
+            var endOfYear = startOfYear.AddYears(1);
+            var verificationStatistic = new List<ViewStatistic>();
+            if (statisticType == "today")
+            {
+                var verifications = await _context.Verifications
+                .Where(x => x.status == Status.Accept && x.createdDate >= DateTime.Parse(startDate) && x.createdDate < DateTime.Parse(startDate).AddDays(1))
+                .ToListAsync();
+
+                for (int hour = 0; hour < 24; hour++)
+                {
+                    var count = verifications.Count(x => x.createdDate.Hour == hour);
+                    verificationStatistic.Add(new ViewStatistic
+                    {
+                        hourInDay = hour,
+                        count = count
+                    });
+                }
+
+                return verificationStatistic;
+            }
+            else if (statisticType == "week")
+            {
+                var verifications = await _context.Verifications
+                .Where(x => x.status == Status.Accept && x.createdDate >= startOfWeek && x.createdDate < endOfWeek)
+                .ToListAsync();
+
+                for (int day = 0; day < 7; day++)
+                {
+                    var dayOfWeek = (DayOfWeek)day;
+                    var count = verifications.Count(x => x.createdDate.DayOfWeek == dayOfWeek);
+                    verificationStatistic.Add(new ViewStatistic
+                    {
+                        dayInWeek = dayOfWeek.ToString(),
+                        count = count
+                    });
+                }
+
+                return verificationStatistic;
+            }
+            else if (statisticType == "month")
+            {
+                var verifications = await _context.Verifications
+                .Where(x => x.status == Status.Accept && x.createdDate >= startOfMonth && x.createdDate < endOfMonth)
+                .ToListAsync();
+
+                var daysInMonth = (endOfMonth - startOfMonth).Days;
+                for (int day = 0; day < daysInMonth; day++)
+                {
+                    var date = startOfMonth.AddDays(day);
+                    var count = verifications.Count(x => x.createdDate.Date == date.Date);
+                    verificationStatistic.Add(new ViewStatistic
+                    {
+                        dayInMonth = date.Date,
+                        count = count
+                    });
+                }
+
+                return verificationStatistic;
+            }
+            else if (statisticType == "year")
+            {
+                var verifications = await _context.Verifications
+                .Where(x => x.status == Status.Accept && x.createdDate >= startOfYear && x.createdDate < endOfYear)
+                .ToListAsync();
+
+                for (int month = 1; month <= 12; month++)
+                {
+                    var monthName = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(month);
+                    var count = verifications.Count(x => x.createdDate.Month == month);
+                    verificationStatistic.Add(new ViewStatistic
+                    {
+                        monthInYear = monthName,
+                        count = count
+                    });
+                }
+
+                return verificationStatistic;
+            }
+            return null;
+        }
+
         [HttpGet("GetAllReportInSystem")]
         public async Task<List<ViewAccountStatistic>> GetAllReportInSystem()
         {
@@ -211,6 +303,129 @@ namespace Interaction.Controllers
                 new ViewAccountStatistic { type = "Report Blog", count = reportBlog },
                 new ViewAccountStatistic { type = "Report Post", count = reportPost },
             };
+        }
+
+        [HttpGet("GetReportStatistic/{statisticType}")]
+        public async Task<List<ViewStatistic>> GetReportStatistic(string statisticType)
+        {
+            var startDate = DateTime.Now.ToString("yyyy-MM-dd");
+
+            var startOfWeek = DateTime.Parse(startDate).AddDays(-(int)DateTime.Parse(startDate).DayOfWeek);
+            var endOfWeek = startOfWeek.AddDays(7);
+            var startOfMonth = new DateTime(DateTime.Parse(startDate).Year, DateTime.Parse(startDate).Month, 1);
+            var endOfMonth = startOfMonth.AddMonths(1);
+            var startOfYear = new DateTime(DateTime.Parse(startDate).Year, 1, 1);
+            var endOfYear = startOfYear.AddYears(1);
+            var reportStatistic = new List<ViewStatistic>();
+            if (statisticType == "today")
+            {
+                var accountReports = await _context.AccountReports
+                .Where(x => x.createdDate >= DateTime.Parse(startDate) && x.createdDate < DateTime.Parse(startDate).AddDays(1))
+                .ToListAsync();
+
+                var blogReports = await _context.BlogReports
+                .Where(x => x.createdDate >= DateTime.Parse(startDate) && x.createdDate < DateTime.Parse(startDate).AddDays(1))
+                .ToListAsync();
+
+                var postReports = await _context.PostReports
+                .Where(x => x.createdDate >= DateTime.Parse(startDate) && x.createdDate < DateTime.Parse(startDate).AddDays(1))
+                .ToListAsync();
+
+                for (int hour = 0; hour < 24; hour++)
+                {
+                    var count = (accountReports.Count(x => x.createdDate.Hour == hour)) + (blogReports.Count(x => x.createdDate.Hour == hour)) + (postReports.Count(x => x.createdDate.Hour == hour));
+                    reportStatistic.Add(new ViewStatistic
+                    {
+                        hourInDay = hour,
+                        count = count
+                    });
+                }
+
+                return reportStatistic;
+            }
+            else if (statisticType == "week")
+            {
+                var accountReports = await _context.AccountReports
+                .Where(x => x.createdDate >= startOfWeek && x.createdDate < endOfWeek)
+                .ToListAsync();
+
+                var blogReports = await _context.BlogReports
+                .Where(x => x.createdDate >= startOfWeek && x.createdDate < endOfWeek)
+                .ToListAsync();
+
+                var postReports = await _context.PostReports
+                .Where(x => x.createdDate >= startOfWeek && x.createdDate < endOfWeek)
+                .ToListAsync();
+
+                for (int day = 0; day < 7; day++)
+                {
+                    var dayOfWeek = (DayOfWeek)day;
+                    var count = (accountReports.Count(x => x.createdDate.DayOfWeek == dayOfWeek)) + (blogReports.Count(x => x.createdDate.DayOfWeek == dayOfWeek)) + (postReports.Count(x => x.createdDate.DayOfWeek == dayOfWeek));
+                    reportStatistic.Add(new ViewStatistic
+                    {
+                        dayInWeek = dayOfWeek.ToString(),
+                        count = count
+                    });
+                }
+
+                return reportStatistic;
+            }
+            else if (statisticType == "month")
+            {
+                var accountReports = await _context.AccountReports
+                .Where(x => x.createdDate >= startOfMonth && x.createdDate < endOfMonth)
+                .ToListAsync();
+
+                var blogReports = await _context.BlogReports
+                .Where(x => x.createdDate >= startOfMonth && x.createdDate < endOfMonth)
+                .ToListAsync();
+
+                var postReports = await _context.PostReports
+                .Where(x => x.createdDate >= startOfMonth && x.createdDate < endOfMonth)
+                .ToListAsync();
+
+                var daysInMonth = (endOfMonth - startOfMonth).Days;
+                for (int day = 0; day < daysInMonth; day++)
+                {
+                    var date = startOfMonth.AddDays(day);
+                    var count = (accountReports.Count(x => x.createdDate.Date == date.Date)) + (blogReports.Count(x => x.createdDate.Date == date.Date)) + (postReports.Count(x => x.createdDate.Date == date.Date));
+                    reportStatistic.Add(new ViewStatistic
+                    {
+                        dayInMonth = date.Date,
+                        count = count
+                    });
+                }
+
+                return reportStatistic;
+            }
+            else if (statisticType == "year")
+            {
+                var accountReports = await _context.AccountReports
+                .Where(x => x.createdDate >= startOfYear && x.createdDate < endOfYear)
+                .ToListAsync();
+
+                var blogReports = await _context.BlogReports
+                .Where(x => x.createdDate >= startOfYear && x.createdDate < endOfYear)
+                .ToListAsync();
+
+                var postReports = await _context.PostReports
+                .Where(x => x.createdDate >= startOfYear && x.createdDate < endOfYear)
+                .ToListAsync();
+
+                for (int month = 1; month <= 12; month++)
+                {
+                    var monthName = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(month);
+                    var count = (accountReports.Count(x => x.createdDate.Month == month)) + (blogReports.Count(x => x.createdDate.Month == month)) + (postReports.Count(x => x.createdDate.Month == month));
+                    reportStatistic.Add(new ViewStatistic
+                    {
+                        monthInYear = monthName,
+                        count = count
+                    });
+                }
+
+                return reportStatistic;
+            }
+            return null;
         }
 
         /*------------------------------------------------------------Verification------------------------------------------------------------*/
