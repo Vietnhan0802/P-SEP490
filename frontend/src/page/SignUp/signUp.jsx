@@ -69,25 +69,8 @@ export default function SignIn() {
             <div className="form-area">
               {showForm1 && <PersonForm />}
               {showForm2 && <BusinessForm />}
-              <div className="row justify-content-center align-items-center pt-2">
 
-                <div className="col-5 col-12 text-center size-20">
-                  Sign up with
-                </div>
 
-              </div>
-              <div className="d-flex flex-row pt-3 pb-3">
-                <div className="d-flex col-12 google-btn justify-content-end">
-                  <button
-                    className="gray-border white-bg d-flex flex-row rounded-50 align-items-center justify-content-center"
-                    type="button"
-                    onClick={handleClickGG}
-                  >
-                    <img src={GGIcon} alt="GGIcon" />
-                    <p>Google</p>
-                  </button>
-                </div>
-              </div>
             </div>
           </div>
         </div>

@@ -3,15 +3,18 @@ import "./statistic.scss";
 import { VscAccount } from "react-icons/vsc";
 import { Col, Row } from "react-bootstrap";
 import BarChart from "./barChart";
-import { ProjectData } from "./Data/ProjectData";
-import { PostData } from "./Data/PostData";
-import { BlogData } from "./Data/BlogData";
+import { GoPencil } from "react-icons/go";
+import { FiBookOpen } from "react-icons/fi";
+import { LuBook } from "react-icons/lu";
+import { MdVerified } from 'react-icons/md';
+import { TbMessageReport } from "react-icons/tb";
+import Dropdown from 'react-bootstrap/Dropdown';
+import { MdBarChart } from "react-icons/md";
 import { ReportData } from "./Data/ReportData";
 import { AccountData } from "./Data/AccountData";
 import { AccessData } from "./Data/AccessData";
 import SideBar from "../../components/sidebar";
 import PieChart from "./PieChart";
-import { Line } from "rc-progress";
 import LineChart from "./lineChart";
 import CardItem from "./CardItem";
 import { staticInstance } from "../../axios/axiosConfig";
@@ -36,85 +39,100 @@ function Statistic() {
   const [postData, setPostData] = useState();
   const [startDate, setStartDate] = useState();
   const [endDate, setEndDate] = useState();
+  const [statisticPostType, setStatisticPostType] = useState('today');
+  const [statisticBlogType, setStatisticBlogType] = useState('today');
+  const [statisticProjectType, setStatisticProjectType] = useState('today');
   const handleTabClick = (tab) => {
     setActiveTab(tab);
   };
-  const handleClearDates = () => {
-    setStartDate(null);
-    setEndDate(null);
-  };
   useEffect(() => {
-    staticInstance.get("CallPostStatistic", { params: { startDate: startDate, endDate: endDate } })
+    staticInstance.get(`CallPostStatistic/${statisticPostType}`)
       .then((res) => {
         setPostData({
-          labels: res?.data?.result.map((data) => formatDate(data.dateTime)),
+          labels: res?.data?.result.map((data) => {
+            if (statisticPostType === 'today') {
+              return data.hourInDay
+            } else if ((statisticPostType === 'week')) {
+              return data.dayInWeek;
+            } else if (statisticPostType === 'month') {
+              return formatDate(data.dayInMonth)
+            } else {
+              return data.monthInYear
+            }
+          }),
           datasets: [
             {
               label: "Number Of Post",
               data: res?.data?.result.map((data) => data.count),
               backgroundColor: [
-                "rgba(75,192,192,1)",
-                "#ecf0f1",
-                "#50AF95",
-                "#f3ba2f",
-                "#2a71d0",
+                "rgba(75,192,192,0.2)"
               ],
-              borderColor: "black",
               borderWidth: 1,
             },
           ],
         })
       });
-    staticInstance.get("CallBlogStatistic", { params: { startDate: startDate, endDate: endDate } })
+
+  }, [statisticPostType])
+  useEffect(() => {
+    staticInstance.get(`CallBlogStatistic/${statisticBlogType}`)
       .then((res) => {
         setBlogData({
-          labels: res?.data?.result.map((data) => formatDate(data.dateTime)),
+          labels: res?.data?.result.map((data) => {
+            if (statisticBlogType === 'today') {
+              return data.hourInDay
+            } else if ((statisticBlogType === 'week')) {
+              return data.dayInWeek;
+            } else if (statisticBlogType === 'month') {
+              return formatDate(data.dayInMonth)
+            } else {
+              return data.monthInYear
+            }
+          }
+          ),
           datasets: [
             {
-              label: "Number Of Post",
+              label: "Number Of Blog",
               data: res?.data?.result.map((data) => data.count),
               backgroundColor: [
-                "rgba(75,192,192,1)",
-                "#ecf0f1",
-                "#50AF95",
-                "#f3ba2f",
-                "#2a71d0",
+                "rgba(75,192,192,0.2)"
               ],
-              borderColor: "black",
               borderWidth: 1,
             },
           ],
         })
       });
-    staticInstance.get("CallProjectStatistic", { params: { startDate: startDate, endDate: endDate } })
+
+  }, [statisticBlogType])
+  useEffect(() => {
+    staticInstance.get(`CallProjectStatistic/${statisticProjectType}`)
       .then((res) => {
         setProjectData({
-          labels: res?.data?.result.map((data) => formatDate(data.dateTime)),
+          labels: res?.data?.result.map((data) => {
+            if (statisticProjectType === 'today') {
+              return data.hourInDay
+            } else if ((statisticProjectType === 'week')) {
+              return data.dayInWeek;
+            } else if (statisticProjectType === 'month') {
+              return formatDate(data.dayInMonth)
+            } else {
+              return data.monthInYear
+            }
+          }),
           datasets: [
             {
-              label: "Number Of Post",
+              label: "Number Of Project",
               data: res?.data?.result.map((data) => data.count),
               backgroundColor: [
-                "rgba(75,192,192,1)",
-                "#ecf0f1",
-                "#50AF95",
-                "#f3ba2f",
-                "#2a71d0",
+                "rgba(75,192,192,0.2)"
               ],
-              borderColor: "black",
               borderWidth: 1,
             },
           ],
         })
       })
-  }, [startDate,endDate])
+  }, [statisticProjectType])
 
-  useEffect(() => {
-    if (startDate > endDate) {
-      setStartDate(null);
-      setEndDate(null)
-    }
-  }, [startDate, endDate])
   const [reportData, setReportData] = useState({
     labels: ReportData.map((data) => data.type),
     datasets: [
@@ -146,7 +164,6 @@ function Statistic() {
           "#f3ba2f",
           "#2a71d0",
         ],
-        borderColor: "black",
         borderWidth: 1,
       },
     ],
@@ -158,7 +175,7 @@ function Statistic() {
         label: "New Accout",
         data: AccessData.map((data) => data.count),
         backgroundColor: [
-          "rgba(75,192,192,1)",
+          "rgba(75,192,192,0.2)",
           "#ecf0f1",
           "#50AF95",
           "#f3ba2f",
@@ -180,19 +197,83 @@ function Statistic() {
       case 'post':
         return (
           <div style={{ width: "100%" }}>
-            <BarChart chartData={postData} />
+            <div>
+              <Col md={8} className="position-relative pt-3" >
+                <div className="position-absolute top-0 end-0">
+                  <Dropdown>
+                    <Dropdown.Toggle
+                      variant="white"
+                      className="border-none text-body">
+                      <MdBarChart size={14} />
+                    </Dropdown.Toggle>
+                    <Dropdown.Menu style={{ minWidth: 'auto' }}>
+                      <Dropdown.Item onClick={() => setStatisticPostType('today')}>Today</Dropdown.Item>
+                      <Dropdown.Item onClick={() => setStatisticPostType('week')}>Week</Dropdown.Item>
+                      <Dropdown.Item onClick={() => setStatisticPostType('month')}>Month</Dropdown.Item>
+                      <Dropdown.Item onClick={() => setStatisticPostType('year')}>Year</Dropdown.Item>
+                    </Dropdown.Menu>
+                  </Dropdown>
+                </div>
+                <BarChart chartData={postData} />
+              </Col>
+            </div>
           </div>
         );
       case 'blog':
         return (
           <div style={{ width: "100%" }}>
-            <BarChart chartData={blogData} />
+            <div >
+
+              <Col md={8} className="position-relative pt-3">
+                <div className="position-absolute top-0 end-0">
+                  <Dropdown>
+                    <Dropdown.Toggle
+                      variant="white"
+                      className="border-none text-body">
+                      <MdBarChart size={14} />
+                    </Dropdown.Toggle>
+
+                    <Dropdown.Menu style={{ minWidth: 'auto' }}>
+                      <Dropdown.Item onClick={() => setStatisticBlogType('today')}>Today</Dropdown.Item>
+                      <Dropdown.Item onClick={() => setStatisticBlogType('week')}>Week</Dropdown.Item>
+                      <Dropdown.Item onClick={() => setStatisticBlogType('month')}>Month</Dropdown.Item>
+                      <Dropdown.Item onClick={() => setStatisticBlogType('year')}>Year</Dropdown.Item>
+                    </Dropdown.Menu>
+                  </Dropdown>
+                </div>
+                <BarChart chartData={blogData} />
+              </Col>
+            </div>
           </div>
         );
       case 'project':
         return (
           <div style={{ width: "100%" }}>
-            <BarChart chartData={projectData} />
+            <div className="d-flex">
+              <Col md={8} className="position-relative pt-3">
+                <div className="position-absolute top-0 end-0">
+                  <Dropdown>
+                    <Dropdown.Toggle
+                      variant="white"
+                      className="border-none text-body">
+                      <MdBarChart size={14} />
+                    </Dropdown.Toggle>
+
+                    <Dropdown.Menu style={{ minWidth: 'auto' }}>
+                      <Dropdown.Item onClick={() => setStatisticProjectType('today')}>Today</Dropdown.Item>
+                      <Dropdown.Item onClick={() => setStatisticProjectType('week')}>Week</Dropdown.Item>
+                      <Dropdown.Item onClick={() => setStatisticProjectType('month')}>Month</Dropdown.Item>
+                      <Dropdown.Item onClick={() => setStatisticProjectType('year')}>Year</Dropdown.Item>
+                    </Dropdown.Menu>
+                  </Dropdown>
+                </div>
+                <BarChart chartData={projectData} />
+              </Col>
+              <Col md={4}>
+                <PieChart chartData={reportData} />
+              </Col>
+            </div>
+
           </div>
         );
       case 'report':
@@ -222,7 +303,33 @@ function Statistic() {
       </Col>
       <Col md={9}>
         <Row>
-          
+          <Col md={4} className="px-0">
+            <CardItem
+              icon={<VscAccount />}
+              title="Account"
+              count={8}
+              active={activeTab === 'account'}
+              onClick={() => handleTabClick('account')}
+            />
+          </Col>
+          <Col md={4} className="px-0">
+            <CardItem
+              icon={<VscAccount />}
+              title="Post"
+              count={8}
+              active={activeTab === 'post'}
+              onClick={() => handleTabClick('post')}
+            />
+          </Col>
+          <Col md={4} className="px-0">
+            <CardItem
+              icon={<VscAccount />}
+              title="Blog"
+              count={8}
+              active={activeTab === 'blog'}
+              onClick={() => handleTabClick('blog')}
+            />
+          </Col>
         </Row>
         <Row>
           <Col md={2} className="px-0">
@@ -236,7 +343,7 @@ function Statistic() {
           </Col>
           <Col md={2} className="px-0">
             <CardItem
-              icon={<VscAccount />}
+              icon={<GoPencil />}
               title="Post"
               count={8}
               active={activeTab === 'post'}
@@ -245,7 +352,7 @@ function Statistic() {
           </Col>
           <Col md={2} className="px-0">
             <CardItem
-              icon={<VscAccount />}
+              icon={<FiBookOpen />}
               title="Blog"
               count={8}
               active={activeTab === 'blog'}
@@ -254,7 +361,7 @@ function Statistic() {
           </Col>
           <Col md={2} className="px-0">
             <CardItem
-              icon={<VscAccount />}
+              icon={<LuBook />}
               title="Project"
               count={8}
               active={activeTab === 'project'}
@@ -263,7 +370,7 @@ function Statistic() {
           </Col>
           <Col md={2} className="px-0">
             <CardItem
-              icon={<VscAccount />}
+              icon={<TbMessageReport />}
               title="Report"
               count={8}
               active={activeTab === 'report'}
@@ -272,7 +379,7 @@ function Statistic() {
           </Col>
           <Col md={2} className="px-0">
             <CardItem
-              icon={<VscAccount />}
+              icon={<MdVerified />}
               title="Verification"
               count={8}
               active={activeTab === 'verification'}
@@ -280,14 +387,11 @@ function Statistic() {
             />
           </Col>
         </Row>
-        <Row>
-
-          <Col md={6}>
-            <div className="chart-all bg-white p-3">
-              {renderChart()}
-            </div>
-          </Col>
-          <Col md={6}>
+        <Row className="ms-0 me-0">
+          <div className="bg-white">
+            {renderChart()}
+          </div>
+          {/* <Col md={6}>
 
             <div className="sup-bar col-auto">
               <div className="d-flex flex-column ">
@@ -298,13 +402,13 @@ function Statistic() {
                   <div className="end mb-1">
                     <input type="date" className="form-control" value={endDate} onChange={(event) => setEndDate(event.target.value)} />
                   </div>
-                  <button className="btn btn-primary" onClick={()=> handleClearDates()}>
+                  <button className="btn btn-primary" onClick={() => handleClearDates()}>
                     Clear
                   </button>
                 </div>
               </div>
             </div>
-          </Col>
+          </Col> */}
         </Row>
 
       </Col>
