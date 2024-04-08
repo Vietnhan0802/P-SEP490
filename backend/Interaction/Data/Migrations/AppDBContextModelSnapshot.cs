@@ -34,7 +34,7 @@ namespace Interaction.Data.Migrations
                     b.Property<string>("content")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("createdDate")
+                    b.Property<DateTime>("createdDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("idReported")
@@ -65,7 +65,7 @@ namespace Interaction.Data.Migrations
                     b.Property<string>("content")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("createdDate")
+                    b.Property<DateTime>("createdDate")
                         .HasColumnType("datetime2");
 
                     b.Property<Guid>("idBloged")
@@ -95,7 +95,7 @@ namespace Interaction.Data.Migrations
                     b.Property<string>("content")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("createdDate")
+                    b.Property<DateTime>("createdDate")
                         .HasColumnType("datetime2");
 
                     b.Property<Guid>("idPosted")
@@ -122,7 +122,7 @@ namespace Interaction.Data.Migrations
                     b.Property<DateTime?>("confirmedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("createdDate")
+                    b.Property<DateTime>("createdDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("idAccount")
