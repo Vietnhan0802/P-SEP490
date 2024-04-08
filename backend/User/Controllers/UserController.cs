@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Org.BouncyCastle.Crypto;
 using System.Data;
+using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using System.Net.Http.Headers;
@@ -272,6 +273,97 @@ namespace User.Controllers
         }
 
         /*------------------------------------------------------------Statistic------------------------------------------------------------*/
+
+        [HttpGet("GetAccountStatistic/{statisticType}")]
+        public async Task<List<ViewStatistic>> GetAccountStatistic(string statisticType)
+        {
+            var startDate = DateTime.Now.ToString("yyyy-MM-dd");
+
+            var startOfWeek = DateTime.Parse(startDate).AddDays(-(int)DateTime.Parse(startDate).DayOfWeek);
+            var endOfWeek = startOfWeek.AddDays(7);
+            var startOfMonth = new DateTime(DateTime.Parse(startDate).Year, DateTime.Parse(startDate).Month, 1);
+            var endOfMonth = startOfMonth.AddMonths(1);
+            var startOfYear = new DateTime(DateTime.Parse(startDate).Year, 1, 1);
+            var endOfYear = startOfYear.AddYears(1);
+            var userStatistic = new List<ViewStatistic>();
+            if (statisticType == "today")
+            {
+                var users = await _userManager.Users
+                .Where(x => x.createdDate >= DateTime.Parse(startDate) && x.createdDate < DateTime.Parse(startDate).AddDays(1))
+                .ToListAsync();
+
+                for (int hour = 0; hour < 24; hour++)
+                {
+                    var count = users.Count(x => x.createdDate.Hour == hour);
+                    userStatistic.Add(new ViewStatistic
+                    {
+                        hourInDay = hour,
+                        count = count
+                    });
+                }
+
+                return userStatistic;
+            }
+            else if (statisticType == "week")
+            {
+                var users = await _userManager.Users
+                .Where(x => x.createdDate >= startOfWeek && x.createdDate < endOfWeek)
+                .ToListAsync();
+
+                for (int day = 0; day < 7; day++)
+                {
+                    var dayOfWeek = (DayOfWeek)day;
+                    var count = users.Count(x => x.createdDate.DayOfWeek == dayOfWeek);
+                    userStatistic.Add(new ViewStatistic
+                    {
+                        dayInWeek = dayOfWeek.ToString(),
+                        count = count
+                    });
+                }
+
+                return userStatistic;
+            }
+            else if (statisticType == "month")
+            {
+                var users = await _userManager.Users
+                .Where(x => x.createdDate >= startOfMonth && x.createdDate < endOfMonth)
+                .ToListAsync();
+
+                var daysInMonth = (endOfMonth - startOfMonth).Days;
+                for (int day = 0; day < daysInMonth; day++)
+                {
+                    var date = startOfMonth.AddDays(day);
+                    var count = users.Count(x => x.createdDate.Date == date.Date);
+                    userStatistic.Add(new ViewStatistic
+                    {
+                        dayInMonth = date.Date,
+                        count = count
+                    });
+                }
+
+                return userStatistic;
+            }
+            else if (statisticType == "year")
+            {
+                var users = await _userManager.Users
+                .Where(x => x.createdDate >= startOfYear && x.createdDate < endOfYear)
+                .ToListAsync();
+
+                for (int month = 1; month <= 12; month++)
+                {
+                    var monthName = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(month);
+                    var count = users.Count(x => x.createdDate.Month == month);
+                    userStatistic.Add(new ViewStatistic
+                    {
+                        monthInYear = monthName,
+                        count = count
+                    });
+                }
+
+                return userStatistic;
+            }
+            return null;
+        }
 
         [HttpGet("GetAllAccountInSystem")]
         public async Task<List<ViewAccountStatistic>> GetAllAccountInSystem()
