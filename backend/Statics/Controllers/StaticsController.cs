@@ -52,6 +52,40 @@ namespace Statics.Controllers
 
         /*------------------------------------------------------------StatisticInteraction------------------------------------------------------------*/
 
+        [HttpGet("CallVerificationStatistic/{statisticType}")]
+        public async Task<Response> CallVerificationStatistic(string statisticType)
+        {
+            HttpResponseMessage response = await client.GetAsync($"{InteractionApiUrl}/GetVerificationStatistic/{statisticType}");
+            string strData = await response.Content.ReadAsStringAsync();
+            var option = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true,
+            };
+            var verificationStatistic = JsonSerializer.Deserialize<List<ViewStatistic>>(strData, option);
+            if (verificationStatistic != null)
+            {
+                return new Response(HttpStatusCode.OK, "Get verification statistic is success!", verificationStatistic);
+            }
+            return new Response(HttpStatusCode.NoContent, "Get verification statistic is empty!");
+        }
+
+        [HttpGet("CallReportStatistic/{statisticType}")]
+        public async Task<Response> CallReportStatistic(string statisticType)
+        {
+            HttpResponseMessage response = await client.GetAsync($"{InteractionApiUrl}/GetReportStatistic/{statisticType}");
+            string strData = await response.Content.ReadAsStringAsync();
+            var option = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true,
+            };
+            var reportStatistic = JsonSerializer.Deserialize<List<ViewStatistic>>(strData, option);
+            if (reportStatistic != null)
+            {
+                return new Response(HttpStatusCode.OK, "Get report statistic is success!", reportStatistic);
+            }
+            return new Response(HttpStatusCode.NoContent, "Get report statistic is empty!");
+        }
+
         [HttpGet("GetAllStatusVerificationInSystem")]
         public async Task<Response> GetAllStatusVerificationInSystem()
         {
