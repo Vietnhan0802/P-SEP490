@@ -153,21 +153,22 @@ namespace BlogService.Controllers
             var endOfMonth = startOfMonth.AddMonths(1);
             var startOfYear = new DateTime(DateTime.Parse(startDate).Year, 1, 1);
             var endOfYear = startOfYear.AddYears(1);
+            var blogStatistic = new List<ViewStatistic>();
             if (statisticType == "today")
             {
                 var blogs = await _context.Blogs
                 .Where(x => x.createdDate >= DateTime.Parse(startDate) && x.createdDate < DateTime.Parse(startDate).AddDays(1))
                 .ToListAsync();
 
-                var blogStatistic = blogs
-                .GroupBy(x => x.createdDate.Hour)
-                .Select(result => new ViewStatistic
+                for (int hour = 0; hour < 24; hour++)
                 {
-                    hourInDay = result.Key,
-                    count = result.Count()
-                })
-                .OrderBy(x => x.hourInDay)
-                .ToList();
+                    var count = blogs.Count(x => x.createdDate.Hour == hour);
+                    blogStatistic.Add(new ViewStatistic
+                    {
+                        hourInDay = hour,
+                        count = count
+                    });
+                }
 
                 return blogStatistic;
             }
@@ -177,15 +178,16 @@ namespace BlogService.Controllers
                 .Where(x => x.createdDate >= startOfWeek && x.createdDate < endOfWeek)
                 .ToListAsync();
 
-                var blogStatistic = blogs
-                .GroupBy(x => x.createdDate.DayOfWeek)
-                .Select(result => new ViewStatistic
+                for (int day = 0; day < 7; day++)
                 {
-                    dayInWeek = result.Key.ToString(),
-                    count = result.Count()
-                })
-                .OrderBy(x => x.dayInWeek)
-                .ToList();
+                    var dayOfWeek = (DayOfWeek)day;
+                    var count = blogs.Count(x => x.createdDate.DayOfWeek == dayOfWeek);
+                    blogStatistic.Add(new ViewStatistic
+                    {
+                        dayInWeek = dayOfWeek.ToString(),
+                        count = count
+                    });
+                }
 
                 return blogStatistic;
             }
@@ -195,15 +197,17 @@ namespace BlogService.Controllers
                 .Where(x => x.createdDate >= startOfMonth && x.createdDate < endOfMonth)
                 .ToListAsync();
 
-                var blogStatistic = blogs
-                .GroupBy(x => x.createdDate.Date)
-                .Select(result => new ViewStatistic
+                var daysInMonth = (endOfMonth - startOfMonth).Days;
+                for (int day = 0; day < daysInMonth; day++)
                 {
-                    dayInMonth = result.Key,
-                    count = result.Count()
-                })
-                .OrderBy(x => x.dayInMonth)
-                .ToList();
+                    var date = startOfMonth.AddDays(day);
+                    var count = blogs.Count(x => x.createdDate.Date == date.Date);
+                    blogStatistic.Add(new ViewStatistic
+                    {
+                        dayInMonth = date.Date,
+                        count = count
+                    });
+                }
 
                 return blogStatistic;
             }
@@ -213,15 +217,16 @@ namespace BlogService.Controllers
                 .Where(x => x.createdDate >= startOfYear && x.createdDate < endOfYear)
                 .ToListAsync();
 
-                var blogStatistic = blogs
-                .GroupBy(x => x.createdDate.Month)
-                .Select(result => new ViewStatistic
+                for (int month = 1; month <= 12; month++)
                 {
-                    monthInYear = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(result.Key),
-                    count = result.Count()
-                })
-                .OrderBy(x => x.dayInMonth)
-                .ToList();
+                    var monthName = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(month);
+                    var count = blogs.Count(x => x.createdDate.Month == month);
+                    blogStatistic.Add(new ViewStatistic
+                    {
+                        monthInYear = monthName,
+                        count = count
+                    });
+                }
 
                 return blogStatistic;
             }

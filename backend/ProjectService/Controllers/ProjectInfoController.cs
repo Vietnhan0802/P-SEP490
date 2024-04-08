@@ -275,21 +275,22 @@ namespace ProjectService.Controllers
             var endOfMonth = startOfMonth.AddMonths(1);
             var startOfYear = new DateTime(DateTime.Parse(startDate).Year, 1, 1);
             var endOfYear = startOfYear.AddYears(1);
+            var projectStatistic = new List<ViewStatistic>();
             if (statisticType == "today")
             {
                 var projects = await _context.Projects
                 .Where(x => x.createdDate >= DateTime.Parse(startDate) && x.createdDate < DateTime.Parse(startDate).AddDays(1))
                 .ToListAsync();
 
-                var projectStatistic = projects
-                .GroupBy(x => x.createdDate.Hour)
-                .Select(result => new ViewStatistic
+                for (int hour = 0; hour < 24; hour++)
                 {
-                    hourInDay = result.Key,
-                    count = result.Count()
-                })
-                .OrderBy(x => x.hourInDay)
-                .ToList();
+                    var count = projects.Count(x => x.createdDate.Hour == hour);
+                    projectStatistic.Add(new ViewStatistic
+                    {
+                        hourInDay = hour,
+                        count = count
+                    });
+                }
 
                 return projectStatistic;
             }
@@ -299,15 +300,16 @@ namespace ProjectService.Controllers
                 .Where(x => x.createdDate >= startOfWeek && x.createdDate < endOfWeek)
                 .ToListAsync();
 
-                var projectStatistic = projects
-                .GroupBy(x => x.createdDate.DayOfWeek)
-                .Select(result => new ViewStatistic
+                for (int day = 0; day < 7; day++)
                 {
-                    dayInWeek = result.Key.ToString(),
-                    count = result.Count()
-                })
-                .OrderBy(x => x.dayInWeek)
-                .ToList();
+                    var dayOfWeek = (DayOfWeek)day;
+                    var count = projects.Count(x => x.createdDate.DayOfWeek == dayOfWeek);
+                    projectStatistic.Add(new ViewStatistic
+                    {
+                        dayInWeek = dayOfWeek.ToString(),
+                        count = count
+                    });
+                }
 
                 return projectStatistic;
             }
@@ -317,15 +319,17 @@ namespace ProjectService.Controllers
                 .Where(x => x.createdDate >= startOfMonth && x.createdDate < endOfMonth)
                 .ToListAsync();
 
-                var projectStatistic = projects
-                .GroupBy(x => x.createdDate.Date)
-                .Select(result => new ViewStatistic
+                var daysInMonth = (endOfMonth - startOfMonth).Days;
+                for (int day = 0; day < daysInMonth; day++)
                 {
-                    dayInMonth = result.Key,
-                    count = result.Count()
-                })
-                .OrderBy(x => x.dayInMonth)
-                .ToList();
+                    var date = startOfMonth.AddDays(day);
+                    var count = projects.Count(x => x.createdDate.Date == date.Date);
+                    projectStatistic.Add(new ViewStatistic
+                    {
+                        dayInMonth = date.Date,
+                        count = count
+                    });
+                }
 
                 return projectStatistic;
             }
@@ -335,15 +339,16 @@ namespace ProjectService.Controllers
                 .Where(x => x.createdDate >= startOfYear && x.createdDate < endOfYear)
                 .ToListAsync();
 
-                var projectStatistic = projects
-                .GroupBy(x => x.createdDate.Month)
-                .Select(result => new ViewStatistic
+                for (int month = 1; month <= 12; month++)
                 {
-                    monthInYear = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(result.Key),
-                    count = result.Count()
-                })
-                .OrderBy(x => x.dayInMonth)
-                .ToList();
+                    var monthName = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(month);
+                    var count = projects.Count(x => x.createdDate.Month == month);
+                    projectStatistic.Add(new ViewStatistic
+                    {
+                        monthInYear = monthName,
+                        count = count
+                    });
+                }
 
                 return projectStatistic;
             }
