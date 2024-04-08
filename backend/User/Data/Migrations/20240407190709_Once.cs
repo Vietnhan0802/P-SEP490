@@ -173,15 +173,15 @@ namespace User.Data.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "8d5e92e5-b8d9-4f1c-b7e4-8111fdfecbb2", "2", "Member", "Member" },
+                    { "48a7dee2-f4fe-45db-ae84-5da8a49a7e96", "3", "Business", "Business" },
                     { "aeb27c30-d31d-43ec-9465-d04bf75d0f0d", "1", "Admin", "Admin" },
-                    { "c05c83b0-5d6c-49e2-ba5c-eaedcfda05af", "3", "Business", "Business" }
+                    { "c3550518-0242-475e-9ebb-090613000d80", "2", "Member", "Member" }
                 });
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName", "address", "avatar", "createdDate", "date", "description", "fullName", "isBlock", "isMale", "isVerified", "tax" },
-                values: new object[] { "b80546cd-f4df-4a46-842e-22d3f9018ce3", 0, "f624821c-b02c-4730-ad21-e04b7276eaa7", "PEITCS.admin@gmail.com", true, true, null, "PEITCS.ADMIN@GMAIL.COM", "PEITCS.ADMIN@GMAIL.COM", "AQAAAAIAAYagAAAAEFoNCs1e9z05n2GJZ0ma0+rpYDWkF5I8N98OqiokbLDL/929gNgua0HfuGFNEe96Mw==", "0949180802", false, "29e57c1a-d7f9-48df-81f0-f06b686ceda8", false, "PEITCS.admin@gmail.com", "Bến Tre", "default.png", new DateTime(2024, 3, 27, 3, 25, 56, 117, DateTimeKind.Local).AddTicks(8408), new DateTime(2002, 8, 18, 0, 0, 0, 0, DateTimeKind.Unspecified), "Admin quản lý trang web công nghệ kết nối, tập trung và hiệu quả trong việc duy trì và phát triển nền tảng, không lãng phí thời gian vào những cuộc trò chuyện vô nghĩa.", "PEITCS", false, true, true, "1234567890" });
+                values: new object[] { "b80546cd-f4df-4a46-842e-22d3f9018ce3", 0, "f74e48b3-ba94-4136-8cf2-9679098b804a", "peitcs.ad@gmail.com", true, true, null, "PEITCS.AD@GMAIL.COM", "PEITCS.AD@GMAIL.COM", "AQAAAAIAAYagAAAAEIwhbL6qt3yRENAIY34IgF3K6SnliSJOsyS0fgVg/5TcfRm9L/t+sWcaZOP7CNXkTA==", "0949180802", false, "2f4c0ea5-3126-4673-a6ee-80d4875bdd27", false, "peitcs.ad@gmail.com", "Bến Tre", "default.png", new DateTime(2024, 4, 8, 2, 7, 9, 748, DateTimeKind.Local).AddTicks(1139), new DateTime(2002, 8, 18, 0, 0, 0, 0, DateTimeKind.Unspecified), "Admin quản lý trang web công nghệ kết nối, tập trung và hiệu quả trong việc duy trì và phát triển nền tảng, không lãng phí thời gian vào những cuộc trò chuyện vô nghĩa.", "PEITCS", false, true, true, "1234567890" });
 
             migrationBuilder.InsertData(
                 table: "AspNetUserRoles",

@@ -29,10 +29,10 @@ namespace User.Data
                 new Account
                 {
                     Id = "b80546cd-f4df-4a46-842e-22d3f9018ce3",
-                    UserName = "PEITCS.admin@gmail.com",
-                    NormalizedUserName = "PEITCS.ADMIN@GMAIL.COM",
-                    Email = "PEITCS.admin@gmail.com",
-                    NormalizedEmail = "PEITCS.ADMIN@GMAIL.COM",
+                    UserName = "peitcs.ad@gmail.com",
+                    NormalizedUserName = "PEITCS.AD@GMAIL.COM",
+                    Email = "peitcs.ad@gmail.com",
+                    NormalizedEmail = "PEITCS.AD@GMAIL.COM",
                     EmailConfirmed = true,
                     fullName = "PEITCS",
                     date = new DateTime(2002, 8, 18),
