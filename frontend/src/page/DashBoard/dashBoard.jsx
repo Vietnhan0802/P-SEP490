@@ -108,7 +108,6 @@ function DashBoard() {
   }, [resetVerification])
 
   const verifiListLength = verificationAcceptedList?.length + verificationList?.length;
-  console.log(verifiListLength);
 
   const resetAccount = () => {
     setResetAcc((prevReset) => !prevReset)
