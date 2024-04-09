@@ -1,4 +1,5 @@
 using BusinessObjects.Mappers;
+using BusinessObjects.ViewModels.Communication;
 using Commons.Helpers;
 using Communication;
 using Communication.Data;
@@ -29,6 +30,8 @@ builder.Services.AddCors(options =>
                     .AllowCredentials(); // Allow credentials
         });
 });
+
+builder.Services.AddSingleton<IDictionary<string, JoinConversation>>(options => new Dictionary<string, JoinConversation>());
 
 var app = builder.Build();
 
