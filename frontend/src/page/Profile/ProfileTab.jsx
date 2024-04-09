@@ -110,7 +110,7 @@ function ProfileTab(props) {
             </div>
             <div>
                 {user.role === "Member" && tab === "degree" && (
-                    <div className={`degree tab-content${showAllItems ? "scrollable" : ""}`}>
+                    <div className={`degree tab-content ${showAllItems ? "scrollable" : ""}`}>
                         {userDegree?.length !== 0 ? 
                         userDegree?.slice(0, showAllItems ? userDegree?.length : 3)
                             .map((item) => (
@@ -162,7 +162,7 @@ function ProfileTab(props) {
                                         </div>
                                     </div>
                                 </>
-                            )) : <p>There is no degree</p>}
+                            )) : <p className='bg-white'>There is no degree</p>}
 
 
                     </div>
@@ -262,7 +262,7 @@ function ProfileTab(props) {
                                             </div>
                                         </div>
                                         <p className="degree-description ellipsis">
-                                            Post Title:{blog.title}
+                                            Blog Title: {blog.title}
                                         </p>
                                     </div>
                                     <div className="col-2 d-flex justify-content-center align-items-center">
