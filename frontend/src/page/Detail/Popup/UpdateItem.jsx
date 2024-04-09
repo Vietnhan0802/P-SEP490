@@ -7,7 +7,7 @@ import { IoCameraReverse } from "react-icons/io5";
 import ReactQuill from 'react-quill';
 import "./update.scss";
 import Notification, { notifySuccess, notifyError } from "../../../components/notification";
-function UpdateItem({ show, onClose, value, type }) {
+function UpdateItem({ show, onClose, value, type,resetPage }) {
     const quillRef = useRef(null);
     const [deleteAppear, setDeleteAppear] = useState(false);
     const [update, setUpdate] = useState({
@@ -70,7 +70,6 @@ function UpdateItem({ show, onClose, value, type }) {
             setUpdate((values) => ({ ...values, [name]: value }));
         }
     };
-    console.log(type)
     const handleUpdatePost = () => {
         const quillInstance = quillRef.current?.getEditor();
 
@@ -115,7 +114,7 @@ function UpdateItem({ show, onClose, value, type }) {
                     accept: "application/json",
                 },
             })
-                .then((res) => { console.log(res?.data?.result); notifySuccess("Update post successfully!"); })
+                .then((res) => { console.log(res?.data?.result); notifySuccess("Update post successfully!"); resetPage(); onClose(); })
                 .catch((error) => { console.error(error); notifyError("Update post failed!"); });
         } else {
             if (update?.CreateUpdateImages?.length > 0) {
@@ -136,7 +135,7 @@ function UpdateItem({ show, onClose, value, type }) {
                     accept: "application/json",
                 },
             })
-                .then((res) => { console.log(res?.data?.result); notifySuccess("Update blog successfully!"); })
+                .then((res) => { console.log(res?.data?.result); notifySuccess("Update blog successfully!"); resetPage(); onClose(); })
                 .catch((error) => { console.error(error); notifyError("Update blog failed!"); });
 
         }

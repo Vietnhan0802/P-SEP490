@@ -259,7 +259,7 @@ function Blog({ value }) {
               </div>
 
               <h3 className="mt-2">{item.title}</h3>
-              <div style={{ maxHeight: '200px', overflow: 'hidden' }}>
+              <div style={{ maxHeight: '200px', overflow: 'hidden' }} className="mb-3">
                 <div dangerouslySetInnerHTML={{ __html: item.content }} />
               </div>
 

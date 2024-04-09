@@ -16,7 +16,7 @@ import { Button } from "react-bootstrap";
 import { BsThreeDots } from "react-icons/bs";
 import tick from "../../images/common/verifiedTick.png";
 
-function PostContent({ data, handleLikeOrUnlikePost, viewProject, userId }) {
+function PostContent({ data, handleLikeOrUnlikePost, viewProject, userId ,resetPage}) {
   const navigate = useNavigate();
 
   const [display, setDisplay] = useState(false);
@@ -61,12 +61,13 @@ function PostContent({ data, handleLikeOrUnlikePost, viewProject, userId }) {
         console.error("Error fetching project:", error);
       });
   };
+
   return (
     <>
       <div className="d-flex  justify-content-between">
         <div className="d-flex align-items-center mb-2">
           <div className="position-relative">
-            <div className="profile" style={{width:'50px'}}>
+            <div className="profile" style={{ width: '50px' }}>
               <img src={data?.avatar} alt="profile" />
             </div>
             {data?.isVerified && <img src={tick} alt="tick" className="position-absolute bottom-0 end-0" style={{ width: '18px' }} />}
@@ -125,6 +126,7 @@ function PostContent({ data, handleLikeOrUnlikePost, viewProject, userId }) {
         onClose={() => setDisplay(false)}
         value={data}
         type={'post'}
+        resetPage={resetPage}
       />
       <DeleteItem
         show={displayDelete}
@@ -133,9 +135,8 @@ function PostContent({ data, handleLikeOrUnlikePost, viewProject, userId }) {
         type={'post'}
       />
 
-      <p className="fs-4 fw-bold">{data?.title}</p>
+      <p className="fs-4 fw-bold ">{data?.title}</p>
       <div dangerouslySetInnerHTML={{ __html: data?.content }} />
-      <div></div>
       <div
         id={`carouselExampleControls-PostUnique`}
         className="carousel slide"
