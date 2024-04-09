@@ -39,6 +39,11 @@ function RatingFeedback({ show, onClose, formatDateString, idProject, idUser, ty
     const handleRating = (rate) => {
         setRating(rate)        // other logic
     }
+    const handleUpdateFeedback = (feedback, comment) => {
+        console.log(comment)
+        setFeedbackToUpdate(feedback);
+        setUpdateFeedback(comment);
+    }
     const handleDeleteRating = (idRating) => {
         projectInstance.delete(`RemoveRating/${idRating}`)
             .then((res) => { resetPage(); setResetFeedback(!resetFeedback) })
@@ -52,7 +57,6 @@ function RatingFeedback({ show, onClose, formatDateString, idProject, idUser, ty
             .then((res) => { resetPage(); setResetFeedback(!resetFeedback) })
             .catch((error) => { console.log(error) });
     }
-    console.log(projectFeedback)
     return (
         <div>
             <Modal show={show} onHide={onClose} id="ratingFeedback">
@@ -119,7 +123,7 @@ function RatingFeedback({ show, onClose, formatDateString, idProject, idUser, ty
                                                         "&::after": {
                                                             content: 'none',
                                                             border: "none",
-                                                            displat: "none !important"
+                                                            display: "none !important"
                                                         },
                                                     }}
                                                 >
@@ -129,7 +133,7 @@ function RatingFeedback({ show, onClose, formatDateString, idProject, idUser, ty
                                                 <Dropdown.Menu style={{ minWidth: "auto" }}>
                                                     <Dropdown.Item
                                                         className="d-flex justify-content-center"
-                                                        onClick={() => setFeedbackToUpdate(feedback)}
+                                                        onClick={() => handleUpdateFeedback(feedback, feedback?.comment)}
                                                     >
                                                         <GrUpdate size={14} />
                                                     </Dropdown.Item>
@@ -148,6 +152,7 @@ function RatingFeedback({ show, onClose, formatDateString, idProject, idUser, ty
                                         }
                                     </div>
                                 </div>
+                                {console.log(feedback?.comment)}
                                 {feedbackToUpdate === feedback ? (
                                     <div>
                                         <div>

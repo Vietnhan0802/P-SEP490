@@ -32,8 +32,8 @@ function Chat() {
   const [connection, setConnection] = useState(null);
   const [showEmojiBox, setShowEmojiBox] = useState(false);
   const [search, setSearch] = useState('');
-  const [showDeleteChat, setShowDeleteChat] = useState();
-
+  const [showDeleteChat, setShowDeleteChat] = useState(false);
+  const [idConversationDelete, setIdConversationDelete] = useState('');
   const handleSearchChange = (event) => {
     setSearch(event.target.value);
     if (event.target.value === '') { // corrected condition
@@ -278,7 +278,13 @@ function Chat() {
       chatBoxBodyRef.current.scrollTop = chatBoxBodyRef.current.scrollHeight;
     }
   }, [messages]);
-
+  const handleSetShowDeleteChat = (idConversation) => {
+    setShowDeleteChat(true);
+    setIdConversationDelete(idConversation);
+  }
+  const resetConversation = () => {
+    reset(!reset);
+  }
   return (
 
     <Row className="m-3" style={{ height: "calc(100vh - 97px)", paddingBottom: "16px" }}>
@@ -338,7 +344,7 @@ function Chat() {
 
                         <Dropdown.Item>
                           <MdDelete size={14}
-                            onClick={() => setShowDeleteChat(item?.idConversation)}
+                            onClick={() => handleSetShowDeleteChat(item?.idConversation)}
                           />
                         </Dropdown.Item>
                       </Dropdown.Menu>
@@ -354,7 +360,7 @@ function Chat() {
             ) : (
               <p>No conversations found.</p>
             )}
-            {showDeleteChat && <DeleteChat show={showDeleteChat !== null} onClose={setShowDeleteChat(null)} />}
+            {showDeleteChat && <DeleteChat show={showDeleteChat} onClose={() => setShowDeleteChat(false)} currentUserId={currentUserId} idConversation={idConversationDelete} resetConversation={resetConversation} />}
           </div>
         </div>
       </Col>
