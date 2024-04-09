@@ -3,12 +3,29 @@
   background-color: var(--header_background) !important;
   color: var(--header_search_text);
 }
+.dropdown-toggle::after {
+  display: none;
+  border-color: none;
+}
+.option{
+  top: -32%;
+  right: -10%;
+}
+.option-other{
+  top: -32%;
+  left: -10%;
+}
+.bg-blur{
+  border-radius: 8px;
+  background-color: rgba(185, 185, 185, 1);
+}
 #chat {
   height: 100%;
   overflow-y: auto;
   input:focus {
     outline: none;
   }
+
   .chat-search {
     background-color: var(--header_background_search_box);
     border-radius: 8px;

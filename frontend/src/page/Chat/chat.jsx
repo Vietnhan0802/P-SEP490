@@ -35,6 +35,7 @@ function Chat() {
   const [search, setSearch] = useState('');
   const [showDeleteChat, setShowDeleteChat] = useState(false);
   const [idConversationDelete, setIdConversationDelete] = useState('');
+  const [selectedUserId, setSelectedUserId] = useState(null);
   const handleSearchChange = (event) => {
     setSearch(event.target.value);
     if (event.target.value === '') { // corrected condition
@@ -48,15 +49,27 @@ function Chat() {
     }
   }
 
-  const joinConversation = async (currentUserId, idConversation) => {
-    try {
-      const connection = new signalR.HubConnectionBuilder()
+  useEffect(() => {
+    const newConnection = new signalR.HubConnectionBuilder()
       .withUrl("https://localhost:7001/chatHub") // Replace with your server URL
       .withAutomaticReconnect()
       .build();
-      
-      connection.on("ReceiveMessage", (messageText) => {
-        //setMessages(messages => [...messages, { currentUserId, message }])
+    setConnection(newConnection);
+  }, []);
+
+  useEffect(() => {
+    if (connection) {
+      connection.start()
+        .then(() => {
+          console.log('Connected to SignalR hub');
+        })
+        .catch(error => console.log('Error connecting to SignalR hub: ', error));
+      // connection.on("UserConnected", (currentUserId) => {
+      //   setUsersOnl((usersOnl) => [...usersOnl, currentUserId]);
+      // })
+
+      connection.on('ReceiveMessage', (messageText) => {
+        //setMessages((message) => [...message, { idReceiver, message: messageText }])
         setMessages((prevMessages) => {
           if (Array.isArray(prevMessages)) {
             return [...prevMessages, messageText];
@@ -64,60 +77,13 @@ function Chat() {
             return [messageText];
           }
         });
-        console.log("Message received: ", messageText);
+        // console.log('ReceiveMessage currentUserId:' + currentUserId);
+        // console.log('ReceiveMessage userId:' + idReceiver);
+        console.log("ReceiveMessage here!");
+        console.log(messageText);
       });
-
-      await connection.start();
-      await connection.invoke("JoinConversation", {currentUserId, idConversation});
-      setConnection(connection);
-    } catch (e) {
-      console.log(e);
     }
-  }
-
-  const sendMessage = async (message) => {
-    try {
-      await connection.invoke("SendMessage", message);
-    } catch (e) {
-      console.log(e);
-    }
-  }
-
-  // useEffect(() => {
-  //   const newConnection = new signalR.HubConnectionBuilder()
-  //     .withUrl("https://localhost:7001/chatHub") // Replace with your server URL
-  //     .withAutomaticReconnect()
-  //     .build();
-  //   setConnection(newConnection);
-  // }, []);
-
-  // useEffect(() => {
-  //   if (connection) {
-  //     connection.start()
-  //       .then(() => {
-  //         console.log('Connected to SignalR hub');
-  //       })
-  //       .catch(error => console.log('Error connecting to SignalR hub: ', error));
-  //     connection.on("UserConnected", (currentUserId) => {
-  //       setUsersOnl((usersOnl) => [...usersOnl, currentUserId]);
-  //     })
-
-  //     connection.on('ReceiveMessage', (messageText) => {
-  //       //setMessages((message) => [...message, { idReceiver, message: messageText }])
-  //       setMessages((prevMessages) => {
-  //         if (Array.isArray(prevMessages)) {
-  //           return [...prevMessages, messageText];
-  //         } else {
-  //           return [messageText];
-  //         }
-  //       });
-  //       // console.log('ReceiveMessage currentUserId:' + currentUserId);
-  //       // console.log('ReceiveMessage userId:' + idReceiver);
-  //       console.log("ReceiveMessage here!");
-  //       console.log(messageText);
-  //     });
-  //   }
-  // }, [connection]);
+  }, [connection]);
 
   const handleKeyDown = (event) => {
     if (event.key === 'Enter') {
@@ -137,7 +103,9 @@ function Chat() {
                 name: res?.data?.result[0].nameReceiver,
                 receiverId: res?.data?.result[0].idReceiver === currentUserId ? res?.data?.result[0].idSender : res?.data?.result[0].idReceiver
               });
-              joinConversation(currentUserId, res?.data?.result[0].idConversation);
+              // console.log(activeUser.receiverId)
+              // joinConversation(currentUserId, res?.data?.result[0].idConversation);
+              connection.invoke('JoinConversation', { currentUserId: currentUserId, idConversation: res?.data?.result[0].idConversation });
             })
             .catch((error) => {
               console.error(error);
@@ -147,7 +115,8 @@ function Chat() {
           chatInstance.get(`GetMessages/${currentUserId}/${userId}`)
             .then((res) => {
               setMessages(res.data.result);
-              joinConversation(currentUserId, res?.data?.result[0].idConversation);
+              // joinConversation(currentUserId, res?.data?.result[0].idConversation);
+              connection.invoke('JoinConversation', { currentUserId: currentUserId, idConversation: res?.data?.result[0].idConversation });
             })
             .catch((error) => {
               console.error(error);
@@ -159,24 +128,32 @@ function Chat() {
       });
   }, [currentUserId, reset, userId]);
 
+
+  useEffect(() => {
+    if (selectedUserId !== null) {
+      chatInstance
+        .get(`GetMessages/${currentUserId}/${selectedUserId}`)
+        .then((res) => {
+          if (Array.isArray(res?.data?.result) && res?.data?.result.length !== 0) {
+            setMessages(res.data.result);
+            setActiveUser({
+              avatar: res?.data?.result[0].avatarReceiver,
+              name: res?.data?.result[0].nameReceiver,
+              receiverId: selectedUserId,
+            });
+          } else {
+            setMessages([]);
+            setActiveUser(null);
+          }
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
+  }, [currentUserId, selectedUserId])
+
   const handleConversation = (idAccount2) => {
-    chatInstance.get(`GetMessages/${currentUserId}/${idAccount2}`)
-      .then((res) => {
-        if (Array.isArray(res?.data?.result) && res?.data?.result.length !== 0) {
-          setMessages(res.data.result);
-          setActiveUser({
-            avatar: res?.data?.result[0].avatarReceiver,
-            name: res?.data?.result[0].nameReceiver,
-            receiverId: res?.data?.result[0].idReceiver === currentUserId ? res?.data?.result[0].idSender : res?.data?.result[0].idReceiver
-          });
-          joinConversation(currentUserId, res?.data?.result[0].idConversation);
-        } else {
-          setMessages([]);
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-      })
+    setSelectedUserId(idAccount2);
   };
   const handleInputMessage = (event) => {
     setMessage(event.target.value);
@@ -197,17 +174,17 @@ function Chat() {
       })
         .then((res) => {
           setReset(!reset);
-          sendMessage(res?.data?.result);
-          // if (connection && message) {
-          //   try {
-          //     connection.invoke('SendMessage', currentUserId, userId, res?.data?.result);
-          //     console.log('Invoke here!');
-          //     console.log(res?.data?.result);
-          //     setMessage('');
-          //   } catch (error) {
-          //     console.error('Error sending message: ', error);
-          //   }
-          // }
+          // sendMessage(res?.data?.result);
+          if (connection && message) {
+            try {
+              connection.invoke('SendMessage', res?.data?.result);
+              console.log('Invoke here!');
+              console.log(res?.data?.result);
+              setMessage('');
+            } catch (error) {
+              console.error('Error sending message: ', error);
+            }
+          }
         })
         .catch((error) => console.error(error));
     }
@@ -220,17 +197,17 @@ function Chat() {
       })
         .then((res) => {
           setReset(!reset);
-          sendMessage(res?.data?.result);
-          // if (connection && message) {
-          //   try {
-          //     connection.invoke('SendMessage', currentUserId, userId, res?.data?.result);
-          //     setMessage('');
-          //     console.log('Invoke here!');
-          //     console.log(res?.data?.result);
-          //   } catch (error) {
-          //     console.error('Error sending message: ', error);
-          //   }
-          // }
+          // sendMessage(res?.data?.result);
+          if (connection && message) {
+            try {
+              connection.invoke('SendMessage', res?.data?.result);
+              setMessage('');
+              console.log('Invoke here!');
+              console.log(res?.data?.result);
+            } catch (error) {
+              console.error('Error sending message: ', error);
+            }
+          }
         })
         .catch((error) => console.error(error));
     }
@@ -247,18 +224,18 @@ function Chat() {
         },
       })
         .then((res) => {
-          sendMessage(res?.data?.result);
-          // if (connection && file) {
-          //   try {
-          //     connection.invoke('SendMessage', currentUserId, userId, res?.data?.result);
-          //     setMessage('');
-          //     console.log('SendMessage currentUserId:' + currentUserId);
-          //     console.log('SendMessage userId:' + userId);
-          //     console.log(res?.data?.result);
-          //   } catch (error) {
-          //     console.error('Error sending message: ', error);
-          //   }
-          // }
+          // sendMessage(res?.data?.result);
+          if (connection && file) {
+            try {
+              connection.invoke('SendMessage', currentUserId, userId, res?.data?.result);
+              setMessage('');
+              console.log('SendMessage currentUserId:' + currentUserId);
+              console.log('SendMessage userId:' + userId);
+              console.log(res?.data?.result);
+            } catch (error) {
+              console.error('Error sending message: ', error);
+            }
+          }
         })
         .catch((error) => {
           console.error('Error uploading file:', error);
@@ -277,18 +254,18 @@ function Chat() {
         },
       })
         .then((res) => {
-          sendMessage(res?.data?.result);
-          // if (connection && file) {
-          //   try {
-          //     connection.invoke('SendMessage', currentUserId, userId, res?.data?.result);
-          //     setMessage('');
-          //     console.log('SendMessage currentUserId:' + currentUserId);
-          //     console.log('SendMessage userId:' + userId);
-          //     console.log(res?.data?.result);
-          //   } catch (error) {
-          //     console.error('Error sending message: ', error);
-          //   }
-          // }
+          // sendMessage(res?.data?.result);
+          if (connection && file) {
+            try {
+              connection.invoke('SendMessage', currentUserId, userId, res?.data?.result);
+              setMessage('');
+              console.log('SendMessage currentUserId:' + currentUserId);
+              console.log('SendMessage userId:' + userId);
+              console.log(res?.data?.result);
+            } catch (error) {
+              console.error('Error sending message: ', error);
+            }
+          }
         })
         .catch((error) => {
           console.error('Error uploading file:', error);
@@ -327,6 +304,22 @@ function Chat() {
   }
   const resetConversation = () => {
     reset(!reset);
+  }
+  const handleDeleteMess = (id) => {
+    chatInstance.delete(`DeleteMessage/${id}/${currentUserId}`)
+      .then((res) => {
+        console.log(res?.data?.result);
+        setReset(!reset);
+      }
+      ).catch((error) => { console.error(error) })
+  }
+  const handleRecallMess = (id) => {
+    chatInstance.delete(`RecallMessage/${id}`)
+      .then((res) => {
+        console.log(res?.data?.result);
+        setReset(!reset);
+      }
+      ).catch((error) => { console.error(error) })
   }
   return (
 
@@ -395,7 +388,6 @@ function Chat() {
                     <img src={item?.avatar === "https://localhost:7006/Images/" ? defaultImage : item?.avatar} alt="" className="avatar" />
                     <div className="ms-2">
                       <p className="mb-0 name">{item?.fullName}</p>
-                      <p className="mb-0 text">This is a text</p>
                     </div>
                   </div>
                 </div>
@@ -489,13 +481,37 @@ function Chat() {
                             <p className="mb-0 text">{formatDate(item?.createdDate)}</p>
                           </div>
                           {item?.content &&
-                            <p
-                              className={`mb ${item?.isYourself ? "self-content" : "content"
-                                }`}
-                            >
-                              {item?.content}
-                            </p>}
-                          
+                            <div className="position-relative">
+                              {item?.isRecall &&  <div className="w-100 h-100 position-absolute d-flex align-items-center bg-blur">
+                                <p className="ms-3 white">Message is unsend</p>
+                              </div>}
+
+                              <p
+                                className={`mb ${item?.isYourself ? "self-content" : "content"
+                                  }`}
+                              >
+                                {item?.content}
+                              </p>
+                              <Dropdown className={`position-absolute ${item?.isYourself ? "option-other" : "option"} `}>
+                                <Dropdown.Toggle
+                                  variant="white"
+                                  className="border-none text-body"
+                                >
+                                  <BsThreeDots size={14} />
+                                </Dropdown.Toggle>
+                                <Dropdown.Menu style={{ minWidth: "auto" }}>
+                                  <Dropdown.Item onClick={() => handleDeleteMess(item.idMessage)}>
+                                    <p style={{ fontSize: '14px' }}>Delete</p>
+                                  </Dropdown.Item>
+                                  <Dropdown.Item onClick={() => handleRecallMess(item.idMessage)}>
+                                    <p style={{ fontSize: '14px' }}>Unsend</p>
+                                  </Dropdown.Item>
+                                </Dropdown.Menu>
+                              </Dropdown>
+
+                            </div>
+                          }
+
                           {item?.file &&
                             <a className="text-white"
                               href={` https://localhost:7001/Images/${item?.file}`} // Directly use the cvFile URL here
@@ -570,6 +586,7 @@ function Chat() {
               <button
                 className="btn btn-primary ms-3 d-flex align-items-center p-3"
                 // style={{ height: "40px" }}
+                disabled={message === ''}
                 onClick={handleSendMessage}
               >
                 <LuSendHorizonal />

@@ -151,6 +151,14 @@ function Profile({ handleChangeImg, value, resetFollowing }) {
             .catch((error) => {
               console.error(error);
             });
+          projectInstance
+            .get(`GetProjectByMember/${userId}`)
+            .then((res) => {
+              setUserProject(res?.data?.result);
+            })
+            .catch((error) => {
+              console.error(error);
+            });
         }
       });
   }, [userId, resetAvatar, resetDegree, currentUserId]);
@@ -309,7 +317,7 @@ function Profile({ handleChangeImg, value, resetFollowing }) {
             </div>
             <div className="fs-3 position-absolute top-0 end-0">
               {currentUserId !== userId && role !== 'Admin' ? (
-              <Report id={currentUserId} idItem={userId} type="account" />) : ""}
+                <Report id={currentUserId} idItem={userId} type="account" />) : ""}
             </div>
             {role !== 'Admin' && <div className="bg-white mt-3">
               <div className="d-flex justify-content-center align-items-center" onClick={() => setShowRating(true)}>
@@ -374,17 +382,17 @@ function Profile({ handleChangeImg, value, resetFollowing }) {
 
                 <div className="col-md-6">
                   <label className="form-label">Full Name:</label>
-                  <p className="form-control">{inputs.fullName}</p>
+                  <p className="form-control">{inputs.fullName || 'No information'}</p>
                 </div>
                 <div className="col-md-6">
                   <label className="form-label">
                     {inputs.role === "Business" ? "Establish date" : "Birthday"}
                   </label>
-                  <p className="form-control">{inputs.date}</p>
+                  <p className="form-control">{inputs.date || 'No information'}</p>
                 </div>
                 <div className="col-md-6">
                   <label className="form-label">Phone number</label>
-                  <p className="form-control">{inputs.phoneNumber}</p>
+                  <p className="form-control">{inputs.phoneNumber || 'No information'}</p>
                 </div>
                 <div className="col-md-6">
                   {inputs.role !== "Business" && (
@@ -404,11 +412,11 @@ function Profile({ handleChangeImg, value, resetFollowing }) {
                 </div>
                 <div className="col-md-6">
                   <label className="form-label">Address:</label>
-                  <p className="form-control">{inputs.address}</p>
+                  <p className="form-control">{inputs.address || 'No information'}</p>
                 </div>
                 <div className="col-md-6">
                   <label className="form-label ">Tax:</label>
-                  <p className="form-control">{inputs.tax}</p>
+                  <p className="form-control">{inputs.tax || 'No information'}</p>
                 </div>
                 <div className="col-md-12 ">
                   <label className="form-label">Description:</label>

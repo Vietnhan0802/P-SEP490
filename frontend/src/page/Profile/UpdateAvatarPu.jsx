@@ -77,17 +77,20 @@ function UpdateAvatarPu({ show, onClose, image, currentUserId, changeImage }) {
                     <Modal.Title>Update Avatar</Modal.Title>
                 </Modal.Header>
                 <Modal.Body className="popup-body d-flex ">
-                    <img
-                        src={
-                            avatar.imageSrc === "https://localhost:7006/Images/"
-                                ? defaultImage
-                                : avatar.imageSrc
-                        }
+                    <div className='avatar-update-contain m-auto'>
+                        <img
+                            src={
+                                avatar.imageSrc === "https://localhost:7006/Images/"
+                                    ? defaultImage
+                                    : avatar.imageSrc
+                            }
 
-                        alt=""
-                        style={{ borderRadius: "50%" }}
-                        className="avatar m-auto"
-                    />
+                            alt=""
+                            style={{ borderRadius: "50%" }}
+                            className="avatar"
+                        />
+                    </div>
+
                     <input
                         type="file"
                         accept="image/*"

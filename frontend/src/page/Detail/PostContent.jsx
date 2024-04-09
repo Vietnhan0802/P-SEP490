@@ -16,7 +16,7 @@ import { Button } from "react-bootstrap";
 import { BsThreeDots } from "react-icons/bs";
 import tick from "../../images/common/verifiedTick.png";
 
-function PostContent({ data, handleLikeOrUnlikePost, viewProject, userId ,resetPage}) {
+function PostContent({ data, handleLikeOrUnlikePost, viewProject, userId, resetPage }) {
   const navigate = useNavigate();
 
   const [display, setDisplay] = useState(false);
@@ -61,7 +61,7 @@ function PostContent({ data, handleLikeOrUnlikePost, viewProject, userId ,resetP
         console.error("Error fetching project:", error);
       });
   };
-
+  console.log(data);
   return (
     <>
       <div className="d-flex  justify-content-between">
@@ -196,7 +196,7 @@ function PostContent({ data, handleLikeOrUnlikePost, viewProject, userId ,resetP
           </>
         )}
       </div>
-      {data?.idProject === '00000000-0000-0000-0000-000000000000' ? "" :
+      {data?.idProject === null ? "" :
         <button className="btn btn-outline-info mt-3" onClick={handleViewProject}>
           View Project
         </button>
