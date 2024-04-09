@@ -153,7 +153,7 @@ function Profile({ handleChangeImg, value, resetFollowing }) {
             });
         }
       });
-  }, [userId, resetAvatar, resetDegree,currentUserId]);
+  }, [userId, resetAvatar, resetDegree, currentUserId]);
   // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   const projectStatus = (process) => {
     switch (process) {
@@ -308,8 +308,8 @@ function Profile({ handleChangeImg, value, resetFollowing }) {
               </div>
             </div>
             <div className="fs-3 position-absolute top-0 end-0">
-              {currentUserId !== userId ? (
-                <Report id={currentUserId} idItem={userId} type="account" />) : ""}
+              {currentUserId !== userId && role !== 'Admin' ? (
+              <Report id={currentUserId} idItem={userId} type="account" />) : ""}
             </div>
             {role !== 'Admin' && <div className="bg-white mt-3">
               <div className="d-flex justify-content-center align-items-center" onClick={() => setShowRating(true)}>
