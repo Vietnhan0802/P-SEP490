@@ -255,11 +255,12 @@ function Blog({ value }) {
                     <p className="size-14 SFU-reg text-gray-600 d-flex">{item.createdDate}</p>
                   </div>
                 </div>
-                <Report id={currentUserId} idItem={item.id} type="blog" />
+                {role !== 'Admin' && <Report id={currentUserId} idItem={item.id} type="blog" />}
+
               </div>
 
               <h3 className="mt-2">{item.title}</h3>
-              <div style={{ maxHeight: '200px', overflow: 'hidden' }}>
+              <div style={{ maxHeight: '200px', overflow: 'hidden' }} className="mb-3">
                 <div dangerouslySetInnerHTML={{ __html: item.content }} />
               </div>
 

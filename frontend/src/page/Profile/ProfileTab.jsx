@@ -111,8 +111,8 @@ function ProfileTab(props) {
             <div>
                 {user.role === "Member" && tab === "degree" && (
                     <div className={`degree tab-content${showAllItems ? "scrollable" : ""}`}>
-                        {userDegree?.length !== 0 ? userDegree
-                            .slice(0, showAllItems ? userDegree?.length : 3)
+                        {userDegree?.length !== 0 ? 
+                        userDegree?.slice(0, showAllItems ? userDegree?.length : 3)
                             .map((item) => (
                                 <>
                                     <div className="row mb-4 position-relative" key={item.idDegree}>
@@ -176,7 +176,7 @@ function ProfileTab(props) {
                     <div className={`post tab-content ${showAllItems ? "scrollable" : ""
                         }`}>
                         {userPost?.length !== 0 ?
-                            userPost.slice(0, showAllItems ? userPost?.length : 3)
+                            userPost?.slice(0, showAllItems ? userPost?.length : 3)
                                 .map((post) => (
                                     <div className="row">
                                         <div className="col-3 d-flex justify-content-center img-contain">
@@ -227,7 +227,7 @@ function ProfileTab(props) {
                 {user.role === "Admin" && tab === "blog" && (
                     <div className="blog tab-content">
                         {userBlog?.length !== 0 ?
-                            userBlog.slice(0, showAllItems ? userBlog?.length : 3).map((blog) => (
+                            userBlog?.slice(0, showAllItems ? userBlog?.length : 3).map((blog) => (
                                 <div
                                     className="row align-items-center mb-3"
                                     key={blog.idBlog}

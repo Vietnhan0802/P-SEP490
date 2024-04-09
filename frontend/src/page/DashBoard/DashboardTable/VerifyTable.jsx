@@ -338,7 +338,7 @@ export default function VerifyTable({ value, verified, resetVerify }) {
                                 className={`report-post ${activeTab === "unverify" ? "active-report" : ""
                                     }`}
                             >
-                                Verify List
+                                Verification request
                             </p>
                         </div>
                         <div onClick={() => handledActive("verified")}>
@@ -346,7 +346,7 @@ export default function VerifyTable({ value, verified, resetVerify }) {
                                 className={`report-account ${activeTab === "verified" ? "active-report" : ""
                                     }`}
                             >
-                                Verifed List
+                                Verified account
                             </p>
                         </div>
                     </div>
@@ -438,7 +438,7 @@ export default function VerifyTable({ value, verified, resetVerify }) {
                 <TablePagination
                     rowsPerPageOptions={[5, 10, 25]}
                     component="div"
-                    count={rows.length}
+                    count={(activeTab === 'unverify' ? visibleRows : verifiedRows).length}
                     rowsPerPage={rowsPerPage}
                     page={page}
                     onPageChange={handleChangePage}

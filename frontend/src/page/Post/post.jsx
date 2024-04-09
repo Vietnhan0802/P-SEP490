@@ -150,7 +150,7 @@ function Post({ value }) {
       .catch((error) => {
         console.error(error);
       });
-  }, [resetPage,currentUserId]);
+  }, [resetPage, currentUserId]);
   useEffect(() => {
     postInstance.get(`GetAllPostsTrend/${currentUserId}`)
       .then((res) => {
@@ -179,7 +179,7 @@ function Post({ value }) {
       .catch((error) => {
         console.error(error);
       });
-  }, [resetPage,,currentUserId])
+  }, [resetPage, , currentUserId])
 
   useEffect(() => {
     projectInstance
@@ -273,10 +273,12 @@ function Post({ value }) {
                     </div>
                   </div>
                 </div>
-                <Report id={currentUserId} idItem={item.id} type="post" />
+                {role !== 'Admin' &&
+                  <Report id={currentUserId} idItem={item.id} type="post" />
+                }
               </div>
               <h4 className="mt-2">{item.title}</h4>
-              <div style={{ maxHeight: '200px', overflow: 'hidden' }}>
+              <div style={{ maxHeight: '200px', overflow: 'hidden' }} className="mb-3">
                 <div dangerouslySetInnerHTML={{ __html: item.content }} />
               </div>
               <div

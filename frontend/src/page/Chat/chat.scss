@@ -79,7 +79,7 @@
   }
   .chat-box-body {
     overflow-y: auto;
-    max-height: 59.9vh;;
+    max-height: 59.9vh;
     .content {
       border-radius: 8px 8px 8px 8px;
       //background: var(--Gray-100, #f2f4f7);
@@ -88,13 +88,17 @@
       padding: 10px 14px;
       margin-left: 0px !important;
       width: 100% !important;
+      inline-size: 410px;
+      overflow-wrap: break-word;
     }
     .self-content {
       border-radius: 8px 8px 8px 8px;
       //background: var(--blue-va-1, #2f45ad);
       background: var(--blue-va-1, #2f45ad);
-      color: #FFFFFF;
+      color: #ffffff;
       padding: 10px 14px;
+      inline-size: 460px;
+      overflow-wrap: break-word;
     }
   }
   .cover {
@@ -109,7 +113,7 @@
       border-radius: 8px;
     }
   }
-  .icon-chat{
+  .icon-chat {
     border-top: 1px solid var(--Gray-300, #d0d5dd);
   }
   .icon-item {

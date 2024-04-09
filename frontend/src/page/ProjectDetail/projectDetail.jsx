@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./projectDetail.scss";
-import { IoPersonRemove } from "react-icons/io5";
 import { Row, Col } from "react-bootstrap";
-import defaultAvatar from "../../images/common/default.png";
 import MultiStepProgressBar from "../../components/MultiStepProgressBar";
 import FormMember from "./formMember";
 import SideBar from "../../components/sidebar";
@@ -35,7 +33,6 @@ const formatDate = (timestamp) => {
   const day = date.getDate();
   const month = months[date.getMonth()];
   const year = date.getFullYear();
-
   return `${day} ${month} ${year}`;
 };
 const projectStatus = (process) => {
@@ -73,7 +70,7 @@ function ProjectDetail() {
   const [data, setData] = useState();
   const [resetProject, setResetProject] = useState(false);
   const [projectMembers, setProjectMembers] = useState([]);
-  const [reset, setReset] = useState(false);
+  const [isInProject, setIsInProject] = useState(false);
   const { idProject } = location.state || {};
   const [showRatingPopup, setShowRatingPopup] = useState(false);
   const [showRatingMemberPopup, setShowRatingMemberPopup] = useState(false);
@@ -85,6 +82,10 @@ function ProjectDetail() {
     projectInstance.get(`/GetProjectById/${currentUserId}/${idProject}`)
       .then((res) => {
         setData(res?.data?.result);
+        console.log(res?.data?.result)
+        if (res?.data?.result?.idAccount !== currentUserId) {
+          setIsInProject(true);
+        }
       })
       .catch((error) => {
         console.error(error);
@@ -94,6 +95,11 @@ function ProjectDetail() {
     projectInstance.get(`/GetAllMemberInProject/${currentUserId}/${idProject}`)
       .then((res) => {
         const data = res?.data?.result;
+        data.filter((item) => {
+          if (item.idAccount === currentUserId) {
+            return setIsInProject(false);
+          }
+        })
         if (Array.isArray(data) && data?.length > 0) {
           setProjectMembers(data);
         } else {
@@ -156,14 +162,14 @@ function ProjectDetail() {
                 </div>
                 {data?.process === 3 &&
                   <div className="d-flex align-items-center"
-                    onClick={() => (data?.isRating || data?.idAccount === currentUserId || role === 'Admin') ? setShowFeedbackPopup(true) : setShowRatingPopup(true)}
+                    onClick={() => (data?.isRating || data?.idAccount === currentUserId || role === 'Admin' || isInProject) ? setShowFeedbackPopup(true) : setShowRatingPopup(true)}
                   >
                     <Rating
                       initialValue={data?.ratingAvg}
                       readonly={true}
                       allowFraction={true}
                     />
-                    {data?.isRating || data?.idAccount === currentUserId || role === 'Admin' ? '' :
+                    {data?.isRating || data?.idAccount === currentUserId || role === 'Admin' || isInProject ? '' :
                       <p className="ms-2">Not rated</p>
                     }
                   </div>
@@ -232,10 +238,10 @@ function ProjectDetail() {
                 <p className="title fw-bold">Member</p>
               </div>
               <div className="d-flex align-items-center">
-                {role === 'Business' &&
+                {role === 'Business' && !isInProject &&
                   <FormMember projectId={idProject} positionOption={data?.positionViews} />
                 }
-                {role === 'Member' && data?.process !== 3 &&
+                {role === 'Member' && data?.process !== 3 && !isInProject &&
                   <FormApply projectId={idProject} positionOption={data?.positionViews} />
                 }
 
@@ -277,8 +283,8 @@ function ProjectDetail() {
                               ?
                               <td className="w-20 py-3 text-center  yellow-icon" >
                                 <div
-                                  className={`d-flex align-items-center ${member?.isRating || role === 'Admin' ? 'justify-content-center' : ''}`}
-                                  onClick={() => (member?.isRating || role === 'Admin') ?
+                                  className={`d-flex align-items-center ${member?.isRating || role === 'Admin' || isInProject ? 'justify-content-center' : ''}`}
+                                  onClick={() => (member?.isRating || role === 'Admin' || isInProject) ?
                                     handleMemberRatingFeedback(member?.idAccount) :
                                     // setShowRatingMemberPopup(member?.idAccount === currentUserId ? false : true)
                                     handleMemberRating(member?.idAccount, member.idProjectMember)
@@ -292,7 +298,7 @@ function ProjectDetail() {
                                       allowFraction={true}
                                     />
                                   </div>
-                                  {member?.isRating === false && member?.idAccount !== currentUserId && role !== 'Admin' &&
+                                  {member?.isRating === false && member?.idAccount !== currentUserId && role !== 'Admin' && !isInProject &&
                                     <p className="ms-2" style={{ fontSize: '10px', color: "black" }}>Note rated</p>
                                   }
                                 </div>

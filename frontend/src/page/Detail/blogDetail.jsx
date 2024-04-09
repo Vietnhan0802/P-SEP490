@@ -78,7 +78,7 @@ function BlogDetail({ value }) {
   const [inputReply, setInputReply] = useState({});
   const [display, setDisplay] = useState(false);
   const [displayDelete, setDisplayDelete] = useState(false);
-
+  const [reset, setReset] = useState(false);
   //__________________________________________________________________//
 
   const handleUpdateCommentAppear = (updateId, originalContent) => {
@@ -408,6 +408,9 @@ function BlogDetail({ value }) {
   const handleDeleteBlog = () => {
     setDisplayDelete(true);
   }
+  const resetPage = () => {
+    setReset(prev => !prev);
+  }
   //Palce to log data to debug
   return (
     <Row className="pt-3 ms-0 me-0">
@@ -429,7 +432,6 @@ function BlogDetail({ value }) {
                 <p className="mb-0">{dateTime}</p>
               </div>
             </div>
-
             {data?.idAccount === currentUserId ? (
               <Dropdown>
                 <Dropdown.Toggle
@@ -448,7 +450,6 @@ function BlogDetail({ value }) {
                     }
                   >
                     <GrUpdate />
-
                   </Dropdown.Item>
                   <Dropdown.Item
                     className="d-flex justify-content-center"
@@ -475,6 +476,7 @@ function BlogDetail({ value }) {
             onClose={() => setDisplay(false)}
             value={data}
             type={'blog'}
+            resetPage={resetPage}
           />
           <DeleteItem
             show={displayDelete}

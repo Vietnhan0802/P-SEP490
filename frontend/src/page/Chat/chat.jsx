@@ -6,7 +6,6 @@ import defaultImage from "../../images/common/default.png";
 import "../Chat/chat.scss";
 import { FaRegFolder } from "react-icons/fa";
 import { FaRegImage } from "react-icons/fa6";
-import { FaLink } from "react-icons/fa6";
 import { LuSmile } from "react-icons/lu";
 import { chatInstance } from "../../axios/axiosConfig";
 import * as signalR from "@microsoft/signalr";
@@ -14,6 +13,10 @@ import { useLocation } from "react-router-dom";
 import data from '@emoji-mart/data'
 import Picker from '@emoji-mart/react'
 import { FaRegFileAlt } from "react-icons/fa";
+import { Button, Dropdown } from "react-bootstrap";
+import { MdDelete } from "react-icons/md";
+import { BsThreeDots } from "react-icons/bs";
+import DeleteChat from "./DeleteChat";
 function Chat() {
 
   const sessionData = JSON.parse(sessionStorage.getItem("userSession")) || {};
@@ -30,6 +33,8 @@ function Chat() {
   const [usersOnl, setUsersOnl] = useState([]);
   const [showEmojiBox, setShowEmojiBox] = useState(false);
   const [search, setSearch] = useState('');
+  const [showDeleteChat, setShowDeleteChat] = useState(false);
+  const [idConversationDelete, setIdConversationDelete] = useState('');
   const handleSearchChange = (event) => {
     setSearch(event.target.value);
     if (event.target.value === '') { // corrected condition
@@ -316,7 +321,13 @@ function Chat() {
       chatBoxBodyRef.current.scrollTop = chatBoxBodyRef.current.scrollHeight;
     }
   }, [messages]);
-
+  const handleSetShowDeleteChat = (idConversation) => {
+    setShowDeleteChat(true);
+    setIdConversationDelete(idConversation);
+  }
+  const resetConversation = () => {
+    reset(!reset);
+  }
   return (
 
     <Row className="m-3" style={{ height: "calc(100vh - 97px)", paddingBottom: "16px" }}>
@@ -336,7 +347,7 @@ function Chat() {
 
             </div>
             <div className={`position-absolute w-100 form-control overflow-hidden ${search === '' ? 'hidden-box' : ''}`} style={{
-              textOverflow: 'ellipsis', 
+              textOverflow: 'ellipsis',
               top: ' 41px',
               left: '0px'
             }} >
@@ -363,21 +374,36 @@ function Chat() {
             {conversations?.length > 0 ? (
               conversations?.map((item) => (
                 <div className="chat-item" key={item?.idConversation} onClick={() => handleConversation(currentUserId === item?.idAccount1 ? item?.idAccount2 : item?.idAccount1)}>
-                  <div className="d-flex align-items-center" >
+                  <div className="d-flex align-items-center position-relative">
+                    <Dropdown className="position-absolute top-0 end-0">
+                      <Dropdown.Toggle
+                        variant="white"
+                        className="border-none text-body"
+                      >
+                        <BsThreeDots size={14} />
+                      </Dropdown.Toggle>
+
+                      <Dropdown.Menu style={{ minWidth: "auto" }}>
+
+                        <Dropdown.Item>
+                          <MdDelete size={14}
+                            onClick={() => handleSetShowDeleteChat(item?.idConversation)}
+                          />
+                        </Dropdown.Item>
+                      </Dropdown.Menu>
+                    </Dropdown>
                     <img src={item?.avatar === "https://localhost:7006/Images/" ? defaultImage : item?.avatar} alt="" className="avatar" />
                     <div className="ms-2">
                       <p className="mb-0 name">{item?.fullName}</p>
                       <p className="mb-0 text">This is a text</p>
                     </div>
                   </div>
-                  <div className="d-flex align-items-center">
-                    <div className="ms-2"></div>
-                  </div>
                 </div>
               ))
             ) : (
               <p>No conversations found.</p>
             )}
+            {showDeleteChat && <DeleteChat show={showDeleteChat} onClose={() => setShowDeleteChat(false)} currentUserId={currentUserId} idConversation={idConversationDelete} resetConversation={resetConversation} />}
           </div>
         </div>
       </Col>
@@ -476,7 +502,6 @@ function Chat() {
                               target="_blank" // Ensure it opens in a new tab
                               rel="noopener noreferrer" // Improve security for opening new tabs
                               download
-
                             >
                               <div
                                 className={`mb ${item?.isYourself ? "self-content" : "content"

@@ -35,7 +35,7 @@ function PostDetail({ value }) {
   const [updateReplyShow, setUpdateReplyShow] = useState(null);
   const [replyComment, setReplyComment] = useState(false);
   const [inputReply, setInputReply] = useState({});
-
+  const [reset, setReset] = useState(false);
   // console.log(data)
   const memoizedPostInstance = useMemo(() => {
     return postInstance; // hoặc tạo một instance mới nếu cần
@@ -366,7 +366,7 @@ function PostDetail({ value }) {
       .catch((error) => {
         console.error(error);
       });
-  }, [memoizedPostInstance, idPost]);
+  }, [memoizedPostInstance, idPost, reset, currentUserId]);
   //Fetch data the user to display in the comment and reply
   useEffect(() => {
     userInstance
@@ -379,6 +379,9 @@ function PostDetail({ value }) {
         console.log(err.response.data);
       });
   }, []);
+  const resetPage = () => {
+    setReset(prev => !prev);
+  }
   return (
     <Row className="pt-3 ms-0 me-0">
       <Col md={3}>
@@ -390,6 +393,7 @@ function PostDetail({ value }) {
             userId={currentUserId}
             data={data}
             handleLikeOrUnlikePost={handleLikeOrUnlikePost}
+            resetPage={resetPage}
           />
           <p className="cmt fw-bold my-3">COMMENT</p>
           <div className="cmt-input d-flex">
@@ -553,7 +557,7 @@ function PostDetail({ value }) {
                         </p>
                       ) : (
                         <div className="cmt-input d-flex align-items-center mt-2">
-                         <div className="position-relative" >
+                          <div className="position-relative" >
                             <div className="profile" >
                               <img src={user?.imageSrc} alt="profile" />
                             </div>
@@ -585,7 +589,7 @@ function PostDetail({ value }) {
                       ? item.viewPostReplies.map((reply) => (
                         <>
                           <div className="d-flex cmt-input mt-2">
-                          <div className="position-relative" style={{ height: '50px' }} >
+                            <div className="position-relative" style={{ height: '50px' }} >
                               <div className="profile" >
                                 <img src={reply?.avatar} alt="profile" />
                               </div>
