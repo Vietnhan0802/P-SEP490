@@ -144,7 +144,9 @@ namespace Communication.Controllers
             }
             else
             {
-                var messages = await _context.Messages.Where(x => x.idConversation == conversation.idConversation).OrderBy(x => x.createdDate).ToListAsync();
+                var messages = await _context.Messages.Where(x => ((x.idSender == idCurrentUser && x.idReceiver == idReceiver && x.isDeletedBySender == false)
+                                                                || (x.idSender == idReceiver && x.idReceiver == idCurrentUser && x.isDeletedByReceiver == false)) 
+                                                                && x.idConversation == conversation.idConversation).OrderBy(x => x.createdDate).ToListAsync();
                 if (messages.Count > 0)
                 {
                     var result = _mapper.Map<List<ViewMessage>>(messages);
@@ -353,7 +355,7 @@ namespace Communication.Controllers
         }
 
         [HttpDelete("RecallMessage/{idMessage}")]
-        public async Task<Response> RecallMessage(string idCurrentUser, Guid idMessage)
+        public async Task<Response> RecallMessage(Guid idMessage)
         {
             var message = await _context.Messages.FirstOrDefaultAsync(x => x.idMessage == idMessage);
             if (message == null)
