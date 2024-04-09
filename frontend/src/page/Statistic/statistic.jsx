@@ -405,7 +405,6 @@ function Statistic() {
         })
       })
   }, [statisticVerificationType])
-  console.log(postListTrend)
   const renderChart = () => {
     switch (activeTab) {
       case 'account':

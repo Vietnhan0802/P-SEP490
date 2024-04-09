@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./projectDetail.scss";
-import { IoPersonRemove } from "react-icons/io5";
 import { Row, Col } from "react-bootstrap";
-import defaultAvatar from "../../images/common/default.png";
 import MultiStepProgressBar from "../../components/MultiStepProgressBar";
 import FormMember from "./formMember";
 import SideBar from "../../components/sidebar";
