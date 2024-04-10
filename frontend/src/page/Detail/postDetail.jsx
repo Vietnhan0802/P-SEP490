@@ -21,7 +21,7 @@ import Notification, { notifySuccess, notifyError } from "../../components/notif
 function PostDetail({ value }) {
   const location = useLocation();
   const sessionData = JSON.parse(sessionStorage.getItem("userSession")) || {};
-  const { currentUserId } = sessionData;
+  const { currentUserId, role } = sessionData;
   const { idPost } = location.state || {};
 
   const [data, setData] = useState();
@@ -394,6 +394,7 @@ function PostDetail({ value }) {
             data={data}
             handleLikeOrUnlikePost={handleLikeOrUnlikePost}
             resetPage={resetPage}
+            role={role}
           />
           <p className="cmt fw-bold my-3">COMMENT</p>
           <div className="cmt-input d-flex">

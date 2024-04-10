@@ -29,6 +29,7 @@ import Statistic from "./page/Statistic/statistic";
 import { followInstance } from "./axios/axiosConfig";
 import Follow from "./components/follow";
 import ProjectInviation from "./page/ProjectApplication/projectInviation";
+import NotFound from "./components/NotFound";
 function App() {
   const location = useLocation();
   const appRef = useRef(null);
@@ -72,6 +73,7 @@ function App() {
     location.pathname === "/signup" ||
     location.pathname === "/forgetpassword" ||
     location.pathname === "/confirmemail" ||
+    location.pathname === "/notfound" ||
     location.pathname === "/resetpassword"
   );
   const resetFollowing = (value) => {
@@ -98,13 +100,14 @@ function App() {
     <div
       className="App"
       ref={appRef}
-      style={{ backgroundColor: "var(--body_background)", minHeight: "100vh" }}
+      style={{ backgroundColor: "var(--body_background)", minHeight: location.pathname === "/notfound" ? "100vh" : "" }}
     >
       {isHeaderVisible && (
         <Header onItemClick={handleHeaderItemClick} changeImage={changeImage} />
       )}
       <Routes>
         <Route path="/" element={<SignIn />} />
+        <Route path="/notfound" element={<NotFound />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/postdetail" element={<PostDetail value={following} />} />
         <Route path="/blogdetail" element={<BlogDetail value={following} />} />

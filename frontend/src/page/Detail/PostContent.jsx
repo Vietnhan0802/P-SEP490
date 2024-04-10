@@ -16,7 +16,7 @@ import { Button } from "react-bootstrap";
 import { BsThreeDots } from "react-icons/bs";
 import tick from "../../images/common/verifiedTick.png";
 
-function PostContent({ data, handleLikeOrUnlikePost, viewProject, userId, resetPage }) {
+function PostContent({ data, handleLikeOrUnlikePost, viewProject, userId, resetPage, role }) {
   const navigate = useNavigate();
 
   const [display, setDisplay] = useState(false);
@@ -110,15 +110,21 @@ function PostContent({ data, handleLikeOrUnlikePost, viewProject, userId, resetP
               >
                 <MdDelete size={28} />
               </Dropdown.Item>
-              <Dropdown.Item
-              >
-                <Report />
+              {role !== 'Admin' &&
+                <Dropdown.Item
+                >
+                  <Report />
 
-              </Dropdown.Item>
+                </Dropdown.Item>}
+
             </Dropdown.Menu>
           </Dropdown>
         ) : (
-          <Report />
+          <div>
+            {role !== 'Admin' &&
+              <Report />            }
+          </div>
+
         )}
       </div>
       <UpdateItem

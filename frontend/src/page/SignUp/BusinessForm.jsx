@@ -1,26 +1,22 @@
 import React from "react";
-import { useState } from "react";
+import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { userInstance } from "../../axios/axiosConfig";
 import { GoogleLogin } from '@react-oauth/google';
 import { jwtDecode } from "jwt-decode";
-import Notification, { notifySuccess, notifyError, notifyWarn } from "../../components/notification";
+import { notifySuccess, notifyError } from "../../components/notification";
 
 export default function BusinessForm() {
-  const [inputs, setInputs] = useState({});
+  const { register, handleSubmit, reset, formState: { errors } } = useForm();
   const navigate = useNavigate();
-  const handleChange = (event) => {
-    const name = event.target.name;
-    const value = event.target.value;
-    setInputs((values) => ({ ...values, [name]: value }));
-  };
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    console.log(inputs);
+
+  const onSubmit = async (data) => {
+    console.log(data);
     try {
-      const response = await userInstance.post("/SignUpBusiness", inputs);
+      const response = await userInstance.post("/SignUpBusiness", data);
       if (response?.data?.message === "User creates & sends email successfully!") {
         notifySuccess("Sign up successfully, please check your confirmation email!");
+        reset(); // Reset form fields after successful submission
         navigate("/");
       } else if (response?.data?.message === "User already exists!") {
         notifyError('Account already exists!');
@@ -33,6 +29,7 @@ export default function BusinessForm() {
       console.error("Sign up failed", error.response.data);
     }
   };
+
   const handleClickGG = async (googleResponse) => {
     try {
       console.log("Google login response:", googleResponse);
@@ -60,110 +57,117 @@ export default function BusinessForm() {
       console.error("Error during sign in:", error);
     }
   };
+  const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
 
+  const validateEmail = (value) => {
+
+    return emailRegex.test(value) || "Invalid email address";
+  };
   const errorMessage = (error) => {
     console.error("Google login error:", error);
   };
+
   return (
     <div>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <div className="pb-2 d-flex flex-row align-items-center">
-          <p className="col-sm-3 col-5 size-20 blue2f SFU-heavy pb-1 ">Email</p>
+          <p className="col-sm-3 col-5 size-20 blue2f SFU-heavy pb-1">Email</p>
           <input
-            required
+            {...register("email", {
+              required: 'Email  is required',
+              validate: validateEmail
+            })}
             className="input-field rounded-50 w-100"
             placeholder="Enter your email"
-            type="email"
-            name="email"
-            value={inputs.email || ""}
-            onChange={handleChange}
+            type="text"
           />
         </div>
+        {errors.email && <p className="text-danger small-txt">{errors.email.message}</p>}
         <div className="pb-2 d-flex flex-row align-items-center">
-          <p className="col-sm-3 col-5 size-20 blue2f SFU-heavy pb-1">
-            Password
-          </p>
-
+          <p className="col-sm-3 col-5 size-20 blue2f SFU-heavy pb-1">Password</p>
           <input
-            required
+            {...register("password", {
+              required: true, pattern: {
+                value: /^(?=.*[A-Z])(?=.*[a-z])(?=.*[^A-Za-z0-9\s])[A-Za-z0-9\S]{8,}$/,
+                message: 'Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters',
+              },
+            })}
             className="input-field rounded-50 w-100"
             placeholder="Enter your password"
             type="password"
-            name="password"
-            value={inputs.password || ""}
-            onChange={handleChange}
           />
         </div>
+        {errors.password && <p className="text-danger small-txt">{errors.password.message}</p>}
         <div className="pb-2 d-flex flex-row align-items-center">
-          <p className="col-sm-3 col-5 size-20 blue2f SFU-heavy pb-1">
-            FullName
-          </p>
+          <p className="col-sm-3 col-5 size-20 blue2f SFU-heavy pb-1">FullName</p>
           <input
-            required
+            {...register("fullName", {
+              required: "Full name is required",
+              pattern: {
+                value: /^\D*$/,
+                message: 'Full name can not contain number',
+              },
+            })}
             className="input-field rounded-50 w-100"
             placeholder="Enter Business Name"
             type="text"
-            name="fullName"
-            value={inputs.fullName || ""}
-            onChange={handleChange}
           />
         </div>
+        {errors.fullName && <p className="text-danger small-txt">{errors.fullName.message}</p>}
         <div className="pb-2 d-flex flex-row align-items-center">
-          <p className="col-sm-3 col-5 size-20 blue2f SFU-heavy pb-1">
-            Establish Day
-          </p>
+          <p className="col-sm-3 col-5 size-20 blue2f SFU-heavy pb-1">Establish Day</p>
           <input
-            required
+            {...register("establishment", { required: "Establishment day is required" })}
             className="input-field rounded-50 w-100"
             placeholder="dd-mm-yyyy"
             min="1900-01-01"
             max="2023-12-31"
             type="date"
-            name="establishment"
-            value={inputs.establishment || ""}
-            onChange={handleChange}
           />
         </div>
+        {errors.establishment && <p className="text-danger small-txt">{errors.establishment.message}</p>}
         <div className="pb-2 d-flex flex-row align-items-center">
           <p className="col-sm-3 col-5 size-20 blue2f SFU-heavy pb-1">Phone</p>
           <input
-            required
+            {...register("phone", {
+              required: "Phone number is required", pattern: {
+                value: /^0\d{9}$/,
+                message: 'Phone number starts with 0 and has to have 10 number',
+              },
+            })}
             className="input-field rounded-50 w-100"
             placeholder="Enter Phone Number"
             type="text"
-            name="phone"
-            value={inputs.phone || ""}
-            onChange={handleChange}
           />
         </div>
+        {errors.phone && <p className="text-danger small-txt">{errors.phone.message}</p>}
         <div className="pb-2 d-flex flex-row align-items-center">
           <p className="col-sm-3 col-5 size-20 blue2f SFU-heavy pb-1">Tax</p>
           <input
-            required
+            {...register("tax", {
+              required: "Tax number is required", pattern: {
+                value: /^\d{10}$/,
+                message: 'Tax number has to be 10 digit',
+              }
+            })}
             className="input-field rounded-50 w-100"
             placeholder="Enter your Tax"
             type="text"
-            name="tax"
-            value={inputs.tax || ""}
-            onChange={handleChange}
           />
         </div>
+        {errors.tax && <p className="text-danger small-txt">{errors.tax.message}</p>}
         <div className="pb-2 d-flex flex-row align-items-center">
-          <p className="col-sm-3 col-5 size-20 blue2f SFU-heavy pb-1">
-            Address
-          </p>
+          <p className="col-sm-3 col-5 size-20 blue2f SFU-heavy pb-1">Address</p>
           <input
-            required
+            {...register("address", { required: "Address is required" })}
             className="input-field rounded-50 w-100"
             placeholder="Enter your Address"
             type="text"
-            name="address"
-            value={inputs.address || ""}
-            onChange={handleChange}
           />
         </div>
+        {errors.address && <p className="text-danger small-txt">{errors.address.message}</p>}
         <input
-          className="submit-btn rounded-50 size-20 white SFU-bold w-100"
+          className="submit-btn rounded-50 size-20 white mt-2 SFU-bold w-100"
           type="submit"
           value="Sign up"
         />

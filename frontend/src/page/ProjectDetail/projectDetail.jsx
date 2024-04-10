@@ -241,7 +241,7 @@ function ProjectDetail() {
                 {role === 'Business' && !isInProject &&
                   <FormMember projectId={idProject} positionOption={data?.positionViews} />
                 }
-                {role === 'Member' && data?.process !== 3 && !isInProject &&
+                {role === 'Member' && data?.process !== 3 &&
                   <FormApply projectId={idProject} positionOption={data?.positionViews} />
                 }
 

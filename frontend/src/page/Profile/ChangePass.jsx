@@ -81,7 +81,7 @@ function ChangePass({ email }) {
                                 }
                                 // Thêm các validate khác nếu cần
                             }, pattern: {
-                                value: /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}/,
+                                value: /^(?=.*[A-Z])(?=.*[a-z])(?=.*[^A-Za-z0-9\s])[A-Za-z0-9\S]{8,}$/,
                                 message: 'Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters',
                             },
                         })}
@@ -112,7 +112,7 @@ function ChangePass({ email }) {
                                     return true;
                                 }
                             }, pattern: {
-                                value: /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}/,
+                                value: /^(?=.*[A-Z])(?=.*[a-z])(?=.*[^A-Za-z0-9\s])[A-Za-z0-9\S]{8,}$/,
                                 message: 'Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters',
                             },
                         })}
