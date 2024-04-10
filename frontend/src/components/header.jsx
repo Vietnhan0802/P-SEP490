@@ -17,7 +17,7 @@ import { userInstance } from "../axios/axiosConfig";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
 import tick from "../images/common/verifiedTick.png";
-export default function Header({ activeComponent, onItemClick, changeImage }) {
+export default function Header({ activeComponent, onItemClick, changeImage, changeThemeHeader }) {
   const { t } = useTranslation()
   const sessionData = JSON.parse(sessionStorage.getItem('userSession')) || {};
   const { currentUserId } = sessionData;
@@ -58,7 +58,7 @@ export default function Header({ activeComponent, onItemClick, changeImage }) {
     setActivePopup(!activePopup);
   };
 
-  const handleItemClick = (itemId) => {   
+  const handleItemClick = (itemId) => {
     setActiveItem(itemId);
     onItemClick(itemId);
   };
@@ -89,6 +89,10 @@ export default function Header({ activeComponent, onItemClick, changeImage }) {
   const close = () => {
     setShowPopup(prev => !prev);
     setActivePopup(prev => !prev);
+  }
+  const changeTheme = (value) => {
+    console.log(value);
+    changeThemeHeader(value)
   }
   return (
     <Row id="header" className="m-0">
@@ -143,7 +147,7 @@ export default function Header({ activeComponent, onItemClick, changeImage }) {
       </Col>
       <Col className="d-flex justify-content-end align-items-center" sm={4}>
         {/* <Translate /> */}
-        <DarkMode />
+        <DarkMode changeTheme={changeTheme} />
         <div className=" d-flex align-items-center" onClick={() => handleAvatarClick(currentUserId)}>
           <div className="position-relative">
             <div className="profile" style={{ width: '45px', height: '45px', borderRadius: '50%', }}>

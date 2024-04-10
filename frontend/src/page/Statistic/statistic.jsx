@@ -55,9 +55,11 @@ const createData = (
     isVerified
   };
 };
-function Statistic() {
+function Statistic({color}) {
   const sessionData = JSON.parse(sessionStorage.getItem("userSession")) || {};
   const { role, currentUserId } = sessionData;
+  const [theme, setTheme] = useState(true);
+
   const [postListTrend, setPostListTrend] = useState([]);
   const [blogListTrend, setBlogListTrend] = useState([]);
 
@@ -84,6 +86,11 @@ function Statistic() {
   const [statisticAccountType, setStatisticAccountType] = useState('today');
   const [statisticReportType, setStatisticReportType] = useState('today');
   const [statisticVerificationType, setStatisticVerificationType] = useState('today');
+
+  useEffect(() => {
+    const selectedTheme = localStorage.getItem("selectedTheme");
+    console.log(selectedTheme)
+  }, [color])
   const handleTabClick = (tab) => {
     setActiveTab(tab);
   };
@@ -120,7 +127,7 @@ function Statistic() {
           }),
           datasets: [
             {
-              label: <p style={{color:'green'}}>Number of post</p>,
+              label: 'Number of post',
               data: res?.data?.result.map((data) => data.count),
               backgroundColor: [
                 "rgba(75,192,192,0.2)"
@@ -183,7 +190,7 @@ function Statistic() {
           ],
         })
       });
-      blogInstance
+    blogInstance
       .get(`GetAllBlogsTrend/${currentUserId}`)
       .then((res) => {
         const blogList = res?.data?.result;
@@ -431,7 +438,7 @@ function Statistic() {
                         </Dropdown.Menu>
                       </Dropdown>
                     </div>
-                    <BarChart chartData={accountData} style={{ minWidth: '100%' }} />
+                    <BarChart chartData={accountData} value={color} style={{ minWidth: '100%' }} />
                   </>
                 )}
               </Col>
