@@ -1,4 +1,6 @@
 #projectDetail {
+  background-color: var(--header_background) !important;
+  color: var(--header_search_text);
   .members-table-container {
     max-height: 500px; // Adjust based on your needs
     overflow-y: auto; // Enable vertical scrolling
@@ -17,6 +19,7 @@
     /* Màu của background cho phần bị thừa */
     overflow: hidden;
     /* Ẩn phần của ảnh không vừa với container */
+    border-radius: 8px;
   }
 
   .image-container img {
@@ -60,7 +63,7 @@
     list-style-type: none;
   }
   .position-item p {
-    box-shadow: 0px 0px 0px 4px #f2f4f7, 0px 1px 2px 0px rgba(16, 24, 40, 0.05);
+    box-shadow: 0px 0px 0px 4px var(--header_search_box), 0px 1px 2px 0px rgba(16, 24, 40, 0.05);
     padding: 4px;
     margin: 0px 5px;
     border-radius: 8px;
@@ -158,6 +161,7 @@
   .description-cover {
     padding-bottom: 32px;
     border: 1px solid #e5e5e5;
+    border-radius: 8px;
   }
 
   .description {

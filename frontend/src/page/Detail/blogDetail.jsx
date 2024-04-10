@@ -437,9 +437,9 @@ function BlogDetail({ value }) {
                 <Dropdown.Toggle
                   id="dropdown-basic"
                   style={{ border: "none" }}
-                  className="bg-white border-none text-body"
+                  className="bg-custom border-none text-body"
                 >
-                  <BsThreeDots size={28} />
+                  <BsThreeDots style={{color: 'var(--header_search_text)'}} size={28} />
                 </Dropdown.Toggle>
 
                 <Dropdown.Menu style={{ minWidth: "auto" }}>
@@ -548,7 +548,7 @@ function BlogDetail({ value }) {
               </>
             )}
           </div>
-          <div className="d-flex align-items-center border-bottom pb-3 mt-2 border-dark">
+          <div className="d-flex align-items-center border-custom pb-3 mt-2">
             <div className="d-flex align-items-center me-3">
               <FiEye className="me-2" /> {data.view + 1}
             </div>
@@ -569,7 +569,7 @@ function BlogDetail({ value }) {
             </div>
             <input
               type="text"
-              className="w-100 ps-3"
+              className="w-100 ps-3 input-cmt"
               placeholder="Type your comment"
               value={content}
               onChange={handleInputComment}
