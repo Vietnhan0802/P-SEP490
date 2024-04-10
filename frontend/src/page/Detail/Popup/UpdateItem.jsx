@@ -7,7 +7,7 @@ import { IoCameraReverse } from "react-icons/io5";
 import ReactQuill from 'react-quill';
 import "./update.scss";
 import Notification, { notifySuccess, notifyError } from "../../../components/notification";
-function UpdateItem({ show, onClose, value, type,resetPage }) {
+function UpdateItem({ show, onClose, value, type, resetPage }) {
     const quillRef = useRef(null);
     const [deleteAppear, setDeleteAppear] = useState(false);
     const [update, setUpdate] = useState({
@@ -94,7 +94,8 @@ function UpdateItem({ show, onClose, value, type,resetPage }) {
         formData.append("title", update.title);
         formData.append("content", update.content);
         // update.UpdateImages.length
-        if (update?.CreateUpdateImages?.length > 0 && type === 'post') {
+        console.log(update?.CreateUpdateImages?.length > 0 && type === 'post')
+        if (type === 'post') {
             if (update?.CreateUpdateImages?.length > 0) {
                 update.CreateUpdateImages.forEach((imageInfo, index) => {
                     formData.append(
@@ -116,7 +117,7 @@ function UpdateItem({ show, onClose, value, type,resetPage }) {
             })
                 .then((res) => { console.log(res?.data?.result); notifySuccess("Update post successfully!"); resetPage(); onClose(); })
                 .catch((error) => { console.error(error); notifyError("Update post failed!"); });
-        } else {
+        } else if (type === 'blog') {
             if (update?.CreateUpdateImages?.length > 0) {
                 update.CreateUpdateImages.forEach((imageInfo, index) => {
                     formData.append(

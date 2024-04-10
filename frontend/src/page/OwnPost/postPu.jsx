@@ -61,7 +61,7 @@ function PostPu({ reset }) {
   ];
   useEffect(() => {
     projectInstance
-      .get("GetAllProjects")
+      .get(`GetProjectByUser/${currentUserId}`)
       .then((res) => {
         const projectList = res?.data?.result;
         const options = projectList.map((item) => ({
@@ -184,6 +184,14 @@ function PostPu({ reset }) {
       setInputs((values) => ({ ...values, [name]: value }));
     }
   };
+  const inputFile = useRef(null);
+  const handleReset = () => {
+    if (inputFile.current) {
+      inputFile.current.value = "";
+      inputFile.current.type = "text";
+      inputFile.current.type = "file";
+    }
+  };
   return (
     <div className="">
       <Button variant="m-0 btn btn-primary me-2" onClick={modalShow}>
@@ -223,7 +231,7 @@ function PostPu({ reset }) {
             options={project}
             onChange={handleSelctProject}
           />
-          <div className="input-cover">
+          {/* <div className="input-cover">
             <input
               type="file"
               name="images"
@@ -231,6 +239,19 @@ function PostPu({ reset }) {
               className="form-control"
               multiple
             />
+          </div> */}
+          <div  className='d-flex align-items-center'>
+            <div className="input-cover w-75">
+              <input
+                type="file"
+                name="images"
+                onChange={handleInputChange}
+                className="form-control"
+                multiple
+                ref={inputFile}
+              />
+            </div>
+            <button className='btn btn-outline-info w-auto ms-5' onClick={handleReset}>Clear Image</button>
           </div>
 
         </Modal.Body>

@@ -10,22 +10,23 @@ import Select from 'react-select'
 import { FiEdit } from "react-icons/fi";
 import { userInstance } from "../../axios/axiosConfig";
 import Notification, { notifySuccess, notifyError } from "../../../src/components/notification";
+import { useForm } from 'react-hook-form';
 function UpdateInformationPu({ value, id, reset, show, onClose, handleChangeImg }) {
   const [user, setUser] = useState({});
 
-
+  const { register, handleSubmit, formState: { errors }, watch, setValue } = useForm();
   const modalClose = () => onClose();
 
   useEffect(() => {
+    setValue('fullName', value?.fullName, { shouldValidate: true })
+    setValue('date', value?.date, { shouldValidate: true })
+    setValue('phoneNumber', value?.phoneNumber, { shouldValidate: true })
+    setValue('address', value?.address, { shouldValidate: true })
+    setValue('tax', value?.tax, { shouldValidate: true })
+    setValue('description', value?.description)
     setUser({
       userName: value?.userName,
-      fullName: value?.fullName,
-      date: value?.date,
       isMale: value?.isMale,
-      phoneNumber: value?.phoneNumber,
-      tax: value?.tax,
-      address: value?.address,
-      description: value?.description,
       role: value.role
     });
   }, [value]
@@ -41,16 +42,17 @@ function UpdateInformationPu({ value, id, reset, show, onClose, handleChangeImg 
       [name]: type === "checkbox" ? checked : value,
     }));
   };
-  const modelSubmit = (event) => {
+  const modelSubmit = handleSubmit((data) => {
+    console.log(data)
     userInstance.put(`UpdateUser/${id}`, {
       userName: user.userName,
-      fullName: user.fullName,
-      date: user.date,
+      fullName: data.fullName,
+      date: data.date,
       isMale: user.isMale,
-      phoneNumber: user.phoneNumber,
-      tax: user.tax,
-      address: user.address,
-      description: user.description
+      phoneNumber: data.phoneNumber,
+      tax: data.tax,
+      address: data.address,
+      description: data.description
     })
       .then((res) => {
         handleChangeImg('ok');
@@ -59,7 +61,7 @@ function UpdateInformationPu({ value, id, reset, show, onClose, handleChangeImg 
       })
       .catch((error) => { console.error(error); notifyError("Update information is fail!"); })
     modalClose();
-  };
+  });
   const handlePositionChange = (selectedOption) => {
     setUser(prevState => ({
       ...prevState,
@@ -78,30 +80,62 @@ function UpdateInformationPu({ value, id, reset, show, onClose, handleChangeImg 
             <input
               type="text"
               className="form-control"
-              name="fullName"
-              value={user?.fullName}
-              onChange={handleChange}
+              // name="fullName"
+              // value={user?.fullName}
+              // onChange={handleChange}
+              {...register('fullName', {
+                required: 'Full name is required',
+                validate: (value) => {
+
+                }
+                , pattern: {
+                  value: /^\D*$/,
+                  message: 'Full name can not contain number',
+                },
+              })}
               aria-label="Full name"
               required
             />
+
+            <p className="text-danger">
+              {errors.fullName && errors.fullName.message}
+            </p>
             <label className="mt-2">
               {user?.role === "Business" ? "Establish date" : "Birthday"}
             </label>
-            <DatePicker
-              value={user?.date}
-              onChange={(date) => { setUser((prev) => ({ ...prev, date: moment(date).format('YYYY-MM-DD') })) }}
+            <input
+              {...register('date', {
+                required: 'Date is required',
+                validate: (value) => {
+
+                }
+              })}
+              type="date"
               className="form-control" />
+            <p
+              className="text-danger">
+              {errors.date && errors.date.message}
+            </p>
             <label className="mt-2">Phone number</label>
             <input
-              type="text"
+              type="number"
               name="phoneNumber"
-              value={user?.phoneNumber}
-              onChange={handleChange}
+              {...register('phoneNumber', {
+                required: 'Phone number is required',
+                validate: (value) => {
+
+                }, pattern: {
+                  value: /^0\d{9}$/,
+                  message: 'Phone number start with 0 and has to have 10 number',
+                },
+              })}
               className="form-control"
               aria-label="Phone number"
               required
             />
-
+            <p className="text-danger">
+              {errors.phoneNumber && errors.phoneNumber.message}
+            </p>
             {user.role !== "Business" && (
               <div>
                 <label className="mt-2">Gender:</label>
@@ -112,38 +146,7 @@ function UpdateInformationPu({ value, id, reset, show, onClose, handleChangeImg 
                     options={options}
                     onChange={(selectedOption) => handlePositionChange(selectedOption)}
                   />
-                  {/* <div className="checkbox-wrapper-13 bg-text">
-                  <label>
-                    <input
-                      id="c1-13"
-                      className="me-1"
-                      type="checkbox"
-                      checked={user?.isMale}
-                      name="isMale"
-                      onChange={() =>
-                        handleChange({
-                          target: { name: "isMale", value: true },
-                        })
-                      }
-                    />
-                    Male
-                  </label>
-                  <label className="ps-4">
-                    <input
-                      id="c1-13"
-                      className="me-1"
-                      type="checkbox"
-                      checked={!user?.isMale}
-                      name="isMale"
-                      onChange={() =>
-                        handleChange({
-                          target: { name: "isMale", value: false },
-                        })
-                      }
-                    />
-                    Female
-                  </label>
-                </div> */}
+
                 </div>
               </div>
             )}
@@ -152,34 +155,52 @@ function UpdateInformationPu({ value, id, reset, show, onClose, handleChangeImg 
               type="text"
               name="address"
               className="form-control"
-              value={user?.address}
-              onChange={handleChange}
+              {...register('address', {
+                required: 'Address is required',
+                validate: (value) => {
+
+                }
+              })}
               aria-label="Address"
               required
             />
+            <p className="text-danger">
+              {errors.address && errors.address.message}
+            </p>
             <label className="mt-2 ">Tax:</label>
             <input
               type="number"
               name="tax"
               className="form-control"
-              value={user?.tax}
-              onChange={handleChange}
+              {...register('tax', {
+                required: 'Tax is required',
+                validate: (value) => {
+
+                }, pattern: {
+                  value: /^\d{10}$/,
+                  message: 'Tax number has to be 10 digit',
+                },
+              })}
               aria-label="Tax"
               required
             />
-
+            <p className="text-danger">
+              {errors.tax && errors.tax.message}
+            </p>
             <label className="mt-2">Description:</label>
             <textarea
               type="text"
               name="description"
-              value={user?.description || ""}
+              {...register('description', {
+              })}
               placeholder="Hope you will give us some description about yourselves"
-              onChange={handleChange}
               style={{ maxHeight: '200px' }}
               className="form-control"
               aria-label="Description"
-
             />
+            <p className="text-danger">
+              {errors.description && errors.description.message}
+            </p>
           </form>
 
         </Modal.Body>

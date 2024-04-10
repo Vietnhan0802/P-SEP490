@@ -13,7 +13,7 @@ function DeleteDegree({ show, onClose, idDegree, resetTab }) {
         <div>
             <Modal show={show} onHide={onClose}>
                 <Modal.Header closeButton>
-                    <Modal.Title>Add Degree</Modal.Title>
+                    <Modal.Title>Delete Degree</Modal.Title>
                 </Modal.Header>
                 <Modal.Body className="popup-body">
                     <p> Do you really want to delete this degree?</p>
