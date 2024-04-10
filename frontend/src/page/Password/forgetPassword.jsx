@@ -4,7 +4,7 @@ import "../SignIn/signIn.scss";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { userInstance } from "../../axios/axiosConfig";
-
+import { notifySuccess } from "../../components/notification";
 import Cookies from "js-cookie";
 function ForgetPassword() {
   Cookies.remove("user");
@@ -19,7 +19,6 @@ function ForgetPassword() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log(inputs);
     try {
       const response = await userInstance.post(
         `/ForgotPassword/${inputs.email}`
@@ -27,7 +26,7 @@ function ForgetPassword() {
 
       if (response?.data?.status === "NoContent") {
         console.log(response.data);
-
+        notifySuccess("Request change password is success, please check your mail!")
       } else {
         console.log(response.data);
         console.log(response?.data?.status);
