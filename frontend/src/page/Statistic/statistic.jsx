@@ -633,13 +633,13 @@ function Statistic({ color }) {
       <Col md={9}>
         <Row>
           <Col md={4} className="" onResize={true}>
-            <div className="d-flex align-items-center px-2 bg-white p-2" style={{ borderRadius: '8px' }}>
+            <div className="d-flex align-items-center px-2 p-2" style={{ backgroundColor: 'var(--header_background)', color: 'var(--header_search_text)', borderRadius: '8px' }}>
               <p className="text-center w-100 fs-4">
                 Top 3 Freelancer
               </p>
             </div>
             {topFreelancer.map((item) => (
-              <div className="d-flex align-items-center px-2 bg-white mt-2 p-2" style={{ borderRadius: '8px' }}>
+              <div className="d-flex align-items-center px-2 mt-2 p-2" style={{ backgroundColor: 'var(--header_background)', color: 'var(--header_search_text)', borderRadius: '8px' }}>
                 <div className="profile" style={{ width: '40px', height: '40px' }}>
                   <img src={item.avatar} alt="" />
                 </div>
@@ -651,13 +651,13 @@ function Statistic({ color }) {
             ))}
           </Col>
           <Col md={4} className="px-0">
-            <div className="d-flex align-items-center px-2 bg-white  p-2" style={{ borderRadius: '8px' }}>
+            <div className="d-flex align-items-center px-2 p-2" style={{ backgroundColor: 'var(--header_background)', color: 'var(--header_search_text)', borderRadius: '8px' }}>
               <p className="text-center w-100 fs-4">
                 Top 3 Business
               </p>
             </div>
             {topBusiness.map((item) => (
-              <div className="d-flex align-items-center  justify-content-between px-2 bg-white mt-2 p-2" style={{ borderRadius: '8px' }}>
+              <div className="d-flex align-items-center  justify-content-between px-2 mt-2 p-2" style={{backgroundColor: 'var(--header_background)', color: 'var(--header_search_text)', borderRadius: '8px' }}>
                 <div className="profile d-flex align-items-center" style={{ width: '40px', height: '40px' }}>
                   <img src={item.avatar} alt="" />
                 </div>
@@ -669,13 +669,13 @@ function Statistic({ color }) {
             ))}
           </Col>
           <Col md={4}>
-            <div className="d-flex align-items-center px-2 bg-white  p-2" style={{ borderRadius: '8px' }}>
+            <div className="d-flex align-items-center px-2 p-2" style={{ backgroundColor: 'var(--header_background)', color: 'var(--header_search_text)', borderRadius: '8px' }}>
               <p className="text-center w-100 fs-4">
                 Top 3 Project
               </p>
             </div>
             {topProject.map((item) => (
-              <div className="d-flex align-items-center  justify-content-between px-2 bg-white mt-2 p-2" style={{ borderRadius: '8px' }}>
+              <div className="d-flex align-items-center  justify-content-between px-2 mt-2 p-2" style={{ backgroundColor: 'var(--header_background)', color: 'var(--header_search_text)', borderRadius: '8px' }}>
                 <div className="profile d-flex align-items-center" style={{ width: '80px', height: '40px', borderRadius: '8px' }}>
                   <img src={`https://localhost:7005/Images/${item.avatarProject}`} alt="" />
                 </div>
