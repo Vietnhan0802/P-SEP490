@@ -16,7 +16,7 @@
 }
 .active-tab {
   border: 1px solid rgba(0, 0, 0, 0.4);
-  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.4)
+  box-shadow: 0 3px 5px var(--active_tab)
 
 }
 .avatar-img-container{
@@ -115,4 +115,11 @@
 canvas {
   width: 100% !important;
   color: var(--header_search_text) !important;
+}
+
+.dropdown-menu {
+  background-color: var(--header_background);
+}
+.dropdown-item {
+  color: var(--header_search_text);
 }

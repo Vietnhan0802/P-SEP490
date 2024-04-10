@@ -1,12 +1,24 @@
 #postDetail,
 #BlogDetail {
-  background-color: #fff;
+  background-color: var(--header_background);
   border-radius: 8px;
+  color: var(--header_search_text);
 
   .h-40 {
     height: 40px;
   }
 
+  .input-cmt {
+    background-color: var(--header_background_search_box);
+    color: var(--header_search_text);
+    height: 40px;
+    border-radius: 8px;
+    margin: 0px 5px;
+  }
+
+  .border-custom {
+    border-bottom: 1px solid var(--header_search_text);
+  }
   .profile {
     margin-left: 0px;
     position: relative;
@@ -28,6 +40,7 @@
     /* Màu của background cho phần bị thừa */
     overflow: hidden;
     /* Ẩn phần của ảnh không vừa với container */
+    border-radius: 8px;
   }
   
   .image-container img {
