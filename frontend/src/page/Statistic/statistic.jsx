@@ -55,7 +55,7 @@ const createData = (
     isVerified
   };
 };
-function Statistic({color}) {
+function Statistic({ color }) {
   const sessionData = JSON.parse(sessionStorage.getItem("userSession")) || {};
   const { role, currentUserId } = sessionData;
   const [theme, setTheme] = useState(true);
@@ -438,7 +438,7 @@ function Statistic({color}) {
                         </Dropdown.Menu>
                       </Dropdown>
                     </div>
-                    <BarChart chartData={accountData} value={color} style={{ minWidth: '100%' }} />
+                    <BarChart chartData={accountData} value={color} text={'account'} style={{ minWidth: '100%' }} />
                   </>
                 )}
               </Col>
@@ -470,7 +470,7 @@ function Statistic({color}) {
                   </Dropdown.Menu>
                 </Dropdown>
               </div>
-              <BarChart chartData={postData} />
+              <BarChart chartData={postData} value={color} text={'post'} />
             </Col>
             <Col md={4} className="p-3">
               <h3 className="text-center">Highest view post in day</h3>
@@ -509,7 +509,7 @@ function Statistic({color}) {
                   </Dropdown.Menu>
                 </Dropdown>
               </div>
-              <BarChart chartData={blogData} />
+              <BarChart chartData={blogData} value={color} />
             </Col> <Col md={4} className="p-3">
               <h3 className="text-center">Highest view blog in day</h3>
               <div className="w-100 border  p-2" style={{ maxHeight: '350px', overflowY: 'auto', borderRadius: '16px' }}>
@@ -548,7 +548,7 @@ function Statistic({color}) {
                     </Dropdown.Menu>
                   </Dropdown>
                 </div>
-                <BarChart chartData={projectData} />
+                <BarChart chartData={projectData} value={color} text={'project'} />
               </Col>
               <Col md={4}>
                 <PieChart chartData={projectStatus} />
@@ -578,7 +578,7 @@ function Statistic({color}) {
                     </Dropdown.Menu>
                   </Dropdown>
                 </div>
-                <BarChart chartData={reportData} />
+                <BarChart chartData={reportData} value={color} text={'report'} />
               </Col>
               <Col md={4}>
                 <PieChart chartData={reportStatus} />
@@ -608,7 +608,7 @@ function Statistic({color}) {
                     </Dropdown.Menu>
                   </Dropdown>
                 </div>
-                <BarChart chartData={verifyData} />
+                <BarChart chartData={verifyData} value={color} text={'verification'} />
               </Col>
               <Col md={4}>
                 <PieChart chartData={verifyStatus} />
