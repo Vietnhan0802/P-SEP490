@@ -12,6 +12,9 @@
     --sidebar_background: #FFFFFF;
     --sidebar_item: #FFFFFF;
     --body_mid_background: #FFFFFF;
+
+    --legend-color: #ff0000; // Màu sắc của legend
+    --title-color: #E4E6EB;// Màu sắc của title
 }
 
 [data-theme="dark"] {
@@ -28,7 +31,6 @@
     --sidebar_background: #242526;
     --body_mid_background: #242526;
 }
-
 .dark_mode {
     margin-top: -20px;
     margin-left: 20px;

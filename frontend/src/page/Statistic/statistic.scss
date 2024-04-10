@@ -3,6 +3,13 @@
 //     min-height: 20px;
 //     min-width: 20px;
 // }
+.bg_custom {
+  background-color: var(--header_background);
+}
+
+.icon_select{
+  color: var(--header_search_box);
+}
 
 .auto-scale {
   height: 50%;
@@ -107,4 +114,5 @@
 }
 canvas {
   width: 100% !important;
+  color: var(--header_search_text) !important;
 }

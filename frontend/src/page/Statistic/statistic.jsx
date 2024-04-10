@@ -120,7 +120,7 @@ function Statistic() {
           }),
           datasets: [
             {
-              label: "Number Of Post",
+              label: <p style={{color:'green'}}>Number of post</p>,
               data: res?.data?.result.map((data) => data.count),
               backgroundColor: [
                 "rgba(75,192,192,0.2)"
@@ -420,7 +420,7 @@ function Statistic() {
                         <Dropdown.Toggle
                           variant="white"
                           className="border-none text-body">
-                          <MdBarChart size={14} />
+                          <MdBarChart size={14} className="icon_select" />
                         </Dropdown.Toggle>
 
                         <Dropdown.Menu style={{ minWidth: 'auto' }}>
@@ -737,7 +737,7 @@ function Statistic() {
           </Col>
         </Row>
         <Row className="ms-0 me-0">
-          <div className="bg-white " style={{ borderRadius: '8px' }}>
+          <div className="bg_custom" style={{ borderRadius: '8px' }}>
             {renderChart()}
           </div>
         </Row>

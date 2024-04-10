@@ -239,7 +239,7 @@ export default function BlogTable({ value, resetBlog }) {
       id="postTable"
       sx={{ width: "100%", paddingLeft: "0px", marginTop: "16px" }}
     >
-      <Paper sx={{ width: "100%", mb: 2 }} style={{ paddingTop: "10px" }}>
+      <Paper  className="form-table" sx={{ width: "100%", mb: 2 }} style={{ paddingTop: "10px" }}>
         <div className="ms-2 search-box">
           <IoSearchOutline className="search-icon me-1" />
           <input type="text" name="" className="search"
@@ -248,7 +248,7 @@ export default function BlogTable({ value, resetBlog }) {
         </div>
         <div className="line"></div>
         <TableContainer>
-          <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
+          <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle"  className="form-table" >
             <EnhancedTableHead
               numSelected={selected.length}
               order={order}
@@ -274,7 +274,6 @@ export default function BlogTable({ value, resetBlog }) {
                   >
                     <TableCell
                       component="th"
-                      id={labelId}
                       scope="row"
                       padding="none"
                       onClick={() => handleNavigateUser(row.idAccount)}
