@@ -76,7 +76,7 @@ function Project({ value }) {
           </div>
 
           {(search ? filterProjects : projects)?.map((item) => (
-            <div className="p-2 card bg-white p-6 rounded-lg w-96 mb-4" key={item.idProject}>
+            <div className="p-2 card bg-white p-6 rounded-lg w-96 mb-3" key={item.idProject}>
               <div className="image-container d-flex justify-content-center">
                 <img
                   className="rounded-t-lg bor-8"

@@ -104,7 +104,7 @@ function App() {
     <div
       className="App"
       ref={appRef}
-      style={{ backgroundColor: "var(--body_background)", minHeight: location.pathname === "/notfound" ? "100vh" : "" }}
+      style={{ backgroundColor: "var(--body_background)", minHeight: "100vh" }}
     >
       {isHeaderVisible && (
         <Header onItemClick={handleHeaderItemClick} changeImage={changeImage} changeThemeHeader={changeThemeHeader} />

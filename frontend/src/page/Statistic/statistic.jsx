@@ -460,7 +460,7 @@ function Statistic({ color }) {
                   <Dropdown.Toggle
                     variant="white"
                     className="border-none text-body">
-                    <MdBarChart size={14} />
+                    <MdBarChart size={14} className="icon_select"/>
                   </Dropdown.Toggle>
                   <Dropdown.Menu style={{ minWidth: 'auto' }}>
                     <Dropdown.Item onClick={() => setStatisticPostType('today')}>Today</Dropdown.Item>
@@ -473,15 +473,15 @@ function Statistic({ color }) {
               <BarChart chartData={postData} value={color} text={'New Post Creation Statistics'} />
             </Col>
             <Col md={4} className="p-3">
-              <h3 className="text-center">Highest view post in day</h3>
+              <h3 className="text-center" style={{color: 'var(--header_search_text)'}}>Highest view post in day</h3>
               <div className="w-100 border  p-2" style={{ maxHeight: '350px', overflowY: 'auto', borderRadius: '16px' }}>
                 {postListTrend.map((item) => (
                   <div className="justify-content-between d-flex align-items-center mt-2">
                     <div className="post-img-container w-25">
                       <img src={item?.viewPostImages?.length === 0 ? defaultImage : item?.viewPostImages[0]?.imageSrc} alt="" />
                     </div>
-                    <p className=" txt-overflow d-flex align-items-center ps-3 " style={{ width: '75%' }}>{item.title}</p>
-                    <p className="d-flex align-items-center " style={{ width: '10%' }}>{item.view}</p>
+                    <p className=" txt-overflow d-flex align-items-center ps-3 " style={{ color: 'var(--header_search_text)', width: '75%' }}>{item.title}</p>
+                    <p className="d-flex align-items-center " style={{ color: 'var(--header_search_text)', width: '10%' }}>{item.view}</p>
                   </div>
                 ))}
 
@@ -498,7 +498,7 @@ function Statistic({ color }) {
                   <Dropdown.Toggle
                     variant="white"
                     className="border-none text-body">
-                    <MdBarChart size={14} />
+                    <MdBarChart size={14} className="icon_select"/>
                   </Dropdown.Toggle>
 
                   <Dropdown.Menu style={{ minWidth: 'auto' }}>
@@ -511,15 +511,15 @@ function Statistic({ color }) {
               </div>
               <BarChart chartData={blogData} value={color} text={'New Blog Creation Statistics'} />
             </Col> <Col md={4} className="p-3">
-              <h3 className="text-center">Highest view blog in day</h3>
+              <h3 className="text-center" style={{color: 'var(--header_search_text)'}}>Highest view blog in day</h3>
               <div className="w-100 border  p-2" style={{ maxHeight: '350px', overflowY: 'auto', borderRadius: '16px' }}>
                 {blogListTrend.map((item) => (
                   <div className="justify-content-between d-flex align-items-center mt-2">
                     <div className="post-img-container w-25">
                       <img src={item?.viewPostImages?.length === 0 ? defaultImage : item?.viewPostImages[0]?.imageSrc} alt="" />
                     </div>
-                    <p className=" txt-overflow d-flex align-items-center ps-3 " style={{ width: '75%' }}>{item.title}</p>
-                    <p className="d-flex align-items-center " style={{ width: '10%' }}>{item.view}</p>
+                    <p className=" txt-overflow d-flex align-items-center ps-3 " style={{ color: 'var(--header_search_text)', width: '75%' }}>{item.title}</p>
+                    <p className="d-flex align-items-center " style={{ color: 'var(--header_search_text)', width: '10%' }}>{item.view}</p>
                   </div>
                 ))}
 
@@ -537,7 +537,7 @@ function Statistic({ color }) {
                     <Dropdown.Toggle
                       variant="white"
                       className="border-none text-body">
-                      <MdBarChart size={14} />
+                      <MdBarChart size={14} className="icon_select"/>
                     </Dropdown.Toggle>
 
                     <Dropdown.Menu style={{ minWidth: 'auto' }}>
@@ -567,7 +567,7 @@ function Statistic({ color }) {
                     <Dropdown.Toggle
                       variant="white"
                       className="border-none text-body">
-                      <MdBarChart size={14} />
+                      <MdBarChart size={14} className="icon_select"/>
                     </Dropdown.Toggle>
 
                     <Dropdown.Menu style={{ minWidth: 'auto' }}>
@@ -597,7 +597,7 @@ function Statistic({ color }) {
                     <Dropdown.Toggle
                       variant="white"
                       className="border-none text-body">
-                      <MdBarChart size={14} />
+                      <MdBarChart size={14} className="icon_select"/>
                     </Dropdown.Toggle>
 
                     <Dropdown.Menu style={{ minWidth: 'auto' }}>
