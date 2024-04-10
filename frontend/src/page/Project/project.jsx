@@ -62,9 +62,9 @@ function Project({ value }) {
       </Col>
       <Col md={6}>
         <div id="own_project">
-          <div className="bg-white p-2 d-flex flex-grid align-items-center justify-content-between row m-0 form mb-3">
+          <div className="project-form p-2 d-flex flex-grid align-items-center justify-content-between row m-0 form mb-3">
             <div className="d-flex project-search align-items-center position-relative col">
-              <CiSearch className="" />
+              <CiSearch className="search_icon" />
               <input
                 type="text"
                 placeholder={"Search"}
@@ -123,8 +123,8 @@ function Project({ value }) {
                   </div>
 
 
-                  <div className="d-flex flex-row gap-2">
-                    <button className="d-flex flex-row align-items-center btn bg-white text-dark px-4 py-2 rounded btn-light border border-dark"
+                  <div className="d-flex flex-row gap-2 button_custom">
+                    <button className="d-flex flex-row align-items-center btn bg-primary text-white px-4 py-2 btn-light border border-dark border_custom"
                       onClick={() => hanldeViewDetail(item.idProject)}
                     >
                       Detail

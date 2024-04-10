@@ -12,9 +12,15 @@
     border-radius: 8px;
   }
   .project-search {
+    input {
+      max-height: 38px;
+    }
     background-color: var(--header_background_search_box);
-    border-radius: 40px;
+    border-radius: 8px;
     padding: 0px 12px;
+    .search_icon {
+      color: var(--header_search_box);
+    }
 
     .search-box {
       background-color: var(--header_background_search_box);
@@ -26,8 +32,8 @@
       font-size: 18px;
     }
   }
-  .blog-form {
-    background-color: #fff;
+  .project-form {
+    background-color: var(--header_background);
     border-radius: 8px;
     padding: 12px;
   }
