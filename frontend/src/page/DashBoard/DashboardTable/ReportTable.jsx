@@ -282,12 +282,12 @@ export default function ReportTable({ accountValue, postValue, blogValue, resetR
               <TableCell align="right">
                 <div className="d-flex align-items-center justify-content-end">
                   <div className="d-flex justify-content-center">
-                    <div className="deny" onClick={() => handleAcceptorDeny(row.id, 2, 'post')}>
-                      <GoDotFill className="me-1" />
+                    <div className="block-box deny" onClick={() => handleAcceptorDeny(row.id, 2, 'post')}>
+                      <GoDotFill className="me-1  deny-dot" />
                       Deny
                     </div>
-                    <div className="accept" onClick={() => handleAcceptorDeny(row.id, 1, 'post')}>
-                      <GoDotFill className="me-1" />
+                    <div className="block-box accept  ms-2" onClick={() => handleAcceptorDeny(row.id, 1, 'post')}>
+                      <GoDotFill className="me-1 accept-dot" />
                       Accept
                     </div>
                   </div>
@@ -351,13 +351,13 @@ export default function ReportTable({ accountValue, postValue, blogValue, resetR
               <TableCell align="right">
                 <div className="d-flex align-items-center justify-content-end">
                   <div className="d-flex justify-content-center">
-                    <div className="deny" onClick={() => handleAcceptorDeny(row.id, 2, 'account')}>
-                      <GoDotFill className="me-1" />
+                    <div className=" block-box deny" onClick={() => handleAcceptorDeny(row.id, 2, 'account')}>
+                      <GoDotFill className="me-1 deny-dot" />
                       Deny
                     </div>
-                    <div className="accept" onClick={() => handleAcceptorDeny(row.id, 1, 'account')}>
-                      <GoDotFill className="me-1" />
-                      Block
+                    <div className=" block-box accept ms-2" onClick={() => handleAcceptorDeny(row.id, 1, 'account')}>
+                      <GoDotFill className="me-1 accept-dot" />
+                      Accept
                     </div>
                   </div>
                 </div>
@@ -425,12 +425,12 @@ export default function ReportTable({ accountValue, postValue, blogValue, resetR
               <TableCell align="right">
                 <div className="d-flex align-items-center justify-content-end">
                   <div className="d-flex justify-content-center">
-                    <div className="deny" onClick={() => handleAcceptorDeny(row.id, 2, 'blog')}>
-                      <GoDotFill className="me-1" />
+                    <div className=" block-box deny" onClick={() => handleAcceptorDeny(row.id, 2, 'blog')}>
+                      <GoDotFill className="me-1 deny-dot" />
                       Deny
                     </div>
-                    <div className="accept" onClick={() => handleAcceptorDeny(row.id, 1, 'blog')}>
-                      <GoDotFill className="me-1" />
+                    <div className="block-box accept ms-2 " onClick={() => handleAcceptorDeny(row.id, 1, 'blog')}>
+                      <GoDotFill className="me-1 accept-dot" />
                       Accept
                     </div>
                   </div>

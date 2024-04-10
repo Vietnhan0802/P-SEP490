@@ -242,7 +242,7 @@ function ProjectDetail() {
                   <FormMember projectId={idProject} positionOption={data?.positionViews} />
                 }
                 {role === 'Member' && data?.process !== 3 &&
-                  <FormApply projectId={idProject} positionOption={data?.positionViews} />
+                  <FormApply projectId={idProject} positionOption={data?.positionViews} memberList={projectMembers}/>
                 }
 
               </div>
