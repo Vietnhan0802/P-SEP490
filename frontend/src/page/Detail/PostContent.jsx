@@ -110,7 +110,7 @@ function PostContent({ data, handleLikeOrUnlikePost, viewProject, userId, resetP
               >
                 <MdDelete size={28} />
               </Dropdown.Item>
-              {role !== 'Admin' &&
+              {role !== 'Admin' && data?.idAccount !== userId  &&
                 <Dropdown.Item
                 >
                   <Report />
