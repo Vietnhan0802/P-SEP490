@@ -61,6 +61,7 @@ function Post({ value }) {
   //______________________________//
   const createData = (
     id,
+    idAccount,
     createdDate,
     avatar,
     title,
@@ -74,6 +75,7 @@ function Post({ value }) {
   ) => {
     return {
       id,
+      idAccount,
       createdDate,
       avatar,
       title,
@@ -126,6 +128,7 @@ function Post({ value }) {
       .get(`GetAllPublicPosts/${currentUserId}`)
       .then((res) => {
         const postList = res?.data?.result;
+        console.log(postList)
         setPostList([]);
         postList.map((element) => {
           const time = calculateTimeDifference(element.createdDate);
@@ -133,6 +136,7 @@ function Post({ value }) {
             ...prevData,
             createData(
               element.idPost,
+              element.idAccount,
               time,
               element.avatar,
               element.title,
@@ -162,6 +166,7 @@ function Post({ value }) {
             ...prevData,
             createData(
               element.idPost,
+              element.idAccount,
               time,
               element.avatar,
               element.title,
@@ -273,12 +278,12 @@ function Post({ value }) {
                     </div>
                   </div>
                 </div>
-                {role !== 'Admin' &&
+                {role !== 'Admin' && currentUserId !== item.idAccount &&
                   <Report id={currentUserId} idItem={item.id} type="post" />
                 }
               </div>
               <h4 className="mt-2">{item.title}</h4>
-              <div style={{ maxHeight: '200px', overflow: 'hidden' }} className="mb-3">
+              <div style={{ maxHeight: '215px', overflow: 'hidden' }} className="mb-3">
                 <div dangerouslySetInnerHTML={{ __html: item.content }} />
               </div>
               <div

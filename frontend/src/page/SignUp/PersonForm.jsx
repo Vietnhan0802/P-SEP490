@@ -1,10 +1,11 @@
 import React from "react";
+import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { userInstance } from "../../axios/axiosConfig";
 import { GoogleLogin } from '@react-oauth/google';
-import Notification, { notifySuccess, notifyError, notifyWarn } from "../../components/notification";
+import { notifySuccess, notifyError } from "../../components/notification";
 import { jwtDecode } from "jwt-decode";
 export default function PersonForm() {
   const [inputs, setInputs] = useState({
@@ -17,11 +18,11 @@ export default function PersonForm() {
     tax: "",
     address: "",
   });
+  const { register, handleSubmit, reset, formState: { errors } } = useForm();
   const navigate = useNavigate();
-  const handleSubmit = async (event) => {
-    event.preventDefault();
+  const onSubmit = async (data) => {
     try {
-      const response = await userInstance.post("/SignUpMember", inputs);
+      const response = await userInstance.post("/SignUpMember", data);
       if (response?.data?.message === "User create & send email is success!") {
         notifySuccess("Sign up successfully, please check your confirmation email!");
         navigate("/");
@@ -36,7 +37,12 @@ export default function PersonForm() {
       console.error("Sign up failed", error.response.data);
     }
   };
+  const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
 
+  const validateEmail = (value) => {
+
+    return emailRegex.test(value) || "Invalid email address";
+  };
   const handleChange = (event) => {
     console.log(event.target);
     const { name, value, type, checked } = event.target;
@@ -78,49 +84,60 @@ export default function PersonForm() {
   };
   return (
     <div>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <div className="pb-2 d-flex flex-row align-items-center">
-          <p className="col-sm-3 col-5 size-20 blue2f SFU-heavy pb-1 input-field">
+          <p className="col-sm-3 col-5 size-20 blue2f SFU-heavy pb-1">
             Email
           </p>
           <input
             className="input-field rounded-50 w-100"
             placeholder="Enter your email"
-            type="email"
-            name="email"
-            value={inputs.email}
-            onChange={handleChange}
+            type="tẽt"
+            {...register("email", {
+              required: 'Email  is required',
+              validate: validateEmail
+            })}
           />
         </div>
+        {errors.email && <p className="text-danger small-txt">{errors.email.message}</p>}
         <div className="pb-2 d-flex flex-row align-items-center">
-          <p className="col-sm-3 col-5 size-20 blue2f SFU-heavy pb-1 input-field">
+          <p className="col-sm-3 col-5 size-20 blue2f SFU-heavy pb-1">
             Password
           </p>
           <input
             className="input-field rounded-50 w-100"
             placeholder="Enter your password"
             type="password"
-            name="password"
-            value={inputs.password}
-            onChange={handleChange}
+            {...register("password", {
+              required: "Password is  required", pattern: {
+                value: /^(?=.*[A-Z])(?=.*[a-z])(?=.*[^A-Za-z0-9\s])[A-Za-z0-9\S]{8,}$/,
+                message: 'Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters',
+              },
+            })}
           />
         </div>
-
+        {errors.password && <p className="text-danger small-txt">{errors.password.message}</p>}
         <div className="pb-2 d-flex flex-row align-items-center">
-          <p className="col-sm-3 col-5 size-20 blue2f SFU-heavy pb-1 input-field">
+          <p className="col-sm-3 col-5 size-20 blue2f SFU-heavy pb-1">
             FullName
           </p>
           <input
             className="input-field rounded-50 w-100"
             placeholder="Enter your FullName"
             type="text"
-            name="fullName"
-            value={inputs.fullName}
-            onChange={handleChange}
+            {...register("fullName", {
+              required: "Full name is required",
+              pattern: {
+                value: /^\D*$/,
+                message: 'Full name can not contain number',
+              },
+            })}
           />
         </div>
+        {errors.fullName && <p className="text-danger small-txt">{errors.fullName.message}</p>}
+
         <div className="pb-2 d-flex flex-row align-items-center">
-          <p className="col-sm-3 col-5 size-20 blue2f SFU-heavy pb-1 input-field">
+          <p className="col-sm-3 col-5 size-20 blue2f SFU-heavy pb-1">
             Birthday
           </p>
           <input
@@ -129,9 +146,7 @@ export default function PersonForm() {
             min="1900-01-01"
             max="2023-12-31"
             type="date"
-            name="birthday"
-            value={inputs.birthday}
-            onChange={handleChange}
+            {...register("birthday", { required: "Birthday day is required" })}
           />
         </div>
         <div className="d-flex flex-row justify-content-evenly">
@@ -164,46 +179,53 @@ export default function PersonForm() {
           </div>
         </div>
         <div className="pb-2 d-flex flex-row align-items-center">
-          <p className="col-sm-3 col-5 size-20 blue2f SFU-heavy pb-1 input-field">
+          <p className="col-sm-3 col-5 size-20 blue2f SFU-heavy pb-1">
             Phone
           </p>
           <input
             className="input-field rounded-50 w-100"
             placeholder="Enter your Phone"
             type="text"
-            name="phone"
-            value={inputs.phone}
-            onChange={handleChange}
+            {...register("phone", {
+              required: "Phone number is required", pattern: {
+                value: /^0\d{9}$/,
+                message: 'Phone number starts with 0 and has to have 10 number',
+              },
+            })}
           />
         </div>
+        {errors.phone && <p className="text-danger small-txt">{errors.phone.message}</p>}
         <div className="pb-2 d-flex flex-row align-items-center">
-          <p className="col-sm-3 col-5 size-20 blue2f SFU-heavy pb-1 input-field">
+          <p className="col-sm-3 col-5 size-20 blue2f SFU-heavy pb-1">
             Tax
           </p>
           <input
             className="input-field rounded-50 w-100"
             placeholder="Enter your Tax"
             type="text"
-            name="tax"
-            value={inputs.tax}
-            onChange={handleChange}
+            {...register("tax", {
+              required: "Tax number is required", pattern: {
+                value: /^\d{10}$/,
+                message: 'Tax number has to be 10 digit',
+              }
+            })}
           />
         </div>
+        {errors.tax && <p className="text-danger small-txt">{errors.tax.message}</p>}
         <div className="pb-2 d-flex flex-row align-items-center">
-          <p className="col-sm-3 col-5 size-20 blue2f SFU-heavy pb-1 input-field">
+          <p className="col-sm-3 col-5 size-20 blue2f SFU-heavy pb-1">
             Address
           </p>
           <input
             className="input-field rounded-50 w-100"
             placeholder="Enter your Address"
             type="text"
-            name="address"
-            value={inputs.address}
-            onChange={handleChange}
+            {...register("address", { required: "Address is required" })}
           />
         </div>
+        {errors.address && <p className="text-danger small-txt">{errors.address.message}</p>}
         <button
-          className="submit-btn rounded-50 size-20 white SFU-bold w-100"
+          className="submit-btn rounded-50 mt-2   size-20 white SFU-bold w-100"
           type="submit"
           value="Sign up for Person"
         >

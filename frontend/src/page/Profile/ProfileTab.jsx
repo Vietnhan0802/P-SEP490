@@ -103,7 +103,7 @@ function ProfileTab(props) {
                             {showBlogItems ? "Show Less" : "View All"}
                         </button>
                     )}
-                    {user.role === "Business" && tab === "post" && userPost.length > 3 &&(
+                    {user.role === "Business" && tab === "post" && userPost.length > 3 && (
                         <button
                             className={`height-50 text-white btn-info btn ${tab === "post" ? "active" : ""
                                 }`}
@@ -151,7 +151,7 @@ function ProfileTab(props) {
                                                     href={item.fileSrc} // Link to the PDF file
                                                     target="_blank" // Open in a new tab
                                                     rel="noopener noreferrer" // Security best practice
-                                                    className="btn degree-detail btn-info text-white"
+                                                    className="btn border degree-detail"
                                                 >
                                                     View Detail
                                                 </a>
@@ -207,7 +207,7 @@ function ProfileTab(props) {
                                                 className="image"
                                             />
                                         </div>
-                                        <div className="col-7 d-flex flex-column justify-content-start">
+                                        <div className="col-6 d-flex flex-column justify-content-start">
                                             <div className="d-flex items-center">
                                                 <div className="avatar-contain me-2">
                                                     <img
@@ -228,7 +228,7 @@ function ProfileTab(props) {
                                                 Title: {post.title}
                                             </p>
                                         </div>
-                                        <div className="col-2 d-flex justify-content-center align-items-center">
+                                        <div className="col-3 d-flex justify-content-end align-items-center" style={{width:'30%'}}>
                                             <button className="btn degree-detail border" onClick={() => handleNavigate(post.idPost, 'post')}>
                                                 View Detail
                                             </button>
@@ -243,9 +243,10 @@ function ProfileTab(props) {
                 {/* Posttab of business profile*/}
                 {user.role === "Admin" && tab === "blog" && (
                     <div className={`blog tab-content  p-3  ${showBlogItems ? "scrollable" : ""
-                }`}>
+                        }`}>
                         {userBlog?.length !== 0 ?
                             userBlog?.slice(0, showBlogItems ? userBlog?.length : 3).map((blog) => (
+
                                 <div
                                     className="row align-items-center mb-3 px-3"
                                     key={blog.idBlog}
@@ -261,7 +262,7 @@ function ProfileTab(props) {
                                             className="image"
                                         />
                                     </div>
-                                    <div className="col-7 d-flex flex-column justify-content-start">
+                                    <div className="col-6 d-flex flex-column justify-content-start">
                                         <div className="d-flex items-center">
                                             <div className="avatar-contain me-2">
                                                 <img
@@ -283,7 +284,7 @@ function ProfileTab(props) {
                                             Blog Title: {blog.title}
                                         </p>
                                     </div>
-                                    <div className="col-2 d-flex justify-content-center align-items-center">
+                                    <div className="col-3 d-flex justify-content-end align-items-center" style={{ width: '30% !important' }}>
                                         <button className="btn degree-detail" onClick={() => handleNavigate(blog.idBlog, 'blog')}>
                                             View More
                                         </button>
@@ -297,7 +298,7 @@ function ProfileTab(props) {
                 )}
                 {user.role !== "Admin" && tab === "project" && (
                     <div className={`project tab-content  ${showProjectItems ? "scrollable" : ""
-                }`}  >
+                        }`}  >
                         <div className="row" id="all-projects">
                             {userProject?.length > 0 ? (
                                 userProject?.slice(0, showProjectItems ? userProject?.length : 4).map((project) => (

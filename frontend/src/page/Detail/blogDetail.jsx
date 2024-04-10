@@ -61,7 +61,7 @@ function BlogDetail({ value }) {
     };
   }, []);
   const sessionData = JSON.parse(sessionStorage.getItem("userSession")) || {};
-  const { currentUserId } = sessionData;
+  const { currentUserId, role } = sessionData;
   const location = useLocation();
   const { idBlog } = location.state || {};
 
@@ -388,7 +388,7 @@ function BlogDetail({ value }) {
       .catch((error) => {
         console.error(error);
       });
-  }, [memoizedBlogInstance, idBlog, reset ]);
+  }, [memoizedBlogInstance, idBlog, reset]);
 
   //Fetch data the user to display in the comment and reply
   useEffect(() => {
@@ -459,15 +459,18 @@ function BlogDetail({ value }) {
                   >
                     <MdDelete />
                   </Dropdown.Item>
-                  <Dropdown.Item
-                  >
-                    <Report />
-
-                  </Dropdown.Item>
+                  {role !== 'Admin' &&
+                    <Dropdown.Item>
+                      <Report />
+                    </Dropdown.Item>
+                  }
                 </Dropdown.Menu>
               </Dropdown>
             ) : (
-              <Report />
+              <div>
+                {role !== 'Admin' &&
+                  <Report />}
+              </div>
             )}
 
           </div>
