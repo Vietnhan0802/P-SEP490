@@ -15,7 +15,7 @@ function BarChart({ chartData, value,text }) {
       },
       title: {
         display: true,
-        text: `Line Chart Example`,
+        text: `${text}`,
         // Chỉnh màu chữ cho title
         color: value ? '#E4E6EB' : '#050505'
       }
