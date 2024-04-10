@@ -47,7 +47,7 @@ function Chat() {
       ));
     }
   }
-  
+
 
   useEffect(() => {
     const newConnection = new signalR.HubConnectionBuilder()
@@ -60,7 +60,7 @@ function Chat() {
     newConnection.on("ReceiveMessage", (messageText) => {
       console.log(messages[0].idConversation);
       console.log(messageText.idConversation);
-      
+
       if (messages[0].idConversation === messageText.idConversation) {
         setMessages((prevMessages) => {
           if (Array.isArray(prevMessages)) {
@@ -79,7 +79,7 @@ function Chat() {
         console.log('Connected to SignalR hub');
       })
       .catch(error => console.log('Error connecting to SignalR hub: ', error));
-    
+
     return () => {
       // Đóng kết nối khi component bị unmount
       newConnection.stop();
@@ -140,54 +140,57 @@ function Chat() {
     }
   }
   useEffect(() => {
-    chatInstance.get(`GetConversationsByUser/${currentUserId}`)
-      .then((res) => {
-        setConversations(res.data.result);
-        if (userId === undefined) {
-          chatInstance.get(`GetMessages/${currentUserId}/${currentUserId === res.data.result[0].idAccount1 ? res.data.result[0].idAccount2 : res.data.result[0].idAccount1}`)
-            .then((res) => {
-              setMessages(res.data.result);
-              setActiveUser({
-                avatar: res?.data?.result[0].avatarReceiver,
-                name: res?.data?.result[0].nameReceiver,
-                receiverId: res?.data?.result[0].idReceiver === currentUserId ? res?.data?.result[0].idSender : res?.data?.result[0].idReceiver
+    const fetchData = async () => {
+      chatInstance.get(`GetConversationsByUser/${currentUserId}`)
+        .then((res) => {
+          setConversations(res.data.result);
+          if (userId === undefined) {
+            chatInstance.get(`GetMessages/${currentUserId}/${currentUserId === res.data.result[0].idAccount1 ? res.data.result[0].idAccount2 : res.data.result[0].idAccount1}`)
+              .then((res) => {
+                setMessages(res.data.result);
+                setActiveUser({
+                  avatar: res?.data?.result[0].avatarReceiver,
+                  name: res?.data?.result[0].nameReceiver,
+                  receiverId: res?.data?.result[0].idReceiver === currentUserId ? res?.data?.result[0].idSender : res?.data?.result[0].idReceiver
+                });
+                // if (connection) {
+                //   try {
+                //     connection.invoke('AddToGroup', connection.connectionId, res?.data?.result[0].idConversation);
+                //     console.log('Join group: ' + connection.connectionId);
+                //     console.log(res?.data?.result[0].idConversation);
+                //   } catch (error) {
+                //     console.error('Error sending message: ', error);
+                //   }
+                // }
+              })
+              .catch((error) => {
+                console.error(error);
               });
-              // if (connection) {
-              //   try {
-              //     connection.invoke('AddToGroup', connection.connectionId, res?.data?.result[0].idConversation);
-              //     console.log('Join group: ' + connection.connectionId);
-              //     console.log(res?.data?.result[0].idConversation);
-              //   } catch (error) {
-              //     console.error('Error sending message: ', error);
-              //   }
-              // }
-            })
-            .catch((error) => {
-              console.error(error);
-            });
-        }
-        if (userId !== undefined) {
-          chatInstance.get(`GetMessages/${currentUserId}/${userId}`)
-            .then((res) => {
-              setMessages(res.data.result);
-              if (connection) {
-                try {
-                  connection.invoke('AddToGroup', connection.connectionId, res?.data?.result[0].idConversation);
-                  console.log('Join group: ' + connection.connectionId);
-                  console.log(res?.data?.result[0].idConversation);
-                } catch (error) {
-                  console.error('Error sending message: ', error);
+          }
+          if (userId !== undefined) {
+            chatInstance.get(`GetMessages/${currentUserId}/${userId}`)
+              .then((res) => {
+                setMessages(res.data.result);
+                if (connection) {
+                  try {
+                    connection.invoke('AddToGroup', connection.connectionId, res?.data?.result[0].idConversation);
+                    console.log('Join group: ' + connection.connectionId);
+                    console.log(res?.data?.result[0].idConversation);
+                  } catch (error) {
+                    console.error('Error sending message: ', error);
+                  }
                 }
-              }
-            })
-            .catch((error) => {
-              console.error(error);
-            });
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+              })
+              .catch((error) => {
+                console.error(error);
+              });
+          }
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
+    fetchData();
   }, [currentUserId, reset, userId]);
 
 
@@ -556,7 +559,7 @@ function Chat() {
                           </div>
                           {item?.content &&
                             <div className="position-relative">
-                              {item?.isRecall &&  <div className="w-100 h-100 position-absolute d-flex align-items-center bg-blur">
+                              {item?.isRecall && <div className="w-100 h-100 position-absolute d-flex align-items-center bg-blur">
                                 <p className="ms-3 white">Message is unsend</p>
                               </div>}
 

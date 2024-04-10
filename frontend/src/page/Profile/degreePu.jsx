@@ -101,7 +101,7 @@ function DegreePu({ ...props }) {
           />
           {/* Display the selected file */}
           {inputs.FileFile && (
-            <div>
+            <div className="mt-2">
               {inputs.FileSrc.startsWith("data:image") ? ( // Check if the file is an image
                 <img
                   src={inputs.FileSrc}

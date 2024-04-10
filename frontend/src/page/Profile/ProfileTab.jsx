@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import DegreePu from "./degreePu";
 import './profile.scss'
-import defaultProject from "../../images/common/default_project.webp";
+import defaultProject from "../../images/common/images-empty.png";
 import degree from "../../images/common/degree.png";
 import { useNavigate } from 'react-router-dom';
 import { Button } from 'react-bootstrap'
@@ -13,13 +13,29 @@ function ProfileTab(props) {
     const { tabs, user, currentUserId, userDegree, userPost, userBlog, userProject, formatDateString, projectStatus, resetTab } = props;
     const navigate = useNavigate();
     const [tab, setTab] = useState("");
-    const [showAllItems, setShowAllItems] = useState(false);
+    const [showDegreeItems, setShowDegreeItems] = useState(false);
+    const [showPostItems, setShowPostItems] = useState(false);
+    const [showBlogItems, setShowBlogItems] = useState(false);
+    const [showProjectItems, setShowProjectItems] = useState(false);
     const [showDeleteDegreeForId, setShowDeleteDegreeForId] = useState(null);
     const hanldeSetTab = (tab) => {
         setTab(tab);
-        setShowAllItems(!showAllItems);
+    };
+    const handleDegreeViewAll = () => {
+        setShowDegreeItems(!showDegreeItems);
     };
 
+    const handlePostViewAll = () => {
+        setShowPostItems(!showPostItems);
+    };
+
+    const handleBlogViewAll = () => {
+        setShowBlogItems(!showBlogItems);
+    };
+
+    const handleProjectViewAll = () => {
+        setShowProjectItems(!showProjectItems);
+    };
     const handleNavigate = (id, type) => {
         switch (type) {
             case ('post'):
@@ -42,6 +58,7 @@ function ProfileTab(props) {
             setTab("degree");
         }
     }, [user])
+    console.log(userProject)
     return (
         <>
             <div className="btn-swtich d-flex flex-row justify-content-between mb-2">
@@ -63,106 +80,106 @@ function ProfileTab(props) {
                     <span className="glider"></span>
                 </div>
                 <div className="action-user d-flex flex-row align-items-center justify-content-end">
-                    {user.role === "Member" && tab === "degree" && (
+                    {user.role === "Member" && tab === "degree" && currentUserId === user.id && (
                         <DegreePu user={currentUserId} resetTab={resetTab} />
                     )}
-                    {user.role === "Member" && tab === "degree" && (
+                    {user.role === "Member" && tab === "degree" && userDegree.length > 3 && (
                         <button
                             className={`height-50 text-white btn-info btn ${tab === "degree" ? "active" : ""
                                 }`}
-                            onClick={() => hanldeSetTab("degree")}
+                            onClick={() => handleDegreeViewAll()}
                         >
-                            {showAllItems ? "Show Less" : "View All"}
+                            {showDegreeItems ? "Show Less" : "View All"}
                         </button>
                     )}
 
-                    {user.role === "Admin" && tab === "blog" && (
+                    {user.role === "Admin" && tab === "blog" && userBlog.length > 3 && (
                         <button
                             className={`height-50 text-white btn-info btn ${tab === "blog" ? "active" : ""
                                 }`}
-                            onClick={() => hanldeSetTab("blog")}
+                            onClick={() => handleBlogViewAll()}
                         >
                             {" "}
-                            {showAllItems ? "Show Less" : "View All"}
+                            {showBlogItems ? "Show Less" : "View All"}
                         </button>
                     )}
-                    {user.role === "Business" && tab === "post" && (
+                    {user.role === "Business" && tab === "post" && userPost.length > 3 &&(
                         <button
                             className={`height-50 text-white btn-info btn ${tab === "post" ? "active" : ""
                                 }`}
-                            onClick={() => hanldeSetTab("post")}
+                            onClick={() => handlePostViewAll()}
                         >
                             {" "}
-                            {showAllItems ? "Show Less" : "View All"}
+                            {showPostItems ? "Show Less" : "View All"}
                         </button>
                     )}
                     {user.role !== "Admin" && tab === "project" && (
                         <button
                             className={`height-50 text-white btn-info btn ${tab === "project" ? "active" : ""
                                 }`}
-                            onClick={() => hanldeSetTab("project")}
+                            onClick={() => handleProjectViewAll()}
                         >
                             {" "}
-                            {showAllItems ? "Show Less" : "View All"}
+                            {showProjectItems ? "Show Less" : "View All"}
                         </button>
                     )}
                 </div>
             </div>
             <div>
                 {user.role === "Member" && tab === "degree" && (
-                    <div className={`degree tab-content ${showAllItems ? "scrollable" : ""}`}>
-                        {userDegree?.length !== 0 ? 
-                        userDegree?.slice(0, showAllItems ? userDegree?.length : 3)
-                            .map((item) => (
-                                <>
-                                    <div className="row mb-4 position-relative" key={item.idDegree}>
-                                        <div className="col-2 d-flex justify-content-center img-contain">
-                                            <img src={degree} alt="" className="image" />
-                                        </div>
-                                        <div className="col-6 d-flex flex-column justify-content-center">
-                                            <p className="degree-title ellipsis">
-                                                Degree title:
-                                                {item.name}
-                                            </p>
-                                            <p className="degree-description ellipsis">
-                                                Degree institution:
-                                                {item.institution}
-                                            </p>
-                                        </div>
-                                        <div className="col-4 d-flex justify-content-center align-items-center">
-                                            <a
-                                                href={item.fileSrc} // Link to the PDF file
-                                                target="_blank" // Open in a new tab
-                                                rel="noopener noreferrer" // Security best practice
-                                                className="btn degree-detail btn-info text-white"
-                                            >
-                                                View Detail
-                                            </a>
-                                        </div>
-                                        <div className='position-absolute top-0 end-0 w-auto'>
-                                            <Dropdown id='degree-tab'>
-                                                <Dropdown.Toggle
-                                                    as={Button}
-                                                    variant="white"
-                                                    className="border-none text-body"
-
+                    <div className={`degree tab-content ${showDegreeItems ? "scrollable" : ""}`}>
+                        {userDegree?.length !== 0 ?
+                            userDegree?.slice(0, showDegreeItems ? userDegree?.length : 3)
+                                .map((item) => (
+                                    <>
+                                        <div className="row mb-4 position-relative" key={item.idDegree}>
+                                            <div className="col-2 d-flex justify-content-center img-contain-degree">
+                                                <img src={degree} alt="" className="image" />
+                                            </div>
+                                            <div className="col-6 d-flex flex-column justify-content-center">
+                                                <p className="degree-title ellipsis">
+                                                    Degree title:
+                                                    {item.name}
+                                                </p>
+                                                <p className="degree-description ellipsis">
+                                                    Degree institution:
+                                                    {item.institution}
+                                                </p>
+                                            </div>
+                                            <div className="col-4 d-flex justify-content-center align-items-center">
+                                                <a
+                                                    href={item.fileSrc} // Link to the PDF file
+                                                    target="_blank" // Open in a new tab
+                                                    rel="noopener noreferrer" // Security best practice
+                                                    className="btn degree-detail btn-info text-white"
                                                 >
-                                                    <BsThreeDots size={20} />
-                                                </Dropdown.Toggle>
+                                                    View Detail
+                                                </a>
+                                            </div>
+                                            <div className='position-absolute top-0 end-0 w-auto'>
+                                                <Dropdown id='degree-tab'>
+                                                    <Dropdown.Toggle
+                                                        as={Button}
+                                                        variant="white"
+                                                        className="border-none text-body"
 
-                                                <Dropdown.Menu style={{ minWidth: "auto",top:'10px !important',left:'20px' }}>
-                                                    <Dropdown.Item
-                                                        className="d-flex justify-content-center"
-                                                        onClick={() => setShowDeleteDegreeForId(item.idDegree)}
                                                     >
-                                                        <MdDelete size={20} />
-                                                    </Dropdown.Item>
-                                                </Dropdown.Menu>
-                                            </Dropdown>
+                                                        <BsThreeDots size={20} />
+                                                    </Dropdown.Toggle>
+
+                                                    <Dropdown.Menu style={{ minWidth: "auto", top: '10px !important', left: '20px' }}>
+                                                        <Dropdown.Item
+                                                            className="d-flex justify-content-center"
+                                                            onClick={() => setShowDeleteDegreeForId(item.idDegree)}
+                                                        >
+                                                            <MdDelete size={20} />
+                                                        </Dropdown.Item>
+                                                    </Dropdown.Menu>
+                                                </Dropdown>
+                                            </div>
                                         </div>
-                                    </div>
-                                </>
-                            )) : <p className='bg-white'>There is no degree</p>}
+                                    </>
+                                )) : <p className='bg-white'>There is no degree</p>}
 
 
                     </div>
@@ -173,12 +190,12 @@ function ProfileTab(props) {
 
                 {/* DegreeTab */}
                 {user.role === "Business" && tab === "post" && (
-                    <div className={`post tab-content ${showAllItems ? "scrollable" : ""
+                    <div className={`post tab-content ${showPostItems ? "scrollable" : ""
                         }`}>
                         {userPost?.length !== 0 ?
-                            userPost?.slice(0, showAllItems ? userPost?.length : 3)
+                            userPost?.slice(0, showPostItems ? userPost?.length : 3)
                                 .map((post) => (
-                                    <div className="row">
+                                    <div className="row px-3">
                                         <div className="col-3 d-flex justify-content-center img-contain">
                                             <img
                                                 src={
@@ -225,11 +242,12 @@ function ProfileTab(props) {
                 )}
                 {/* Posttab of business profile*/}
                 {user.role === "Admin" && tab === "blog" && (
-                    <div className="blog tab-content">
+                    <div className={`blog tab-content  p-3  ${showBlogItems ? "scrollable" : ""
+                }`}>
                         {userBlog?.length !== 0 ?
-                            userBlog?.slice(0, showAllItems ? userBlog?.length : 3).map((blog) => (
+                            userBlog?.slice(0, showBlogItems ? userBlog?.length : 3).map((blog) => (
                                 <div
-                                    className="row align-items-center mb-3"
+                                    className="row align-items-center mb-3 px-3"
                                     key={blog.idBlog}
                                 >
                                     <div className="col-3 d-flex justify-content-center img-contain">
@@ -278,10 +296,11 @@ function ProfileTab(props) {
                     </div>
                 )}
                 {user.role !== "Admin" && tab === "project" && (
-                    <div className="project tab-content">
+                    <div className={`project tab-content  ${showProjectItems ? "scrollable" : ""
+                }`}  >
                         <div className="row" id="all-projects">
                             {userProject?.length > 0 ? (
-                                userProject?.map((project) => (
+                                userProject?.slice(0, showProjectItems ? userProject?.length : 4).map((project) => (
                                     <div className="col-md-6" id="project-items-1" onClick={() => handleNavigate(project.idProject, 'project')}>
                                         <div className="card">
                                             <div className="card-body">

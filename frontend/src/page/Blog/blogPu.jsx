@@ -63,40 +63,40 @@ function BlogPu({ resetBlog }) {
   const handleContentChange = (newValue) => {
     setInputs((prev) => ({ ...prev, content: newValue }));
   };
-const handleInputChange = (event) => {
-  const { name, value, type } = event.target;
-  if (type === "file") {
-    const files = Array.from(event.target.files);
+  const handleInputChange = (event) => {
+    const { name, value, type } = event.target;
+    if (type === "file") {
+      const files = Array.from(event.target.files);
 
-    // Use FileReader to convert each file to base64
-    const newImages = files.map(async (element) => {
-      const base64String = await readFileAsDataURL(element);
-      return {
-        image: element.name,
-        imageFile: element,
-        imageSrc: base64String,
-      };
-    });
-    Promise.all(newImages).then((convertedImages) => {
-      setInputs((values) => ({
-        ...values,
-        CreateUpdateBlogImages: [
-          ...values.CreateUpdateBlogImages,
-          ...convertedImages,
-        ],
-      }));
-    });
-  } else {
-    setInputs((values) => ({ ...values, [name]: value }));
-  }
-};
-const [inputs, setInputs] = useState({
-  title: "",
-  content: "",
-  CreateUpdateBlogImages: [], // new state for managing multiple images
-});
-const handleCreateBlog = () => {
-  const quillInstance = quillRef.current?.getEditor();
+      // Use FileReader to convert each file to base64
+      const newImages = files.map(async (element) => {
+        const base64String = await readFileAsDataURL(element);
+        return {
+          image: element.name,
+          imageFile: element,
+          imageSrc: base64String,
+        };
+      });
+      Promise.all(newImages).then((convertedImages) => {
+        setInputs((values) => ({
+          ...values,
+          CreateUpdateBlogImages: [
+            ...values.CreateUpdateBlogImages,
+            ...convertedImages,
+          ],
+        }));
+      });
+    } else {
+      setInputs((values) => ({ ...values, [name]: value }));
+    }
+  };
+  const [inputs, setInputs] = useState({
+    title: "",
+    content: "",
+    CreateUpdateBlogImages: [], // new state for managing multiple images
+  });
+  const handleCreateBlog = () => {
+    const quillInstance = quillRef.current?.getEditor();
 
     if (!quillInstance) {
       notifyError('Failed to get Quill instance');
@@ -115,97 +115,111 @@ const handleCreateBlog = () => {
       notifyError('Please enter some content');
       return;
     }
-  const formData = new FormData();
-  formData.append("title", inputs.title);
-  formData.append("content", inputs.content);
+    const formData = new FormData();
+    formData.append("title", inputs.title);
+    formData.append("content", inputs.content);
 
-  inputs.CreateUpdateBlogImages.forEach((imageInfo, index) => {
-    formData.append(
-      `CreateUpdateBlogImages[${index}].image`,
-      imageInfo.image
-    );
-    formData.append(
-      `CreateUpdateBlogImages[${index}].imageFile`,
-      imageInfo.imageFile
-    );
-    formData.append(
-      `CreateUpdateBlogImages[${index}].imageSrc`,
-      imageInfo.imageSrc
-    );
-  });
-
-  blogInstance.post(`/CreateBlog/${currentUserId}`, formData, {
-    headers: {
-      "Content-Type": "multipart/form-data",
-      accept: "application/json",
-    },
-  })
-    .then((res) => {
-      setInputs({
-        title: "",
-        content: "",
-        CreateUpdateBlogImages: [], // new state for managing multiple images
-      });
-      notifySuccess("Create blog successfully!");
-      resetBlog(); // Call resetBlog directly
-    })
-    .catch((err) => {
-      console.log(err);
-      notifyError("Create blog failed!");
+    inputs.CreateUpdateBlogImages.forEach((imageInfo, index) => {
+      formData.append(
+        `CreateUpdateBlogImages[${index}].image`,
+        imageInfo.image
+      );
+      formData.append(
+        `CreateUpdateBlogImages[${index}].imageFile`,
+        imageInfo.imageFile
+      );
+      formData.append(
+        `CreateUpdateBlogImages[${index}].imageSrc`,
+        imageInfo.imageSrc
+      );
     });
-  modelSubmit();
-};
-return (
-  <div className="">
-    <Button variant="m-0 btn btn-primary me-2" onClick={modalShow}>
-      Create
-    </Button>
-    <Modal show={show} onHide={modalClose} id="blogPu">
-      <Modal.Header closeButton>
-        <Modal.Title>Create Blog</Modal.Title>
-      </Modal.Header>
-      <Modal.Body className="popup-body">
-        <div class="form-floating mb-3">
-          <input
-            type="text"
-            name="title"
-            id="floatingInput"
-            value={inputs.title}
-            onChange={handleInputChange}
-            className="input-text form-control  mb-3"
-            placeholder="Enter the title"
-          />
-          <label htmlFor="floatingInput">Enter the title</label>
-        </div>
-        <ReactQuill
-          theme="snow"
-          value={inputs.content}
-          onChange={handleContentChange}
-          modules={modules}
-          formats={formats}
-          className="mb-3"
-          ref={quillRef}
-        />
-        <input
-          type="file"
-          name="images"
-          onChange={handleInputChange}
-          className="form-control"
-          multiple
-        />
-      </Modal.Body>
 
-      <Modal.Footer>
-        <Button variant="secondary" onClick={modalClose}>
-          Close
-        </Button>
-        <Button variant="primary" onClick={handleCreateBlog}>
-          Submit
-        </Button>
-      </Modal.Footer>
-    </Modal>
-  </div>
-);
+    blogInstance.post(`/CreateBlog/${currentUserId}`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+        accept: "application/json",
+      },
+    })
+      .then((res) => {
+        setInputs({
+          title: "",
+          content: "",
+          CreateUpdateBlogImages: [], // new state for managing multiple images
+        });
+        notifySuccess("Create blog successfully!");
+        resetBlog(); // Call resetBlog directly
+      })
+      .catch((err) => {
+        console.log(err);
+        notifyError("Create blog failed!");
+      });
+    modelSubmit();
+  };
+  const inputFile = useRef(null);
+  const handleReset = () => {
+    if (inputFile.current) {
+      inputFile.current.value = "";
+      inputFile.current.type = "text";
+      inputFile.current.type = "file";
+    }
+  };
+  return (
+    <div className="">
+      <Button variant="m-0 btn btn-primary me-2" onClick={modalShow}>
+        Create
+      </Button>
+      <Modal show={show} onHide={modalClose} id="blogPu">
+        <Modal.Header closeButton>
+          <Modal.Title>Create Blog</Modal.Title>
+        </Modal.Header>
+        <Modal.Body className="popup-body">
+          <div class="form-floating mb-3">
+            <input
+              type="text"
+              name="title"
+              id="floatingInput"
+              value={inputs.title}
+              onChange={handleInputChange}
+              className="input-text form-control  mb-3"
+              placeholder="Enter the title"
+            />
+            <label htmlFor="floatingInput">Enter the title</label>
+          </div>
+          <ReactQuill
+            theme="snow"
+            value={inputs.content}
+            onChange={handleContentChange}
+            modules={modules}
+            formats={formats}
+            className="mb-3"
+            ref={quillRef}
+          />
+          <div className='d-flex align-items-center'>
+            <div className="input-cover w-75">
+              <input
+                type="file"
+                name="images"
+                onChange={handleInputChange}
+                className="form-control"
+                multiple
+                ref={inputFile}
+              />
+            </div>
+            <button className='btn btn-outline-info w-auto ms-5' onClick={handleReset}>Clear Image</button>
+          </div>
+        </Modal.Body>
+
+        <Modal.Footer>
+          <Button variant="secondary" onClick={modalClose}>
+            Close
+          </Button>
+          <Button variant="primary" onClick={handleCreateBlog}>
+            Submit
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    </div>
+  );
 }
 
 export default BlogPu;

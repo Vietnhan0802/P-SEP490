@@ -9,6 +9,7 @@ import ReactQuill from 'react-quill';
 import Notification, { notifySuccess, notifyError } from "../../../src/components/notification";
 function CreateProject({ reset }) {
     const sessionData = JSON.parse(sessionStorage.getItem('userSession')) || {};
+    const quillRef = useRef(null);
     const { currentUserId } = sessionData;
     const animatedComponents = makeAnimated();
     const [show, setShow] = useState(false);
@@ -41,7 +42,6 @@ function CreateProject({ reset }) {
         { value: 'QC', label: 'QC' }
     ]);
 
-    const fileInputRef = useRef(null);
     const handleInputChange = (event) => {
         const { name, value, type } = event.target;
         if (type === "file") {
@@ -101,10 +101,35 @@ function CreateProject({ reset }) {
             reader.readAsDataURL(file);
         });
     };
-    const handleClick = () => {
-        fileInputRef.current.click();
-    };
+
     const handleCreateProject = () => {
+        const quillInstance = quillRef.current?.getEditor();
+
+        if (!quillInstance) {
+            notifyError('Failed to get Quill instance');
+            return;
+        }
+        const quillContents = quillInstance.getContents();
+
+        // Validate the title
+        if (!value.name.trim()) {
+            notifyError('Please enter a project name');
+            return;
+        }
+        if (quillContents.ops.length === 1 && quillContents.ops[0].insert === '\n') {
+            notifyError('Please enter some project description');
+            return;
+        }
+        if (value.namePosition.length === 0) {
+            notifyError('Please select at least one position for project');
+            return;
+        }
+        if (value.ImageFile === '') {
+            notifyError('Please select one image for the project');
+            return;
+        }
+        // Validate the content
+
         const formData = new FormData();
         formData.append("name", value.name);
         formData.append("description", value.description);
@@ -148,38 +173,47 @@ function CreateProject({ reset }) {
     };
     const handleContentChange = (newValue) => {
         setValue((prev) => ({ ...prev, description: newValue }));
-      };
+    };
     const modules = {
         toolbar: [
-          [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
-          [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-    
-          ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
-          ['blockquote', 'code-block'],
-          ['link', 'image', 'video', 'formula'],
-    
-          [{ 'header': 1 }, { 'header': 2 }],               // custom button values
-          [{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'list': 'check' }],
-          [{ 'script': 'sub' }, { 'script': 'super' }],      // superscript/subscript
-          [{ 'indent': '-1' }, { 'indent': '+1' }],          // outdent/indent
-          [{ 'direction': 'rtl' }],                         // text direction
-    
-          [{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
-          [{ 'font': [] }],
-          [{ 'align': [] }],
-    
-          ['clean']                                         // remove formatting button
+            [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
+            [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+
+            ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
+            ['blockquote', 'code-block'],
+            ['link', 'image', 'video', 'formula'],
+
+            [{ 'header': 1 }, { 'header': 2 }],               // custom button values
+            [{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'list': 'check' }],
+            [{ 'script': 'sub' }, { 'script': 'super' }],      // superscript/subscript
+            [{ 'indent': '-1' }, { 'indent': '+1' }],          // outdent/indent
+            [{ 'direction': 'rtl' }],                         // text direction
+
+            [{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
+            [{ 'font': [] }],
+            [{ 'align': [] }],
+
+            ['clean']                                         // remove formatting button
         ],
-      };
-    
-      const formats = [
+    };
+
+    const formats = [
         'header',
         'bold', 'italic', 'underline', 'strike', 'blockquote',
         'list', 'bullet', 'indent',
         'link', 'image'
-      ];
+    ];
+    const inputFile = useRef(null);
+    const handleReset = () => {
+        if (inputFile.current) {
+            inputFile.current.value = "";
+            inputFile.current.type = "text";
+            inputFile.current.type = "file";
+        }
+    };
     return (
         <div>
+
             <div className="project-form p-2">
                 <Button variant="m-0 btn btn-primary me-2" onClick={modalShow}>
                     Create
@@ -219,6 +253,7 @@ function CreateProject({ reset }) {
                                 modules={modules}
                                 formats={formats}
                                 className="mb-3 mt-2  cus-h"
+                                ref={quillRef}
                             />
                             <CreatableSelect
                                 closeMenuOnSelect={false}
@@ -247,22 +282,23 @@ function CreateProject({ reset }) {
                                     </select>
 
                                 </div>
-                                <button className="btn btn-outline-primary" onClick={handleClick}>
-                                    Add Image
-                                </button>
+                                <div id='create-project' className='d-flex align-items-center'>
+                                    <div className="input-cover w-75">
+                                        <input
+                                            type="file"
+                                            name="images"
+                                            onChange={handleInputChange}
+                                            className="form-control"
+                                            multiple
+                                            ref={inputFile}
+                                        />
+                                    </div>
+                                    <button className='btn btn-outline-info w-auto ms-5' onClick={handleReset}>Clear Image</button>
+                                </div>
 
-                                <input
-                                    type="file"
-                                    name="images"
-                                    onChange={handleInputChange}
-                                    className="form-control"
-                                    multiple
-                                    ref={fileInputRef}
-                                    style={{ display: "none" }} // Hide the input
-                                />
                             </div>
                         </div>
-                        <img src={value.ImageSrc} alt="" className='mt-2' style={{ width: '100% ', borderRadius: '9px', height: 'auto' }} />
+                        {/* <img src={value.ImageSrc} alt="" className='mt-2' style={{ width: '100% ', borderRadius: '9px', height: 'auto' }} /> */}
 
                     </Modal.Body>
 
