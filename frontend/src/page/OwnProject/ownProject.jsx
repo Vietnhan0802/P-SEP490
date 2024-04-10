@@ -80,7 +80,7 @@ function OwnProject({ value }) {
       </Col>
       <Col md={6}>
         <div id="own_project">
-          <div className="bg-white p-2 d-flex flex-grid align-items-center justify-content-between row m-0 form mb-3">
+          <div className="bg-white project-form p-2 d-flex flex-grid align-items-center justify-content-between row m-0 form mb-3">
             <div className="d-flex project-search align-items-center position-relative col">
               <CiSearch className="" />
               <input
