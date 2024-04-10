@@ -55,7 +55,7 @@ const createData = (
     isVerified
   };
 };
-function Statistic({color}) {
+function Statistic({ color }) {
   const sessionData = JSON.parse(sessionStorage.getItem("userSession")) || {};
   const { role, currentUserId } = sessionData;
   const [theme, setTheme] = useState(true);
@@ -130,7 +130,7 @@ function Statistic({color}) {
               label: 'Number of post',
               data: res?.data?.result.map((data) => data.count),
               backgroundColor: [
-                "rgba(75,192,192,0.2)"
+                color ? " rgba(192,63,63,0.8)" : "rgba(75,192,192,0.2)"
               ],
               borderWidth: 1,
             },
@@ -161,7 +161,7 @@ function Statistic({color}) {
           ]);
         });
       })
-  }, [statisticPostType])
+  }, [statisticPostType,color])
   useEffect(() => {
     staticInstance.get(`CallBlogStatistic/${statisticBlogType}`)
       .then((res) => {
@@ -183,7 +183,7 @@ function Statistic({color}) {
               label: "Number Of Blog",
               data: res?.data?.result.map((data) => data.count),
               backgroundColor: [
-                "rgba(75,192,192,0.2)"
+                color ? " rgba(192,63,63,0.8)" : "rgba(75,192,192,0.2)"
               ],
               borderWidth: 1,
             },
@@ -217,7 +217,7 @@ function Statistic({color}) {
       .catch((error) => {
         console.error(error);
       });
-  }, [statisticBlogType])
+  }, [statisticBlogType,color])
   useEffect(() => {
     staticInstance.get(`CallProjectStatistic/${statisticProjectType}`)
       .then((res) => {
@@ -238,7 +238,7 @@ function Statistic({color}) {
               label: "Number Of Project",
               data: res?.data?.result.map((data) => data.count),
               backgroundColor: [
-                "rgba(75,192,192,0.2)"
+                color ? " rgba(192,63,63,0.8)" : "rgba(75,192,192,0.2)"
               ],
               borderWidth: 1,
             },
@@ -254,7 +254,7 @@ function Statistic({color}) {
               label: "Project Status",
               data: res?.data?.result.map((data) => data.count),
               backgroundColor: [
-                "rgba(75,192,192,0.2)",
+                "rgba(75,192,192)",
                 "#ecf0f1",
                 "#50AF95",
                 "#f3ba2f",
@@ -265,7 +265,7 @@ function Statistic({color}) {
           ],
         })
       })
-  }, [statisticProjectType])
+  }, [statisticProjectType,color])
   useEffect(() => {
     staticInstance.get(`CallAccountStatistic/${statisticAccountType}`)
       .then((res) => {
@@ -286,7 +286,7 @@ function Statistic({color}) {
               label: "Number Of Account",
               data: res?.data?.result.map((data) => data.count),
               backgroundColor: [
-                "rgba(75,192,192,0.2)"
+                color ? " rgba(192,63,63,0.8)" : "rgba(75,192,192,0.2)"
               ],
               borderWidth: 1,
             },
@@ -302,7 +302,7 @@ function Statistic({color}) {
               label: "Project Status",
               data: res?.data?.result.map((data) => data.count),
               backgroundColor: [
-                "rgba(75,192,192,0.2)",
+                "rgba(75,192,192)",
                 "#ecf0f1",
                 "#50AF95",
                 "#f3ba2f",
@@ -313,7 +313,7 @@ function Statistic({color}) {
           ],
         })
       })
-  }, [statisticAccountType])
+  }, [statisticAccountType,color])
   useEffect(() => {
     staticInstance.get(`CallReportStatistic/${statisticReportType}`)
       .then((res) => {
@@ -334,7 +334,7 @@ function Statistic({color}) {
               label: "Number Of Report",
               data: res?.data?.result.map((data) => data.count),
               backgroundColor: [
-                "rgba(75,192,192,0.2)"
+                color ? " rgba(192,63,63,0.8)" : "rgba(75,192,192,0.2)"
               ],
               borderWidth: 1,
             },
@@ -351,7 +351,7 @@ function Statistic({color}) {
               label: "Project Status",
               data: res?.data?.result.map((data) => data.count),
               backgroundColor: [
-                "rgba(75,192,192,0.2)",
+                "rgba(75,192,192)",
                 "#ecf0f1",
                 "#50AF95",
                 "#f3ba2f",
@@ -362,7 +362,7 @@ function Statistic({color}) {
           ],
         })
       })
-  }, [statisticReportType])
+  }, [statisticReportType,color])
   useEffect(() => {
     staticInstance.get(`CallVerificationStatistic/${statisticVerificationType}`)
       .then((res) => {
@@ -383,7 +383,7 @@ function Statistic({color}) {
               label: "Number Of Verification",
               data: res?.data?.result.map((data) => data.count),
               backgroundColor: [
-                "rgba(75,192,192,0.2)"
+                color ? " rgba(192,63,63,0.8)" : "rgba(75,192,192,0.2)"
               ],
               borderWidth: 1,
             },
@@ -400,7 +400,7 @@ function Statistic({color}) {
               label: "Project Status",
               data: res?.data?.result.map((data) => data.count),
               backgroundColor: [
-                "rgba(75,192,192,0.2)",
+                "rgba(75,192,192)",
                 "#ecf0f1",
                 "#50AF95",
                 "#f3ba2f",
@@ -411,7 +411,7 @@ function Statistic({color}) {
           ],
         })
       })
-  }, [statisticVerificationType])
+  }, [statisticVerificationType,color])
   const renderChart = () => {
     switch (activeTab) {
       case 'account':
@@ -438,14 +438,14 @@ function Statistic({color}) {
                         </Dropdown.Menu>
                       </Dropdown>
                     </div>
-                    <BarChart chartData={accountData} value={color} style={{ minWidth: '100%' }} />
+                    <BarChart chartData={accountData} value={color} text={'New Account Creation Statistics'} style={{ minWidth: '100%' }} />
                   </>
                 )}
               </Col>
               <Col md={4}>
                 {/* Render chart only if accountStatus has labels and datasets */}
                 {accountStatus?.labels?.length > 0 && accountStatus?.datasets?.length > 0 && (
-                  <PieChart chartData={accountStatus} />
+                  <PieChart chartData={accountStatus} value={color} text={'Account Type'} />
                 )}
               </Col>
             </div>
@@ -470,7 +470,7 @@ function Statistic({color}) {
                   </Dropdown.Menu>
                 </Dropdown>
               </div>
-              <BarChart chartData={postData} />
+              <BarChart chartData={postData} value={color} text={'New Post Creation Statistics'} />
             </Col>
             <Col md={4} className="p-3">
               <h3 className="text-center">Highest view post in day</h3>
@@ -509,7 +509,7 @@ function Statistic({color}) {
                   </Dropdown.Menu>
                 </Dropdown>
               </div>
-              <BarChart chartData={blogData} />
+              <BarChart chartData={blogData} value={color} text={'New Blog Creation Statistics'} />
             </Col> <Col md={4} className="p-3">
               <h3 className="text-center">Highest view blog in day</h3>
               <div className="w-100 border  p-2" style={{ maxHeight: '350px', overflowY: 'auto', borderRadius: '16px' }}>
@@ -548,10 +548,10 @@ function Statistic({color}) {
                     </Dropdown.Menu>
                   </Dropdown>
                 </div>
-                <BarChart chartData={projectData} />
+                <BarChart chartData={projectData} value={color} text={'New Project Creation Statistics'} />
               </Col>
               <Col md={4}>
-                <PieChart chartData={projectStatus} />
+                <PieChart chartData={projectStatus} value={color} text={'Project Status'} />
               </Col>
             </div>
 
@@ -578,10 +578,10 @@ function Statistic({color}) {
                     </Dropdown.Menu>
                   </Dropdown>
                 </div>
-                <BarChart chartData={reportData} />
+                <BarChart chartData={reportData} value={color} text={'New Report Creation Statistics'} />
               </Col>
               <Col md={4}>
-                <PieChart chartData={reportStatus} />
+                <PieChart chartData={reportStatus} value={color} text={'Report type'} />
               </Col>
             </div>
 
@@ -608,10 +608,10 @@ function Statistic({color}) {
                     </Dropdown.Menu>
                   </Dropdown>
                 </div>
-                <BarChart chartData={verifyData} />
+                <BarChart chartData={verifyData} value={color} text={'New Verification Creation Statistics'} />
               </Col>
               <Col md={4}>
-                <PieChart chartData={verifyStatus} />
+                <PieChart chartData={verifyStatus} value={color} text={'Verification Type'} />
               </Col>
             </div>
 
@@ -657,7 +657,7 @@ function Statistic({color}) {
               </p>
             </div>
             {topBusiness.map((item) => (
-              <div className="d-flex align-items-center  justify-content-between px-2 mt-2 p-2" style={{backgroundColor: 'var(--header_background)', color: 'var(--header_search_text)', borderRadius: '8px' }}>
+              <div className="d-flex align-items-center  justify-content-between px-2 mt-2 p-2" style={{ backgroundColor: 'var(--header_background)', color: 'var(--header_search_text)', borderRadius: '8px' }}>
                 <div className="profile d-flex align-items-center" style={{ width: '40px', height: '40px' }}>
                   <img src={item.avatar} alt="" />
                 </div>

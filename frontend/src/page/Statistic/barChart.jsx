@@ -1,20 +1,21 @@
 import React from "react";
 import { Bar } from "react-chartjs-2";
-import { Chart as ChartJS } from "chart.js/auto";
 
-function BarChart({ chartData, value }) {
+function BarChart({ chartData, value,text }) {
   console.log(value)
   const options = {
     responsive: true,
     plugins: {
       legend: {
         position: 'bottom',
+        labels: {
+          color: value ? '#E4E6EB' : '#050505'
+        }
         // Chỉnh màu chữ cho legend
-        color: value ? '#E4E6EB' : '#050505'
       },
       title: {
         display: true,
-        text: 'Line Chart Example',
+        text: `${text}`,
         // Chỉnh màu chữ cho title
         color: value ? '#E4E6EB' : '#050505'
       }
