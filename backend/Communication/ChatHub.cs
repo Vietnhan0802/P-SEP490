@@ -5,10 +5,6 @@ namespace Communication
 {
     public class ChatHub : Hub
     {
-        public ChatHub()
-        {
-        }
-
         public async Task AddToGroup(string connectionId, Guid idConversation)
         {
             await Groups.AddToGroupAsync(connectionId, idConversation.ToString());
@@ -19,19 +15,14 @@ namespace Communication
             await Clients.Group(idConversation.ToString()).SendAsync("ReceiveMessage", viewMessage);
         }
 
-        public async Task StartConversation(string idCurrentUser, string idReceiver)
+        public async Task GetConversation(Guid idConversation, ViewMessage viewMessage)
         {
-            await Clients.User(idReceiver).SendAsync("StartConversation", idCurrentUser);
+            await Clients.All.SendAsync("ReceiveConversation", idConversation, viewMessage);
         }
 
-        public async Task GetMessages(List<ViewMessage> viewMessage)
+        public async Task RecallMessage(Guid idConversation, ViewMessage viewMessage)
         {
-            await Clients.Caller.SendAsync("GetMessage", viewMessage);
-        }
-
-        public async Task RecallMessage (string idReceiver, Guid idMessage)
-        {
-            await Clients.User(idReceiver).SendAsync("RecallMessage", idMessage);
+            await Clients.Group(idConversation.ToString()).SendAsync("RecallMessage", viewMessage);
         }
     }
 }
