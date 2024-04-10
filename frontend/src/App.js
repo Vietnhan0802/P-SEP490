@@ -37,6 +37,7 @@ function App() {
   const [changeImage, setChangeImage] = useState(false);
   const [follow, setFollow] = useState(true);
   const [following, setFollowing] = useState([]);
+  const [color,setColor] = useState();
   const sessionData = JSON.parse(sessionStorage.getItem("userSession")) || {};
   const { currentUserId } = sessionData;
   useEffect(() => {
@@ -95,7 +96,10 @@ function App() {
       .catch((error) => {
         console.error(error);
       });
-  }, [currentUserId,follow]);
+  }, [currentUserId, follow]);
+  const changeThemeHeader = (value) => {
+    setColor(value);
+  }
   return (
     <div
       className="App"
@@ -103,7 +107,7 @@ function App() {
       style={{ backgroundColor: "var(--body_background)", minHeight: location.pathname === "/notfound" ? "100vh" : "" }}
     >
       {isHeaderVisible && (
-        <Header onItemClick={handleHeaderItemClick} changeImage={changeImage} />
+        <Header onItemClick={handleHeaderItemClick} changeImage={changeImage} changeThemeHeader={changeThemeHeader} />
       )}
       <Routes>
         <Route path="/" element={<SignIn />} />
@@ -124,7 +128,7 @@ function App() {
           path="/currentproject"
           element={<OwnProject value={following} />}
         />
-        <Route path="/statistic" element={<Statistic />} />
+        <Route path="/statistic" element={<Statistic color={color} />} />
         <Route path="/chat" element={<Chat />} />
         <Route
           path="/profile"

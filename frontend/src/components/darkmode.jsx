@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import {ReactComponent as Moon} from "../images/common/Moon.svg";
-import {ReactComponent as Sun} from "../images/common/Sun.svg";
+import { ReactComponent as Moon } from "../images/common/Moon.svg";
+import { ReactComponent as Sun } from "../images/common/Sun.svg";
 import "../scss/darkmode.scss";
 
-const DarkMode = () => {
+const DarkMode = ({changeTheme}) => {
+    const [reset, setReset] = useState(false);
     const setDarkMode = () => {
         document.querySelector("body").setAttribute('data-theme', 'dark')
         localStorage.setItem("selectedTheme", "dark")
@@ -19,8 +20,14 @@ const DarkMode = () => {
     }
 
     const toggleTheme = e => {
-        if (e.target.checked) setDarkMode();
-        else setLightMode();
+        if (e.target.checked) {
+            setDarkMode();
+            changeTheme(true);
+        }
+        else {
+            setLightMode();
+            changeTheme(false);
+        }
     }
 
     return (
