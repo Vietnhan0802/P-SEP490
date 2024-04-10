@@ -397,7 +397,7 @@ function PostDetail({ value }) {
             role={role}
           />
           <p className="cmt fw-bold my-3">COMMENT</p>
-          <div className="cmt-input d-flex">
+          <div className="cmt-input d-flex align-items-center">
             <div className="position-relative" >
               <div className="profile" >
                 <img src={user?.imageSrc} alt="profile" />
@@ -407,7 +407,7 @@ function PostDetail({ value }) {
 
             <input
               type="text"
-              className="w-100 ps-3"
+              className="w-100 ps-3 input-cmt"
               placeholder="Type your comment"
               value={content}
               onChange={handleInputComment}

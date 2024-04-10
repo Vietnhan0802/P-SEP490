@@ -207,7 +207,7 @@ function PostContent({ data, handleLikeOrUnlikePost, viewProject, userId, resetP
           View Project
         </button>
       }
-      <div className="d-flex align-items-center border-bottom pb-3 mt-2 border-dark">
+      <div className="d-flex align-items-center border-custom pb-3 mt-2">
         <div className="d-flex align-items-center me-3">
           <FiEye className="me-2" /> {data?.view + 1}
         </div>
