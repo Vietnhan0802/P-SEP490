@@ -490,13 +490,14 @@ namespace BlogService.Controllers
             {
                 _mapper.Map(createUpdateBlog, blog);
                 var images = await _context.BlogsImage.Where(x => x.idBlog == blog.idBlog).ToListAsync();
-                foreach (var image in images)
-                {
-                    _context.BlogsImage.Remove(image);
-                    _saveImageService.DeleteImage(image.image!);
-                }
+                
                 if (createUpdateBlog.CreateUpdateBlogImages != null)
                 {
+                    foreach (var image in images)
+                    {
+                        _context.BlogsImage.Remove(image);
+                        _saveImageService.DeleteImage(image.image!);
+                    }
                     foreach (var image in createUpdateBlog.CreateUpdateBlogImages)
                     {
                         var imageName = await _saveImageService.SaveImage(image.ImageFile);
@@ -508,10 +509,6 @@ namespace BlogService.Controllers
                         };
                         await _context.BlogsImage.AddAsync(bloggImage);
                     }
-                }
-                else
-                {
-                    blog.BlogImages = null;
                 }
                 _context.Blogs.Update(blog);
                 var isSuccess = await _context.SaveChangesAsync();

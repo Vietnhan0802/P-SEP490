@@ -461,13 +461,13 @@ namespace PostService.Controllers
             }
             _mapper.Map(createUpdatePost, post);
             var images = await _context.PostImages.Where(x => x.idPost == post.idPost).ToListAsync();
-            foreach (var image in images)
-            {
-                _context.PostImages.Remove(image);
-                _saveImageService.DeleteImage(image.image!);
-            }
             if (createUpdatePost.CreateUpdatePostImages != null)
             {
+                foreach (var image in images)
+                {
+                    _context.PostImages.Remove(image);
+                    _saveImageService.DeleteImage(image.image!);
+                }
                 foreach (var image in createUpdatePost.CreateUpdatePostImages)
                 {
                     var imageName = await _saveImageService.SaveImage(image.ImageFile);
@@ -479,10 +479,6 @@ namespace PostService.Controllers
                     };
                     await _context.PostImages.AddAsync(posttImage);
                 }
-            }
-            else
-            {
-                post.PostImages = null;
             }
             _context.Posts.Update(post);
             await _context.SaveChangesAsync();
