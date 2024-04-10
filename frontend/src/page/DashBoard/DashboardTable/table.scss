@@ -220,20 +220,26 @@
     background-color: var(--header_background_search_box);
     //background: var(--blue-va-5, rgba(47, 69, 173, 0.2));
   }
-  .accept {
-    border: 3px solid var(--m-5, #4dcbd5);
-    color: #4dcbd5;
-    padding: 4px 8px;
-
-    margin-left: 5px;
-    border-radius: 16px;
+  .accept{
+    color:#05B8EE !important ; 
+    border:1px solid#05B8EE !important;
   }
-  .deny {
-    border: 3px solid var(--m-5, #dfb016);
-    color: #dfb016;
-    padding: 4px 8px;
-    margin-left: 5px;
-    border-radius: 16px;
+  .accept-dot{
+    color:#05B8EE !important ; 
+  }
+  .deny{
+    color:#dfb016 !important ; 
+    border:1px solid#dfb016 !important;
+  }
+  .deny-dot{
+    color:#dfb016 !important ; 
+  }
+  .block-box {
+    border: 1px solid #a4aab0;
+    border-radius: 8px;
+    width: fit-content;
+    padding: 4px;
+    color: #a4aab0;
   }
 }
 #verifyTable {
