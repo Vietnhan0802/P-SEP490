@@ -35,7 +35,7 @@ function CancelItem({ id, reset, role }) {
     return (
         <div className="p-1">
             <Button variant="danger" onClick={modalShow}>
-                Reject
+                Cancel
             </Button>
             <Modal show={show} onHide={modalClose}>
                 <Modal.Header closeButton>
