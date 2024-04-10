@@ -6,6 +6,7 @@ import { userInstance } from "../../axios/axiosConfig";
 import { jwtDecode } from "jwt-decode";
 import Cookies from "js-cookie";
 import { useForm } from "react-hook-form";
+import { notifySuccess } from "../../components/notification";
 
 function ResetPassword() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -30,15 +31,9 @@ function ResetPassword() {
         token: newToken,
       });
 
-      if (response?.data?.status === "OK") {
-        console.log("Password Reset successful", response?.data?.result.role);
-        const decode = jwtDecode(response?.data?.result.token);
-
-        Cookies.set("user", JSON.stringify(decode), { expires: 1 });
-        Cookies.set("role", JSON.stringify(response?.data?.result.role), {
-          expires: 1,
-        });
-        navigate("/home");
+      if (response?.data?.status === "NoContent") {
+        notifySuccess("Password reset successful");
+        navigate("/");
       } else {
         console.log(response.data);
         console.log(response?.data?.status);
