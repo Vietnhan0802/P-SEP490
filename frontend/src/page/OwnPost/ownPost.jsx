@@ -150,9 +150,9 @@ function OwnPost({ value }) {
       </Col>
       <Col md={6}>
         <div id="own_post">
-          <div className="bg-white blog-form p-2 d-flex flex-grid align-items-center justify-content-between row m-0" style={{ borderRadius: '8px' }}>
+          <div className="blog-form p-2 d-flex flex-grid align-items-center justify-content-between row m-0" style={{ borderRadius: '8px' }}>
             <div className="d-flex blog-search align-items-center position-relative col me-2">
-              <CiSearch className="" />
+              <CiSearch className="search_icon" />
               <input
                 type="text"
                 onChange={handleSearchPost}
