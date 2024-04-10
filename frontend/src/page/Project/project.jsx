@@ -62,7 +62,7 @@ function Project({ value }) {
       </Col>
       <Col md={6}>
         <div id="own_project">
-          <div className="project-form p-2 d-flex flex-grid align-items-center justify-content-between row m-0 form mb-3">
+          <div className="project-form p-2 d-flex flex-grid align-items-center justify-content-between row m-0 form mb-2">
             <div className="d-flex project-search align-items-center position-relative col">
               <CiSearch className="search_icon" />
               <input
@@ -76,7 +76,7 @@ function Project({ value }) {
           </div>
 
           {(search ? filterProjects : projects)?.map((item) => (
-            <div className="p-2 card bg-white p-6 rounded-lg w-96 mb-4" key={item.idProject}>
+            <div className="p-2 card bg-white p-6 rounded-lg w-96 mb-3" key={item.idProject}>
               <div className="image-container d-flex justify-content-center">
                 <img
                   className="rounded-t-lg bor-8"

@@ -42,7 +42,9 @@
     /* Ẩn phần của ảnh không vừa với container */
     border-radius: 8px;
   }
-  
+  .bg-custom {
+    background-color: var(--header_background);
+  }
   .image-container img {
     width: 100%;
     object-fit: contain;
