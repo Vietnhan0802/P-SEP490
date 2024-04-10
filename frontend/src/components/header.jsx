@@ -142,7 +142,7 @@ export default function Header({ activeComponent, onItemClick, changeImage }) {
         </div>
       </Col>
       <Col className="d-flex justify-content-end align-items-center" sm={4}>
-        <Translate />
+        {/* <Translate /> */}
         <DarkMode />
         <div className=" d-flex align-items-center" onClick={() => handleAvatarClick(currentUserId)}>
           <div className="position-relative">
