@@ -132,7 +132,7 @@ function ProjectApplication() {
       <Col md={9}>
         <div
           id="projectApplication"
-          className=" bg-light text-dark border-8 py-2"
+          className="bg-custom text-dark border-8 py-2"
         >
 
           <main className="container ">

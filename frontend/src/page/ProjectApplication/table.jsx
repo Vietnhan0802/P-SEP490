@@ -62,7 +62,7 @@ function GlobalFilter({
     <span className="global-search">
       <div className="post-form p-2 d-flex flex-grid align-items-center justify-content-between row m-0">
         <div className="d-flex post-search align-items-center position-relative col me-2">
-          <CiSearch className="" />
+          <CiSearch className="search_icon" />
           <input
             type="text"
             onChange={(e) => {
@@ -113,7 +113,7 @@ function Table({ columns, data }) {
   // Render the UI for your table
   return (
     <>
-      <div className="d-flex size-20 justify-content-between align-items-center">
+      <div className="d-flex size-20 justify-content-between align-items-center header-table">
         <GlobalFilter
           preGlobalFilteredRows={preGlobalFilteredRows}
           globalFilter={state.globalFilter}
@@ -135,7 +135,7 @@ function Table({ columns, data }) {
         <div className="over-x-auto">
           <table
             {...getTableProps()}
-            className="min-w-full"
+            className="min-w-full tr-custom"
             style={{
               borderCollapse: "separate",
               borderSpacing: "0 1px",
@@ -169,7 +169,7 @@ function Table({ columns, data }) {
             </thead>
             <tbody
               {...getTableBodyProps()}
-              className="bg-white divide-y divide-gray-200"
+              className="bg-white divide-y divide-gray-200" 
             >
               {noDataAvailable ? (
                 // Render this row if there's no data
@@ -217,7 +217,7 @@ function Table({ columns, data }) {
             Next
           </button>
         </div>
-        <div className="d-none d-sm-flex flex-grow-1 align-items-center justify-content-between">
+        <div className="d-none d-sm-flex flex-grow-1 align-items-center justify-content-between bg-end">
           <div className="d-flex gap-2 w-100 align-items-center">
             <span className=" ">
               Page <span className="fw-bold">{state.pageIndex + 1}</span> of{" "}

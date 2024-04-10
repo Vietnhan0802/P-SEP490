@@ -5,6 +5,15 @@
     border-radius: 50%;
   }
 
+  .button_custom {
+    height: 42px;
+    margin: auto;
+    margin-right: 10px;
+  }
+  .border_custom {
+    border-radius: 8px;
+  }
+
   .left-30 {
     margin-left: 10px;
   }
@@ -33,7 +42,7 @@
     }
   }
   .project-form {
-    background-color: var(--header_background);
+    background-color: var(--header_background) !important;
     border-radius: 8px;
     padding: 12px;
   }

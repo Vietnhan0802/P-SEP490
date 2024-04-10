@@ -1,5 +1,53 @@
 #projectApplication {
+  background-color: var(--header_background) !important;
+  color: var(--header_search_text) !important;
   border-radius: 8px;
+
+  .post-search{
+    .search_icon {
+      color: var(--header_search_box);
+    }
+  }
+  .bg-table {
+    background-color: var(--header_background) !important;
+    color: var(--header_search_text);
+  }
+  table{
+    th{
+      background: var(--header_background) !important;
+      color: var(--header_search_text);
+      border-bottom: 1px solid var(--header_search_box);
+    }
+    td{
+      background: var(--header_background) !important;
+      color: var(--header_search_text);
+    }
+    
+  }
+  .bg-end{
+    background-color: var(--header_background);
+    color: var(--header_search_text);
+    select{
+      background-color: var(--header_background);
+      color: var(--header_search_text);
+    }
+    button{
+      background-color: var(--header_background);
+      color: var(--color_blue);
+    }
+  }
+  .header-table {
+    label{
+      color: var(--header_search_text);
+    }
+    select{
+      background-color: var(--header_background);
+      color: var(--header_search_text);
+    }
+  }
+  .tr-custom {
+    background-color: var(--header_background) !important;
+  }
 
   .global-search input {
     border-radius: 8px;

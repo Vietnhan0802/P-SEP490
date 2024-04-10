@@ -30,8 +30,14 @@
       border-radius: 8px;
     }
     width: 100%;
-    .post-form {
-      background-color: #fff;
+    .blog-search{
+      .search_icon {
+        color: var(--header_search_box);
+      }
+    }
+    .blog-form {
+      background-color: var(--header_background);
+      color: var(--header_search_text);
       border-radius: 8px;
       .input-text {
         border: 1px solid #d0d5dd;
@@ -53,10 +59,11 @@
       margin-top: 8px;
     }
     .post-item {
-      background-color: #fff;
+      background-color: var(--header_background);
+      color: var(--header_search_text);
       border-radius: 8px;
       .view-btn {
-        background-color: #20becb;
+        background-color: var(--color_blue);
         border-radius: 8px;
         padding: 8px 14px;
         color: #fff;
