@@ -388,7 +388,7 @@ function BlogDetail({ value }) {
       .catch((error) => {
         console.error(error);
       });
-  }, [memoizedBlogInstance, idBlog]);
+  }, [memoizedBlogInstance, idBlog, reset ]);
 
   //Fetch data the user to display in the comment and reply
   useEffect(() => {

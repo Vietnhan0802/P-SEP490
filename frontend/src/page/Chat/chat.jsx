@@ -60,28 +60,28 @@ function Chat() {
 
     setConnection(newConnection);
 
-    // newConnection.on("ReceiveMessage", (messageText) => {
-    //   setMessages((prevMessages) => {
-    //     if (Array.isArray(prevMessages)) {
-    //       return [...prevMessages, messageText];
-    //     } else {
-    //       return [messageText];
-    //     }
-    //   });
-    //   console.log("ReceiveMessage-------------------");
-    //   console.log(messageText);
-    // });
+    newConnection.on("ReceiveMessage", (messageText) => {
+      setMessages((prevMessages) => {
+        if (Array.isArray(prevMessages)) {
+          return [...prevMessages, messageText];
+        } else {
+          return [messageText];
+        }
+      });
+      console.log("ReceiveMessage-------------------");
+      console.log(messageText);
+    });
 
-    // newConnection.on("RecallMessage", (messageText) => {
-    //   setMessages((prevMessages) => prevMessages.map((message) => {
-    //     if (message.idMessage === messageText.idMessage) {
-    //       return {...message, isRecall: true};
-    //     }
-    //     return message;
-    //   }))
-    //   console.log("RecallMessage-------------------");
-    //   console.log(messageText);
-    // });
+    newConnection.on("RecallMessage", (messageText) => {
+      setMessages((prevMessages) => prevMessages.map((message) => {
+        if (message.idMessage === messageText.idMessage) {
+          return {...message, isRecall: true};
+        }
+        return message;
+      }))
+      console.log("RecallMessage-------------------");
+      console.log(messageText);
+    });
 
     newConnection.start()
       .then(() => {
@@ -92,7 +92,7 @@ function Chat() {
         console.log(newConnection.userIdentifier);
       })
       .catch(error => console.log('Error connecting to SignalR hub: ', error));
-    
+
     return () => {
       // Đóng kết nối khi component bị unmount
       newConnection.stop();
@@ -117,15 +117,15 @@ function Chat() {
                 name: res?.data?.result[0].nameReceiver,
                 receiverId: res?.data?.result[0].idReceiver === currentUserId ? res?.data?.result[0].idSender : res?.data?.result[0].idReceiver
               });
-              // if (connection) {
-              //   try {
-              //     connection.invoke('AddToGroup', connection.connectionId, res?.data?.result[0].idConversation);
-              //     console.log('Join group: ' + connection.connectionId);
-              //     console.log(res?.data?.result[0].idConversation);
-              //   } catch (error) {
-              //     console.error('Error sending message: ', error);
-              //   }
-              // }
+              if (connection) {
+                try {
+                  connection.invoke('AddToGroup', connection.connectionId, res?.data?.result[0].idConversation);
+                  console.log('Join group: ' + connection.connectionId);
+                  console.log(res?.data?.result[0].idConversation);
+                } catch (error) {
+                  console.error('Error sending message: ', error);
+                }
+              }
             })
             .catch((error) => {
               console.error(error);
@@ -135,15 +135,15 @@ function Chat() {
           chatInstance.get(`GetMessages/${currentUserId}/${userId}`)
             .then((res) => {
               setMessages(res.data.result);
-              // if (connection) {
-              //   try {
-              //     connection.invoke('AddToGroup', connection.connectionId, res?.data?.result[0].idConversation);
-              //     console.log('Join group: ' + connection.connectionId);
-              //     console.log(res?.data?.result[0].idConversation);
-              //   } catch (error) {
-              //     console.error('Error sending message: ', error);
-              //   }
-              // }
+              if (connection) {
+                try {
+                  connection.invoke('AddToGroup', connection.connectionId, res?.data?.result[0].idConversation);
+                  console.log('Join group: ' + connection.connectionId);
+                  console.log(res?.data?.result[0].idConversation);
+                } catch (error) {
+                  console.error('Error sending message: ', error);
+                }
+              }
             })
             .catch((error) => {
               console.error(error);
@@ -168,15 +168,15 @@ function Chat() {
               name: res?.data?.result[0].nameReceiver,
               receiverId: selectedUserId,
             });
-            // if (connection) {
-            //   try {
-            //     connection.invoke('AddToGroup', connection.connectionId, res?.data?.result[0].idConversation);
-            //     console.log('Join group: ' + connection.connectionId);
-            //     console.log(res?.data?.result[0].idConversation);
-            //   } catch (error) {
-            //     console.error('Error sending message: ', error);
-            //   }
-            // }
+            if (connection) {
+              try {
+                connection.invoke('AddToGroup', connection.connectionId, res?.data?.result[0].idConversation);
+                console.log('Join group: ' + connection.connectionId);
+                console.log(res?.data?.result[0].idConversation);
+              } catch (error) {
+                console.error('Error sending message: ', error);
+              }
+            }
           } else {
             setMessages([]);
             setActiveUser(null);
@@ -211,20 +211,20 @@ function Chat() {
         .then((res) => {
           setReset(!reset);
           setMessage('');
-          // if (connection && message) {
-          //   try {
-          //     connection.invoke('SendMessageToGroup', res?.data?.result.idConversation, res?.data?.result);
-          //     console.log('Invoke userId: ' + res?.data?.result.idConversation);
-          //     console.log(res?.data?.result);
+          if (connection && message) {
+            try {
+              connection.invoke('SendMessageToGroup', res?.data?.result.idConversation, res?.data?.result);
+              console.log('Invoke userId: ' + res?.data?.result.idConversation);
+              console.log(res?.data?.result);
 
-          //     connection.invoke('AddToGroup', res?.data?.result.idSender, res?.data?.result.idConversation);
-          //     console.log('Invoke userId: ' + res?.data?.result.idConversation);
-          //     console.log(res?.data?.result);
-          //     connection.invoke('AddToGroup', res?.data?.result.idReceiver, res?.data?.result.idConversation);
-          //   } catch (error) {
-          //     console.error('Error sending message: ', error);
-          //   }
-          // }
+              connection.invoke('AddToGroup', res?.data?.result.idSender, res?.data?.result.idConversation);
+              console.log('Invoke userId: ' + res?.data?.result.idConversation);
+              console.log(res?.data?.result);
+              connection.invoke('AddToGroup', res?.data?.result.idReceiver, res?.data?.result.idConversation);
+            } catch (error) {
+              console.error('Error sending message: ', error);
+            }
+          }
         })
         .catch((error) => console.error(error));
     }
@@ -238,18 +238,18 @@ function Chat() {
         .then((res) => {
           setReset(!reset);
           setMessage('');
-          // if (connection && message) {
-          //   try {
-          //     connection.invoke('SendMessageToGroup', res?.data?.result.idConversation, res?.data?.result);
-          //     console.log('Invoke userId: ' + res?.data?.result.idConversation);
-          //     console.log(res?.data?.result);
+          if (connection && message) {
+            try {
+              connection.invoke('SendMessageToGroup', res?.data?.result.idConversation, res?.data?.result);
+              console.log('Invoke userId: ' + res?.data?.result.idConversation);
+              console.log(res?.data?.result);
 
-          //     connection.invoke('AddToGroup', res?.data?.result.idSender, res?.data?.result.idConversation);
-          //     connection.invoke('AddToGroup', res?.data?.result.idReceiver, res?.data?.result.idConversation);
-          //   } catch (error) {
-          //     console.error('Error sending message: ', error);
-          //   }
-          // }
+              connection.invoke('AddToGroup', res?.data?.result.idSender, res?.data?.result.idConversation);
+              connection.invoke('AddToGroup', res?.data?.result.idReceiver, res?.data?.result.idConversation);
+            } catch (error) {
+              console.error('Error sending message: ', error);
+            }
+          }
         })
         .catch((error) => console.error(error));
     }
@@ -268,15 +268,15 @@ function Chat() {
         .then((res) => {
           setReset(!reset);
           setMessage('');
-          // if (connection && file) {
-          //   try {
-          //     connection.invoke('SendMessageToGroup', res?.data?.result.idConversation, res?.data?.result);
-          //     console.log('Invoke userId: ' + res?.data?.result.idConversation);
-          //     console.log(res?.data?.result);
-          //   } catch (error) {
-          //     console.error('Error sending message: ', error);
-          //   }
-          // }
+          if (connection && file) {
+            try {
+              connection.invoke('SendMessageToGroup', res?.data?.result.idConversation, res?.data?.result);
+              console.log('Invoke userId: ' + res?.data?.result.idConversation);
+              console.log(res?.data?.result);
+            } catch (error) {
+              console.error('Error sending message: ', error);
+            }
+          }
         })
         .catch((error) => {
           console.error('Error uploading file:', error);
@@ -297,15 +297,15 @@ function Chat() {
         .then((res) => {
           setReset(!reset);
           setMessage('');
-          // if (connection && file) {
-          //   try {
-          //     connection.invoke('SendMessageToGroup', res?.data?.result.idConversation, res?.data?.result);
-          //     console.log('Invoke userId: ' + res?.data?.result.idConversation);
-          //     console.log(res?.data?.result);
-          //   } catch (error) {
-          //     console.error('Error sending message: ', error);
-          //   }
-          // }
+          if (connection && file) {
+            try {
+              connection.invoke('SendMessageToGroup', res?.data?.result.idConversation, res?.data?.result);
+              console.log('Invoke userId: ' + res?.data?.result.idConversation);
+              console.log(res?.data?.result);
+            } catch (error) {
+              console.error('Error sending message: ', error);
+            }
+          }
         })
         .catch((error) => {
           console.error('Error uploading file:', error);
@@ -531,7 +531,7 @@ function Chat() {
                           </div>
                           {item?.content &&
                             <div className="position-relative">
-                              {item?.isRecall &&  <div className="w-100 h-100 position-absolute d-flex align-items-center bg-blur">
+                              {item?.isRecall && <div className="w-100 h-100 position-absolute d-flex align-items-center bg-blur">
                                 <p className="ms-3 white">Message is unsend</p>
                               </div>}
 

@@ -11,6 +11,8 @@ import ReactQuill from 'react-quill';
 import Notification, { notifySuccess, notifyError } from "../../components/notification";
 function UpdateProjectForm({ input, id, resetPage }) {
 
+  const quillRef = useRef(null);
+
   const animatedComponents = makeAnimated();
   const [show, setShow] = useState(false);
   const [project, setProject] = useState({});
@@ -111,7 +113,43 @@ function UpdateProjectForm({ input, id, resetPage }) {
   };
 
   const handleUpdateProject = () => {
+    const quillInstance = quillRef.current?.getEditor();
 
+    if (!quillInstance) {
+      notifyError('Failed to get Quill instance');
+      return;
+    }
+    const quillContents = quillInstance.getContents();
+
+    // Validate the title
+    if (!project.name.trim()) {
+      notifyError('Please enter a project name');
+      return;
+    }
+    if (project.namePosition.length === 0) {
+      notifyError('Please select at lest one position for this project!');
+      return;
+    }
+
+    // Validate the content
+    if (quillContents.ops.length === 1 && quillContents.ops[0].insert === '\n') {
+      notifyError('Please enter some content');
+      return;
+    }
+    const hasChanges =
+    project.name !== input.name ||
+    project.description !== input.description ||
+    project.process !== input.process ||
+    project.visibility !== input.visibility ||
+    project.ImageFile !== null ||
+    project.namePosition.length !== input.positionViews.length ||
+    project.namePosition.some((position, index) => position.value !== input.positionViews[index].namePosition);
+
+  if (!hasChanges) {
+    notifySuccess('No changes were made.');
+    setShow(false);
+    return;
+  }
     const formData = new FormData();
     formData.append("name", project.name);
     formData.append("description", project.description);
@@ -138,7 +176,7 @@ function UpdateProjectForm({ input, id, resetPage }) {
         "Content-Type": "multipart/form-data",
         accept: "application/json",
       },
-    }).then(() => {
+    }).then((res) => {
       resetPage("Success");
       setProject({
         name: '',
@@ -151,7 +189,7 @@ function UpdateProjectForm({ input, id, resetPage }) {
         ImageSrc: ''
       });
       setShow(false);
-      notifySuccess("Update project is success!");
+      notifySuccess(res?.data?.message);
     })
       .catch((error) => { notifyError("Update project is fail!"); })
   };
@@ -187,7 +225,6 @@ function UpdateProjectForm({ input, id, resetPage }) {
     'list', 'bullet', 'indent',
     'link', 'image'
   ];
-  console.log(project.status)
   return (
     <div className="p-1 ">
       <FiEdit onClick={modalShow} id="btn-update-project" />
@@ -287,6 +324,7 @@ function UpdateProjectForm({ input, id, resetPage }) {
                 modules={modules}
                 formats={formats}
                 className="mb-3 mt-2  m-h-2"
+                ref={quillRef}
               />
             </div>{" "}
             <input

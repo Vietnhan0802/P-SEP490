@@ -628,7 +628,7 @@ function Statistic() {
           <Col md={4} className="" onResize={true}>
             <div className="d-flex align-items-center px-2 bg-white p-2" style={{ borderRadius: '8px' }}>
               <p className="text-center w-100 fs-4">
-                Top 3 Freelancer invited
+                Top 3 Freelancer
               </p>
             </div>
             {topFreelancer.map((item) => (
@@ -674,7 +674,7 @@ function Statistic() {
                 </div>
                 <p className="ms-2 w-50 txt-overflow" >{item.nameProject}</p>
                 <div className="d-flex align-items-center justify-content-end w-25 me-3">
-                  <p className="me-2 mt-2">{item.commentSum}</p>
+                  <p className="me-2 mt-1">{item.commentSum}</p>
                   <Rating initialValue={item.ratingAvg} readonly={true} allowFraction={true} size={18} />
                 </div>
               </div>
