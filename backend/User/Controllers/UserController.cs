@@ -593,7 +593,7 @@ namespace User.Controllers
                         emailRequest.Subject = "Confirmation Email";
                         emailRequest.Body = GetHtmlContent(user.fullName!, confirmLink!, "active your account", "Active Account");
                         await _emailService.SendEmailAsync(emailRequest);
-                        return new Response(HttpStatusCode.NoContent, "User create & send email is success!");
+                        return new Response(HttpStatusCode.NoContent, "User creates & sends email successfully!");
                     }
                     return new Response(HttpStatusCode.BadRequest, "User create is fail!");
                 }

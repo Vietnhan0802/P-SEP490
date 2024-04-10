@@ -208,6 +208,7 @@ namespace Communication.Controllers
                     createdDate = DateTime.Now
                 };
                 await _context.Conversations.AddAsync(conversation);
+                await _context.SaveChangesAsync();
             }
             if (createUpdateMessage.ImageFile != null && createUpdateMessage.FileFile == null && createUpdateMessage.content == null)
             {
@@ -354,8 +355,8 @@ namespace Communication.Controllers
             return new Response(HttpStatusCode.OK, "Delete message is success!");
         }
 
-        [HttpDelete("RecallMessage/{idMessage}")]
-        public async Task<Response> RecallMessage(Guid idMessage)
+        [HttpDelete("RecallMessage/{idMessage}/{idCurrentUser}")]
+        public async Task<Response> RecallMessage(Guid idMessage, string idCurrentUser)
         {
             var message = await _context.Messages.FirstOrDefaultAsync(x => x.idMessage == idMessage);
             if (message == null)
@@ -364,8 +365,30 @@ namespace Communication.Controllers
             }
             message.isRecall = true;
             await _context.SaveChangesAsync();
-
-            return new Response(HttpStatusCode.OK, "Recall message is success!");
+            var result = _mapper.Map<ViewMessage>(message);
+            if (result.idSender != idCurrentUser)
+            {
+                result.isYourself = true;
+                var infoSender = await GetInfoUser(result.idSender);
+                result.nameSender = infoSender.fullName;
+                result.avatarSender = infoSender.avatar;
+                var infoReceiver = await GetInfoUser(result.idReceiver);
+                result.nameReceiver = infoReceiver.fullName;
+                result.avatarReceiver = infoReceiver.avatar;
+                result.isVerifiedReceiver = infoReceiver.isVerified;
+            }
+            else
+            {
+                result.isYourself = false;
+                var infoSender = await GetInfoUser(result.idSender);
+                result.avatarReceiver = infoSender.avatar;
+                result.nameReceiver = infoSender.fullName;
+                result.isVerifiedReceiver = infoSender.isVerified;
+                var infoReceiver = await GetInfoUser(result.idReceiver);
+                result.nameSender = infoReceiver.fullName;
+                result.avatarSender = infoReceiver.avatar;
+            }
+            return new Response(HttpStatusCode.OK, "Recall message is success!", result);
         }
     }
 }

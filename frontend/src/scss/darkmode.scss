@@ -4,6 +4,8 @@
     --header_background_search_box: #D8DADF;
     --header_search_box: #65676B;
     --header_search_text: #050505;
+    --header_avt_user: black;
+
     --body_background: #D8DADF;
     --sidebar_background: #FFFFFF;
     --sidebar_item: #FFFFFF;
@@ -12,10 +14,12 @@
 
 [data-theme="dark"] {
     --header_background: #242526;
-    --header_mid_icon: #B8BBBF;
+    --header_mid_icon: #B0B3B8;
     --header_background_search_box: #3A3B3C;
-    --header_search_box: #B3B0B8;
-    --header_search_text: #E6E4EB;
+    --header_search_box: #B0B3B8;
+    --header_search_text: #E4E6EB;
+    --header_avt_user: white;
+
     --body_background: #18191A;
     --sidebar_background: #242526;
     --body_mid_background: #242526;

@@ -30,6 +30,8 @@ function Chat() {
   const [activeUser, setActiveUser] = useState(null);
   const [reset, setReset] = useState(false);
   const [connection, setConnection] = useState(null);
+  const [connectionId, setConnectionId] = useState(null);
+  const [connectUserId, setConnectUserId] = useState(null);
   const [showEmojiBox, setShowEmojiBox] = useState(false);
   const [search, setSearch] = useState('');
   const [showDeleteChat, setShowDeleteChat] = useState(false);
@@ -48,6 +50,7 @@ function Chat() {
     }
   }
   
+  console.log(connection);
 
   useEffect(() => {
     const newConnection = new signalR.HubConnectionBuilder()
@@ -57,26 +60,36 @@ function Chat() {
 
     setConnection(newConnection);
 
-    newConnection.on("ReceiveMessage", (messageText) => {
-      console.log(messages[0].idConversation);
-      console.log(messageText.idConversation);
-      
-      if (messages[0].idConversation === messageText.idConversation) {
-        setMessages((prevMessages) => {
-          if (Array.isArray(prevMessages)) {
-            return [...prevMessages, messageText];
-          } else {
-            return [messageText];
-          }
-        });
-        console.log("ReceiveMessage-------------------");
-        console.log(messageText);
-      }
-    })
+    // newConnection.on("ReceiveMessage", (messageText) => {
+    //   setMessages((prevMessages) => {
+    //     if (Array.isArray(prevMessages)) {
+    //       return [...prevMessages, messageText];
+    //     } else {
+    //       return [messageText];
+    //     }
+    //   });
+    //   console.log("ReceiveMessage-------------------");
+    //   console.log(messageText);
+    // });
+
+    // newConnection.on("RecallMessage", (messageText) => {
+    //   setMessages((prevMessages) => prevMessages.map((message) => {
+    //     if (message.idMessage === messageText.idMessage) {
+    //       return {...message, isRecall: true};
+    //     }
+    //     return message;
+    //   }))
+    //   console.log("RecallMessage-------------------");
+    //   console.log(messageText);
+    // });
 
     newConnection.start()
       .then(() => {
         console.log('Connected to SignalR hub');
+        setConnectionId(newConnection.connectionId);
+        console.log(newConnection.connectionId);
+        setConnectUserId(newConnection.userIdentifier);
+        console.log(newConnection.userIdentifier);
       })
       .catch(error => console.log('Error connecting to SignalR hub: ', error));
     
@@ -85,54 +98,6 @@ function Chat() {
       newConnection.stop();
     };
   }, [currentUserId]);
-
-  // useEffect(() => {
-  //   const newConnection = new signalR.HubConnectionBuilder()
-  //     .withUrl("https://localhost:7001/chatHub") // Replace with your server URL
-  //     .withAutomaticReconnect()
-  //     .build();
-  //   setConnection(newConnection);
-  // }, []);
-
-  // useEffect(() => {
-  //   if (connection) {
-  //     connection.start()
-  //       .then(() => {
-  //         console.log('Connected to SignalR hub');
-  //       })
-  //       .catch(error => console.log('Error connecting to SignalR hub: ', error));
-  //     // connection.on("UserConnected", (currentUserId) => {
-  //     //   setUsersOnl((usersOnl) => [...usersOnl, currentUserId]);
-  //     // })
-
-  //     connection.on('ReceiveMessage', (messageText) => {
-  //       //setMessages((message) => [...message, { idReceiver, message: messageText }])
-  //       setMessages((prevMessages) => {
-  //         if (Array.isArray(prevMessages)) {
-  //           return [...prevMessages, messageText];
-  //         } else {
-  //           return [messageText];
-  //         }
-  //       });
-  //       // console.log('ReceiveMessage currentUserId:' + currentUserId);
-  //       // console.log('ReceiveMessage userId:' + idReceiver);
-  //       console.log("ReceiveMessage here!");
-  //       console.log(messageText);
-  //     });
-  //   }
-  // }, [connection]);
-
-  useEffect(() => {
-    if (connection) {
-      try {
-        connection.invoke('AddToGroup', connection.connectionId, messages[0].idConversation);
-        console.log('Join group: ' + connection.connectionId);
-        console.log(messages[0].idConversation);
-      } catch (error) {
-        console.error('Error sending message: ', error);
-      }
-    }
-  }, [])
 
   const handleKeyDown = (event) => {
     if (event.key === 'Enter') {
@@ -170,15 +135,15 @@ function Chat() {
           chatInstance.get(`GetMessages/${currentUserId}/${userId}`)
             .then((res) => {
               setMessages(res.data.result);
-              if (connection) {
-                try {
-                  connection.invoke('AddToGroup', connection.connectionId, res?.data?.result[0].idConversation);
-                  console.log('Join group: ' + connection.connectionId);
-                  console.log(res?.data?.result[0].idConversation);
-                } catch (error) {
-                  console.error('Error sending message: ', error);
-                }
-              }
+              // if (connection) {
+              //   try {
+              //     connection.invoke('AddToGroup', connection.connectionId, res?.data?.result[0].idConversation);
+              //     console.log('Join group: ' + connection.connectionId);
+              //     console.log(res?.data?.result[0].idConversation);
+              //   } catch (error) {
+              //     console.error('Error sending message: ', error);
+              //   }
+              // }
             })
             .catch((error) => {
               console.error(error);
@@ -188,7 +153,7 @@ function Chat() {
       .catch((error) => {
         console.error(error);
       });
-  }, [currentUserId, reset, userId]);
+  }, [currentUserId, reset, userId, connection]);
 
 
   useEffect(() => {
@@ -203,15 +168,15 @@ function Chat() {
               name: res?.data?.result[0].nameReceiver,
               receiverId: selectedUserId,
             });
-            if (connection) {
-              try {
-                connection.invoke('AddToGroup', connection.connectionId, res?.data?.result[0].idConversation);
-                console.log('Join group: ' + connection.connectionId);
-                console.log(res?.data?.result[0].idConversation);
-              } catch (error) {
-                console.error('Error sending message: ', error);
-              }
-            }
+            // if (connection) {
+            //   try {
+            //     connection.invoke('AddToGroup', connection.connectionId, res?.data?.result[0].idConversation);
+            //     console.log('Join group: ' + connection.connectionId);
+            //     console.log(res?.data?.result[0].idConversation);
+            //   } catch (error) {
+            //     console.error('Error sending message: ', error);
+            //   }
+            // }
           } else {
             setMessages([]);
             setActiveUser(null);
@@ -246,15 +211,20 @@ function Chat() {
         .then((res) => {
           setReset(!reset);
           setMessage('');
-          if (connection && message) {
-            try {
-              connection.invoke('SendMessageToGroup', res?.data?.result.idConversation, res?.data?.result);
-              console.log('Invoke userId: ' + res?.data?.result.idConversation);
-              console.log(res?.data?.result);
-            } catch (error) {
-              console.error('Error sending message: ', error);
-            }
-          }
+          // if (connection && message) {
+          //   try {
+          //     connection.invoke('SendMessageToGroup', res?.data?.result.idConversation, res?.data?.result);
+          //     console.log('Invoke userId: ' + res?.data?.result.idConversation);
+          //     console.log(res?.data?.result);
+
+          //     connection.invoke('AddToGroup', res?.data?.result.idSender, res?.data?.result.idConversation);
+          //     console.log('Invoke userId: ' + res?.data?.result.idConversation);
+          //     console.log(res?.data?.result);
+          //     connection.invoke('AddToGroup', res?.data?.result.idReceiver, res?.data?.result.idConversation);
+          //   } catch (error) {
+          //     console.error('Error sending message: ', error);
+          //   }
+          // }
         })
         .catch((error) => console.error(error));
     }
@@ -268,15 +238,18 @@ function Chat() {
         .then((res) => {
           setReset(!reset);
           setMessage('');
-          if (connection && message) {
-            try {
-              connection.invoke('SendMessageToGroup', res?.data?.result.idConversation, res?.data?.result);
-              console.log('Invoke userId: ' + res?.data?.result.idConversation);
-              console.log(res?.data?.result);
-            } catch (error) {
-              console.error('Error sending message: ', error);
-            }
-          }
+          // if (connection && message) {
+          //   try {
+          //     connection.invoke('SendMessageToGroup', res?.data?.result.idConversation, res?.data?.result);
+          //     console.log('Invoke userId: ' + res?.data?.result.idConversation);
+          //     console.log(res?.data?.result);
+
+          //     connection.invoke('AddToGroup', res?.data?.result.idSender, res?.data?.result.idConversation);
+          //     connection.invoke('AddToGroup', res?.data?.result.idReceiver, res?.data?.result.idConversation);
+          //   } catch (error) {
+          //     console.error('Error sending message: ', error);
+          //   }
+          // }
         })
         .catch((error) => console.error(error));
     }
@@ -293,16 +266,17 @@ function Chat() {
         },
       })
         .then((res) => {
+          setReset(!reset);
           setMessage('');
-          if (connection && file) {
-            try {
-              connection.invoke('SendMessageToGroup', res?.data?.result.idConversation, res?.data?.result);
-              console.log('Invoke userId: ' + res?.data?.result.idConversation);
-              console.log(res?.data?.result);
-            } catch (error) {
-              console.error('Error sending message: ', error);
-            }
-          }
+          // if (connection && file) {
+          //   try {
+          //     connection.invoke('SendMessageToGroup', res?.data?.result.idConversation, res?.data?.result);
+          //     console.log('Invoke userId: ' + res?.data?.result.idConversation);
+          //     console.log(res?.data?.result);
+          //   } catch (error) {
+          //     console.error('Error sending message: ', error);
+          //   }
+          // }
         })
         .catch((error) => {
           console.error('Error uploading file:', error);
@@ -321,20 +295,12 @@ function Chat() {
         },
       })
         .then((res) => {
+          setReset(!reset);
           setMessage('');
-          if (connection && file) {
-            try {
-              connection.invoke('SendMessageToGroup', res?.data?.result.idConversation, res?.data?.result);
-              console.log('Invoke userId: ' + res?.data?.result.idConversation);
-              console.log(res?.data?.result);
-            } catch (error) {
-              console.error('Error sending message: ', error);
-            }
-          }
           // if (connection && file) {
           //   try {
-          //     connection.invoke('SendMessage', activeUser.receiverId, res?.data?.result);
-          //     console.log('Invoke userId: ' + activeUser.receiverId);
+          //     connection.invoke('SendMessageToGroup', res?.data?.result.idConversation, res?.data?.result);
+          //     console.log('Invoke userId: ' + res?.data?.result.idConversation);
           //     console.log(res?.data?.result);
           //   } catch (error) {
           //     console.error('Error sending message: ', error);
@@ -388,10 +354,19 @@ function Chat() {
       ).catch((error) => { console.error(error) })
   }
   const handleRecallMess = (id) => {
-    chatInstance.delete(`RecallMessage/${id}`)
+    chatInstance.delete(`RecallMessage/${id}/${currentUserId}`)
       .then((res) => {
         console.log(res?.data?.result);
         setReset(!reset);
+        if (connection) {
+          try {
+            connection.invoke('RecallMessage', res?.data?.result.idConversation, res?.data?.result);
+            console.log('Invoke userId: ' + res?.data?.result.idConversation);
+            console.log(res?.data?.result);
+          } catch (error) {
+            console.error('Error sending message: ', error);
+          }
+        }
       }
       ).catch((error) => { console.error(error) })
   }

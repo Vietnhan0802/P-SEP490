@@ -233,7 +233,7 @@ function Post({ value }) {
         <div id="post">
           <div className="post-form p-2 d-flex flex-grid align-items-center justify-content-between row m-0">
             <div className="d-flex post-search align-items-center position-relative col me-2">
-              <CiSearch className="" />
+              <CiSearch className="search_icon" />
               <input
                 type="text"
                 onChange={handleSearchPost}
