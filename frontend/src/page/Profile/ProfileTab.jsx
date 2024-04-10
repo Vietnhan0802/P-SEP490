@@ -285,8 +285,8 @@ function ProfileTab(props) {
                                         </p>
                                     </div>
                                     <div className="col-3 d-flex justify-content-end align-items-center" style={{ width: '30% !important' }}>
-                                        <button className="btn degree-detail" onClick={() => handleNavigate(blog.idBlog, 'blog')}>
-                                            View More
+                                        <button className="btn degree-detail border" onClick={() => handleNavigate(blog.idBlog, 'blog')}>
+                                            View Detail
                                         </button>
                                     </div>
                                 </div>
