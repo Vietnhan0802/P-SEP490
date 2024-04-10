@@ -142,11 +142,11 @@ export default function Header({ activeComponent, onItemClick, changeImage }) {
         </div>
       </Col>
       <Col className="d-flex justify-content-end align-items-center" sm={4}>
-        <Translate />
+        {/* <Translate /> */}
         <DarkMode />
         <div className=" d-flex align-items-center" onClick={() => handleAvatarClick(currentUserId)}>
           <div className="position-relative">
-            <div className="profile" style={{ width: '45px', height: '45px', borderRadius: '50%' }}>
+            <div className="profile" style={{ width: '45px', height: '45px', borderRadius: '50%', }}>
               <img src={value.imageSrc} alt="" />
             </div>
 

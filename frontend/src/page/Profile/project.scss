@@ -4,6 +4,8 @@
 }
 
 .card {
+    color: var(--header_search_text);
+    background-color: var(--header_background) !important;
     margin-bottom: 20px;
     -webkit-box-shadow: 0 2px 3px #eaedf2;
     box-shadow: 0 2px 3px #eaedf2;
@@ -180,4 +182,13 @@
     top: 3px;
     background-color: #fff;
     border: 2px solid #038edc
+}
+
+.button_custom {
+    height: 42px;
+    margin: auto;
+    margin-right: 10px;
+}
+.border_custom {
+    border-radius: 8px;
 }

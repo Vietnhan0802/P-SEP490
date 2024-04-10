@@ -238,7 +238,7 @@ function Post({ value }) {
         <div id="post">
           <div className="post-form p-2 d-flex flex-grid align-items-center justify-content-between row m-0">
             <div className="d-flex post-search align-items-center position-relative col me-2">
-              <CiSearch className="" />
+              <CiSearch className="search_icon" />
               <input
                 type="text"
                 onChange={handleSearchPost}
@@ -248,7 +248,7 @@ function Post({ value }) {
               />
             </div>
             <div className="d-flex flex-row align-items-center col-auto m-md-0-cus mt-2 p-0">
-              <button type="button" className="btn btn-info text-white" onClick={toggleTrendList}>
+              <button type="button" className="btn btn-primary text-white" onClick={toggleTrendList}>
                 {showTrendList ? 'ViewAll' : "Trend"}
               </button>
             </div>

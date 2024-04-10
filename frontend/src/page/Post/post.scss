@@ -39,7 +39,7 @@
   width: 100%;
 
   .post-form {
-    background-color: #fff;
+    background-color: var(--header_background);
     border-radius: 8px;
 
     .input-text {
@@ -61,12 +61,12 @@
   }
 
   .post-item {
-    background-color: #fff;
+    background-color: var(--header_background);
     border-radius: 8px;
-
+    color: var(--header_search_text);
 
     .view-btn {
-      background-color: #20becb;
+      background-color: var(--color_blue);
       border-radius: 8px;
       padding: 8px 14px;
       color: #fff;
@@ -144,11 +144,16 @@
   height: 100%;
 }
 
-.post-search {
+.post-search { 
+  input {
+    max-height: 38px;
+  }
   background-color: var(--header_background_search_box);
-  border-radius: 40px;
+  border-radius: 8px;
   padding: 0px 12px;
-
+  .search_icon {
+    color: var(--header_search_box);
+  }
   .search-box {
     background-color: var(--header_background_search_box);
     color: var(--header_search_text);

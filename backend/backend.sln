@@ -27,9 +27,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlogService", "BlogService\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PostService", "PostService\PostService.csproj", "{D7F54404-25ED-4167-8D00-811956E563D9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NotificationService", "NotificationService\NotificationService.csproj", "{DF6404E3-57D6-40B7-A8BD-4C01F7421B6B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NotificationService", "NotificationService\NotificationService.csproj", "{DF6404E3-57D6-40B7-A8BD-4C01F7421B6B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectService", "ProjectService\ProjectService.csproj", "{8D0FFBE9-4881-44F2-9B8D-C97CD5105F55}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectService", "ProjectService\ProjectService.csproj", "{8D0FFBE9-4881-44F2-9B8D-C97CD5105F55}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
