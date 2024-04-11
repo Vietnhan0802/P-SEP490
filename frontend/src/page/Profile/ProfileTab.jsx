@@ -9,6 +9,8 @@ import Dropdown from "react-bootstrap/Dropdown";
 import { MdDelete } from "react-icons/md";
 import { BsThreeDots } from "react-icons/bs";
 import DeleteDegree from './DeleteDegree';
+import { Rating } from 'react-simple-star-rating'
+
 function ProfileTab(props) {
     const { tabs, user, currentUserId, userDegree, userPost, userBlog, userProject, formatDateString, projectStatus, resetTab } = props;
     const navigate = useNavigate();
@@ -180,8 +182,6 @@ function ProfileTab(props) {
                                         </div>
                                     </>
                                 )) : <p className='bg-white'>There is no degree</p>}
-
-
                     </div>
                 )}
                 {showDeleteDegreeForId && (
@@ -228,7 +228,7 @@ function ProfileTab(props) {
                                                 Title: {post.title}
                                             </p>
                                         </div>
-                                        <div className="col-3 d-flex justify-content-end align-items-center" style={{width:'30%'}}>
+                                        <div className="col-3 d-flex justify-content-end align-items-center" style={{ width: '30%' }}>
                                             <button className="btn degree-detail border" onClick={() => handleNavigate(post.idPost, 'post')}>
                                                 View Detail
                                             </button>
@@ -307,13 +307,14 @@ function ProfileTab(props) {
                                             <div className="card-body">
                                                 <div className="d-flex mb-3">
                                                     <div className="flex-grow-1 align-items-start">
-                                                        <div>
+                                                        <div className='d-flex justify-content-between'>
                                                             <h6 className="mb-0 text-muted">
                                                                 <i className="mdi mdi-circle-medium text-danger fs-3 align-middle"></i>
                                                                 <span className="team-date">
                                                                     {formatDateString(project.createdDate)}
                                                                 </span>
                                                             </h6>
+                                                            <Rating initialValue={project.ratingAvg} size={20} allowFraction={true} readonly={true}/>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -328,32 +329,23 @@ function ProfileTab(props) {
                                                 </div>
                                                 <div className="d-flex">
                                                     <div className="avatar-group float-start flex-grow-1 task-assigne">
-                                                        {/* Clone from */}
-                                                        <div className="avatar-group-item">
-                                                            <img
-                                                                src="https://bootdey.com/img/Content/avatar/avatar1.png"
-                                                                alt=""
-                                                                className="rounded-circle avatar-sm"
-                                                            />
-                                                        </div>
-                                                        {/* to THis */}
-                                                        <div className="avatar-group-item">
-                                                            <img
-                                                                src="https://bootdey.com/img/Content/avatar/avatar1.png"
-                                                                alt=""
-                                                                className="rounded-circle avatar-sm"
-                                                            />
-                                                        </div>
-                                                        <div className="avatar-group-item">
-                                                            <img
-                                                                src="https://bootdey.com/img/Content/avatar/avatar1.png"
-                                                                alt=""
-                                                                className="rounded-circle avatar-sm"
-                                                            />
-                                                        </div>
+                                                        {project?.memberViews?.slice(0, 5).map((member, index) => ( // Only show the first five members
+                                                            <div className="avatar-group-item" key={index}>
+                                                                <img
+                                                                    src={member.avatarMember}
+                                                                    alt=""
+                                                                    className="rounded-circle avatar-sm"
+                                                                />
+                                                            </div>
+                                                        ))}
+                                                        {project?.memberViews?.length > 5 && ( // If there are more than five members, display a circle indicating the count
+                                                            <div className="avatar-group-item rounded-circle avatar-sm">
+                                                                +{project.memberViews.length - 5}
+                                                            </div>
+                                                        )}
                                                     </div>
                                                     <div className="align-self-end">
-                                                        <span className="badge badge-soft-danger p-2 team-status">
+                                                        <span className="p-2 team-status">
                                                             {projectStatus(project.process)}
                                                         </span>
                                                     </div>

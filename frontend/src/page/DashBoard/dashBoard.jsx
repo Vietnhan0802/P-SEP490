@@ -106,7 +106,6 @@ function DashBoard() {
       })
       .catch((err) => { console.log(err) });
   }, [resetVerification])
-
   const verifiListLength = verificationAcceptedList?.length + verificationList?.length;
 
   const resetAccount = () => {
@@ -122,7 +121,7 @@ function DashBoard() {
     setResetRe((prevReset) => !prevReset)
   }
   const resetVerify = () => {
-    setResetVerification(prevReset => !prevReset);
+    setResetVerification((prevReset) => !prevReset);
   }
 
   const renderTable = () => {
@@ -140,7 +139,7 @@ function DashBoard() {
           blogValue={blogReportList}
           resetReport={resetReport} />;
       case "verify":
-        return <VerifyTable value={verificationList} verified={verificationAcceptedList} resetVerify={resetVerify} />;
+        return <VerifyTable value={verificationList} verified={verificationAcceptedList} resetVerify={resetVerify} resetVerification={resetVerification} />;
       case "project":
         return <ProjectTable value={projectList} />;
       default:

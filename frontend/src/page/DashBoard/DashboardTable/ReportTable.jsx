@@ -16,6 +16,7 @@ import "../DashboardTable/table.scss";
 import { GoDotFill } from "react-icons/go";
 import { useNavigate } from "react-router-dom";
 import { reportInstance } from "../../../axios/axiosConfig";
+import { notifySuccess } from "../../../components/notification";
 const formatDate = (timestamp) => {
   const months = [
     "Jan",
@@ -520,17 +521,17 @@ export default function ReportTable({ accountValue, postValue, blogValue, resetR
   const handleAcceptorDeny = (id, status, type) => {
     if (type === 'post') {
       reportInstance.put(`AcceptPostReport/${id}/${status}`)
-        .then((res) => { console.log(res?.data?.result); resetReport(); })
+        .then((res) => { console.log(res?.data?.result); resetReport(); notifySuccess(res?.data?.message);})
         .catch((error) => { console.error(error); })
     }
     if (type === 'blog') {
       reportInstance.put(`AcceptBlogReport/${id}/${status}`)
-        .then((res) => { console.log(res?.data?.result); resetReport(); })
+        .then((res) => { console.log(res?.data?.result); resetReport(); notifySuccess(res?.data?.message); })
         .catch((error) => { console.error(error); })
     }
     if (type === 'account') {
       reportInstance.put(`AcceptAccountReport/${id}/${status}`)
-        .then((res) => { console.log(res?.data?.result); resetReport(); })
+        .then((res) => { console.log(res?.data?.result); resetReport(); notifySuccess(res?.data?.message); })
         .catch((error) => { console.error(error); })
     }
   }

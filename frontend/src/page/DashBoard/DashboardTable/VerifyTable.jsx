@@ -18,6 +18,7 @@ import { GoDotFill } from "react-icons/go";
 import { useNavigate } from "react-router-dom";
 import { reportInstance } from "../../../axios/axiosConfig";
 import { color } from "@mui/system";
+import { notifySuccess } from "../../../components/notification";
 const formatDate = (timestamp) => {
     const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
         "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -188,7 +189,7 @@ EnhancedTableHead.propTypes = {
     rowCount: PropTypes.number.isRequired,
 };
 
-export default function VerifyTable({ value, verified, resetVerify }) {
+export default function VerifyTable({ value, verified, resetVerify, resetVerification }) {
     const navigate = useNavigate();
     const [order, setOrder] = React.useState("asc");
     const [orderBy, setOrderBy] = React.useState("calories");
@@ -199,7 +200,7 @@ export default function VerifyTable({ value, verified, resetVerify }) {
     const [verifiedRow, setVerifiedRow] = React.useState([]);
     const [searchTerm, setSearchTerm] = React.useState('');
     React.useEffect(() => {
-        if (Array.isArray(value) && value.length > 0) {
+        if (Array.isArray(value)) {
             const data = value?.map((element) =>
                 createData(
                     element.idVerification,
@@ -214,9 +215,9 @@ export default function VerifyTable({ value, verified, resetVerify }) {
             )
             setVerifyRow(data);
         }
-    }, [value])
+    }, [value, resetVerification])
     React.useEffect(() => {
-        if (Array.isArray(verified) && verified.length > 0) {
+        if (Array.isArray(verified)) {
             const data = verified?.map((element) =>
                 createData(
                     element.idVerification,
@@ -231,7 +232,7 @@ export default function VerifyTable({ value, verified, resetVerify }) {
             )
             setVerifiedRow(data);
         }
-    }, [verified])
+    }, [verified, resetVerification])
     const navigateUser = (id) => {
         navigate('/profile', { state: { userId: id } })
     }
@@ -240,6 +241,7 @@ export default function VerifyTable({ value, verified, resetVerify }) {
             .then((res) => {
                 console.log(res?.data?.result);
                 resetVerify();
+                notifySuccess(res?.data?.message)
             })
             .catch((error) => {
                 console.error(error);
@@ -247,7 +249,7 @@ export default function VerifyTable({ value, verified, resetVerify }) {
     }
     const handleCancel = (id) => {
         reportInstance.delete(`RemoveVerification/${id}`)
-            .then((res) => { console.log(res?.data?.result) })
+            .then((res) => { console.log(res?.data?.result); resetVerify(); notifySuccess(res?.data?.message) })
             .catch((error) => { console.error(error) });
     }
     const handleRequestSort = (event, property) => {
