@@ -10,6 +10,7 @@
     margin: auto;
     margin-right: 10px;
   }
+
   .border_custom {
     border-radius: 8px;
   }
@@ -17,16 +18,20 @@
   .left-30 {
     margin-left: 10px;
   }
+
   .form {
     border-radius: 8px;
   }
+
   .project-search {
     input {
       max-height: 38px;
     }
+
     background-color: var(--header_background_search_box);
     border-radius: 8px;
     padding: 0px 12px;
+
     .search_icon {
       color: var(--header_search_box);
     }
@@ -41,6 +46,7 @@
       font-size: 18px;
     }
   }
+
   .project-form {
     background-color: var(--header_background) !important;
     border-radius: 8px;
@@ -85,6 +91,7 @@
     /* Căn giữa ảnh */
   }
 }
+
 .input-text {
   border: 1px solid #d0d5dd;
   max-height: 750px;
@@ -100,15 +107,42 @@
     outline: none;
   }
 }
+
 #cus-project.modal-dialog {
   max-width: 60vw;
+
+  .form-floating>.form-control-plaintext~label::after,
+  .form-floating>.form-control:focus~label::after,
+  .form-floating>.form-control:not(:placeholder-shown)~label::after,
+  .form-floating>.form-select~label::after {
+    background-color: var(--header_background) ;
+    color: var(--header_search_text) ;
+  }
+
+  .project_select div {
+    background-color: var(--header_background) !important;
+    color: var(--header_search_text) !important;
+  }
+
+  .pro_input,
+  input,
+  select,
+  select option {
+    background-color: var(--header_background) !important;
+    color: var(--header_search_text) !important;
+  }
+
   .ql-container {
     height: 300px;
   }
 }
+
+
+
+
 #create-project {
   .input-cover {
-    background-color: #efefef;
+    background-color: var(--header_background_search_box);
     padding: 32px;
     border-radius: 20px;
   }
@@ -186,7 +220,8 @@
       outline-offset: 2px;
     }
   }
-  button{
+
+  button {
     height: fit-content;
   }
 }

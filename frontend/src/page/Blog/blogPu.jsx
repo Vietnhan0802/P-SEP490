@@ -183,7 +183,7 @@ function BlogPu({ resetBlog }) {
               className="input-text form-control  mb-3"
               placeholder="Enter the title"
             />
-            <label htmlFor="floatingInput">Enter the title</label>
+            <label htmlFor="floatingInput" style={{background:'transparent'}}>Enter the title</label>
           </div>
           <ReactQuill
             theme="snow"

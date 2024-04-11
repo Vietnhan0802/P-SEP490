@@ -7,13 +7,28 @@
   .h-40 {
     height: 40px;
   }
+  .dropdown-custom{
+    background-color: var(--header_background);
+    color: var(--header_search_text);
+    svg {
+      color: var(--header_search_text);
+    }
+  }
+  .dropdown-menu {
+    border: 1px solid var(--header_mid_icon);
+  }
 
+  .view-cmt {
+    background-color: var(--header_background);
+    color: var(--header_search_text);
+  }
   .input-cmt {
     background-color: var(--header_background_search_box);
     color: var(--header_search_text);
     height: 40px;
     border-radius: 8px;
     margin: 0px 5px;
+    border: none;
   }
 
   .border-custom {
@@ -83,7 +98,6 @@
     border: 1px solid #d0d5dd;
 
     input {
-      border: none;
       width: 100%;
 
       &:focus {

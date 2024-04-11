@@ -307,6 +307,7 @@ function UpdateProjectForm({ input, id, resetPage }) {
               <div className="d-flex align-items-center">
                 <label htmlFor="">Position: </label>
                 <CreatableSelect
+                className="custom-select"
                   closeMenuOnSelect={false}
                   components={animatedComponents}
                   placeholder='Select all position needed in project'

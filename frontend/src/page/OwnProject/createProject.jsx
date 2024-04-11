@@ -230,10 +230,10 @@ function CreateProject({ reset }) {
                                     name="name"
                                     value={value.name}
                                     onChange={handleInputChange}
-                                    className="form-control w-100"
-                                    placeholder="Enter Project Name"
+                                    className="form-control w-100 pro_input"
+                                    placeholder="Project name"
                                 />
-                                <label for="floatingInput">Project name</label>
+                                <label htmlFor="floatingInput" style={{background:'transparent'}}>Project name</label>
                             </div>
                             {/* <div className='form-floating mb-3'>
                                 <textarea
@@ -256,6 +256,7 @@ function CreateProject({ reset }) {
                                 ref={quillRef}
                             />
                             <CreatableSelect
+                            className='project_select'
                                 closeMenuOnSelect={false}
                                 components={animatedComponents}
                                 placeholder='Select all position needed in project'

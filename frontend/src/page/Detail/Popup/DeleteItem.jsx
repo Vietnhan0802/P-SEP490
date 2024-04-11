@@ -24,7 +24,7 @@ function DeleteItem({ type, value, show, onClose }) {
 
     }
     return (
-        <div className="p-1">
+        <div className="p-1" style={{backgroundColor: 'var(--header_background)', color: 'var(--header_search_text)'}}>
             <Modal show={show} onHide={onClose}>
                 <Modal.Header closeButton>
                     <Modal.Title>Confirmation Box</Modal.Title>

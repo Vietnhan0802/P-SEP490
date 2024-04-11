@@ -432,7 +432,7 @@ function PostDetail({ value }) {
                 </div>
 
                 <div className="ms-3  w-100 ">
-                  <div className="form-control">
+                  <div className="form-control view-cmt">
                     <div className="d-flex  justify-content-between">
                       <h6 className="mb-2 d-flex align-items-center">
                         {item.fullName}
@@ -442,7 +442,7 @@ function PostDetail({ value }) {
                           <Dropdown.Toggle
                             as={Button}
                             variant="white"
-                            className="border-none text-body"
+                            className="border-none text-body dropdown-custom"
 
                           >
                             <BsThreeDots />
@@ -484,7 +484,7 @@ function PostDetail({ value }) {
                       <>
                         <input
                           type="text"
-                          className="form-control mb-2"
+                          className="form-control mb-2 input-cmt"
                           value={originalContent || item.content}
                           onChange={(e) =>
                             handleUpdateInputComment(
@@ -526,7 +526,7 @@ function PostDetail({ value }) {
                             (item.viewPostReplies.length === 0 ? (
                               ""
                             ) : (
-                              <p
+                              <p className="btn btn-primary"
                                 onClick={() =>
                                   handleViewReply(item.idPostComment)
                                 }
@@ -537,7 +537,7 @@ function PostDetail({ value }) {
                         </div>
                       ) : (
                         <div className="d-flex justify-content-end align-items-center w-100  py-2">
-                          <p
+                          <p className="btn btn-danger"
                             onClick={() => handleViewReply(item.idPostComment)}
                           >
                             Close
@@ -567,7 +567,7 @@ function PostDetail({ value }) {
 
                           <input
                             type="text"
-                            className="w-100 ps-3"
+                            className="w-100 ps-3 input-cmt"
                             placeholder="Type your Reply"
                             value={inputReply[item.idPostComment] || ""}
                             onChange={(e) =>
@@ -616,7 +616,7 @@ function PostDetail({ value }) {
                                 <div>
                                   <input
                                     type="text"
-                                    className="form-control mb-2"
+                                    className="form-control mb-2 input-cmt"
                                     value={reply.content}
                                     onChange={(e) =>
                                       handleUpdateInputReplyComment(
@@ -654,7 +654,7 @@ function PostDetail({ value }) {
                                 <Dropdown.Toggle
                                   id="dropdown-basic"
                                   style={{ border: "none" }}
-                                  className="bg-white border-none text-body"
+                                  className="dropdown-custom border-none text-body"
                                 >
                                   <BsThreeDots />
                                 </Dropdown.Toggle>
