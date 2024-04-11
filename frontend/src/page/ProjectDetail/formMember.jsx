@@ -36,28 +36,26 @@ function FormMember({ projectId, positionOption }) {
       })
       .catch((error) => { console.error(error); })
   }, [])
+  const [inviteInfo, setInviteInfo] = useState({});
   const handlePositionChange = (selectedOption, userId) => {
-    setInvite(prevState => ({
+    setInviteInfo(prevState => ({
       ...prevState,
-      userId: userId,
-      positionId: selectedOption.value
+      [userId]: {
+        idProject: projectId,
+        userId,
+        positionId: selectedOption.value
+      }
     }));
   };
-
-  const handleInvite = () => {
-    // Example POST request with invite information
-    const postData = {
-      idProject: invite.idProject,
-      userId: invite.userId,
-      positionId: invite.positionId
-    };
+  const handleInvite = (userId) => {
+    const postData = inviteInfo[userId];
     projectInstance.post(`CreateProjectInvite/${postData.userId}?idProject=${postData.idProject}&idPosition=${postData.positionId}`)
       .then((res) => {
         console.log(res?.data?.result); setShow(false);
         if (res?.data?.status === 'BadRequest') {
           notifyError('You have invited this person')
         } else {
-          notifySuccess(res?.data?.result)
+          notifySuccess(res?.data?.message)
         }
       })
       .catch((error) => { console.error(error); notifyError("Send invite is fail!"); });
@@ -117,7 +115,9 @@ function FormMember({ projectId, positionOption }) {
                     options={optionsList}
                     onChange={(selectedOption) => handlePositionChange(selectedOption, user.id)}
                   />
-                  <button className="btn btn-info ms-3" onClick={() => handleInvite(user.id)}>Invite</button>
+                  {inviteInfo[user.id]?.positionId && (
+                    <button className="btn btn-info ms-3" onClick={() => handleInvite(user.id)}>Invite</button>
+                  )}
                 </div>
               </div>))}
           </div>

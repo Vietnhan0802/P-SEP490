@@ -145,11 +145,11 @@ export default function Header({ activeComponent, onItemClick, changeImage, chan
                 }`}
               onClick={() => handlePopup()}
             />
-            <p className="position-absolute unread-count ">
+            {/* <p className="position-absolute unread-count ">
             <span>
               {notiCount}
             </span>
-            </p>
+            </p> */}
           </div>
 
           <Popup trigger={showPopup}>

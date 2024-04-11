@@ -101,7 +101,9 @@ function FormApply({ projectId, positionOption }) {
               options={optionsList}
               onChange={(selectedOption) => handlePositionChange(selectedOption)}
             />
-            <button onClick={handleApply} className="mt-3">Confirm</button>
+            {invite.positionId && invite.file && (
+              <button onClick={handleApply} className="mt-3">Confirm</button>
+            )}
           </div>
         </Modal.Body>
       </Modal>
