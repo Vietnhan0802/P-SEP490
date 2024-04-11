@@ -79,7 +79,7 @@ function UpdateInformationPu({ value, id, reset, show, onClose, handleChangeImg 
             <label className="mt-2">Full Name:</label>
             <input
               type="text"
-              className="form-control"
+              className="form-control input-custom"
               // name="fullName"
               // value={user?.fullName}
               // onChange={handleChange}
@@ -111,7 +111,7 @@ function UpdateInformationPu({ value, id, reset, show, onClose, handleChangeImg 
                 }
               })}
               type="date"
-              className="form-control" />
+              className="form-control input-custom" />
             <p
               className="text-danger">
               {errors.date && errors.date.message}
@@ -129,7 +129,7 @@ function UpdateInformationPu({ value, id, reset, show, onClose, handleChangeImg 
                   message: 'Phone number start with 0 and has to have 10 number',
                 },
               })}
-              className="form-control"
+              className="form-control input-custom"
               aria-label="Phone number"
               required
             />
@@ -154,7 +154,7 @@ function UpdateInformationPu({ value, id, reset, show, onClose, handleChangeImg 
             <input
               type="text"
               name="address"
-              className="form-control"
+              className="form-control input-custom"
               {...register('address', {
                 required: 'Address is required',
                 validate: (value) => {
@@ -171,7 +171,7 @@ function UpdateInformationPu({ value, id, reset, show, onClose, handleChangeImg 
             <input
               type="number"
               name="tax"
-              className="form-control"
+              className="form-control input-custom"
               {...register('tax', {
                 required: 'Tax is required',
                 validate: (value) => {
@@ -195,7 +195,7 @@ function UpdateInformationPu({ value, id, reset, show, onClose, handleChangeImg 
               })}
               placeholder="Hope you will give us some description about yourselves"
               style={{ maxHeight: '200px' }}
-              className="form-control"
+              className="form-control input-custom"
               aria-label="Description"
             />
             <p className="text-danger">

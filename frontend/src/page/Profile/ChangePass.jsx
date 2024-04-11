@@ -58,7 +58,7 @@ function ChangePass({ email }) {
                     <label className="mt-2">Old Password</label>
                     <input
                         type="password"
-                        className="form-control"
+                        className="form-control input-custom"
                         {...register('oldpassword', { required: 'Old password is required' })}
                         aria-label="Old password"
                     />
@@ -85,7 +85,7 @@ function ChangePass({ email }) {
                                 message: 'Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters',
                             },
                         })}
-                        className="form-control"
+                        className="form-control input-custom"
                         aria-label="New password"
                     />
                     {errors.newpassword && (
@@ -116,7 +116,7 @@ function ChangePass({ email }) {
                                 message: 'Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters',
                             },
                         })}
-                        className="form-control"
+                        className="form-control input-custom"
                         aria-label="Confirm password"
                     />
                     {errors.confirmpassword && (

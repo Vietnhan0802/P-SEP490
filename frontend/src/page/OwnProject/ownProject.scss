@@ -91,8 +91,13 @@
     /* Căn giữa ảnh */
   }
 }
-
+.file-custom {
+  background-color: var(--header_background);
+  color: var(--header_search_text);
+}
 .input-text {
+  background-color: var(--info_profile);
+  color: var(--info_text) !important;
   border: 1px solid #d0d5dd;
   max-height: 750px;
   resize: both;

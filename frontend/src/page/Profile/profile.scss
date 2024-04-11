@@ -1,3 +1,13 @@
+.dropdown-custom{
+  color: var(--header_search_text);
+  svg {
+    color: var(--header_search_text);
+  }
+}
+.input-custom {
+  background-color: var(--info_profile);
+  color: var(--info_text);
+}
 #switch {
   .switch-custom{
     background-color: var(--header_background) !important;
@@ -349,6 +359,10 @@
   color: var(--header_search_text);
   border-radius: 8px;
   padding: 12px;
+  span {
+    color: var(--header_search_text);
+  }
+  
 }
 #degree-tab {
   .dropdown-toggle::after {
