@@ -319,11 +319,11 @@ function Profile({ handleChangeImg, value, resetFollowing }) {
               {currentUserId !== userId && role !== 'Admin' ? (
                 <Report id={currentUserId} idItem={userId} type="account" />) : ""}
             </div>
-            {role !== 'Admin' && <div className="bg-white mt-3">
+            {role !== 'Admin' && <div className="mt-3">
               <div className="d-flex justify-content-center align-items-center" onClick={() => setShowRating(true)}>
                 <p className="d-flex justify-content-center align-items-center" style={{ fontSize: '20px' }}>{Math.round(user.ratingAvg * 100) / 100}</p>
                 <Rating
-                  className="ms-2"
+                  className="ms-2 rating-custom"
                   initialValue={user.ratingAvg}
                   readonly={true}
                   allowFraction={true}
@@ -382,22 +382,22 @@ function Profile({ handleChangeImg, value, resetFollowing }) {
 
                 <div className="col-md-6">
                   <label className="form-label">Full Name:</label>
-                  <p className="form-control">{inputs.fullName || 'No information'}</p>
+                  <p className="form-control info-custom">{inputs.fullName || 'No information'}</p>
                 </div>
                 <div className="col-md-6">
                   <label className="form-label">
                     {inputs.role === "Business" ? "Establish date" : "Birthday"}
                   </label>
-                  <p className="form-control">{inputs.date || 'No information'}</p>
+                  <p className="form-control info-custom">{inputs.date || 'No information'}</p>
                 </div>
                 <div className="col-md-6">
                   <label className="form-label">Phone number</label>
-                  <p className="form-control">{inputs.phoneNumber || 'No information'}</p>
+                  <p className="form-control info-custom">{inputs.phoneNumber || 'No information'}</p>
                 </div>
                 <div className="col-md-6">
                   {inputs.role !== "Business" && (
                     <div>
-                      <label className="form-label">Gender:</label>
+                      <label className="form-label info-custom">Gender:</label>
                       <div className="form-control">
                         {user.isMale ? (
                           <p>Male</p>
@@ -412,15 +412,15 @@ function Profile({ handleChangeImg, value, resetFollowing }) {
                 </div>
                 <div className="col-md-6">
                   <label className="form-label">Address:</label>
-                  <p className="form-control">{inputs.address || 'No information'}</p>
+                  <p className="form-control info-custom">{inputs.address || 'No information'}</p>
                 </div>
                 <div className="col-md-6">
                   <label className="form-label ">Tax:</label>
-                  <p className="form-control">{inputs.tax || 'No information'}</p>
+                  <p className="form-control info-custom">{inputs.tax || 'No information'}</p>
                 </div>
                 <div className="col-md-12 ">
                   <label className="form-label">Description:</label>
-                  <p className="form-control">{inputs.description ? inputs.description : 'No description'}</p>
+                  <p className="form-control info-custom">{inputs.description ? inputs.description : 'No description'}</p>
                 </div>
               </div>
             </div>
