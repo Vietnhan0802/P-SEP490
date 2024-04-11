@@ -16,6 +16,7 @@ import "../DashboardTable/table.scss";
 import { GoDotFill } from "react-icons/go";
 import { postInstance } from "../../../axios/axiosConfig";
 import { useNavigate } from "react-router-dom";
+import { notifySuccess } from "../../../components/notification";
 
 function createData(id, avatar, fullName, title, content, date, report, isBlock, idAccount) {
   const time = formatDate(date);
@@ -229,6 +230,7 @@ export default function PostTable({ value, resetTable }) {
     postInstance.put(`BlockPost/${idPost}`)
       .then((res) => {
         resetTable();
+        notifySuccess(res?.data)
       })
       .catch((error) => {
         console.error(error);

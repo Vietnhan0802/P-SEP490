@@ -16,6 +16,7 @@ import "../DashboardTable/table.scss";
 import { GoDotFill } from "react-icons/go";
 import { blogInstance } from "../../../axios/axiosConfig";
 import { useNavigate } from "react-router-dom";
+import { notifySuccess } from "../../../components/notification";
 function createData(id, avatar, fullName, title, content, date, report, isBlock, idAccount) {
   const time = formatDate(date);
   return {
@@ -221,6 +222,7 @@ export default function BlogTable({ value, resetBlog }) {
     blogInstance.put(`BlockBlog/${idBlog}`)
       .then((res) => {
         resetBlog();
+        notifySuccess(res?.data)
       })
       .catch((error) => {
         console.error(error);

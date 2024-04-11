@@ -17,6 +17,7 @@ import "../DashboardTable/table.scss";
 import { GoDotFill } from "react-icons/go";
 import { userInstance } from "../../../axios/axiosConfig";
 import { useNavigate } from "react-router-dom";
+import { notifySuccess } from "../../../components/notification";
 
 function createData(id, avatar, name, email, type, description, isBlock, idAccount) {
   return {
@@ -173,6 +174,7 @@ export default function AccessTable({ value, resetAccount }) {
     userInstance.put(`BlockUser/${id}`)
       .then((res) => {
         resetAccount();
+        notifySuccess(res?.data);
       })
       .catch((err) => { console.error(err.data) })
   }

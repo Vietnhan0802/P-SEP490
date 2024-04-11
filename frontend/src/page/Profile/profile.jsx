@@ -166,13 +166,13 @@ function Profile({ handleChangeImg, value, resetFollowing }) {
   const projectStatus = (process) => {
     switch (process) {
       case 0:
-        return <p>Preparing</p>;
+        return <p className="badge text-bg-info text-white">Preparing</p>;
       case 1:
-        return <p>Processing</p>;
+        return <p className="badge text-bg-secondary">Processing</p>;
       case 2:
-        return <p>Pending</p>;
+        return <p className="badge text-bg-danger ">Pending</p>;
       case 3:
-        return <p>Done</p>;
+        return <p className="badge text-bg-success ">Done</p>;
       default:
         return "";
     }
