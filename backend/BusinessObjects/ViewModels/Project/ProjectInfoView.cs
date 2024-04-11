@@ -21,6 +21,8 @@ namespace BusinessObjects.ViewModels.Project
         public bool isDeleted { get; set; }
         public DateTime createdDate { get; set; }
         public ICollection<PositionView>? PositionViews { get; set; }
+        public int numberMember { get; set; }
+        public ICollection<MemberView>? MemberViews { get; set; }
 
         [NotMapped]
         public string? avatarSrc { get; set; }
