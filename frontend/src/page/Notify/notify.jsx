@@ -7,19 +7,16 @@ import { notifyInstance } from "../../axios/axiosConfig";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
 import { FaLessThanEqual } from "react-icons/fa";
-function Notify({ close }) {
+function Notify({ close, resetNoti, currentUserId,numberUnreadNoti }) {
   const { t } = useTranslation()
   const navigate = useNavigate();
   const [reset, setReset] = useState(false);
-  const sessionData = JSON.parse(sessionStorage.getItem("userSession")) || {};
-  const { currentUserId } = sessionData;
-
+  const [unreadNum, setUnread] = useState('');
   function formatTimeAgo(dateString) {
     const result = formatDistanceToNow(parseISO(dateString), { addSuffix: true });
     // Loại bỏ từ "about" khỏi chuỗi
     return result.replace("about ", "");
   }
-
   const [notifications, setNotifications] = useState([]);
   const [filterNotifications, setFilterNotifications] = useState([]);
 
@@ -32,13 +29,14 @@ function Notify({ close }) {
             timeAgo: formatTimeAgo(notifications.createdDate),
           };
         });
+        numberUnreadNoti(formattedNotifi.filter((item)=> item.isRead === false).length);
         setNotifications(formattedNotifi);
         setFilterNotifications(formattedNotifi);
       })
       .catch((error) => {
         console.error(error);
       })
-  }, [currentUserId, reset]);
+  }, [currentUserId, reset, resetNoti]);
   function getContent(contentKey) {
     switch (contentKey) {
       case 'content_notifollow':

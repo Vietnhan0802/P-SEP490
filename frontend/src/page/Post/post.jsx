@@ -19,33 +19,13 @@ import Follow from "../../components/follow";
 
 import Report from "../../components/report-popup/Report";
 import Notification, { notifySuccess, notifyError } from "../../components/notification";
+import { formatDistanceToNow, parseISO } from 'date-fns';
 
-function calculateTimeDifference(targetDate) {
-  // Convert the target date string to a Date object
-  const targetTime = new Date(targetDate).getTime();
-
-  // Get the current time
-  const currentTime = new Date().getTime();
-
-  // Calculate the difference in milliseconds
-  const timeDifference = currentTime - targetTime;
-
-  // Calculate the difference in seconds, minutes, hours, and days
-  const seconds = Math.floor(timeDifference / 1000);
-  const minutes = Math.floor(seconds / 60);
-  const hours = Math.floor(minutes / 60);
-  const days = Math.floor(hours / 24);
-
-  // Return an object with the time difference values
-  if (minutes < 60) {
-    return minutes === 1 ? `${minutes} minute ago` : `${minutes} minutes ago`;
-  } else if (hours < 24) {
-    return hours === 1 ? `${hours} hour ago` : `${hours} hours ago`;
-  } else {
-    return days === 1 ? `${days} day ago` : `${hours} days ago`;
-  }
+function formatTimeAgo(dateString) {
+  const result = formatDistanceToNow(parseISO(dateString), { addSuffix: true });
+  // Loại bỏ từ "about" khỏi chuỗi
+  return result.replace("about ", "");
 }
-
 function Post({ value }) {
   const sessionData = JSON.parse(sessionStorage.getItem("userSession")) || {};
   const navigate = useNavigate();
@@ -131,7 +111,7 @@ function Post({ value }) {
         console.log(postList)
         setPostList([]);
         postList.map((element) => {
-          const time = calculateTimeDifference(element.createdDate);
+          const time = formatTimeAgo(element.createdDate);
           setPostList((prevData) => [
             ...prevData,
             createData(
@@ -161,7 +141,7 @@ function Post({ value }) {
         const postList = res?.data?.result;
         setPostListTrend([]);
         postList.map((element) => {
-          const time = calculateTimeDifference(element.createdDate);
+          const time = formatTimeAgo(element.createdDate);
           setPostListTrend((prevData) => [
             ...prevData,
             createData(

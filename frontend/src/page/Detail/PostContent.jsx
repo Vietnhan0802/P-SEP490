@@ -3,7 +3,6 @@ import bootstrap from "bootstrap/dist/js/bootstrap.bundle.min";
 import { FaHeart } from "react-icons/fa";
 import Dropdown from "react-bootstrap/Dropdown";
 import { FiEye } from "react-icons/fi";
-import { calculateTimeDifference } from "../Detail/helpers";
 import Report from "../../components/report-popup/Report";
 import { GrUpdate } from "react-icons/gr";
 import { MdDelete } from "react-icons/md";
@@ -15,7 +14,13 @@ import AlertProject from "./Popup/Alert";
 import { Button } from "react-bootstrap";
 import { BsThreeDots } from "react-icons/bs";
 import tick from "../../images/common/verifiedTick.png";
+import { formatDistanceToNow, parseISO } from 'date-fns';
 
+function formatTimeAgo(dateString) {
+  const result = formatDistanceToNow(parseISO(dateString), { addSuffix: true });
+  // Loại bỏ từ "about" khỏi chuỗi
+  return result.replace("about ", "");
+}
 function PostContent({ data, handleLikeOrUnlikePost, viewProject, userId, resetPage, role }) {
   const navigate = useNavigate();
 
@@ -61,7 +66,13 @@ function PostContent({ data, handleLikeOrUnlikePost, viewProject, userId, resetP
         console.error("Error fetching project:", error);
       });
   };
-  console.log(data);
+  let dateTime;
+  if (data?.createdDate && typeof data.createdDate === 'string') {
+    dateTime = formatTimeAgo(data.createdDate);
+  } else {
+    // Handle the case when createdDate is undefined or not a string
+    dateTime = 'Unknown date';
+  }
   return (
     <>
       <div className="d-flex  justify-content-between">
@@ -74,7 +85,7 @@ function PostContent({ data, handleLikeOrUnlikePost, viewProject, userId, resetP
           </div>
           <div className="ms-2">
             <h6 className="mb-0">{data?.fullName}</h6>
-            <p className="mb-0">{calculateTimeDifference(data?.createdDate)}</p>
+            <p className="mb-0">{dateTime}</p>
           </div>
         </div>
         {data?.idAccount === userId ? (
