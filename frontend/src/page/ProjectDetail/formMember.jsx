@@ -31,7 +31,7 @@ function FormMember({ projectId, positionOption }) {
   useEffect(() => {
     userInstance.get(`GetAllUsers`)
       .then((res) => {
-        const userList = res?.data?.result.filter((user) => user.role === "Member");
+        const userList = res?.data?.result.filter((user) => user.role === "Member" );
         setUsers(userList.map((itemList) => createData(itemList.id, itemList.imageSrc, itemList.fullName, itemList.email, itemList.role)));
       })
       .catch((error) => { console.error(error); })
@@ -52,7 +52,7 @@ function FormMember({ projectId, positionOption }) {
       positionId: invite.positionId
     };
     projectInstance.post(`CreateProjectInvite/${postData.userId}?idProject=${postData.idProject}&idPosition=${postData.positionId}`)
-      .then((res) => { console.log(res?.data?.result); setShow(false); notifySuccess("Send invite is success!"); })
+      .then((res) => { console.log(res?.data?.result); setShow(false); notifySuccess(res?.data?.message); })
       .catch((error) => { console.error(error); notifyError("Send invite is fail!"); });
   };
   const handleSearch = (event) => {

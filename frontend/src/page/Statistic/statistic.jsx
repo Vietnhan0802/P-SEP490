@@ -130,7 +130,7 @@ function Statistic({ color }) {
               label: 'Number of post',
               data: res?.data?.result.map((data) => data.count),
               backgroundColor: [
-                color ? " rgba(192,63,63,0.8)" : "rgba(75,192,192,0.2)"
+                color ? " rgba(192,63,63,0.8)" : "rgba(23, 92, 211,1)"
               ],
               borderWidth: 1,
             },
@@ -183,7 +183,7 @@ function Statistic({ color }) {
               label: "Number Of Blog",
               data: res?.data?.result.map((data) => data.count),
               backgroundColor: [
-                color ? " rgba(192,63,63,0.8)" : "rgba(75,192,192,0.2)"
+                color ? " rgba(192,63,63,0.8)" : "rgba(23, 92, 211,1)"
               ],
               borderWidth: 1,
             },
@@ -238,7 +238,7 @@ function Statistic({ color }) {
               label: "Number Of Project",
               data: res?.data?.result.map((data) => data.count),
               backgroundColor: [
-                color ? " rgba(192,63,63,0.8)" : "rgba(75,192,192,0.2)"
+                color ? " rgba(192,63,63,0.8)" : "rgba(23, 92, 211,1)"
               ],
               borderWidth: 1,
             },
@@ -286,7 +286,7 @@ function Statistic({ color }) {
               label: "Number Of Account",
               data: res?.data?.result.map((data) => data.count),
               backgroundColor: [
-                color ? " rgba(192,63,63,0.8)" : "rgba(75,192,192,0.2)"
+                color ? " rgba(192,63,63,0.8)" : "rgba(23, 92, 211,1)"
               ],
               borderWidth: 1,
             },
@@ -334,7 +334,7 @@ function Statistic({ color }) {
               label: "Number Of Report",
               data: res?.data?.result.map((data) => data.count),
               backgroundColor: [
-                color ? " rgba(192,63,63,0.8)" : "rgba(75,192,192,0.2)"
+                color ? " rgba(192,63,63,0.8)" : "rgba(23, 92, 211,1)"
               ],
               borderWidth: 1,
             },
@@ -383,7 +383,7 @@ function Statistic({ color }) {
               label: "Number Of Verification",
               data: res?.data?.result.map((data) => data.count),
               backgroundColor: [
-                color ? " rgba(192,63,63,0.8)" : "rgba(75,192,192,0.2)"
+                color ? " rgba(192,63,63,0.8)" : "rgba(23, 92, 211,1)"
               ],
               borderWidth: 1,
             },

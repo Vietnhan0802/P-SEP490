@@ -411,14 +411,15 @@ export default function VerifyTable({ value, verified, resetVerify }) {
                                             {activeTab === 'unverify' ? <div
                                                 className="d-flex align-items-center justify-content-end"
                                             >
-                                                <div className={`block-box accept `} onClick={() => handleVerify(row.id, 1)}>
-                                                    <GoDotFill className="me-1 accept-dot" />
-                                                    Accept
-                                                </div>
-                                                <div className={`block-box ms-2 deny`} onClick={() => handleVerify(row.id, 2)}>
+                                                <div className={`block-box deny`} onClick={() => handleVerify(row.id, 2)}>
                                                     <GoDotFill className="me-1 deny-dot" />
                                                     Deny
                                                 </div>
+                                                <div className={`block-box accept  ms-2`} onClick={() => handleVerify(row.id, 1)}>
+                                                    <GoDotFill className="me-1 accept-dot" />
+                                                    Accept
+                                                </div>
+
                                             </div> : <div
                                                 className="d-flex align-items-center justify-content-end"
                                             >
