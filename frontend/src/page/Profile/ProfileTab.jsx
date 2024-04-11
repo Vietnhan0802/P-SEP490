@@ -153,12 +153,12 @@ function ProfileTab(props) {
                                                     href={item.fileSrc} // Link to the PDF file
                                                     target="_blank" // Open in a new tab
                                                     rel="noopener noreferrer" // Security best practice
-                                                    className="btn btn-promary border degree-detail"
+                                                    className="btn btn-primary border degree-detail"
                                                 >
                                                     View Detail
                                                 </a>
                                             </div>
-                                            <div className='position-absolute top-0 end-0 w-auto'>
+                                            <div className='position-absolute top-0 end-0 w-auto dropdown-custom'>
                                                 <Dropdown id='degree-tab'>
                                                     <Dropdown.Toggle
                                                         as={Button}
@@ -181,7 +181,7 @@ function ProfileTab(props) {
                                             </div>
                                         </div>
                                     </>
-                                )) : <p className='bg-white'>There is no degree</p>}
+                                )) : <p style={{backgroundColor: 'var(--header_background)'}}>There is no degree</p>}
                     </div>
                 )}
                 {showDeleteDegreeForId && (

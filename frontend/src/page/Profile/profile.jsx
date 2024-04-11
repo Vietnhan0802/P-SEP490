@@ -397,8 +397,8 @@ function Profile({ handleChangeImg, value, resetFollowing }) {
                 <div className="col-md-6">
                   {inputs.role !== "Business" && (
                     <div>
-                      <label className="form-label info-custom">Gender:</label>
-                      <div className="form-control">
+                      <label className="form-label">Gender:</label>
+                      <div className="form-control info-custom">
                         {user.isMale ? (
                           <p>Male</p>
                         ) : (

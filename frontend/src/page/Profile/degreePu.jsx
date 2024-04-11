@@ -97,7 +97,7 @@ function DegreePu({ ...props }) {
             type="file"
             name="file"
             onChange={handleInputChange}
-            className="form-control "
+            className="form-control file-custom"
           />
           {/* Display the selected file */}
           {inputs.FileFile && (
