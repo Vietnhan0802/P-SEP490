@@ -29,7 +29,7 @@ function DeletePopup({ id }) {
             <MdDeleteOutline style={{color:'red'}} onClick={modalShow} id="btn-update-project" />
             <Modal show={show} onHide={modalClose} >
                 <Modal.Header closeButton>
-                    <Modal.Title>Update Project</Modal.Title>
+                    <Modal.Title>Delete Project</Modal.Title>
                 </Modal.Header>
 
                 <Modal.Body className="popup-body">
