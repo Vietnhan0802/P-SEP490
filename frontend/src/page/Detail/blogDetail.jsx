@@ -590,14 +590,14 @@ function BlogDetail({ value }) {
                   {item?.isVerified && <img src={tick} alt="tick" className="position-absolute bottom-0 end-0" style={{ width: '18px' }} />}
                 </div>
                 <div className="ms-3  w-100 ">
-                  <div className="form-control">
+                  <div className="form-control view-cmt">
                     <div className="d-flex  justify-content-between">
                       <h6 className="mb-2 d-flex align-items-center h-40">
                         {item.fullName}
                       </h6>
                       {item.idAccount === currentUserId ?
                         <Dropdown>
-                          <Dropdown.Toggle id="dropdown-basic" style={{ border: 'none' }} className="bg-white border-none text-body">
+                          <Dropdown.Toggle id="dropdown-basic" style={{ border: 'none' }} className="dropdown-custom border-none text-body">
                             <BsThreeDots />
                           </Dropdown.Toggle>
 
@@ -624,7 +624,7 @@ function BlogDetail({ value }) {
                       <>
                         <input
                           type="text"
-                          className="form-control mb-2"
+                          className="form-control mb-2 input-cmt"
                           value={originalContent || item.content}
                           onChange={(e) => handleUpdateInputComment(item.idBlogComment, e.target.value)}
                         />
@@ -641,11 +641,11 @@ function BlogDetail({ value }) {
                             item.viewBlogReplies.length === 0 ?
                               ''
                               :
-                              <p onClick={() => handleViewReply(item.idBlogComment)}>View Reply</p>
+                              <p className="btn btn-primary" onClick={() => handleViewReply(item.idBlogComment)}>View Reply</p>
                           )}
                         </div> :
                         <div className="d-flex justify-content-end align-items-center w-100  py-2">
-                          <p onClick={() => handleViewReply(item.idBlogComment)}>Close</p>
+                          <p className="btn btn-danger" onClick={() => handleViewReply(item.idBlogComment)}>Close</p>
                         </div>
                       }
                     </div>
@@ -663,7 +663,7 @@ function BlogDetail({ value }) {
                           </div>
                           <input
                             type="text"
-                            className="w-100 ps-3"
+                            className="w-100 ps-3 input-cmt"
                             placeholder="Type your Reply"
                             value={inputReply[item.idBlogComment] || ''}
                             onChange={(e) => handleInputReplyComment(item.idBlogComment, e.target.value)}
@@ -703,7 +703,7 @@ function BlogDetail({ value }) {
                                 <div>
                                   <input
                                     type="text"
-                                    className="form-control mb-2"
+                                    className="form-control mb-2 input-cmt"
                                     value={reply.content}
                                     onChange={(e) => handleUpdateInputReplyComment(reply.idBlogReply, e.target.value)}
                                   />
@@ -714,7 +714,7 @@ function BlogDetail({ value }) {
                             </div>
                             {reply.idAccount === currentUserId ?
                               <Dropdown style={{ width: 'auto' }}>
-                                <Dropdown.Toggle id="dropdown-basic" style={{ border: 'none' }} className="bg-white border-none text-body">
+                                <Dropdown.Toggle id="dropdown-basic" style={{ border: 'none' }} className="dropdown-custom border-none text-body">
                                   <BsThreeDots />
                                 </Dropdown.Toggle>
 

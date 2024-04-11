@@ -342,7 +342,7 @@ function UpdateItem({ show, onClose, value, type, resetPage }) {
                                 name="title"
                                 value={update?.title}
                                 onChange={handleInputChange}
-                                className="input-text form-control mb-3"
+                                className="input-text form-control mb-3 input-cmt"
                                 placeholder="Post Title"
                             />
                             <ReactQuill
@@ -351,7 +351,7 @@ function UpdateItem({ show, onClose, value, type, resetPage }) {
                                 onChange={handleContentChange}
                                 modules={modules}
                                 formats={formats}
-                                className="mb-3 mt-2  m-h-2"
+                                className="mb-3 mt-2  m-h-2 "
 
                                 ref={quillRef}
                             />

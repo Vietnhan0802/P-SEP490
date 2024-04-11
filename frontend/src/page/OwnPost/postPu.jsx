@@ -193,7 +193,7 @@ function PostPu({ reset }) {
     }
   };
   return (
-    <div className="">
+    <div className="model-custom">
       <Button variant="m-0 btn btn-primary me-2" onClick={modalShow}>
         Create
       </Button>

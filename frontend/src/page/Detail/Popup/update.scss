@@ -1,8 +1,9 @@
 #form-update-project {
     .image-container {
         height: 60vh;
-        background-color: #f0f0f0;
+        background-color: var(--header_background);
         overflow: hidden;
+        border-radius: 8px;
     }
 
     .image-container img {
@@ -11,8 +12,36 @@
         object-position: center;
     }
 }
-
+.ql-toolbar.ql-snow .ql-picker-label {
+    color: var(--header_search_text);
+}
+.ql-snow .ql-fill, .ql-snow .ql-stroke.ql-fill{
+    fill: var(--header_search_text) !important;
+}
+.ql-toolbar.ql-snow .ql-picker.ql-expanded .ql-picker-options {
+    border-color: #ccc;
+    background-color: var(--header_background);
+    color: var(--header_search_text);
+}
+.ql-snow .ql-stroke {
+    fill: none;
+    stroke: var(--header_search_text) !important;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 2;
+}
+.input-cmt {
+    background-color: var(--header_background_search_box);
+    color: var(--header_search_text);
+    border-radius: 8px;
+    border: none;
+  }
+.modal-content {
+    background-color: var(--header_background);
+    color: var(--header_search_text);
+}
 #cus-update-w.modal-dialog {
+    
     max-width: 70vw;
     height: 70vh;
 
@@ -34,7 +63,7 @@
         width: 50px;
         opacity: 0.7;
         margin: 10px;
-        background-color: #f0f0f0;
+        background-color: var(--header_background);
         border-radius: 8px;
         z-index: 10;
     }
