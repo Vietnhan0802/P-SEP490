@@ -427,7 +427,7 @@ function Statistic({ color }) {
                         <Dropdown.Toggle
                           variant="white"
                           className="border-none text-body">
-                          <MdBarChart size={14} className="icon_select" />
+                          <MdBarChart size={25} className="icon_select" />
                         </Dropdown.Toggle>
 
                         <Dropdown.Menu style={{ minWidth: 'auto' }}>
@@ -460,7 +460,7 @@ function Statistic({ color }) {
                   <Dropdown.Toggle
                     variant="white"
                     className="border-none text-body">
-                    <MdBarChart size={14} className="icon_select"/>
+                    <MdBarChart size={25} className="icon_select"/>
                   </Dropdown.Toggle>
                   <Dropdown.Menu style={{ minWidth: 'auto' }}>
                     <Dropdown.Item onClick={() => setStatisticPostType('today')}>Today</Dropdown.Item>
@@ -498,7 +498,7 @@ function Statistic({ color }) {
                   <Dropdown.Toggle
                     variant="white"
                     className="border-none text-body">
-                    <MdBarChart size={14} className="icon_select"/>
+                    <MdBarChart size={25} className="icon_select"/>
                   </Dropdown.Toggle>
 
                   <Dropdown.Menu style={{ minWidth: 'auto' }}>
@@ -537,7 +537,7 @@ function Statistic({ color }) {
                     <Dropdown.Toggle
                       variant="white"
                       className="border-none text-body">
-                      <MdBarChart size={14} className="icon_select"/>
+                      <MdBarChart size={25} className="icon_select"/>
                     </Dropdown.Toggle>
 
                     <Dropdown.Menu style={{ minWidth: 'auto' }}>
@@ -567,7 +567,7 @@ function Statistic({ color }) {
                     <Dropdown.Toggle
                       variant="white"
                       className="border-none text-body">
-                      <MdBarChart size={14} className="icon_select"/>
+                      <MdBarChart size={25} className="icon_select"/>
                     </Dropdown.Toggle>
 
                     <Dropdown.Menu style={{ minWidth: 'auto' }}>
@@ -597,7 +597,7 @@ function Statistic({ color }) {
                     <Dropdown.Toggle
                       variant="white"
                       className="border-none text-body">
-                      <MdBarChart size={14} className="icon_select"/>
+                      <MdBarChart size={25} className="icon_select"/>
                     </Dropdown.Toggle>
 
                     <Dropdown.Menu style={{ minWidth: 'auto' }}>
@@ -681,7 +681,7 @@ function Statistic({ color }) {
                 </div>
                 <p className="ms-2 w-50 txt-overflow" >{item.nameProject}</p>
                 <div className="d-flex align-items-center justify-content-end w-25 me-3">
-                  <p className="me-2 mt-1">{item.commentSum}</p>
+                  {/* <p className="me-2 mt-1">{item.commentSum}</p> */}
                   <Rating initialValue={item.ratingAvg} readonly={true} allowFraction={true} size={18} />
                 </div>
               </div>

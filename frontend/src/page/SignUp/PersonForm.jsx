@@ -23,7 +23,7 @@ export default function PersonForm() {
   const onSubmit = async (data) => {
     try {
       const response = await userInstance.post("/SignUpMember", data);
-      if (response?.data?.message === "User create & send email is success!") {
+      if (response?.data?.message === "User creates & sends email successfully!") {
         notifySuccess("Sign up successfully, please check your confirmation email!");
         navigate("/");
       } else if (response?.data?.message === "User already exists!") {

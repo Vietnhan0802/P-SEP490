@@ -78,7 +78,8 @@ function Profile({ handleChangeImg, value, resetFollowing }) {
     role: "",
     email: "",
     ratingAvg: 0,
-    ratingNum: 0
+    ratingNum: 0,
+    isVerified :false
   });
   const [userPost, setUserPost] = useState([]);
   const [userProject, setUserProject] = useState([]);
@@ -91,6 +92,7 @@ function Profile({ handleChangeImg, value, resetFollowing }) {
         setUser(res?.data?.result);
         const user = res?.data?.result;
         // Update inputs here after user is fetched
+        console.log(user)
         setInputs({
           userName: user?.userName || "",
           fullName: user?.fullName || "",
@@ -107,7 +109,9 @@ function Profile({ handleChangeImg, value, resetFollowing }) {
           role: user?.role,
           email: user?.email,
           ratingAvg: user?.ratingAvg,
-          ratingNum: user?.ratingNum
+          ratingNum: user?.ratingNum,
+          isVerified : user?.isVerified
+
         });
         if (user.role === "Business") {
           postInstance
@@ -362,7 +366,7 @@ function Profile({ handleChangeImg, value, resetFollowing }) {
                             <Dropdown.Item>
                               <FiEdit onClick={handleEditInfor} size={28} />
                             </Dropdown.Item>
-                            {(role === 'Business' || role === 'Member') &&
+                            {(role === 'Business' || role === 'Member') && !inputs.isVerified &&
                               <Dropdown.Item>
                                 <Verification id={currentUserId} />
                               </Dropdown.Item>
