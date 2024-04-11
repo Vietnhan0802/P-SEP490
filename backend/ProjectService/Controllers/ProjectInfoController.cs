@@ -454,6 +454,15 @@ namespace ProjectService.Controllers
                     {
                         projectMember.ratingAvg = 0;
                     }
+                    var projectMemberInProject = await _context.ProjectMembers.Where(x => x.idProject == project.idProject && x.isAcept == true).OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
+                    var viewMember = _mapper.Map<List<MemberView>>(projectMemberInProject);
+                    foreach (var item in viewMember)
+                    {
+                        var infoUserMember = await GetInfoUser(item.idAccount);
+                        item.avatarMember = infoUserMember.avatar;
+                    }
+                    projectMember.MemberViews = viewMember;
+                    projectMember.numberMember = projectMemberInProject.Count();
                 }
                 return new Response(HttpStatusCode.OK, "Get project list is success!", result);
             }
@@ -489,6 +498,15 @@ namespace ProjectService.Controllers
                 {
                     project.ratingAvg = 0;
                 }
+                var projectMemberInProject = await _context.ProjectMembers.Where(x => x.idProject == project.idProject && x.isAcept == true).OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
+                var viewMember = _mapper.Map<List<MemberView>>(projectMemberInProject);
+                foreach (var item in viewMember)
+                {
+                    var infoUserMember = await GetInfoUser(item.idAccount);
+                    item.avatarMember = infoUserMember.avatar;
+                }
+                project.MemberViews = viewMember;
+                project.numberMember = projectMemberInProject.Count();
             }
             return new Response(HttpStatusCode.OK, "Get project list is success!", result);
         }
