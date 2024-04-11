@@ -64,7 +64,7 @@ function ProfileTab(props) {
     return (
         <>
             <div className="btn-swtich d-flex flex-row justify-content-between mb-2">
-                <div className="action-swap tabs">
+                <div className="action-swap tabs switch-custom">
                     {tabs.map((tab, index) => (
                         <React.Fragment key={index}>
                             <input
@@ -79,7 +79,7 @@ function ProfileTab(props) {
                             </label>
                         </React.Fragment>
                     ))}
-                    <span className="glider"></span>
+                    <span className="glider glider-custom"></span>
                 </div>
                 <div className="action-user d-flex flex-row align-items-center justify-content-end">
                     {user.role === "Member" && tab === "degree" && currentUserId === user.id && (
@@ -87,7 +87,7 @@ function ProfileTab(props) {
                     )}
                     {user.role === "Member" && tab === "degree" && userDegree.length > 3 && (
                         <button
-                            className={`height-50 text-white btn-info btn ${tab === "degree" ? "active" : ""
+                            className={`height-50 text-white btn-primary btn ${tab === "degree" ? "active" : ""
                                 }`}
                             onClick={() => handleDegreeViewAll()}
                         >
@@ -97,7 +97,7 @@ function ProfileTab(props) {
 
                     {user.role === "Admin" && tab === "blog" && userBlog.length > 3 && (
                         <button
-                            className={`height-50 text-white btn-info btn ${tab === "blog" ? "active" : ""
+                            className={`height-50 text-white btn-primary btn ${tab === "blog" ? "active" : ""
                                 }`}
                             onClick={() => handleBlogViewAll()}
                         >
@@ -107,7 +107,7 @@ function ProfileTab(props) {
                     )}
                     {user.role === "Business" && tab === "post" && userPost.length > 3 && (
                         <button
-                            className={`height-50 text-white btn-info btn ${tab === "post" ? "active" : ""
+                            className={`height-50 text-white btn-primary btn ${tab === "post" ? "active" : ""
                                 }`}
                             onClick={() => handlePostViewAll()}
                         >
@@ -117,7 +117,7 @@ function ProfileTab(props) {
                     )}
                     {user.role !== "Admin" && tab === "project" && (
                         <button
-                            className={`height-50 text-white btn-info btn ${tab === "project" ? "active" : ""
+                            className={`height-50 text-white btn-primary btn ${tab === "project" ? "active" : ""
                                 }`}
                             onClick={() => handleProjectViewAll()}
                         >
@@ -153,7 +153,7 @@ function ProfileTab(props) {
                                                     href={item.fileSrc} // Link to the PDF file
                                                     target="_blank" // Open in a new tab
                                                     rel="noopener noreferrer" // Security best practice
-                                                    className="btn border degree-detail"
+                                                    className="btn btn-promary border degree-detail"
                                                 >
                                                     View Detail
                                                 </a>
@@ -229,7 +229,7 @@ function ProfileTab(props) {
                                             </p>
                                         </div>
                                         <div className="col-3 d-flex justify-content-end align-items-center" style={{ width: '30%' }}>
-                                            <button className="btn degree-detail border" onClick={() => handleNavigate(post.idPost, 'post')}>
+                                            <button className="btn btn-primary degree-detail border" onClick={() => handleNavigate(post.idPost, 'post')}>
                                                 View Detail
                                             </button>
                                         </div>
@@ -285,7 +285,7 @@ function ProfileTab(props) {
                                         </p>
                                     </div>
                                     <div className="col-3 d-flex justify-content-end align-items-center" style={{ width: '30% !important' }}>
-                                        <button className="btn degree-detail border" onClick={() => handleNavigate(blog.idBlog, 'blog')}>
+                                        <button className="btn btn-primary degree-detail border" onClick={() => handleNavigate(blog.idBlog, 'blog')}>
                                             View Detail
                                         </button>
                                     </div>

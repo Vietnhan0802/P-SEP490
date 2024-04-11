@@ -60,8 +60,12 @@ namespace BusinessObjects.Mappers
             CreateMap<Project, ProjectInfoUpdate>().ReverseMap();
             CreateMap<Project, ProjectInfoView>().ReverseMap();
             CreateMap<ProjectMember, ProjectInfoView>().ReverseMap();
-            CreateMap<ProjectMember, ProjectMemberView>().ReverseMap();
-            CreateMap<ProjectMember, ProjectMemberCreateUpdate>().ReverseMap();
+            CreateMap<ProjectMember, ProjectMemberView>()
+                .ForMember(dest => dest.cvUrl, opt => opt.MapFrom(src => src.cv))
+                .ReverseMap();
+            CreateMap<ProjectMember, ProjectMemberCreateUpdate>()
+                .ForMember(dest => dest.cvUrl, opt => opt.MapFrom(src => src.cv))
+                .ReverseMap();
             CreateMap<ProjectMember, MemberView>().ReverseMap();
             CreateMap<Rating, RatingCreateUpdate>().ReverseMap();
             CreateMap<Rating, RatingViewProject>().ReverseMap();

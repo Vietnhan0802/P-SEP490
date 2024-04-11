@@ -1,7 +1,23 @@
+#switch {
+  .switch-custom{
+    background-color: var(--header_background) !important;
+    color: var(--header_search_text);
+    
+    border-radius: 8px !important; 
+  }
+  .glider-custom {
+    background-color: var(--header_background_search_box) !important;
+    border-radius: 8px !important;
+  }
+}
 #sidebar-profile {
   background-color: var(--header_background) !important;
   color: var(--header_search_text);
   border-radius: 9px;
+
+  .rating-custom {
+    background-color: var(--header_background);
+  }
 
   .edit-btn {
     padding: 10px 20px;
@@ -29,6 +45,19 @@
   display: none !important;
 }
 #profile {
+  .dropdown {
+    svg {
+      background-color: var(--header_background);
+      color: var(--header_search_text);
+    }
+  }
+  .dropdown-menu {
+    border: 1px solid var(--header_mid_icon);
+  }
+  .info-custom {
+    background-color: var(--header_background);
+    color: var(--header_search_text);
+  }
   background-color: var(--header_background) !important;
   color: var(--header_search_text);
   .dropdown-toggle::after {
@@ -316,9 +345,9 @@
 }
 
 .tab-content {
-  background-color: white;
-  border-end-end-radius: 8px;
-  border-end-start-radius: 8px;
+  background-color: var(--header_background);
+  color: var(--header_search_text);
+  border-radius: 8px;
   padding: 12px;
 }
 #degree-tab {
