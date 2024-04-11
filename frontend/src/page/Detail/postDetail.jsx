@@ -18,6 +18,13 @@ import { FaHeart } from "react-icons/fa";
 import { BsThreeDots } from "react-icons/bs";
 import tick from "../../images/common/verifiedTick.png";
 import Notification, { notifySuccess, notifyError } from "../../components/notification";
+import { formatDistanceToNow, parseISO } from 'date-fns';
+
+function formatTimeAgo(dateString) {
+  const result = formatDistanceToNow(parseISO(dateString), { addSuffix: true });
+  // Loại bỏ từ "about" khỏi chuỗi
+  return result.replace("about ", "");
+}
 function PostDetail({ value }) {
   const location = useLocation();
   const sessionData = JSON.parse(sessionStorage.getItem("userSession")) || {};

@@ -12,30 +12,12 @@ import { useNavigate } from "react-router-dom";
 import { Col, Row } from "react-bootstrap";
 import SideBar from "../../components/sidebar";
 import Follow from "../../components/follow";
-function calculateTimeDifference(targetDate) {
-  // Convert the target date string to a Date object
-  const targetTime = new Date(targetDate).getTime();
+import { formatDistanceToNow, parseISO } from 'date-fns';
 
-  // Get the current time
-  const currentTime = new Date().getTime();
-
-  // Calculate the difference in milliseconds
-  const timeDifference = currentTime - targetTime;
-
-  // Calculate the difference in seconds, minutes, hours, and days
-  const seconds = Math.floor(timeDifference / 1000);
-  const minutes = Math.floor(seconds / 60);
-  const hours = Math.floor(minutes / 60);
-  const days = Math.floor(hours / 24);
-
-  // Return an object with the time difference values
-  if (minutes < 60) {
-    return minutes === 1 ? `${minutes} minute ago` : `${minutes} minutes ago`;
-  } else if (hours < 24) {
-    return hours === 1 ? `${hours} hour ago` : `${hours} hours ago`;
-  } else {
-    return days === 1 ? `${days} day ago` : `${hours} days ago`;
-  }
+function formatTimeAgo(dateString) {
+  const result = formatDistanceToNow(parseISO(dateString), { addSuffix: true });
+  // Loại bỏ từ "about" khỏi chuỗi
+  return result.replace("about ", "");
 }
 function OwnPost({ value }) {
 
@@ -93,7 +75,7 @@ function OwnPost({ value }) {
         const postList = res?.data?.result;
         setPostList([]);
         postList.map((element) => {
-          const time = calculateTimeDifference(element.createdDate);
+          const time = formatTimeAgo(element.createdDate);
           setPostList((prevData) => ([
             ...prevData,
             createData(

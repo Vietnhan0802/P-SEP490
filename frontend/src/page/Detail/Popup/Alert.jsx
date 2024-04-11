@@ -1,7 +1,6 @@
 import React from 'react'
 import { Modal, Button } from "react-bootstrap";
 function AlertProject({ show, onClose, message }) {
-    console.log(1)
     return (
         <div className="p-1">
             <Modal show={show} onHide={onClose}>

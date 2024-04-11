@@ -61,7 +61,14 @@ function FormApply({ projectId, positionOption }) {
         accept: "application/json",
       },
     })
-      .then((res) => { console.log(res?.data?.result); setShow(false); notifySuccess("Send apply is success!"); })
+      .then((res) => {
+        console.log(res?.data?.result); setShow(false);
+        if (res?.data?.status === 'BadRequest') {
+          notifyError('You have applied for this project')
+        } else {
+          notifySuccess(res?.data?.result)
+        }
+      })
       .catch((error) => { console.error(error); notifyError("Send apply is fail!"); });
   };
   return (

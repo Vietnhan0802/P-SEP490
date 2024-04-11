@@ -29,6 +29,7 @@ export default function Header({ activeComponent, onItemClick, changeImage, chan
   const [users, setUsers] = useState([]);
   const [filterListUser, setFilterlistUser] = useState([]);
   const [searchName, setSearchName] = useState('');
+  const [notiCount,setNotiCount] = useState();
   useEffect(() => {
     userInstance.get(`/GetAllUsers`)
       .then((res) => {
@@ -94,6 +95,9 @@ export default function Header({ activeComponent, onItemClick, changeImage, chan
     console.log(value);
     changeThemeHeader(value)
   }
+  const  numberUnreadNoti = (value) =>{
+    setNotiCount(value);
+  }
   return (
     <Row id="header" className="m-0">
       <Col className="d-flex align-items-center" sm={4}>
@@ -135,13 +139,21 @@ export default function Header({ activeComponent, onItemClick, changeImage, chan
           onClick={() => handleItemClick("chat")}
         />
         <div >
-          <IoIosNotificationsOutline
-            className={`notify-icon ${activePopup === true ? "active-header-item" : ""
-              }`}
-            onClick={() => handlePopup()}
-          />
+          <div className="position-relative">
+            <IoIosNotificationsOutline
+              className={`notify-icon ${activePopup === true ? "active-header-item" : ""
+                }`}
+              onClick={() => handlePopup()}
+            />
+            <p className="position-absolute unread-count ">
+            <span>
+              {notiCount}
+            </span>
+            </p>
+          </div>
+
           <Popup trigger={showPopup}>
-            <Notify close={close} />
+            <Notify close={close} resetNoti={showPopup} currentUserId={currentUserId} numberUnreadNoti={numberUnreadNoti}/>
           </Popup>
         </div>
       </Col>

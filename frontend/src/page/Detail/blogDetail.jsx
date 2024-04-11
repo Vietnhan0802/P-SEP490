@@ -19,31 +19,38 @@ import UpdateItem from "./Popup/UpdateItem";
 import DeleteItem from "./Popup/DeleteItem";
 import tick from "../../images/common/verifiedTick.png";
 import Notification, { notifySuccess, notifyError } from "../../components/notification";
-function calculateTimeDifference(targetDate) {
-  // Convert the target date string to a Date object
-  const targetTime = new Date(targetDate).getTime();
+import { formatDistanceToNow, parseISO } from 'date-fns';
 
-  // Get the current time
-  const currentTime = new Date().getTime();
-
-  // Calculate the difference in milliseconds
-  const timeDifference = currentTime - targetTime;
-
-  // Calculate the difference in seconds, minutes, hours, and days
-  const seconds = Math.floor(timeDifference / 1000);
-  const minutes = Math.floor(seconds / 60);
-  const hours = Math.floor(minutes / 60);
-  const days = Math.floor(hours / 24);
-
-  // Return an object with the time difference values
-  if (minutes < 60) {
-    return minutes === 1 ? `${minutes} minute ago` : `${minutes} minutes ago`;
-  } else if (hours < 24) {
-    return hours === 1 ? `${hours} hour ago` : `${hours} hours ago`;
-  } else {
-    return days === 1 ? `${days} day ago` : `${hours} days ago`;
-  }
+function formatTimeAgo(dateString) {
+  const result = formatDistanceToNow(parseISO(dateString), { addSuffix: true });
+  // Loại bỏ từ "about" khỏi chuỗi
+  return result.replace("about ", "");
 }
+// function calculateTimeDifference(targetDate) {
+//   // Convert the target date string to a Date object
+//   const targetTime = new Date(targetDate).getTime();
+
+//   // Get the current time
+//   const currentTime = new Date().getTime();
+
+//   // Calculate the difference in milliseconds
+//   const timeDifference = currentTime - targetTime;
+
+//   // Calculate the difference in seconds, minutes, hours, and days
+//   const seconds = Math.floor(timeDifference / 1000);
+//   const minutes = Math.floor(seconds / 60);
+//   const hours = Math.floor(minutes / 60);
+//   const days = Math.floor(hours / 24);
+
+//   // Return an object with the time difference values
+//   if (minutes < 60) {
+//     return minutes === 1 ? `${minutes} minute ago` : `${minutes} minutes ago`;
+//   } else if (hours < 24) {
+//     return hours === 1 ? `${hours} hour ago` : `${hours} hours ago`;
+//   } else {
+//     return days === 1 ? `${days} day ago` : `${hours} days ago`;
+//   }
+// }
 function BlogDetail({ value }) {
   const carouselRef = useRef(null);
   useEffect(() => {
@@ -383,6 +390,7 @@ function BlogDetail({ value }) {
   useEffect(() => {
     memoizedBlogInstance.get(`GetBlogById/${idBlog}/${currentUserId}`)
       .then((res) => {
+        const blog = res?.data?.result;
         setData(res?.data?.result);
       })
       .catch((error) => {
@@ -401,7 +409,13 @@ function BlogDetail({ value }) {
       })
   }, []);
   //Translate time from SQL to normal 
-  const dateTime = calculateTimeDifference(data.createdDate);
+  let dateTime;
+  if (data?.createdDate && typeof data.createdDate === 'string') {
+    dateTime = formatTimeAgo(data.createdDate);
+  } else {
+    // Handle the case when createdDate is undefined or not a string
+    dateTime = 'Unknown date';
+  }
   const handleUpdateBlog = () => {
     setDisplay(true);
   }
