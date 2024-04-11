@@ -17,6 +17,20 @@
         color: var(--header_avt_user);
     }
 }
+.unread-count {
+    top: 12px;
+    left: 63px;
+    color: white;
+    background: red;
+    padding: 3px;
+    border-radius: 50%;
+    font-size: 8px;
+    width: 12px;
+    height: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 .search{
     background-color: var(--header_background_search_box);
     margin-left: 16px;
