@@ -16,6 +16,24 @@
     max-width: 90vw;
     height: 90vh;
 
+    .form-floating>.form-control-plaintext~label::after,
+    .form-floating>.form-control:focus~label::after,
+    .form-floating>.form-control:not(:placeholder-shown)~label::after,
+    .form-floating>.form-select~label::after {
+        background-color: var(--header_background);
+        color: var(--header_search_text);
+    }
+
+    .custom-select div {
+        background-color: var(--header_background) !important;
+        color: var(--header_search_text) !important;
+    }
+
+    textarea,option{
+        background-color: var(--header_background);
+        color: var(--header_search_text);
+    }
+
     .d-h-2 {
         height: 100px;
         max-height: 100px;
@@ -45,12 +63,13 @@
     .status,
     .visibility {
         padding: 5px;
-        color: black;
+        background-color: var(--header_background);
+        color: var(--header_search_text);
         border-radius: 5px;
         display: inline-block;
         margin: 5px;
         border: 0.5px solid black;
     }
 
-   
+
 }

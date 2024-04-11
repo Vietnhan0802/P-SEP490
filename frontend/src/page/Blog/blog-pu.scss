@@ -4,4 +4,21 @@
   .ql-container{
     height: 300px ;
   }
+  .form-floating>.form-control-plaintext~label::after,
+  .form-floating>.form-control:focus~label::after,
+  .form-floating>.form-control:not(:placeholder-shown)~label::after,
+  .form-floating>.form-select~label::after {
+    background-color: var(--header_background);
+    color: var(--header_search_text);
+  }
+.Select__control{
+  background-color: var(--header_background);
+    color: var(--header_search_text);
+}
+  input,
+  label,
+  label ::after {
+    background-color: var(--header_background);
+    color: var(--header_search_text);
+  }
 }

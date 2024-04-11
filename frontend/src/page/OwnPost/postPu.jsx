@@ -209,9 +209,9 @@ function PostPu({ reset }) {
               value={inputs.title}
               onChange={handleInputChange}
               className="input-text form-control mb-3"
-              placeholder=""
+              placeholder="Enter your title"
             />
-            <label for="floatingInput">Post Title</label>
+            <label htmlFor="floatingInput"  style={{background:'transparent'}}>Post Title</label>
           </div>
           <ReactQuill
             theme="snow"
