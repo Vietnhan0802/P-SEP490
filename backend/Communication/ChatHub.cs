@@ -10,9 +10,9 @@ namespace Communication
             await Groups.AddToGroupAsync(connectionId, idConversation.ToString());
         }
 
-        public async Task SendMessageToGroup(Guid idConversation, ViewMessage viewMessage)
+        public async Task SendMessageToGroup(Guid idConversation, string idSender, ViewMessage viewMessage)
         {
-            await Clients.Group(idConversation.ToString()).SendAsync("ReceiveMessage", viewMessage);
+            await Clients.Group(idConversation.ToString()).SendAsync("ReceiveMessage", idSender, viewMessage);
         }
 
         public async Task GetConversation(Guid idConversation, ViewMessage viewMessage)
