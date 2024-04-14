@@ -187,6 +187,7 @@ function BlogDetail({ value }) {
     blogInstance.post(`CreateBlogReply/${currentUserId}/${commentId}/${replyContent}`)
       .then((res) => {
         setState(!state)
+        
         console.log(res?.data?.result)
         notifySuccess("Create reply successfully!");
       })
