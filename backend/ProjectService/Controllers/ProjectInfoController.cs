@@ -441,6 +441,8 @@ namespace ProjectService.Controllers
                     projectMember.avatarUser = inforUser.avatar;
                     projectMember.isVerified = inforUser.isVerified;
                     projectMember.avatarSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, project.avatar);
+                    projectMember.name = project.name;
+                    projectMember.process = project.process;
                     var positions = await _context.Positions.Where(x => x.idProject == project.idProject).ToListAsync();
                     var viewPosition = _mapper.Map<List<PositionView>>(positions);
                     projectMember.PositionViews = viewPosition;
@@ -454,7 +456,7 @@ namespace ProjectService.Controllers
                     {
                         projectMember.ratingAvg = 0;
                     }
-                    var projectMemberInProject = await _context.ProjectMembers.Where(x => x.idProject == project.idProject && x.isAcept == true).OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
+                    var projectMemberInProject = await _context.ProjectMembers.Where(x => x.idProject == projectMember.idProject && x.isAcept == true).OrderByDescending(x => x.createdDate).AsNoTracking().ToListAsync();
                     var viewMember = _mapper.Map<List<MemberView>>(projectMemberInProject);
                     foreach (var item in viewMember)
                     {

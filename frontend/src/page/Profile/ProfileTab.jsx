@@ -296,6 +296,7 @@ function ProfileTab(props) {
                             )}
                     </div>
                 )}
+                {console.log(userProject)}
                 {user.role !== "Admin" && tab === "project" && (
                     <div className={`project tab-content  ${showProjectItems ? "scrollable" : ""
                         }`}  >
@@ -322,6 +323,7 @@ function ProfileTab(props) {
                                                 <div className="mb-4">
                                                     <h5 className="mb-1 font-size-17 team-title ellipsis">
                                                         {project.name}
+                                                        
                                                     </h5>
                                                     {/* <p className="text-muted mb-0 team-description ellipsis">
                                                         {project.description}
