@@ -10,15 +10,14 @@ import { LuSmile } from "react-icons/lu";
 import { chatInstance } from "../../axios/axiosConfig";
 import * as signalR from "@microsoft/signalr";
 import { useLocation } from "react-router-dom";
-import data from '@emoji-mart/data'
-import Picker from '@emoji-mart/react'
+import data from "@emoji-mart/data";
+import Picker from "@emoji-mart/react";
 import { FaRegFileAlt } from "react-icons/fa";
 import { Button, Dropdown } from "react-bootstrap";
 import { MdDelete } from "react-icons/md";
 import { BsThreeDots } from "react-icons/bs";
 import DeleteChat from "./DeleteChat";
 function Chat() {
-
   const sessionData = JSON.parse(sessionStorage.getItem("userSession")) || {};
   const { currentUserId } = sessionData;
   const location = useLocation();
@@ -26,35 +25,38 @@ function Chat() {
   const [conversations, setConversations] = useState([]);
   const [filterConversations, setFilterConversations] = useState([]);
   const [messages, setMessages] = useState();
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
   const [activeUser, setActiveUser] = useState(null);
   const [reset, setReset] = useState(false);
   const [connection, setConnection] = useState(null);
   // const [connectionId, setConnectionId] = useState(null);
   // const [connectUserId, setConnectUserId] = useState(null);
   const [showEmojiBox, setShowEmojiBox] = useState(false);
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState("");
   const [showDeleteChat, setShowDeleteChat] = useState(false);
-  const [idConversationDelete, setIdConversationDelete] = useState('');
+  const [idConversationDelete, setIdConversationDelete] = useState("");
   const [selectedUserId, setSelectedUserId] = useState(null);
   const handleSearchChange = (event) => {
     setSearch(event.target.value);
-    if (event.target.value === '') { // corrected condition
-      const originalUsers = JSON.parse(sessionStorage.getItem('originalUserList')) || [];
+    if (event.target.value === "") {
+      // corrected condition
+      const originalUsers =
+        JSON.parse(sessionStorage.getItem("originalUserList")) || [];
       // console.log(originalUsers)
       setFilterConversations(originalUsers);
     } else {
-      setFilterConversations(conversations.filter(
-        conversation => conversation.fullName.toLowerCase().includes(event.target.value.toLowerCase())
-      ));
+      setFilterConversations(
+        conversations.filter((conversation) =>
+          conversation.fullName
+            .toLowerCase()
+            .includes(event.target.value.toLowerCase())
+        )
+      );
     }
-  }
-  
-
-  console.log("Line 54 --------------");
+  };
 
   useEffect(() => {
-    console.log("useEffect 1");
+    // console.log("useEffect 1");
     const newConnection = new signalR.HubConnectionBuilder()
       .withUrl("https://localhost:7001/chatHub") // Replace with your server URL
       .withAutomaticReconnect()
@@ -63,16 +65,22 @@ function Chat() {
     setConnection(newConnection);
 
     newConnection.on("ReceiveMessage", (idSender, messageText) => {
-      console.log(currentUserId);
-      console.log(messageText.idReceiver);
-      console.log(selectedUserId);
-      console.log(messageText.idSender);
-      console.log(activeUser);
-      console.log(messages);
-      console.log(conversations);
-      console.log(idSender);
+      // console.log(currentUserId);
+      // console.log(messageText.idReceiver);
+      // console.log(selectedUserId);
+      // console.log(messageText.idSender);
+      // console.log(activeUser);
+      // console.log(messages);
+      // console.log(conversations);
+      // console.log(idSender);
+      console.log(activeUser)
+      console.log((activeUser && idSender === activeUser.receiverId && messageText.idReceiver === currentUserId) ||
+      (selectedUserId && idSender === selectedUserId && messageText.idReceiver === currentUserId));
 
-      if (currentUserId === messageText.idReceiver && idSender === messageText.idSender){
+      if (
+        (activeUser && idSender === activeUser.receiverId && messageText.idReceiver === currentUserId) ||
+        (selectedUserId && idSender === selectedUserId && messageText.idReceiver === currentUserId)
+      ) {
         setMessages((prevMessages) => {
           if (Array.isArray(prevMessages)) {
             return [...prevMessages, messageText];
@@ -86,21 +94,26 @@ function Chat() {
     });
 
     newConnection.on("RecallMessage", (messageText) => {
-      setMessages((prevMessages) => prevMessages.map((message) => {
-        if (message.idMessage === messageText.idMessage) {
-          return {...message, isRecall: true};
-        }
-        return message;
-      }))
+      setMessages((prevMessages) =>
+        prevMessages.map((message) => {
+          if (message.idMessage === messageText.idMessage) {
+            return { ...message, isRecall: true };
+          }
+          return message;
+        })
+      );
       console.log("RecallMessage-------------------");
       console.log(messageText);
     });
 
-    newConnection.start()
+    newConnection
+      .start()
       .then(() => {
-        console.log('Connected to SignalR hub');
+        console.log("Connected to SignalR hub");
       })
-      .catch(error => console.log('Error connecting to SignalR hub: ', error));
+      .catch((error) =>
+        console.log("Error connecting to SignalR hub: ", error)
+      );
 
     return () => {
       // Đóng kết nối khi component bị unmount
@@ -109,33 +122,59 @@ function Chat() {
   }, [currentUserId]);
 
   const handleKeyDown = (event) => {
-    if (event.key === 'Enter') {
+    if (event.key === "Enter") {
       handleSendMessage();
     }
-  }
+  };
   useEffect(() => {
     console.log("useEffect 2");
-    chatInstance.get(`GetConversationsByUser/${currentUserId}`)
+    chatInstance
+      .get(`GetConversationsByUser/${currentUserId}`)
       .then((res) => {
         setConversations(res?.data?.result);
-        if (userId === undefined) {
-          console.log("TH1: userId === undefined");
-          console.log("currentUserId: " + currentUserId);
-          console.log("receiveId: " + currentUserId === res.data.result[0].idAccount1 ? res.data.result[0].idAccount2 : res.data.result[0].idAccount1);
-          chatInstance.get(`GetMessages/${currentUserId}/${currentUserId === res.data.result[0].idAccount1 ? res.data.result[0].idAccount2 : res.data.result[0].idAccount1}`)
+        const initialConversation =
+          userId === undefined
+            ? res.data.result[0]
+            : res.data.result.find(
+                (conv) =>
+                  (currentUserId === conv.idAccount1 &&
+                    userId === conv.idAccount2) ||
+                  (currentUserId === conv.idAccount2 &&
+                    userId === conv.idAccount1)
+              );
+
+        if (initialConversation) {
+          const receiverId =
+            currentUserId === initialConversation.idAccount1
+              ? initialConversation.idAccount2
+              : initialConversation.idAccount1;
+
+          chatInstance
+            .get(
+              `GetMessages/${currentUserId}/${receiverId}`
+            )
             .then((res) => {
               setMessages(res.data.result);
               setActiveUser({
                 avatar: res?.data?.result[0].avatarReceiver,
                 name: res?.data?.result[0].nameReceiver,
-                receiverId: res?.data?.result[0].idReceiver === currentUserId ? res?.data?.result[0].idSender : res?.data?.result[0].idReceiver
+                receiverId:
+                  res?.data?.result[0].idReceiver === currentUserId
+                    ? res?.data?.result[0].idSender
+                    : res?.data?.result[0].idReceiver,
               });
               if (connection) {
                 try {
-                  connection.invoke('AddToGroup', connection.connectionId, res?.data?.result[0].idConversation);
-                  console.log('Join group: ' + res?.data?.result[0].idConversation);
+                  connection.invoke(
+                    "AddToGroup",
+                    connection.connectionId,
+                    res?.data?.result[0].idConversation
+                  );
+                  console.log(
+                    "Join group: " + res?.data?.result[0].idConversation
+                  );
                 } catch (error) {
-                  console.error('Error sending message: ', error);
+                  console.error("Error sending message: ", error);
                 }
               }
             })
@@ -143,33 +182,83 @@ function Chat() {
               console.error(error);
             });
         }
-        if (userId !== undefined) {
-          console.log("TH2: userId !== undefined");
-          console.log("currentUserId: " + currentUserId);
-          console.log("userId: " + userId);
-          chatInstance.get(`GetMessages/${currentUserId}/${userId}`)
-            .then((res) => {
-              setMessages(res.data.result);
-              if (connection) {
-                try {
-                  connection.invoke('AddToGroup', connection.connectionId, res?.data?.result[0].idConversation);
-                  console.log('Join group: ' + res?.data?.result[0].idConversation);
-                } catch (error) {
-                  console.error('Error sending message: ', error);
-                }
-              }
-            })
-            .catch((error) => {
-              console.error(error);
-            });
-        }
+        // if (userId === undefined) {
+        //   console.log("TH1: userId === undefined");
+        //   console.log("currentUserId: " + currentUserId);
+        //   console.log(
+        //     "receiveId: " + currentUserId === res.data.result[0].idAccount1
+        //       ? res.data.result[0].idAccount2
+        //       : res.data.result[0].idAccount1
+        //   );
+        //   chatInstance
+        //     .get(
+        //       `GetMessages/${currentUserId}/${
+        //         currentUserId === res.data.result[0].idAccount1
+        //           ? res.data.result[0].idAccount2
+        //           : res.data.result[0].idAccount1
+        //       }`
+        //     )
+        //     .then((res) => {
+        //       setMessages(res.data.result);
+        //       setActiveUser({
+        //         avatar: res?.data?.result[0].avatarReceiver,
+        //         name: res?.data?.result[0].nameReceiver,
+        //         receiverId:
+        //           res?.data?.result[0].idReceiver === currentUserId
+        //             ? res?.data?.result[0].idSender
+        //             : res?.data?.result[0].idReceiver,
+        //       });
+        //       if (connection) {
+        //         try {
+        //           connection.invoke(
+        //             "AddToGroup",
+        //             connection.connectionId,
+        //             res?.data?.result[0].idConversation
+        //           );
+        //           console.log(
+        //             "Join group: " + res?.data?.result[0].idConversation
+        //           );
+        //         } catch (error) {
+        //           console.error("Error sending message: ", error);
+        //         }
+        //       }
+        //     })
+        //     .catch((error) => {
+        //       console.error(error);
+        //     });
+        // }
+        // if (userId !== undefined) {
+        //   console.log("TH2: userId !== undefined");
+        //   console.log("currentUserId: " + currentUserId);
+        //   console.log("userId: " + userId);
+        //   chatInstance
+        //     .get(`GetMessages/${currentUserId}/${userId}`)
+        //     .then((res) => {
+        //       setMessages(res.data.result);
+        //       if (connection) {
+        //         try {
+        //           connection.invoke(
+        //             "AddToGroup",
+        //             connection.connectionId,
+        //             res?.data?.result[0].idConversation
+        //           );
+        //           console.log(
+        //             "Join group: " + res?.data?.result[0].idConversation
+        //           );
+        //         } catch (error) {
+        //           console.error("Error sending message: ", error);
+        //         }
+        //       }
+        //     })
+        //     .catch((error) => {
+        //       console.error(error);
+        //     });
+        // }
       })
       .catch((error) => {
         console.error(error);
       });
   }, [currentUserId, reset, userId, connection]);
-
-  console.log(messages);
 
   useEffect(() => {
     console.log("useEffect 3");
@@ -180,7 +269,10 @@ function Chat() {
       chatInstance
         .get(`GetMessages/${currentUserId}/${selectedUserId}`)
         .then((res) => {
-          if (Array.isArray(res?.data?.result) && res?.data?.result.length !== 0) {
+          if (
+            Array.isArray(res?.data?.result) &&
+            res?.data?.result.length !== 0
+          ) {
             setMessages(res.data.result);
             setActiveUser({
               avatar: res?.data?.result[0].avatarReceiver,
@@ -189,10 +281,16 @@ function Chat() {
             });
             if (connection) {
               try {
-                connection.invoke('AddToGroup', connection.connectionId, res?.data?.result[0].idConversation);
-                console.log('Join group: ' + res?.data?.result[0].idConversation);
+                connection.invoke(
+                  "AddToGroup",
+                  connection.connectionId,
+                  res?.data?.result[0].idConversation
+                );
+                console.log(
+                  "Join group: " + res?.data?.result[0].idConversation
+                );
               } catch (error) {
-                console.error('Error sending message: ', error);
+                console.error("Error sending message: ", error);
               }
             }
           } else {
@@ -204,106 +302,131 @@ function Chat() {
           console.error(error);
         });
     }
-  }, [currentUserId, selectedUserId])
+  }, [currentUserId, selectedUserId]);
 
   const handleConversation = (idAccount2) => {
     setSelectedUserId(idAccount2);
   };
   const handleInputMessage = (event) => {
     setMessage(event.target.value);
-  }
+  };
   const handleSetEmoji = (e) => {
-    setMessage(mes => mes + e);
-  }
+    setMessage((mes) => mes + e);
+  };
 
   const handleSendMessage = () => {
     const formData = new FormData();
-    formData.append('content', message)
+    formData.append("content", message);
     if (userId !== undefined) {
-      console.log("TH1: userId !== undefined");
-      console.log("currentUserId: " + currentUserId);
-      console.log("userId: " + userId);
-      chatInstance.post(`SendMessage/${currentUserId}/${userId}`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          accept: "application/json",
-        },
-      })
+      // console.log("TH1: userId !== undefined");
+      // console.log("currentUserId: " + currentUserId);
+      // console.log("userId: " + userId);
+      chatInstance
+        .post(`SendMessage/${currentUserId}/${userId}`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            accept: "application/json",
+          },
+        })
         .then((res) => {
           setReset(!reset);
-          setMessage('');
+          setMessage("");
           if (connection && message) {
             try {
-              connection.invoke('SendMessageToGroup', res?.data?.result.idConversation, currentUserId, res?.data?.result);
-              console.log('Invoke userId: ' + res?.data?.result.idConversation);
-              console.log(res?.data?.result);
+              connection.invoke(
+                "SendMessageToGroup",
+                res?.data?.result.idConversation,
+                currentUserId,
+                res?.data?.result
+              );
+              // console.log("Invoke userId: " + res?.data?.result.idConversation);
+              // console.log(res?.data?.result);
 
               // connection.invoke('AddToGroup', res?.data?.result.idSender, res?.data?.result.idConversation);
               // console.log('Invoke userId: ' + res?.data?.result.idConversation);
               // console.log(res?.data?.result);
               // connection.invoke('AddToGroup', res?.data?.result.idReceiver, res?.data?.result.idConversation);
             } catch (error) {
-              console.error('Error sending message: ', error);
+              console.error("Error sending message: ", error);
             }
           }
         })
         .catch((error) => console.error(error));
-    }
-    else {
+    } else {
       console.log("TH2: ");
       console.log("currentUserId: " + currentUserId);
       console.log("activeUser: " + activeUser.receiverId);
-      chatInstance.post(`SendMessage/${currentUserId}/${activeUser.receiverId}`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          accept: "application/json",
-        },
-      })
+      chatInstance
+        .post(
+          `SendMessage/${currentUserId}/${activeUser.receiverId}`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+              accept: "application/json",
+            },
+          }
+        )
         .then((res) => {
           setReset(!reset);
-          setMessage('');
+          setMessage("");
           if (connection && message) {
             try {
-              connection.invoke('SendMessageToGroup', res?.data?.result.idConversation, currentUserId, res?.data?.result);
-              console.log('Invoke room: ' + res?.data?.result.idConversation);
+              connection.invoke(
+                "SendMessageToGroup",
+                res?.data?.result.idConversation,
+                currentUserId,
+                res?.data?.result
+              );
+              console.log("Invoke room: " + res?.data?.result.idConversation);
               console.log(res?.data?.result);
 
               //connection.invoke('AddToGroup', res?.data?.result.idSender, res?.data?.result.idConversation);
               //connection.invoke('AddToGroup', res?.data?.result.idReceiver, res?.data?.result.idConversation);
             } catch (error) {
-              console.error('Error sending message: ', error);
+              console.error("Error sending message: ", error);
             }
           }
         })
         .catch((error) => console.error(error));
     }
-  }
+  };
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
     if (file) {
       const formData = new FormData();
-      formData.append('FileFile', file);
+      formData.append("FileFile", file);
       // Send the file to the server using an HTTP POST request
-      chatInstance.post(`SendMessage/${currentUserId}/${activeUser.receiverId}`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      })
+      chatInstance
+        .post(
+          `SendMessage/${currentUserId}/${activeUser.receiverId}`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        )
         .then((res) => {
           setReset(!reset);
-          setMessage('');
+          setMessage("");
           if (connection && file) {
             try {
-              connection.invoke('SendMessageToGroup', res?.data?.result.idConversation, currentUserId, res?.data?.result);
-              console.log('Invoke userId: ' + res?.data?.result.idConversation);
+              connection.invoke(
+                "SendMessageToGroup",
+                res?.data?.result.idConversation,
+                currentUserId,
+                res?.data?.result
+              );
+              console.log("Invoke userId: " + res?.data?.result.idConversation);
               console.log(res?.data?.result);
             } catch (error) {
-              console.error('Error sending message: ', error);
+              console.error("Error sending message: ", error);
             }
           }
         })
         .catch((error) => {
-          console.error('Error uploading file:', error);
+          console.error("Error uploading file:", error);
         });
     }
   };
@@ -311,28 +434,38 @@ function Chat() {
     const file = event.target.files[0];
     if (file) {
       const formData = new FormData();
-      formData.append('ImageFile', file);
+      formData.append("ImageFile", file);
       // Send the file to the server using an HTTP POST request
-      chatInstance.post(`SendMessage/${currentUserId}/${activeUser.receiverId}`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      })
+      chatInstance
+        .post(
+          `SendMessage/${currentUserId}/${activeUser.receiverId}`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        )
         .then((res) => {
           setReset(!reset);
-          setMessage('');
+          setMessage("");
           if (connection && file) {
             try {
-              connection.invoke('SendMessageToGroup', res?.data?.result.idConversation, currentUserId, res?.data?.result);
-              console.log('Invoke userId: ' + res?.data?.result.idConversation);
+              connection.invoke(
+                "SendMessageToGroup",
+                res?.data?.result.idConversation,
+                currentUserId,
+                res?.data?.result
+              );
+              console.log("Invoke userId: " + res?.data?.result.idConversation);
               console.log(res?.data?.result);
             } catch (error) {
-              console.error('Error sending message: ', error);
+              console.error("Error sending message: ", error);
             }
           }
         })
         .catch((error) => {
-          console.error('Error uploading file:', error);
+          console.error("Error uploading file:", error);
         });
     }
   };
@@ -343,16 +476,30 @@ function Chat() {
 
     if (diffInDays < 7) {
       // Nếu thời gian nhỏ hơn 7 ngày so với hiện tại, hiển thị thứ
-      const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+      const daysOfWeek = [
+        "Sunday",
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+      ];
       const dayOfWeek = daysOfWeek[date.getDay()];
-      const time = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      const time = date.toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      });
       return `${dayOfWeek}, ${time}`;
     } else {
       // Ngược lại, hiển thị ngày
-      const day = date.getDate().toString().padStart(2, '0');
-      const month = (date.getMonth() + 1).toString().padStart(2, '0');
+      const day = date.getDate().toString().padStart(2, "0");
+      const month = (date.getMonth() + 1).toString().padStart(2, "0");
       const year = date.getFullYear();
-      const time = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      const time = date.toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      });
       return `${day}/${month}/${year}, ${time}`;
     }
   };
@@ -365,38 +512,50 @@ function Chat() {
   const handleSetShowDeleteChat = (idConversation) => {
     setShowDeleteChat(true);
     setIdConversationDelete(idConversation);
-  }
+  };
   const resetConversation = () => {
     reset(!reset);
-  }
+  };
   const handleDeleteMess = (id) => {
-    chatInstance.delete(`DeleteMessage/${id}/${currentUserId}`)
+    chatInstance
+      .delete(`DeleteMessage/${id}/${currentUserId}`)
       .then((res) => {
         console.log(res?.data?.result);
         setReset(!reset);
-      }
-      ).catch((error) => { console.error(error) })
-  }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
   const handleRecallMess = (id) => {
-    chatInstance.delete(`RecallMessage/${id}/${currentUserId}`)
+    chatInstance
+      .delete(`RecallMessage/${id}/${currentUserId}`)
       .then((res) => {
         console.log(res?.data?.result);
         setReset(!reset);
         if (connection) {
           try {
-            connection.invoke('RecallMessage', res?.data?.result.idConversation, res?.data?.result);
-            console.log('Invoke userId: ' + res?.data?.result.idConversation);
+            connection.invoke(
+              "RecallMessage",
+              res?.data?.result.idConversation,
+              res?.data?.result
+            );
+            console.log("Invoke userId: " + res?.data?.result.idConversation);
             console.log(res?.data?.result);
           } catch (error) {
-            console.error('Error sending message: ', error);
+            console.error("Error sending message: ", error);
           }
         }
-      }
-      ).catch((error) => { console.error(error) })
-  }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
   return (
-
-    <Row className="m-3" style={{ height: "calc(100vh - 97px)", paddingBottom: "16px" }}>
+    <Row
+      className="m-3"
+      style={{ height: "calc(100vh - 97px)", paddingBottom: "16px" }}
+    >
       <Col md={2} className="bg-custom bg-white p-3 h-100">
         <div id="chat">
           <h1>Chat</h1>
@@ -410,18 +569,40 @@ function Chat() {
                 value={search}
                 onChange={handleSearchChange}
               />
-
             </div>
-            <div className={`position-absolute w-100 form-control overflow-hidden ${search === '' ? 'hidden-box' : ''}`} style={{
-              textOverflow: 'ellipsis',
-              top: ' 41px',
-              left: '0px'
-            }} >
+            <div
+              className={`position-absolute w-100 form-control overflow-hidden ${
+                search === "" ? "hidden-box" : ""
+              }`}
+              style={{
+                textOverflow: "ellipsis",
+                top: " 41px",
+                left: "0px",
+              }}
+            >
               {filterConversations.length > 0 ? (
                 filterConversations.map((user) => (
-                  <div key={user.id} className="d-flex align-items-center my-2" onClick={() => handleConversation(currentUserId === user?.idAccount1 ? user?.idAccount2 : user?.idAccount1)}>
+                  <div
+                    key={user.id}
+                    className="d-flex align-items-center my-2"
+                    onClick={() =>
+                      handleConversation(
+                        currentUserId === user?.idAccount1
+                          ? user?.idAccount2
+                          : user?.idAccount1
+                      )
+                    }
+                  >
                     <div className="position-relative">
-                      <img src={user.avatar} style={{ width: '50px', height: '50px', borderRadius: '50%' }} alt="" />
+                      <img
+                        src={user.avatar}
+                        style={{
+                          width: "50px",
+                          height: "50px",
+                          borderRadius: "50%",
+                        }}
+                        alt=""
+                      />
                       {/* {user.isVerified && <img src={tick} alt="tick" className="position-absolute bottom-0 end-0" style={{ width: '18px' }} />} */}
                     </div>
                     <div className="ms-2">
@@ -433,13 +614,22 @@ function Chat() {
               ) : (
                 <div>No match item</div>
               )}
-
             </div>
           </div>
           <div className="chat-list">
             {conversations?.length > 0 ? (
               conversations?.map((item) => (
-                <div className="chat-item" key={item?.idConversation} onClick={() => handleConversation(currentUserId === item?.idAccount1 ? item?.idAccount2 : item?.idAccount1)}>
+                <div
+                  className="chat-item"
+                  key={item?.idConversation}
+                  onClick={() =>
+                    handleConversation(
+                      currentUserId === item?.idAccount1
+                        ? item?.idAccount2
+                        : item?.idAccount1
+                    )
+                  }
+                >
                   <div className="d-flex align-items-center position-relative">
                     <Dropdown className="position-absolute top-0 end-0">
                       <Dropdown.Toggle
@@ -450,15 +640,25 @@ function Chat() {
                       </Dropdown.Toggle>
 
                       <Dropdown.Menu style={{ minWidth: "auto" }}>
-
                         <Dropdown.Item>
-                          <MdDelete size={14}
-                            onClick={() => handleSetShowDeleteChat(item?.idConversation)}
+                          <MdDelete
+                            size={14}
+                            onClick={() =>
+                              handleSetShowDeleteChat(item?.idConversation)
+                            }
                           />
                         </Dropdown.Item>
                       </Dropdown.Menu>
                     </Dropdown>
-                    <img src={item?.avatar === "https://localhost:7006/Images/" ? defaultImage : item?.avatar} alt="" className="avatar" />
+                    <img
+                      src={
+                        item?.avatar === "https://localhost:7006/Images/"
+                          ? defaultImage
+                          : item?.avatar
+                      }
+                      alt=""
+                      className="avatar"
+                    />
                     <div className="ms-2">
                       <p className="mb-0 name">{item?.fullName}</p>
                     </div>
@@ -468,7 +668,15 @@ function Chat() {
             ) : (
               <p>No conversations found.</p>
             )}
-            {showDeleteChat && <DeleteChat show={showDeleteChat} onClose={() => setShowDeleteChat(false)} currentUserId={currentUserId} idConversation={idConversationDelete} resetConversation={resetConversation} />}
+            {showDeleteChat && (
+              <DeleteChat
+                show={showDeleteChat}
+                onClose={() => setShowDeleteChat(false)}
+                currentUserId={currentUserId}
+                idConversation={idConversationDelete}
+                resetConversation={resetConversation}
+              />
+            )}
           </div>
         </div>
       </Col>
@@ -476,12 +684,11 @@ function Chat() {
         <div id="chat-box" className="bg-white ms-3 position-relative">
           <div className="chat-box-header">
             <div className="d-flex align-items-center p-3">
-              {messages?.idConversation === "00000000-0000-0000-0000-000000000000" ? (
+              {messages?.idConversation ===
+              "00000000-0000-0000-0000-000000000000" ? (
                 <>
                   <img
-                    src={
-                      (messages?.avatarReceiver)
-                    }
+                    src={messages?.avatarReceiver}
                     alt=""
                     className="avatar"
                   />
@@ -490,53 +697,46 @@ function Chat() {
                     <p className="mb-0 text">Online</p>
                   </div>
                 </>
-              ) :
-                activeUser !== null ?
-                  <>
-                    <img
-                      src={
-                        (activeUser.avatar)
-                      }
-                      alt=""
-                      className="avatar"
-                    />
-                    <div className="ms-2">
-                      <p className="mb-0 name">{activeUser.name || ""}</p>
-                      <p className="mb-0 text">Online</p>
-                    </div>
-                  </> :
-                  <>
-                    {Array.isArray(conversations) && conversations.length > 0 ?
-                      <div className="d-flex">
-                        <img
-                          src={
-                            (conversations[0]?.avatar)
-                          }
-                          alt=""
-                          className="avatar"
-                        />
-                        <div className="ms-2">
-                          <p className="mb-0 name">{conversations[0]?.fullName || ""}</p>
-                          <p className="mb-0 text">Online</p>
-                        </div>
-                      </div> : <img
-                        src={
-                          defaultImage}
+              ) : activeUser !== null ? (
+                <>
+                  <img src={activeUser.avatar} alt="" className="avatar" />
+                  <div className="ms-2">
+                    <p className="mb-0 name">{activeUser.name || ""}</p>
+                    <p className="mb-0 text">Online</p>
+                  </div>
+                </>
+              ) : (
+                <>
+                  {Array.isArray(conversations) && conversations.length > 0 ? (
+                    <div className="d-flex">
+                      <img
+                        src={conversations[0]?.avatar}
                         alt=""
                         className="avatar"
-                      />}
-                  </>
-              }
+                      />
+                      <div className="ms-2">
+                        <p className="mb-0 name">
+                          {conversations[0]?.fullName || ""}
+                        </p>
+                        <p className="mb-0 text">Online</p>
+                      </div>
+                    </div>
+                  ) : (
+                    <img src={defaultImage} alt="" className="avatar" />
+                  )}
+                </>
+              )}
             </div>
           </div>
           <div className="chat-box-body" ref={chatBoxBodyRef}>
-            {
-              Array.isArray(messages) && messages?.length > 0 ?
-                messages?.map((item) => (
-                  <div key={item?.idMessage}
+            {Array.isArray(messages) && messages?.length > 0
+              ? messages?.map((item) => (
+                  <div
+                    key={item?.idMessage}
                     style={{ marginTop: "22px" }}
-                    className={`chat-content ${item?.isYourself ? "d-flex justify-content-end" : ""
-                      }`}
+                    className={`chat-content ${
+                      item?.isYourself ? "d-flex justify-content-end" : ""
+                    }`}
                   >
                     <div>
                       <div
@@ -546,26 +746,49 @@ function Chat() {
                         {item?.isYourself ? (
                           ""
                         ) : (
-                          <img src={item.idSender !== currentUserId ? item.avatarReceiver : item?.avatarSender} alt="" className="avatar" />
+                          <img
+                            src={
+                              item.idSender !== currentUserId
+                                ? item.avatarReceiver
+                                : item?.avatarSender
+                            }
+                            alt=""
+                            className="avatar"
+                          />
                         )}
                         <div className="ms-2 w-100">
                           <div className="d-flex justify-content-between">
-                            <p className="mb-0 name">{item?.isYourself ? item?.nameSender : item?.nameReceiver}</p>
-                            <p className="mb-0 text">{formatDate(item?.createdDate)}</p>
+                            <p className="mb-0 name">
+                              {item?.isYourself
+                                ? item?.nameSender
+                                : item?.nameReceiver}
+                            </p>
+                            <p className="mb-0 text">
+                              {formatDate(item?.createdDate)}
+                            </p>
                           </div>
-                          {item?.content &&
+                          {item?.content && (
                             <div className="position-relative">
-                              {item?.isRecall && <div className="w-100 h-100 position-absolute d-flex align-items-center bg-blur">
-                                <p className="ms-3 white">Message is unsend</p>
-                              </div>}
+                              {item?.isRecall && (
+                                <div className="w-100 h-100 position-absolute d-flex align-items-center bg-blur">
+                                  <p className="ms-3 white">
+                                    Message is unsend
+                                  </p>
+                                </div>
+                              )}
 
                               <p
-                                className={`mb ${item?.isYourself ? "self-content" : "content"
-                                  }`}
+                                className={`mb ${
+                                  item?.isYourself ? "self-content" : "content"
+                                }`}
                               >
                                 {item?.content}
                               </p>
-                              <Dropdown className={`position-absolute ${item?.isYourself ? "option-other" : "option"} `}>
+                              {item?.isYourself ?  <Dropdown
+                                className={`position-absolute ${
+                                  item?.isYourself ? "option-other" : "option"
+                                } `}
+                              >
                                 <Dropdown.Toggle
                                   variant="white"
                                   className="border-none text-body"
@@ -573,56 +796,68 @@ function Chat() {
                                   <BsThreeDots size={14} />
                                 </Dropdown.Toggle>
                                 <Dropdown.Menu style={{ minWidth: "auto" }}>
-                                  <Dropdown.Item onClick={() => handleDeleteMess(item.idMessage)}>
-                                    <p style={{ fontSize: '14px' }}>Delete</p>
+                                  <Dropdown.Item
+                                    onClick={() =>
+                                      handleDeleteMess(item.idMessage)
+                                    }
+                                  >
+                                    <p style={{ fontSize: "14px" }}>Delete</p>
                                   </Dropdown.Item>
-                                  <Dropdown.Item onClick={() => handleRecallMess(item.idMessage)}>
-                                    <p style={{ fontSize: '14px' }}>Unsend</p>
+                                  <Dropdown.Item
+                                    onClick={() =>
+                                      handleRecallMess(item.idMessage)
+                                    }
+                                  >
+                                    <p style={{ fontSize: "14px" }}>Unsend</p>
                                   </Dropdown.Item>
                                 </Dropdown.Menu>
-                              </Dropdown>
-
+                              </Dropdown>:''}
+                             
                             </div>
-                          }
+                          )}
 
-                          {item?.file &&
-                            <a className="text-white"
+                          {item?.file && (
+                            <a
+                              className="text-white"
                               href={` https://localhost:7001/Images/${item?.file}`} // Directly use the cvFile URL here
                               target="_blank" // Ensure it opens in a new tab
                               rel="noopener noreferrer" // Improve security for opening new tabs
                               download
                             >
                               <div
-                                className={`mb ${item?.isYourself ? "self-content" : "content"
-                                  }`}
+                                className={`mb ${
+                                  item?.isYourself ? "self-content" : "content"
+                                }`}
                               >
                                 <FaRegFileAlt /> {item?.file}
                               </div>
-                            </a>}
-                          {item?.image &&
+                            </a>
+                          )}
+                          {item?.image && (
                             <img
                               src={`https://localhost:7001/Images/${item?.image}`} // Directly use the cvFile URL here
                               alt="text_image"
                               className="text-white"
-                              style={{ borderRadius: '8px', maxWidth: '460px' }}
+                              style={{ borderRadius: "8px", maxWidth: "460px" }}
                             />
-                          }
+                          )}
                         </div>
                       </div>
                     </div>
                   </div>
-                )) : ''}
+                ))
+              : ""}
           </div>
           <div className="chat-box-input position-absolute bottom-0 w-100">
             <div className="w-100 d-flex justify-content-center icon-chat">
               <div className="w-auto fw-bold fs-3 icon-item d-flex align-items-center">
-                <label htmlFor="file-input" className="mx-3" >
+                <label htmlFor="file-input" className="mx-3">
                   <FaRegFolder />
                 </label>
                 <input
                   id="file-input"
                   type="file"
-                  style={{ display: 'none' }}
+                  style={{ display: "none" }}
                   onChange={handleFileUpload}
                 />
                 <label htmlFor="image-input">
@@ -632,13 +867,20 @@ function Chat() {
                   id="image-input"
                   type="file"
                   accept="image/*"
-                  style={{ display: 'none' }}
+                  style={{ display: "none" }}
                   onChange={handleImageUpload}
                 />
-                <div className="mx-3 w-auto" >
+                <div className="mx-3 w-auto">
                   <div className="position-relative">
                     <div className="position-absolute bottom-0 start-0">
-                      {showEmojiBox && <Picker data={data} onEmojiSelect={(e) => handleSetEmoji(e.native)} emojiButtonSize={28} emojiSize={20} />}
+                      {showEmojiBox && (
+                        <Picker
+                          data={data}
+                          onEmojiSelect={(e) => handleSetEmoji(e.native)}
+                          emojiButtonSize={28}
+                          emojiSize={20}
+                        />
+                      )}
                     </div>
                   </div>
                   <LuSmile onClick={() => setShowEmojiBox(!showEmojiBox)} />
@@ -659,7 +901,7 @@ function Chat() {
               <button
                 className="btn btn-primary ms-3 d-flex align-items-center p-3"
                 // style={{ height: "40px" }}
-                disabled={message === ''}
+                disabled={message === ""}
                 onClick={handleSendMessage}
               >
                 <LuSendHorizonal />

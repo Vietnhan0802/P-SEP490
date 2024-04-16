@@ -6,16 +6,20 @@ import BarChart from "./barChart";
 import { GoPencil } from "react-icons/go";
 import { FiBookOpen } from "react-icons/fi";
 import { LuBook } from "react-icons/lu";
-import { MdVerified } from 'react-icons/md';
+import { MdVerified } from "react-icons/md";
 import { TbMessageReport } from "react-icons/tb";
-import Dropdown from 'react-bootstrap/Dropdown';
+import Dropdown from "react-bootstrap/Dropdown";
 import { MdBarChart } from "react-icons/md";
 import SideBar from "../../components/sidebar";
 import PieChart from "./PieChart";
 import CardItem from "./CardItem";
-import { blogInstance, postInstance, staticInstance } from "../../axios/axiosConfig";
+import {
+  blogInstance,
+  postInstance,
+  staticInstance,
+} from "../../axios/axiosConfig";
 import { Rating } from "react-simple-star-rating";
-import defaultImage from '../../images/common/images-empty.png'
+import defaultImage from "../../images/common/images-empty.png";
 function formatDate(dateString) {
   const date = new Date(dateString);
   const month = date.getMonth() + 1; // getMonth() returns zero-based month
@@ -23,10 +27,10 @@ function formatDate(dateString) {
   const year = date.getFullYear();
 
   // Pad single digit month and day with leading zero if necessary
-  const formattedMonth = month < 10 ? '0' + month : month;
-  const formattedDay = day < 10 ? '0' + day : day;
+  const formattedMonth = month < 10 ? "0" + month : month;
+  const formattedDay = day < 10 ? "0" + day : day;
 
-  return formattedMonth + '/' + formattedDay + '/' + year;
+  return formattedMonth + "/" + formattedDay + "/" + year;
 }
 const createData = (
   id,
@@ -52,7 +56,7 @@ const createData = (
     viewPostImages,
     fullName,
     isLike,
-    isVerified
+    isVerified,
   };
 };
 function Statistic({ color }) {
@@ -63,7 +67,7 @@ function Statistic({ color }) {
   const [postListTrend, setPostListTrend] = useState([]);
   const [blogListTrend, setBlogListTrend] = useState([]);
 
-  const [activeTab, setActiveTab] = useState('account');
+  const [activeTab, setActiveTab] = useState("account");
   const [projectData, setProjectData] = useState();
   const [blogData, setBlogData] = useState();
   const [postData, setPostData] = useState();
@@ -80,116 +84,119 @@ function Statistic({ color }) {
   const [topBusiness, setTopBusiness] = useState([]);
   const [topProject, setTopProject] = useState([]);
 
-  const [statisticPostType, setStatisticPostType] = useState('today');
-  const [statisticBlogType, setStatisticBlogType] = useState('today');
-  const [statisticProjectType, setStatisticProjectType] = useState('today');
-  const [statisticAccountType, setStatisticAccountType] = useState('today');
-  const [statisticReportType, setStatisticReportType] = useState('today');
-  const [statisticVerificationType, setStatisticVerificationType] = useState('today');
+  const [statisticPostType, setStatisticPostType] = useState("today");
+  const [statisticBlogType, setStatisticBlogType] = useState("today");
+  const [statisticProjectType, setStatisticProjectType] = useState("today");
+  const [statisticAccountType, setStatisticAccountType] = useState("today");
+  const [statisticReportType, setStatisticReportType] = useState("today");
+  const [statisticVerificationType, setStatisticVerificationType] =
+    useState("today");
 
   useEffect(() => {
     const selectedTheme = localStorage.getItem("selectedTheme");
-    console.log(selectedTheme)
-  }, [color])
+    console.log(selectedTheme);
+  }, [color]);
   const handleTabClick = (tab) => {
     setActiveTab(tab);
   };
   useEffect(() => {
-    staticInstance.get(`GetTop3Freelancer`)
+    staticInstance
+      .get(`GetTop3Freelancer`)
       .then((res) => {
         setTopFreelancer(res?.data?.result);
-      }).catch((error) => console.error(error));
-    staticInstance.get(`GetTop3Business`)
+      })
+      .catch((error) => console.error(error));
+    staticInstance
+      .get(`GetTop3Business`)
       .then((res) => {
         setTopBusiness(res?.data?.result);
-      }).catch((error) => console.error(error));
-    staticInstance.get(`GetTop3Project`)
+      })
+      .catch((error) => console.error(error));
+    staticInstance
+      .get(`GetTop3Project`)
       .then((res) => {
         setTopProject(res?.data?.result);
       })
       .catch((error) => console.error(error));
-    ;
-  }, [])
+  }, []);
   useEffect(() => {
-    staticInstance.get(`/CallPostStatistic/${statisticPostType}`)
+    staticInstance
+      .get(`/CallPostStatistic/${statisticPostType}`)
       .then((res) => {
         setPostData({
           labels: res?.data?.result.map((data) => {
-            if (statisticPostType === 'today') {
-              return data.hourInDay
-            } else if ((statisticPostType === 'week')) {
+            if (statisticPostType === "today") {
+              return data.hourInDay;
+            } else if (statisticPostType === "week") {
               return data.dayInWeek;
-            } else if (statisticPostType === 'month') {
-              return formatDate(data.dayInMonth)
+            } else if (statisticPostType === "month") {
+              return formatDate(data.dayInMonth);
             } else {
-              return data.monthInYear
+              return data.monthInYear;
             }
           }),
           datasets: [
             {
-              label: 'Number of post',
+              label: "Number of post",
               data: res?.data?.result.map((data) => data.count),
               backgroundColor: [
-                color ? " rgba(192,63,63,0.8)" : "rgba(23, 92, 211,1)"
+                color ? " rgba(192,63,63,0.8)" : "rgba(23, 92, 211,1)",
               ],
               borderWidth: 1,
             },
           ],
-        })
-      });
-    postInstance.get(`GetAllPostsTrend/${currentUserId}`)
-      .then((res) => {
-        const postList = res?.data?.result;
-        setPostListTrend([]);
-        postList.map((element) => {
-          const time = formatDate(element.createdDate);
-          setPostListTrend((prevData) => [
-            ...prevData,
-            createData(
-              element.idPost,
-              time,
-              element.avatar,
-              element.title,
-              element.content,
-              element.viewInDate,
-              element.like,
-              element.viewPostImages,
-              element.fullName,
-              element.isLike,
-              element.isVerified
-            ),
-          ]);
         });
-      })
-  }, [statisticPostType,color])
-  useEffect(() => {
-    staticInstance.get(`CallBlogStatistic/${statisticBlogType}`)
-      .then((res) => {
-        setBlogData({
-          labels: res?.data?.result.map((data) => {
-            if (statisticBlogType === 'today') {
-              return data.hourInDay
-            } else if ((statisticBlogType === 'week')) {
-              return data.dayInWeek;
-            } else if (statisticBlogType === 'month') {
-              return formatDate(data.dayInMonth)
-            } else {
-              return data.monthInYear
-            }
-          }
-          ),
-          datasets: [
-            {
-              label: "Number Of Blog",
-              data: res?.data?.result.map((data) => data.count),
-              backgroundColor: [
-                color ? " rgba(192,63,63,0.8)" : "rgba(23, 92, 211,1)"
-              ],
-              borderWidth: 1,
-            },
-          ],
-        })
       });
+    postInstance.get(`GetAllPostsTrend/${currentUserId}`).then((res) => {
+      const postList = res?.data?.result;
+      setPostListTrend([]);
+      postList.map((element) => {
+        const time = formatDate(element.createdDate);
+        setPostListTrend((prevData) => [
+          ...prevData,
+          createData(
+            element.idPost,
+            time,
+            element.avatar,
+            element.title,
+            element.content,
+            element.viewInDate,
+            element.like,
+            element.viewPostImages,
+            element.fullName,
+            element.isLike,
+            element.isVerified
+          ),
+        ]);
+      });
+    });
+  }, [statisticPostType, color]);
+  useEffect(() => {
+    staticInstance.get(`CallBlogStatistic/${statisticBlogType}`).then((res) => {
+      setBlogData({
+        labels: res?.data?.result.map((data) => {
+          if (statisticBlogType === "today") {
+            return data.hourInDay;
+          } else if (statisticBlogType === "week") {
+            return data.dayInWeek;
+          } else if (statisticBlogType === "month") {
+            return formatDate(data.dayInMonth);
+          } else {
+            return data.monthInYear;
+          }
+        }),
+        datasets: [
+          {
+            label: "Number Of Blog",
+            data: res?.data?.result.map((data) => data.count),
+            backgroundColor: [
+              color ? " rgba(192,63,63,0.8)" : "rgba(23, 92, 211,1)",
+            ],
+            borderWidth: 1,
+          },
+        ],
+      });
+    });
     blogInstance
       .get(`GetAllBlogsTrend/${currentUserId}`)
       .then((res) => {
@@ -217,20 +224,21 @@ function Statistic({ color }) {
       .catch((error) => {
         console.error(error);
       });
-  }, [statisticBlogType,color])
+  }, [statisticBlogType, color]);
   useEffect(() => {
-    staticInstance.get(`CallProjectStatistic/${statisticProjectType}`)
+    staticInstance
+      .get(`CallProjectStatistic/${statisticProjectType}`)
       .then((res) => {
         setProjectData({
           labels: res?.data?.result.map((data) => {
-            if (statisticProjectType === 'today') {
-              return data.hourInDay
-            } else if ((statisticProjectType === 'week')) {
+            if (statisticProjectType === "today") {
+              return data.hourInDay;
+            } else if (statisticProjectType === "week") {
               return data.dayInWeek;
-            } else if (statisticProjectType === 'month') {
-              return formatDate(data.dayInMonth)
+            } else if (statisticProjectType === "month") {
+              return formatDate(data.dayInMonth);
             } else {
-              return data.monthInYear
+              return data.monthInYear;
             }
           }),
           datasets: [
@@ -238,47 +246,47 @@ function Statistic({ color }) {
               label: "Number Of Project",
               data: res?.data?.result.map((data) => data.count),
               backgroundColor: [
-                color ? " rgba(192,63,63,0.8)" : "rgba(23, 92, 211,1)"
+                color ? " rgba(192,63,63,0.8)" : "rgba(23, 92, 211,1)",
               ],
               borderWidth: 1,
             },
           ],
-        })
-      })
-    staticInstance.get(`GetAllProcessProjectInsystem`)
-      .then((res) => {
-        setProjectstatus({
-          labels: res?.data?.result.map((data) => data.type),
-          datasets: [
-            {
-              label: "Project Status",
-              data: res?.data?.result.map((data) => data.count),
-              backgroundColor: [
-                "rgba(75,192,192)",
-                "#ecf0f1",
-                "#50AF95",
-                "#f3ba2f",
-                "#2a71d0",
-              ],
-              borderWidth: 1,
-            },
-          ],
-        })
-      })
-  }, [statisticProjectType,color])
+        });
+      });
+    staticInstance.get(`GetAllProcessProjectInsystem`).then((res) => {
+      setProjectstatus({
+        labels: res?.data?.result.map((data) => data.type),
+        datasets: [
+          {
+            label: "Project Status",
+            data: res?.data?.result.map((data) => data.count),
+            backgroundColor: [
+              "rgba(75,192,192)",
+              "#ecf0f1",
+              "#50AF95",
+              "#f3ba2f",
+              "#2a71d0",
+            ],
+            borderWidth: 1,
+          },
+        ],
+      });
+    });
+  }, [statisticProjectType, color]);
   useEffect(() => {
-    staticInstance.get(`CallAccountStatistic/${statisticAccountType}`)
+    staticInstance
+      .get(`CallAccountStatistic/${statisticAccountType}`)
       .then((res) => {
         setAccountData({
           labels: res?.data?.result.map((data) => {
-            if (statisticAccountType === 'today') {
-              return data.hourInDay
-            } else if ((statisticAccountType === 'week')) {
+            if (statisticAccountType === "today") {
+              return data.hourInDay;
+            } else if (statisticAccountType === "week") {
               return data.dayInWeek;
-            } else if (statisticAccountType === 'month') {
-              return formatDate(data.dayInMonth)
+            } else if (statisticAccountType === "month") {
+              return formatDate(data.dayInMonth);
             } else {
-              return data.monthInYear
+              return data.monthInYear;
             }
           }),
           datasets: [
@@ -286,47 +294,47 @@ function Statistic({ color }) {
               label: "Number Of Account",
               data: res?.data?.result.map((data) => data.count),
               backgroundColor: [
-                color ? " rgba(192,63,63,0.8)" : "rgba(23, 92, 211,1)"
+                color ? " rgba(192,63,63,0.8)" : "rgba(23, 92, 211,1)",
               ],
               borderWidth: 1,
             },
           ],
-        })
-      })
-    staticInstance.get(`GetAllAccountInSystem`)
-      .then((res) => {
-        setAccountStatus({
-          labels: res?.data?.result.map((data) => data.type),
-          datasets: [
-            {
-              label: "Project Status",
-              data: res?.data?.result.map((data) => data.count),
-              backgroundColor: [
-                "rgba(75,192,192)",
-                "#ecf0f1",
-                "#50AF95",
-                "#f3ba2f",
-                "#2a71d0",
-              ],
-              borderWidth: 1,
-            },
-          ],
-        })
-      })
-  }, [statisticAccountType,color])
+        });
+      });
+    staticInstance.get(`GetAllAccountInSystem`).then((res) => {
+      setAccountStatus({
+        labels: res?.data?.result.map((data) => data.type),
+        datasets: [
+          {
+            label: "Project Status",
+            data: res?.data?.result.map((data) => data.count),
+            backgroundColor: [
+              "rgba(75,192,192)",
+              "#ecf0f1",
+              "#50AF95",
+              "#f3ba2f",
+              "#2a71d0",
+            ],
+            borderWidth: 1,
+          },
+        ],
+      });
+    });
+  }, [statisticAccountType, color]);
   useEffect(() => {
-    staticInstance.get(`CallReportStatistic/${statisticReportType}`)
+    staticInstance
+      .get(`CallReportStatistic/${statisticReportType}`)
       .then((res) => {
         setReportData({
           labels: res?.data?.result.map((data) => {
-            if (statisticReportType === 'today') {
-              return data.hourInDay
-            } else if ((statisticReportType === 'week')) {
+            if (statisticReportType === "today") {
+              return data.hourInDay;
+            } else if (statisticReportType === "week") {
               return data.dayInWeek;
-            } else if (statisticReportType === 'month') {
-              return formatDate(data.dayInMonth)
+            } else if (statisticReportType === "month") {
+              return formatDate(data.dayInMonth);
             } else {
-              return data.monthInYear
+              return data.monthInYear;
             }
           }),
           datasets: [
@@ -334,48 +342,47 @@ function Statistic({ color }) {
               label: "Number Of Report",
               data: res?.data?.result.map((data) => data.count),
               backgroundColor: [
-                color ? " rgba(192,63,63,0.8)" : "rgba(23, 92, 211,1)"
+                color ? " rgba(192,63,63,0.8)" : "rgba(23, 92, 211,1)",
               ],
               borderWidth: 1,
             },
           ],
-        })
-      })
-    staticInstance.get(`GetAllReportInSystem`)
-      .then((res) => {
-        setReportStatus({
-
-          labels: res?.data?.result.map((data) => data.type),
-          datasets: [
-            {
-              label: "Project Status",
-              data: res?.data?.result.map((data) => data.count),
-              backgroundColor: [
-                "rgba(75,192,192)",
-                "#ecf0f1",
-                "#50AF95",
-                "#f3ba2f",
-                "#2a71d0",
-              ],
-              borderWidth: 1,
-            },
-          ],
-        })
-      })
-  }, [statisticReportType,color])
+        });
+      });
+    staticInstance.get(`GetAllReportInSystem`).then((res) => {
+      setReportStatus({
+        labels: res?.data?.result.map((data) => data.type),
+        datasets: [
+          {
+            label: "Project Status",
+            data: res?.data?.result.map((data) => data.count),
+            backgroundColor: [
+              "rgba(75,192,192)",
+              "#ecf0f1",
+              "#50AF95",
+              "#f3ba2f",
+              "#2a71d0",
+            ],
+            borderWidth: 1,
+          },
+        ],
+      });
+    });
+  }, [statisticReportType, color]);
   useEffect(() => {
-    staticInstance.get(`CallVerificationStatistic/${statisticVerificationType}`)
+    staticInstance
+      .get(`CallVerificationStatistic/${statisticVerificationType}`)
       .then((res) => {
         setVerifyData({
           labels: res?.data?.result.map((data) => {
-            if (statisticVerificationType === 'today') {
-              return data.hourInDay
-            } else if ((statisticVerificationType === 'week')) {
+            if (statisticVerificationType === "today") {
+              return data.hourInDay;
+            } else if (statisticVerificationType === "week") {
               return data.dayInWeek;
-            } else if (statisticVerificationType === 'month') {
-              return formatDate(data.dayInMonth)
+            } else if (statisticVerificationType === "month") {
+              return formatDate(data.dayInMonth);
             } else {
-              return data.monthInYear
+              return data.monthInYear;
             }
           }),
           datasets: [
@@ -383,113 +390,101 @@ function Statistic({ color }) {
               label: "Number Of Verification",
               data: res?.data?.result.map((data) => data.count),
               backgroundColor: [
-                color ? " rgba(192,63,63,0.8)" : "rgba(23, 92, 211,1)"
+                color ? " rgba(192,63,63,0.8)" : "rgba(23, 92, 211,1)",
               ],
               borderWidth: 1,
             },
           ],
-        })
-      })
-    staticInstance.get(`GetAllStatusVerificationInSystem`)
-      .then((res) => {
-        setVerifyStatus({
-
-          labels: res?.data?.result.map((data) => data.type),
-          datasets: [
-            {
-              label: "Project Status",
-              data: res?.data?.result.map((data) => data.count),
-              backgroundColor: [
-                "rgba(75,192,192)",
-                "#ecf0f1",
-                "#50AF95",
-                "#f3ba2f",
-                "#2a71d0",
-              ],
-              borderWidth: 1,
-            },
-          ],
-        })
-      })
-  }, [statisticVerificationType,color])
+        });
+      });
+    staticInstance.get(`GetAllStatusVerificationInSystem`).then((res) => {
+      setVerifyStatus({
+        labels: res?.data?.result.map((data) => data.type),
+        datasets: [
+          {
+            label: "Project Status",
+            data: res?.data?.result.map((data) => data.count),
+            backgroundColor: [
+              "rgba(75,192,192)",
+              "#ecf0f1",
+              "#50AF95",
+              "#f3ba2f",
+              "#2a71d0",
+            ],
+            borderWidth: 1,
+          },
+        ],
+      });
+    });
+  }, [statisticVerificationType, color]);
   const renderChart = () => {
     switch (activeTab) {
-      case 'account':
+      case "account":
         return (
           <div style={{ width: "100%" }}>
             <div className="d-flex">
               <Col md={8} className="position-relative pt-3">
                 {/* Render chart only if accountData has labels and datasets */}
-                {accountData?.labels?.length > 0 && accountData?.datasets?.length > 0 && (
-                  <>
-                    <div className="position-absolute top-0 end-0">
-                      <Dropdown>
-                        <Dropdown.Toggle
-                          variant="white"
-                          className="border-none text-body">
-                          <MdBarChart size={25} className="icon_select" />
-                        </Dropdown.Toggle>
+                {accountData?.labels?.length > 0 &&
+                  accountData?.datasets?.length > 0 && (
+                    <>
+                      <div className="position-absolute top-0 end-0">
+                        <Dropdown>
+                          <Dropdown.Toggle
+                            variant="white"
+                            className="border-none text-body"
+                          >
+                            <MdBarChart size={25} className="icon_select" />
+                          </Dropdown.Toggle>
 
-                        <Dropdown.Menu style={{ minWidth: 'auto' }}>
-                          <Dropdown.Item onClick={() => setStatisticAccountType('today')}>Today</Dropdown.Item>
-                          <Dropdown.Item onClick={() => setStatisticAccountType('week')}>Week</Dropdown.Item>
-                          <Dropdown.Item onClick={() => setStatisticAccountType('month')}>Month</Dropdown.Item>
-                          <Dropdown.Item onClick={() => setStatisticAccountType('year')}>Year</Dropdown.Item>
-                        </Dropdown.Menu>
-                      </Dropdown>
-                    </div>
-                    <BarChart chartData={accountData} value={color} text={'New Account Creation Statistics'} style={{ minWidth: '100%' }} />
-                  </>
-                )}
+                          <Dropdown.Menu style={{ minWidth: "auto" }}>
+                            <Dropdown.Item
+                              onClick={() => setStatisticAccountType("today")}
+                            >
+                              Today
+                            </Dropdown.Item>
+                            <Dropdown.Item
+                              onClick={() => setStatisticAccountType("week")}
+                            >
+                              Week
+                            </Dropdown.Item>
+                            <Dropdown.Item
+                              onClick={() => setStatisticAccountType("month")}
+                            >
+                              Month
+                            </Dropdown.Item>
+                            <Dropdown.Item
+                              onClick={() => setStatisticAccountType("year")}
+                            >
+                              Year
+                            </Dropdown.Item>
+                          </Dropdown.Menu>
+                        </Dropdown>
+                      </div>
+                      <BarChart
+                        chartData={accountData}
+                        value={color}
+                        text={"New Account Creation Statistics"}
+                        style={{ minWidth: "100%" }}
+                      />
+                    </>
+                  )}
               </Col>
               <Col md={4}>
                 {/* Render chart only if accountStatus has labels and datasets */}
-                {accountStatus?.labels?.length > 0 && accountStatus?.datasets?.length > 0 && (
-                  <PieChart chartData={accountStatus} value={color} text={'Account Type'} />
-                )}
+                {accountStatus?.labels?.length > 0 &&
+                  accountStatus?.datasets?.length > 0 && (
+                    <PieChart
+                      chartData={accountStatus}
+                      value={color}
+                      text={"Account Type"}
+                    />
+                  )}
               </Col>
             </div>
           </div>
         );
-      case 'post':
-        return (
-          <Row>
-            <Col md={8} className="position-relative pt-3" >
-              <div className="position-absolute top-0 end-0">
-                <Dropdown>
-                  <Dropdown.Toggle
-                    variant="white"
-                    className="border-none text-body">
-                    <MdBarChart size={25} className="icon_select"/>
-                  </Dropdown.Toggle>
-                  <Dropdown.Menu style={{ minWidth: 'auto' }}>
-                    <Dropdown.Item onClick={() => setStatisticPostType('today')}>Today</Dropdown.Item>
-                    <Dropdown.Item onClick={() => setStatisticPostType('week')}>Week</Dropdown.Item>
-                    <Dropdown.Item onClick={() => setStatisticPostType('month')}>Month</Dropdown.Item>
-                    <Dropdown.Item onClick={() => setStatisticPostType('year')}>Year</Dropdown.Item>
-                  </Dropdown.Menu>
-                </Dropdown>
-              </div>
-              <BarChart chartData={postData} value={color} text={'New Post Creation Statistics'} />
-            </Col>
-            <Col md={4} className="p-3">
-              <h3 className="text-center" style={{color: 'var(--header_search_text)'}}>Highest view post in day</h3>
-              <div className="w-100 border  p-2" style={{ maxHeight: '350px', overflowY: 'auto', borderRadius: '16px' }}>
-                {postListTrend.map((item) => (
-                  <div className="justify-content-between d-flex align-items-center mt-2">
-                    <div className="post-img-container w-25">
-                      <img src={item?.viewPostImages?.length === 0 ? defaultImage : item?.viewPostImages[0]?.imageSrc} alt="" />
-                    </div>
-                    <p className=" txt-overflow d-flex align-items-center ps-3 " style={{ color: 'var(--header_search_text)', width: '75%' }}>{item.title}</p>
-                    <p className="d-flex align-items-center " style={{ color: 'var(--header_search_text)', width: '10%' }}>{item.view}</p>
-                  </div>
-                ))}
-
-              </div>
-            </Col>
-          </Row>
-        );
-      case 'blog':
+      case "post":
         return (
           <Row>
             <Col md={8} className="position-relative pt-3">
@@ -497,37 +492,180 @@ function Statistic({ color }) {
                 <Dropdown>
                   <Dropdown.Toggle
                     variant="white"
-                    className="border-none text-body">
-                    <MdBarChart size={25} className="icon_select"/>
+                    className="border-none text-body"
+                  >
+                    <MdBarChart size={25} className="icon_select" />
                   </Dropdown.Toggle>
-
-                  <Dropdown.Menu style={{ minWidth: 'auto' }}>
-                    <Dropdown.Item onClick={() => setStatisticBlogType('today')}>Today</Dropdown.Item>
-                    <Dropdown.Item onClick={() => setStatisticBlogType('week')}>Week</Dropdown.Item>
-                    <Dropdown.Item onClick={() => setStatisticBlogType('month')}>Month</Dropdown.Item>
-                    <Dropdown.Item onClick={() => setStatisticBlogType('year')}>Year</Dropdown.Item>
+                  <Dropdown.Menu style={{ minWidth: "auto" }}>
+                    <Dropdown.Item
+                      onClick={() => setStatisticPostType("today")}
+                    >
+                      Today
+                    </Dropdown.Item>
+                    <Dropdown.Item onClick={() => setStatisticPostType("week")}>
+                      Week
+                    </Dropdown.Item>
+                    <Dropdown.Item
+                      onClick={() => setStatisticPostType("month")}
+                    >
+                      Month
+                    </Dropdown.Item>
+                    <Dropdown.Item onClick={() => setStatisticPostType("year")}>
+                      Year
+                    </Dropdown.Item>
                   </Dropdown.Menu>
                 </Dropdown>
               </div>
-              <BarChart chartData={blogData} value={color} text={'New Blog Creation Statistics'} />
-            </Col> <Col md={4} className="p-3">
-              <h3 className="text-center" style={{color: 'var(--header_search_text)'}}>Highest view blog in day</h3>
-              <div className="w-100 border  p-2" style={{ maxHeight: '350px', overflowY: 'auto', borderRadius: '16px' }}>
-                {blogListTrend.map((item) => (
+              <BarChart
+                chartData={postData}
+                value={color}
+                text={"New Post Creation Statistics"}
+              />
+            </Col>
+            <Col md={4} className="p-3">
+              <h3
+                className="text-center"
+                style={{ color: "var(--header_search_text)" }}
+              >
+                Highest view post in day
+              </h3>
+              <div
+                className="w-100 border  p-2"
+                style={{
+                  maxHeight: "350px",
+                  overflowY: "auto",
+                  borderRadius: "16px",
+                }}
+              >
+                {postListTrend.map((item) => (
                   <div className="justify-content-between d-flex align-items-center mt-2">
                     <div className="post-img-container w-25">
-                      <img src={item?.viewPostImages?.length === 0 ? defaultImage : item?.viewPostImages[0]?.imageSrc} alt="" />
+                      <img
+                        src={
+                          item?.viewPostImages?.length === 0
+                            ? defaultImage
+                            : item?.viewPostImages[0]?.imageSrc
+                        }
+                        alt=""
+                      />
                     </div>
-                    <p className=" txt-overflow d-flex align-items-center ps-3 " style={{ color: 'var(--header_search_text)', width: '75%' }}>{item.title}</p>
-                    <p className="d-flex align-items-center " style={{ color: 'var(--header_search_text)', width: '10%' }}>{item.view}</p>
+                    <p
+                      className=" txt-overflow d-flex align-items-center ps-3 "
+                      style={{
+                        color: "var(--header_search_text)",
+                        width: "75%",
+                      }}
+                    >
+                      {item.title}
+                    </p>
+                    <p
+                      className="d-flex align-items-center "
+                      style={{
+                        color: "var(--header_search_text)",
+                        width: "10%",
+                        marginLeft: "10px",
+                      }}
+                    >
+                      {item.view}
+                    </p>
                   </div>
                 ))}
-
               </div>
             </Col>
           </Row>
         );
-      case 'project':
+      case "blog":
+        return (
+          <Row>
+            <Col md={8} className="position-relative pt-3">
+              <div className="position-absolute top-0 end-0">
+                <Dropdown>
+                  <Dropdown.Toggle
+                    variant="white"
+                    className="border-none text-body"
+                  >
+                    <MdBarChart size={25} className="icon_select" />
+                  </Dropdown.Toggle>
+
+                  <Dropdown.Menu style={{ minWidth: "auto" }}>
+                    <Dropdown.Item
+                      onClick={() => setStatisticBlogType("today")}
+                    >
+                      Today
+                    </Dropdown.Item>
+                    <Dropdown.Item onClick={() => setStatisticBlogType("week")}>
+                      Week
+                    </Dropdown.Item>
+                    <Dropdown.Item
+                      onClick={() => setStatisticBlogType("month")}
+                    >
+                      Month
+                    </Dropdown.Item>
+                    <Dropdown.Item onClick={() => setStatisticBlogType("year")}>
+                      Year
+                    </Dropdown.Item>
+                  </Dropdown.Menu>
+                </Dropdown>
+              </div>
+              <BarChart
+                chartData={blogData}
+                value={color}
+                text={"New Blog Creation Statistics"}
+              />
+            </Col>{" "}
+            <Col md={4} className="p-3">
+              <h3
+                className="text-center"
+                style={{ color: "var(--header_search_text)" }}
+              >
+                Highest view blog in day
+              </h3>
+              <div
+                className="w-100 border  p-2"
+                style={{
+                  maxHeight: "350px",
+                  overflowY: "auto",
+                  borderRadius: "16px",
+                }}
+              >
+                {blogListTrend.map((item) => (
+                  <div className="justify-content-between d-flex align-items-center mt-2">
+                    <div className="post-img-container w-25">
+                      <img
+                        src={
+                          item?.viewPostImages?.length === 0
+                            ? defaultImage
+                            : item?.viewPostImages[0]?.imageSrc
+                        }
+                        alt=""
+                      />
+                    </div>
+                    <p
+                      className=" txt-overflow d-flex align-items-center ps-3 "
+                      style={{
+                        color: "var(--header_search_text)",
+                        width: "75%",
+                      }}
+                    >
+                      {item.title}
+                    </p>
+                    <p
+                      className="d-flex align-items-center "
+                      style={{
+                        color: "var(--header_search_text)",
+                        width: "10%",
+                        marginLeft: "10px",
+                      }}
+                    >
+                      {item.view}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </Col>
+          </Row>
+        );
+      case "project":
         return (
           <div style={{ width: "100%" }}>
             <div className="d-flex">
@@ -536,28 +674,52 @@ function Statistic({ color }) {
                   <Dropdown>
                     <Dropdown.Toggle
                       variant="white"
-                      className="border-none text-body">
-                      <MdBarChart size={25} className="icon_select"/>
+                      className="border-none text-body"
+                    >
+                      <MdBarChart size={25} className="icon_select" />
                     </Dropdown.Toggle>
 
-                    <Dropdown.Menu style={{ minWidth: 'auto' }}>
-                      <Dropdown.Item onClick={() => setStatisticProjectType('today')}>Today</Dropdown.Item>
-                      <Dropdown.Item onClick={() => setStatisticProjectType('week')}>Week</Dropdown.Item>
-                      <Dropdown.Item onClick={() => setStatisticProjectType('month')}>Month</Dropdown.Item>
-                      <Dropdown.Item onClick={() => setStatisticProjectType('year')}>Year</Dropdown.Item>
+                    <Dropdown.Menu style={{ minWidth: "auto" }}>
+                      <Dropdown.Item
+                        onClick={() => setStatisticProjectType("today")}
+                      >
+                        Today
+                      </Dropdown.Item>
+                      <Dropdown.Item
+                        onClick={() => setStatisticProjectType("week")}
+                      >
+                        Week
+                      </Dropdown.Item>
+                      <Dropdown.Item
+                        onClick={() => setStatisticProjectType("month")}
+                      >
+                        Month
+                      </Dropdown.Item>
+                      <Dropdown.Item
+                        onClick={() => setStatisticProjectType("year")}
+                      >
+                        Year
+                      </Dropdown.Item>
                     </Dropdown.Menu>
                   </Dropdown>
                 </div>
-                <BarChart chartData={projectData} value={color} text={'New Project Creation Statistics'} />
+                <BarChart
+                  chartData={projectData}
+                  value={color}
+                  text={"New Project Creation Statistics"}
+                />
               </Col>
               <Col md={4}>
-                <PieChart chartData={projectStatus} value={color} text={'Project Status'} />
+                <PieChart
+                  chartData={projectStatus}
+                  value={color}
+                  text={"Project Status"}
+                />
               </Col>
             </div>
-
           </div>
         );
-      case 'report':
+      case "report":
         return (
           <div style={{ width: "100%" }}>
             <div className="d-flex">
@@ -566,28 +728,52 @@ function Statistic({ color }) {
                   <Dropdown>
                     <Dropdown.Toggle
                       variant="white"
-                      className="border-none text-body">
-                      <MdBarChart size={25} className="icon_select"/>
+                      className="border-none text-body"
+                    >
+                      <MdBarChart size={25} className="icon_select" />
                     </Dropdown.Toggle>
 
-                    <Dropdown.Menu style={{ minWidth: 'auto' }}>
-                      <Dropdown.Item onClick={() => setStatisticReportType('today')}>Today</Dropdown.Item>
-                      <Dropdown.Item onClick={() => setStatisticReportType('week')}>Week</Dropdown.Item>
-                      <Dropdown.Item onClick={() => setStatisticReportType('month')}>Month</Dropdown.Item>
-                      <Dropdown.Item onClick={() => setStatisticReportType('year')}>Year</Dropdown.Item>
+                    <Dropdown.Menu style={{ minWidth: "auto" }}>
+                      <Dropdown.Item
+                        onClick={() => setStatisticReportType("today")}
+                      >
+                        Today
+                      </Dropdown.Item>
+                      <Dropdown.Item
+                        onClick={() => setStatisticReportType("week")}
+                      >
+                        Week
+                      </Dropdown.Item>
+                      <Dropdown.Item
+                        onClick={() => setStatisticReportType("month")}
+                      >
+                        Month
+                      </Dropdown.Item>
+                      <Dropdown.Item
+                        onClick={() => setStatisticReportType("year")}
+                      >
+                        Year
+                      </Dropdown.Item>
                     </Dropdown.Menu>
                   </Dropdown>
                 </div>
-                <BarChart chartData={reportData} value={color} text={'New Report Creation Statistics'} />
+                <BarChart
+                  chartData={reportData}
+                  value={color}
+                  text={"New Report Creation Statistics"}
+                />
               </Col>
               <Col md={4}>
-                <PieChart chartData={reportStatus} value={color} text={'Report type'} />
+                <PieChart
+                  chartData={reportStatus}
+                  value={color}
+                  text={"Report type"}
+                />
               </Col>
             </div>
-
           </div>
         );
-      case 'verification':
+      case "verification":
         return (
           <div style={{ width: "100%" }}>
             <div className="d-flex">
@@ -596,25 +782,49 @@ function Statistic({ color }) {
                   <Dropdown>
                     <Dropdown.Toggle
                       variant="white"
-                      className="border-none text-body">
-                      <MdBarChart size={25} className="icon_select"/>
+                      className="border-none text-body"
+                    >
+                      <MdBarChart size={25} className="icon_select" />
                     </Dropdown.Toggle>
 
-                    <Dropdown.Menu style={{ minWidth: 'auto' }}>
-                      <Dropdown.Item onClick={() => setStatisticVerificationType('today')}>Today</Dropdown.Item>
-                      <Dropdown.Item onClick={() => setStatisticVerificationType('week')}>Week</Dropdown.Item>
-                      <Dropdown.Item onClick={() => setStatisticVerificationType('month')}>Month</Dropdown.Item>
-                      <Dropdown.Item onClick={() => setStatisticVerificationType('year')}>Year</Dropdown.Item>
+                    <Dropdown.Menu style={{ minWidth: "auto" }}>
+                      <Dropdown.Item
+                        onClick={() => setStatisticVerificationType("today")}
+                      >
+                        Today
+                      </Dropdown.Item>
+                      <Dropdown.Item
+                        onClick={() => setStatisticVerificationType("week")}
+                      >
+                        Week
+                      </Dropdown.Item>
+                      <Dropdown.Item
+                        onClick={() => setStatisticVerificationType("month")}
+                      >
+                        Month
+                      </Dropdown.Item>
+                      <Dropdown.Item
+                        onClick={() => setStatisticVerificationType("year")}
+                      >
+                        Year
+                      </Dropdown.Item>
                     </Dropdown.Menu>
                   </Dropdown>
                 </div>
-                <BarChart chartData={verifyData} value={color} text={'New Verification Creation Statistics'} />
+                <BarChart
+                  chartData={verifyData}
+                  value={color}
+                  text={"New Verification Creation Statistics"}
+                />
               </Col>
               <Col md={4}>
-                <PieChart chartData={verifyStatus} value={color} text={'Verification Type'} />
+                <PieChart
+                  chartData={verifyStatus}
+                  value={color}
+                  text={"Verification Type"}
+                />
               </Col>
             </div>
-
           </div>
         );
       default:
@@ -624,23 +834,38 @@ function Statistic({ color }) {
           </div>
         );
     }
-  }
+  };
   return (
     <Row className="pt-3 ms-0 me-0">
-      <Col md={3} >
+      <Col md={3}>
         <SideBar />
       </Col>
       <Col md={9}>
         <Row>
           <Col md={4} className="" onResize={true}>
-            <div className="d-flex align-items-center px-2 p-2" style={{ backgroundColor: 'var(--header_background)', color: 'var(--header_search_text)', borderRadius: '8px' }}>
-              <p className="text-center w-100 fs-4">
-                Top 3 Freelancer
-              </p>
+            <div
+              className="d-flex align-items-center px-2 p-2"
+              style={{
+                backgroundColor: "var(--header_background)",
+                color: "var(--header_search_text)",
+                borderRadius: "8px",
+              }}
+            >
+              <p className="text-center w-100 fs-4">Top 3 Freelancer</p>
             </div>
             {topFreelancer.map((item) => (
-              <div className="d-flex align-items-center px-2 mt-2 p-2" style={{ backgroundColor: 'var(--header_background)', color: 'var(--header_search_text)', borderRadius: '8px' }}>
-                <div className="profile" style={{ width: '40px', height: '40px' }}>
+              <div
+                className="d-flex align-items-center px-2 mt-2 p-2"
+                style={{
+                  backgroundColor: "var(--header_background)",
+                  color: "var(--header_search_text)",
+                  borderRadius: "8px",
+                }}
+              >
+                <div
+                  className="profile"
+                  style={{ width: "40px", height: "40px" }}
+                >
                   <img src={item.avatar} alt="" />
                 </div>
                 <div className="d-flex justify-content-between w-75 ms-2">
@@ -651,38 +876,81 @@ function Statistic({ color }) {
             ))}
           </Col>
           <Col md={4} className="px-0">
-            <div className="d-flex align-items-center px-2 p-2" style={{ backgroundColor: 'var(--header_background)', color: 'var(--header_search_text)', borderRadius: '8px' }}>
-              <p className="text-center w-100 fs-4">
-                Top 3 Business
-              </p>
+            <div
+              className="d-flex align-items-center px-2 p-2"
+              style={{
+                backgroundColor: "var(--header_background)",
+                color: "var(--header_search_text)",
+                borderRadius: "8px",
+              }}
+            >
+              <p className="text-center w-100 fs-4">Top 3 Business</p>
             </div>
             {topBusiness.map((item) => (
-              <div className="d-flex align-items-center  justify-content-between px-2 mt-2 p-2" style={{ backgroundColor: 'var(--header_background)', color: 'var(--header_search_text)', borderRadius: '8px' }}>
-                <div className="profile d-flex align-items-center" style={{ width: '40px', height: '40px' }}>
+              <div
+                className="d-flex align-items-center  justify-content-between px-2 mt-2 p-2"
+                style={{
+                  backgroundColor: "var(--header_background)",
+                  color: "var(--header_search_text)",
+                  borderRadius: "8px",
+                }}
+              >
+                <div
+                  className="profile d-flex align-items-center"
+                  style={{ width: "40px", height: "40px" }}
+                >
                   <img src={item.avatar} alt="" />
                 </div>
                 <p className="ms-2 w-25">{item.fullName}</p>
                 <div className="d-flex align-items-center justify-content-end w-50 me-3">
-                  <Rating initialValue={item.ratingAvg} readonly={true} allowFraction={true} size={18} />
+                  <Rating
+                    initialValue={item.ratingAvg}
+                    readonly={true}
+                    allowFraction={true}
+                    size={18}
+                  />
                 </div>
               </div>
             ))}
           </Col>
           <Col md={4}>
-            <div className="d-flex align-items-center px-2 p-2" style={{ backgroundColor: 'var(--header_background)', color: 'var(--header_search_text)', borderRadius: '8px' }}>
-              <p className="text-center w-100 fs-4">
-                Top 3 Project
-              </p>
+            <div
+              className="d-flex align-items-center px-2 p-2"
+              style={{
+                backgroundColor: "var(--header_background)",
+                color: "var(--header_search_text)",
+                borderRadius: "8px",
+              }}
+            >
+              <p className="text-center w-100 fs-4">Top 3 Project</p>
             </div>
             {topProject.map((item) => (
-              <div className="d-flex align-items-center  justify-content-between px-2 mt-2 p-2" style={{ backgroundColor: 'var(--header_background)', color: 'var(--header_search_text)', borderRadius: '8px' }}>
-                <div className="profile d-flex align-items-center" style={{ width: '80px', height: '40px', borderRadius: '8px' }}>
-                  <img src={`https://localhost:7005/Images/${item.avatarProject}`} alt="" />
+              <div
+                className="d-flex align-items-center  justify-content-between px-2 mt-2 p-2"
+                style={{
+                  backgroundColor: "var(--header_background)",
+                  color: "var(--header_search_text)",
+                  borderRadius: "8px",
+                }}
+              >
+                <div
+                  className="profile d-flex align-items-center"
+                  style={{ width: "80px", height: "40px", borderRadius: "8px" }}
+                >
+                  <img
+                    src={`https://localhost:7005/Images/${item.avatarProject}`}
+                    alt=""
+                  />
                 </div>
-                <p className="ms-2 w-50 txt-overflow" >{item.nameProject}</p>
+                <p className="ms-2 w-50 txt-overflow">{item.nameProject}</p>
                 <div className="d-flex align-items-center justify-content-end w-25 me-3">
                   {/* <p className="me-2 mt-1">{item.commentSum}</p> */}
-                  <Rating initialValue={item.ratingAvg} readonly={true} allowFraction={true} size={18} />
+                  <Rating
+                    initialValue={item.ratingAvg}
+                    readonly={true}
+                    allowFraction={true}
+                    size={18}
+                  />
                 </div>
               </div>
             ))}
@@ -694,8 +962,8 @@ function Statistic({ color }) {
               icon={<VscAccount size={21} />}
               title="Account"
               count={8}
-              active={activeTab === 'account'}
-              onClick={() => handleTabClick('account')}
+              active={activeTab === "account"}
+              onClick={() => handleTabClick("account")}
             />
           </Col>
           <Col md={2} className="px-0">
@@ -703,8 +971,8 @@ function Statistic({ color }) {
               icon={<GoPencil size={21} />}
               title="Post"
               count={8}
-              active={activeTab === 'post'}
-              onClick={() => handleTabClick('post')}
+              active={activeTab === "post"}
+              onClick={() => handleTabClick("post")}
             />
           </Col>
           <Col md={2} className="px-0">
@@ -712,8 +980,8 @@ function Statistic({ color }) {
               icon={<FiBookOpen size={21} />}
               title="Blog"
               count={8}
-              active={activeTab === 'blog'}
-              onClick={() => handleTabClick('blog')}
+              active={activeTab === "blog"}
+              onClick={() => handleTabClick("blog")}
             />
           </Col>
           <Col md={2} className="px-0">
@@ -721,16 +989,16 @@ function Statistic({ color }) {
               icon={<LuBook size={21} />}
               title="Project"
               count={8}
-              active={activeTab === 'project'}
-              onClick={() => handleTabClick('project')}
+              active={activeTab === "project"}
+              onClick={() => handleTabClick("project")}
             />
           </Col>
           <Col md={2} className="px-0">
             <CardItem
               icon={<TbMessageReport size={21} />}
               title="Report"
-              active={activeTab === 'report'}
-              onClick={() => handleTabClick('report')}
+              active={activeTab === "report"}
+              onClick={() => handleTabClick("report")}
             />
           </Col>
           <Col md={2} className="px-0">
@@ -738,13 +1006,13 @@ function Statistic({ color }) {
               icon={<MdVerified size={21} />}
               title="Verification"
               count={8}
-              active={activeTab === 'verification'}
-              onClick={() => handleTabClick('verification')}
+              active={activeTab === "verification"}
+              onClick={() => handleTabClick("verification")}
             />
           </Col>
         </Row>
         <Row className="ms-0 me-0">
-          <div className="bg_custom" style={{ borderRadius: '8px' }}>
+          <div className="bg_custom" style={{ borderRadius: "8px" }}>
             {renderChart()}
           </div>
         </Row>
