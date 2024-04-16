@@ -54,7 +54,6 @@ function Chat() {
   console.log("Line 54 --------------");
 
   useEffect(() => {
-    console.log("useEffect 1");
     const newConnection = new signalR.HubConnectionBuilder()
       .withUrl("https://localhost:7001/chatHub") // Replace with your server URL
       .withAutomaticReconnect()
@@ -62,28 +61,30 @@ function Chat() {
 
     setConnection(newConnection);
 
-    newConnection.on("ReceiveMessage", (idSender, messageText) => {
-      console.log(currentUserId);
-      console.log(messageText.idReceiver);
-      console.log(selectedUserId);
-      console.log(messageText.idSender);
-      console.log(activeUser);
-      console.log(messages);
-      console.log(conversations);
-      console.log(idSender);
+    // console.log(newConnection);
 
-      if (currentUserId === messageText.idReceiver && idSender === messageText.idSender){
-        setMessages((prevMessages) => {
-          if (Array.isArray(prevMessages)) {
-            return [...prevMessages, messageText];
-          } else {
-            return [messageText];
-          }
-        });
-        console.log("ReceiveMessage-------------------");
-        console.log(messageText);
-      }
-    });
+    // newConnection.on("ReceiveMessage", (idSender, messageText) => {
+    //   console.log(currentUserId);
+    //   console.log(messageText.idReceiver);
+    //   console.log(selectedUserId);
+    //   console.log(messageText.idSender);
+    //   console.log(activeUser);
+    //   console.log(messages);
+    //   console.log(conversations);
+    //   console.log(idSender);
+
+    //   if (currentUserId === messageText.idReceiver && idSender === messageText.idSender){
+    //     setMessages((prevMessages) => {
+    //       if (Array.isArray(prevMessages)) {
+    //         return [...prevMessages, messageText];
+    //       } else {
+    //         return [messageText];
+    //       }
+    //     });
+    //     console.log("ReceiveMessage-------------------");
+    //     console.log(messageText);
+    //   }
+    // });
 
     newConnection.on("RecallMessage", (messageText) => {
       setMessages((prevMessages) => prevMessages.map((message) => {
@@ -108,13 +109,39 @@ function Chat() {
     };
   }, [currentUserId]);
 
+  useEffect(() => {
+    console.log(connection);
+    connection?.on("ReceiveMessage", (idSender, messageText) => {
+      console.log(currentUserId);
+      console.log(messageText.idReceiver);
+      console.log(selectedUserId);
+      console.log(messageText.idSender);
+      console.log(activeUser);
+      console.log(messages);
+      console.log(conversations);
+      console.log(idSender);
+
+      if (currentUserId === messageText.idReceiver && idSender === messageText.idSender){
+        setMessages((prevMessages) => {
+          if (Array.isArray(prevMessages)) {
+            return [...prevMessages, messageText];
+          } else {
+            return [messageText];
+          }
+        });
+        console.log("ReceiveMessage-------------------");
+        console.log(messageText);
+      }
+    });
+    
+  }, [reset])
+
   const handleKeyDown = (event) => {
     if (event.key === 'Enter') {
       handleSendMessage();
     }
   }
   useEffect(() => {
-    console.log("useEffect 2");
     chatInstance.get(`GetConversationsByUser/${currentUserId}`)
       .then((res) => {
         setConversations(res?.data?.result);
@@ -172,7 +199,6 @@ function Chat() {
   console.log(messages);
 
   useEffect(() => {
-    console.log("useEffect 3");
     if (selectedUserId !== null) {
       console.log("TH2: selectedUserId !== null");
       console.log("currentUserId: " + currentUserId);
@@ -294,7 +320,7 @@ function Chat() {
           setMessage('');
           if (connection && file) {
             try {
-              connection.invoke('SendMessageToGroup', res?.data?.result.idConversation, currentUserId, res?.data?.result);
+              connection.invoke('SendMessageToGroup', res?.data?.result.idConversation, res?.data?.result);
               console.log('Invoke userId: ' + res?.data?.result.idConversation);
               console.log(res?.data?.result);
             } catch (error) {
@@ -323,7 +349,7 @@ function Chat() {
           setMessage('');
           if (connection && file) {
             try {
-              connection.invoke('SendMessageToGroup', res?.data?.result.idConversation, currentUserId, res?.data?.result);
+              connection.invoke('SendMessageToGroup', res?.data?.result.idConversation, res?.data?.result);
               console.log('Invoke userId: ' + res?.data?.result.idConversation);
               console.log(res?.data?.result);
             } catch (error) {
