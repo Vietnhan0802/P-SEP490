@@ -128,7 +128,10 @@ function Chat() {
       console.log(conversations);
       console.log(idSender);
 
-      if (currentUserId === messageText.idReceiver && idSender === messageText.idSender){
+      if (
+        currentUserId === messageText.idReceiver &&
+        idSender === messageText.idSender
+      ) {
         setMessages((prevMessages) => {
           if (Array.isArray(prevMessages)) {
             return [...prevMessages, messageText];
@@ -140,8 +143,7 @@ function Chat() {
         console.log(messageText);
       }
     });
-    
-  }, [reset])
+  }, [reset]);
 
   const handleKeyDown = (event) => {
     if (event.key === "Enter") {
@@ -149,7 +151,8 @@ function Chat() {
     }
   };
   useEffect(() => {
-    chatInstance.get(`GetConversationsByUser/${currentUserId}`)
+    chatInstance
+      .get(`GetConversationsByUser/${currentUserId}`)
       .then((res) => {
         setConversations(res?.data?.result);
         const initialConversation =
@@ -170,9 +173,7 @@ function Chat() {
               : initialConversation.idAccount1;
 
           chatInstance
-            .get(
-              `GetMessages/${currentUserId}/${receiverId}`
-            )
+            .get(`GetMessages/${currentUserId}/${receiverId}`)
             .then((res) => {
               setMessages(res.data.result);
               setActiveUser({
@@ -431,8 +432,12 @@ function Chat() {
           setMessage("");
           if (connection && file) {
             try {
-              connection.invoke('SendMessageToGroup', res?.data?.result.idConversation, res?.data?.result);
-              console.log('Invoke userId: ' + res?.data?.result.idConversation);
+              connection.invoke(
+                "SendMessageToGroup",
+                res?.data?.result.idConversation,
+                res?.data?.result
+              );
+              console.log("Invoke userId: " + res?.data?.result.idConversation);
               console.log(res?.data?.result);
             } catch (error) {
               console.error("Error sending message: ", error);
@@ -465,8 +470,12 @@ function Chat() {
           setMessage("");
           if (connection && file) {
             try {
-              connection.invoke('SendMessageToGroup', res?.data?.result.idConversation, res?.data?.result);
-              console.log('Invoke userId: ' + res?.data?.result.idConversation);
+              connection.invoke(
+                "SendMessageToGroup",
+                res?.data?.result.idConversation,
+                res?.data?.result
+              );
+              console.log("Invoke userId: " + res?.data?.result.idConversation);
               console.log(res?.data?.result);
             } catch (error) {
               console.error("Error sending message: ", error);
@@ -793,7 +802,7 @@ function Chat() {
                               >
                                 {item?.content}
                               </p>
-                              {item?.isYourself ?  <Dropdown
+                              <Dropdown
                                 className={`position-absolute ${
                                   item?.isYourself ? "option-other" : "option"
                                 } `}
@@ -812,16 +821,19 @@ function Chat() {
                                   >
                                     <p style={{ fontSize: "14px" }}>Delete</p>
                                   </Dropdown.Item>
-                                  <Dropdown.Item
-                                    onClick={() =>
-                                      handleRecallMess(item.idMessage)
-                                    }
-                                  >
-                                    <p style={{ fontSize: "14px" }}>Unsend</p>
-                                  </Dropdown.Item>
+                                  {item?.isYourself ? (
+                                    <Dropdown.Item
+                                      onClick={() =>
+                                        handleRecallMess(item.idMessage)
+                                      }
+                                    >
+                                      <p style={{ fontSize: "14px" }}>Unsend</p>
+                                    </Dropdown.Item>
+                                  ) : (
+                                    ""
+                                  )}
                                 </Dropdown.Menu>
-                              </Dropdown>:''}
-                             
+                              </Dropdown>
                             </div>
                           )}
 
