@@ -664,10 +664,10 @@ namespace User.Controllers
                 {
                     return new Response(HttpStatusCode.Unauthorized, "User has been blocked!");
                 }
-                if (!await _userManager.IsEmailConfirmedAsync(user))
-                {
-                    return new Response(HttpStatusCode.Unauthorized, "Please confirm your email before logging in!");
-                }
+                // if (!await _userManager.IsEmailConfirmedAsync(user))
+                // {
+                //     return new Response(HttpStatusCode.Unauthorized, "Please confirm your email before logging in!");
+                // }
 
                 var userRoles = await _userManager.GetRolesAsync(user);
                 var authClaims = new List<Claim>
