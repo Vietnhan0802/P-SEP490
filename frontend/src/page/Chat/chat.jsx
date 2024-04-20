@@ -84,34 +84,17 @@ function Chat() {
                     && (prevMessages[0].idSender === messageText.idSender || prevMessages[0].idSender === messageText.idReceiver)
                     && (prevMessages[0].idReceiver === messageText.idSender || prevMessages[0].idReceiver === messageText.idReceiver)) {
                     return [...prevMessages, messageText];
-                    console.log("1");
                   } else {
                     return [...prevMessages];
-                    console.log("2");
                   }
                 });
-                console.log("ReceiveMessage-------------------");
-                console.log(messageText);
+
               }
             })
             .catch((error) => {
               console.error(error);
             });
-          // console.log((res.data.result[0].idAccount1 === messageText.idReceiver || res.data.result[0].idAccount1 === messageText.idSender)
-          // &&(res.data.result[0].idAccount2 === messageText.idReceiver || res.data.result[0].idAccount2 === messageText.idSender))
-          // if ((res.data.result[0].idAccount1 === messageText.idReceiver || res.data.result[0].idAccount1 === messageText.idSender)
-          //   &&(res.data.result[0].idAccount2 === messageText.idReceiver || res.data.result[0].idAccount2 === messageText.idSender)) {
-          //   if (activeUser.receiverId === messageText.idSender) {
-          //     setMessages((prevMessages) => {
-          //       if (Array.isArray(prevMessages)) {
-          //         return [...prevMessages, messageText];
-          //       } else {
-          //         return [messageText];
-          //       }
-          //     });
-          //     console.log("ReceiveMessage-------------------");
-          //     console.log(messageText);
-          // }
+          
         })
         .catch((error) => {
           console.error(error);
@@ -158,8 +141,7 @@ function Chat() {
         setConversations(res?.data?.result);
         if (userId === undefined) {
           console.log("TH1: userId === undefined");
-          // console.log("currentUserId: " + currentUserId);
-          // console.log("receiveId: " + currentUserId === res.data.result[0].idAccount1 ? res.data.result[0].idAccount2 : res.data.result[0].idAccount1);
+        
           chatInstance.get(`GetMessages/${currentUserId}/${currentUserId === res.data.result[0].idAccount1 ? res.data.result[0].idAccount2 : res.data.result[0].idAccount1}`)
             .then((res) => {
               setMessages(res.data.result);
@@ -175,9 +157,6 @@ function Chat() {
             });
         }
         if (userId !== undefined) {
-          // console.log("TH2: userId !== undefined");
-          // console.log("currentUserId: " + currentUserId);
-          // console.log("userId: " + userId);
           chatInstance.get(`GetMessages/${currentUserId}/${userId}`)
             .then((res) => {
               setMessages(res.data.result);
@@ -194,9 +173,6 @@ function Chat() {
 
   useEffect(() => {
     if (selectedUserId !== null) {
-      // console.log("TH2: selectedUserId !== null");
-      // console.log("currentUserId: " + currentUserId);
-      // console.log("selectedUserId: " + selectedUserId);
       chatInstance
         .get(`GetMessages/${currentUserId}/${selectedUserId}`)
         .then((res) => {
@@ -249,9 +225,6 @@ function Chat() {
     const formData = new FormData();
     formData.append("content", message);
     if (userId !== undefined) {
-      // console.log("TH1: userId !== undefined");
-      // console.log("currentUserId: " + currentUserId);
-      // console.log("userId: " + userId);
       chatInstance
         .post(`SendMessage/${currentUserId}/${userId}`, formData, {
           headers: {
@@ -267,14 +240,6 @@ function Chat() {
               connection.invoke('SendMessageToClient', res?.data?.result.idReceiver, res?.data?.result);
               console.log('receiveID: ' + res?.data?.result.idReceiver);
               console.log(res?.data?.result);
-              // connection.invoke('SendMessageToGroup', res?.data?.result.idConversation, currentUserId, res?.data?.result);
-              // console.log('Invoke userId: ' + res?.data?.result.idConversation);
-              // console.log(res?.data?.result);
-
-              // connection.invoke('AddToGroup', res?.data?.result.idSender, res?.data?.result.idConversation);
-              // console.log('Invoke userId: ' + res?.data?.result.idConversation);
-              // console.log(res?.data?.result);
-              // connection.invoke('AddToGroup', res?.data?.result.idReceiver, res?.data?.result.idConversation);
             } catch (error) {
               console.error("Error sending message: ", error);
             }
@@ -282,9 +247,6 @@ function Chat() {
         })
         .catch((error) => console.error(error));
     } else {
-      console.log("TH2: ");
-      console.log("currentUserId: " + currentUserId);
-      console.log("activeUser: " + activeUser.receiverId);
       chatInstance
         .post(
           `SendMessage/${currentUserId}/${activeUser.receiverId}`,
@@ -304,12 +266,6 @@ function Chat() {
               connection.invoke('SendMessageToClient', res?.data?.result.idReceiver, res?.data?.result);
               console.log('receiveID: ' + res?.data?.result.idReceiver);
               console.log(res?.data?.result);
-              // connection.invoke('SendMessageToGroup', res?.data?.result.idConversation, currentUserId, res?.data?.result);
-              // console.log('Invoke room: ' + res?.data?.result.idConversation);
-              // console.log(res?.data?.result);
-
-              //connection.invoke('AddToGroup', res?.data?.result.idSender, res?.data?.result.idConversation);
-              //connection.invoke('AddToGroup', res?.data?.result.idReceiver, res?.data?.result.idConversation);
             } catch (error) {
               console.error("Error sending message: ", error);
             }

@@ -18,6 +18,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import tick from "../images/common/verifiedTick.png";
 export default function Header({
+  valuePopup,
   activeComponent,
   onItemClick,
   changeImage,

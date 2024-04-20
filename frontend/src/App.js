@@ -38,12 +38,22 @@ function App() {
   const [follow, setFollow] = useState(true);
   const [following, setFollowing] = useState([]);
   const [color, setColor] = useState();
+  const [value, setValue] = useState();
   const sessionData = JSON.parse(sessionStorage.getItem("userSession")) || {};
 
-  const { currentUserId,role } = sessionData;
+  const { currentUserId, role } = sessionData;
 
   useEffect(() => {
-    if (currentUserId === undefined || role ===undefined) {
+    if (
+      location.pathname === "/" ||
+      location.pathname === "/signup" ||
+      location.pathname === "/forgetpassword" ||
+      location.pathname === "/confirmemail" ||
+      location.pathname === "/notfound" ||
+      location.pathname === "/resetpassword"
+    ) {
+      return;
+    } else if (currentUserId === undefined || role === undefined) {
       navigate("/");
     }
   }, [location.pathname]);
@@ -107,6 +117,9 @@ function App() {
   const changeThemeHeader = (value) => {
     setColor(value);
   };
+  const onItemClick = (value) => {
+    setValue(value);
+  };
   return (
     <div
       className="App"
@@ -128,7 +141,10 @@ function App() {
         <Route path="/blogdetail" element={<BlogDetail value={following} />} />
         <Route path="/projectdetail" element={<ProjectDetail />} />
         <Route path="/dashboard" element={<DashBoard />} />
-        <Route path="/post" element={<Post value={following} />} />
+        <Route
+          path="/post"
+          element={<Post value={following} onItemClick={onItemClick} />}
+        />
         <Route path="/blog" element={<Blog value={following} />} />
         <Route path="/project" element={<Project value={following} />} />
         <Route path="/ownproject" element={<OwnProject value={following} />} />
