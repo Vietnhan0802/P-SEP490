@@ -108,9 +108,9 @@ function Post({ value }) {
       .get(`GetAllPublicPosts/${currentUserId}`)
       .then((res) => {
         const postList = res?.data?.result;
-        console.log(postList)
+        console.log(postList);
         setPostList([]);
-        postList.map((element) => {
+        postList?.map((element) => {
           const time = formatTimeAgo(element.createdDate);
           setPostList((prevData) => [
             ...prevData,
@@ -140,7 +140,7 @@ function Post({ value }) {
       .then((res) => {
         const postList = res?.data?.result;
         setPostListTrend([]);
-        postList.map((element) => {
+        postList?.map((element) => {
           const time = formatTimeAgo(element.createdDate);
           setPostListTrend((prevData) => [
             ...prevData,

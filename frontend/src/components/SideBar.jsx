@@ -92,8 +92,8 @@ function SideBar() {
   const filteredSidebarItems = sidebarItems.filter((item) => {
     // Customize this condition based on your role logic
     return (
-      item.userRole.toLowerCase() === role.toLowerCase() ||
-      item.userRole.toLowerCase() === "all" || item?.otherRole?.toLowerCase() === role.toLowerCase()
+      item?.userRole?.toLowerCase() === role?.toLowerCase() ||
+      item?.userRole?.toLowerCase() === "all" || item?.otherRole?.toLowerCase() === role?.toLowerCase()
     );
   });
   return (

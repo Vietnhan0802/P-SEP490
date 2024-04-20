@@ -37,9 +37,16 @@ function App() {
   const [changeImage, setChangeImage] = useState(false);
   const [follow, setFollow] = useState(true);
   const [following, setFollowing] = useState([]);
-  const [color,setColor] = useState();
+  const [color, setColor] = useState();
   const sessionData = JSON.parse(sessionStorage.getItem("userSession")) || {};
-  const { currentUserId } = sessionData;
+
+  const { currentUserId,role } = sessionData;
+
+  useEffect(() => {
+    if (currentUserId === undefined || role ===undefined) {
+      navigate("/");
+    }
+  }, [location.pathname]);
   useEffect(() => {
     // Kiểm tra chiều cao của .App và nếu lớn hơn 100vh thì chuyển về 100%
     const appElement = appRef.current;
@@ -99,7 +106,7 @@ function App() {
   }, [currentUserId, follow]);
   const changeThemeHeader = (value) => {
     setColor(value);
-  }
+  };
   return (
     <div
       className="App"
@@ -107,7 +114,11 @@ function App() {
       style={{ backgroundColor: "var(--body_background)", minHeight: "100vh" }}
     >
       {isHeaderVisible && (
-        <Header onItemClick={handleHeaderItemClick} changeImage={changeImage} changeThemeHeader={changeThemeHeader} />
+        <Header
+          onItemClick={handleHeaderItemClick}
+          changeImage={changeImage}
+          changeThemeHeader={changeThemeHeader}
+        />
       )}
       <Routes>
         <Route path="/" element={<SignIn />} />

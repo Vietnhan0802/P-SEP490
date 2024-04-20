@@ -14,7 +14,7 @@ import Notify from "../page/Notify/notify";
 import DarkMode from "./darkmode";
 import Translate from "./translate";
 import { userInstance } from "../axios/axiosConfig";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import tick from "../images/common/verifiedTick.png";
 export default function Header({
@@ -24,6 +24,7 @@ export default function Header({
   changeThemeHeader,
 }) {
   const { t } = useTranslation();
+  const location = useLocation(); // Get the current location
   const sessionData = JSON.parse(sessionStorage.getItem("userSession")) || {};
   const { currentUserId } = sessionData;
   const navigate = useNavigate();
@@ -35,6 +36,15 @@ export default function Header({
   const [filterListUser, setFilterlistUser] = useState([]);
   const [searchName, setSearchName] = useState("");
   const [notiCount, setNotiCount] = useState();
+
+  useEffect(() => {
+    // Check if the current URL is '/chat'
+    if (location.pathname === "/chat") {
+      // Do something if URL is '/chat'
+      handleItemClick("chat");
+    }
+  }, [location.pathname]); // Re-run the effect when the location.pathname changes
+
   useEffect(() => {
     userInstance
       .get(`/GetAllUsers`)
@@ -46,7 +56,7 @@ export default function Header({
         setUsers(res?.data?.result);
       })
       .catch((err) => {
-        console.log(err.response.data);
+        console.log(err?.response?.data);
       });
   }, []);
   useEffect(() => {
@@ -64,7 +74,7 @@ export default function Header({
         }
       })
       .catch((err) => {
-        console.log(err.response.data);
+        console.log(err?.response?.data);
       });
   }, [changeImage, currentUserId]);
   const handlePopup = () => {
