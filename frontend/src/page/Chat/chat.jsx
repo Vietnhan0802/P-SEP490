@@ -72,11 +72,11 @@ function Chat() {
             .then((res) => {
               // setMessages(res.data.result);
               // console.log(res.data.result);
-              setActiveUser({
-                avatar: res?.data?.result[0].avatarReceiver,
-                name: res?.data?.result[0].nameReceiver,
-                receiverId: res?.data?.result[0].idReceiver === currentUserId ? res?.data?.result[0].idSender : res?.data?.result[0].idReceiver
-              });
+              // setActiveUser({
+              //   avatar: res?.data?.result[0].avatarReceiver,
+              //   name: res?.data?.result[0].nameReceiver,
+              //   receiverId: res?.data?.result[0].idReceiver === currentUserId ? res?.data?.result[0].idSender : res?.data?.result[0].idReceiver
+              // });
               if ((res.data.result[0].idSender === currentUserId === messageText.idReceiver ? messageText.idSender : messageText.idReceiver)) {
                 setMessages((prevMessages) => {
                   console.log(prevMessages)
