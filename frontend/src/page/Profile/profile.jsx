@@ -248,7 +248,7 @@ function Profile({ handleChangeImg, value, resetFollowing }) {
     setResetAvatar(!resetAvatar);
   }
   const navigateChat = () => {
-    navigate('/chat', { state: { userId: userId } });
+    navigate('/chat', { state: { userChatId: userId } });
   }
   const handleEditInfor = () => {
     setUpdateDisplay(true);

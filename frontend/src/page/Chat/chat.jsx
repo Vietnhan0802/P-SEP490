@@ -21,7 +21,8 @@ function Chat() {
   const sessionData = JSON.parse(sessionStorage.getItem("userSession")) || {};
   const { currentUserId } = sessionData;
   const location = useLocation();
-  const { userId } = location.state || {};
+  const { userChatId } = location.state || {};
+  const [userId, setUserId] = useState(userChatId);
   const [conversations, setConversations] = useState([]);
   const [filterConversations, setFilterConversations] = useState([]);
   const [messages, setMessages] = useState([]);
@@ -38,7 +39,8 @@ function Chat() {
     setSearch(event.target.value);
     if (event.target.value === "") {
       // corrected condition
-      const originalUsers = JSON.parse(sessionStorage.getItem("originalUserList")) || [];
+      const originalUsers =
+        JSON.parse(sessionStorage.getItem("originalUserList")) || [];
       // console.log(originalUsers)
       setFilterConversations(originalUsers);
     } else {
@@ -50,10 +52,9 @@ function Chat() {
         )
       );
     }
-  }
+  };
 
   useEffect(() => {
-
     const newConnection = new signalR.HubConnectionBuilder()
       .withUrl(`https://localhost:7001/chatHub?userId=${currentUserId}`) // Replace with your server URL
       .withAutomaticReconnect()
@@ -61,35 +62,64 @@ function Chat() {
 
     setConnection(newConnection);
 
-
     newConnection.on("ReceiveMessage", (connectId, messageText) => {
-
-      chatInstance.get(`GetConversationsByUser/${currentUserId}`)
+      chatInstance
+        .get(`GetConversationsByUser/${currentUserId}`)
         .then((res) => {
           setConversations(res?.data?.result);
-          console.log(currentUserId === messageText.idReceiver ? messageText.idSender : messageText.idReceiver);
-          chatInstance.get(`GetMessages/${currentUserId}/${currentUserId === messageText.idReceiver ? messageText.idSender : messageText.idReceiver}`)
+          console.log(
+            currentUserId === messageText.idReceiver
+              ? messageText.idSender
+              : messageText.idReceiver
+          );
+          chatInstance
+            .get(
+              `GetMessages/${currentUserId}/${
+                currentUserId === messageText.idReceiver
+                  ? messageText.idSender
+                  : messageText.idReceiver
+              }`
+            )
             .then((res) => {
-              if ((res?.data?.result[0].idSender === currentUserId === messageText?.idReceiver ? messageText?.idSender : messageText?.idReceiver)) {
+              if (
+                (res?.data?.result[0].idSender === currentUserId) ===
+                messageText?.idReceiver
+                  ? messageText?.idSender
+                  : messageText?.idReceiver
+              ) {
                 setMessages((prevMessages) => {
-                  console.log(prevMessages)
-                  if ((Array.isArray(prevMessages)
-                    && (prevMessages[0]?.idSender === messageText.idSender || prevMessages[0]?.idSender === messageText.idReceiver)
-                    && (prevMessages[0]?.idReceiver === messageText.idSender || prevMessages[0]?.idReceiver === messageText.idReceiver)) || prevMessages.length === 0) {
-                      if (((prevMessages[0]?.idSender === messageText.idSender || prevMessages[0]?.idSender === messageText.idReceiver)
-                      && (prevMessages[0]?.idReceiver === messageText.idSender || prevMessages[0]?.idReceiver === messageText.idReceiver)) || prevMessages.length === 0){
+                  console.log(prevMessages);
+                  if (
+                    (Array.isArray(prevMessages) &&
+                      (prevMessages[0]?.idSender === messageText.idSender ||
+                        prevMessages[0]?.idSender === messageText.idReceiver) &&
+                      (prevMessages[0]?.idReceiver === messageText.idSender ||
+                        prevMessages[0]?.idReceiver ===
+                          messageText.idReceiver)) ||
+                    prevMessages.length === 0
+                  ) {
+                    if (
+                      ((prevMessages[0]?.idSender === messageText.idSender ||
+                        prevMessages[0]?.idSender === messageText.idReceiver) &&
+                        (prevMessages[0]?.idReceiver === messageText.idSender ||
+                          prevMessages[0]?.idReceiver ===
+                            messageText.idReceiver)) ||
+                      prevMessages.length === 0
+                    ) {
                       setActiveUser({
                         avatar: res?.data?.result[0].avatarReceiver,
                         name: res?.data?.result[0].nameReceiver,
-                        receiverId: res?.data?.result[0].idReceiver === currentUserId ? res?.data?.result[0].idSender : res?.data?.result[0].idReceiver
+                        receiverId:
+                          res?.data?.result[0].idReceiver === currentUserId
+                            ? res?.data?.result[0].idSender
+                            : res?.data?.result[0].idReceiver,
                       });
                     }
-                    return [...prevMessages, messageText];                   
+                    return [...prevMessages, messageText];
                   } else {
                     return [...prevMessages];
                   }
                 });
-
               }
             })
             .catch((error) => {
@@ -102,34 +132,24 @@ function Chat() {
     });
 
     newConnection.on("RecallMessage", (connectId, messageText) => {
-      chatInstance.get(`GetConversationsByUser/${currentUserId}`)
+      chatInstance
+        .get(`GetConversationsByUser/${currentUserId}`)
         .then((res) => {
           setConversations(res?.data?.result);
-          console.log(currentUserId === messageText.idReceiver ? messageText.idSender : messageText.idReceiver);
-          chatInstance.get(`GetMessages/${currentUserId}/${currentUserId === messageText.idReceiver ? messageText.idSender : messageText.idReceiver}`)
+          console.log(
+            currentUserId === messageText.idReceiver
+              ? messageText.idSender
+              : messageText.idReceiver
+          );
+          chatInstance
+            .get(
+              `GetMessages/${currentUserId}/${
+                currentUserId === messageText.idReceiver
+                  ? messageText.idSender
+                  : messageText.idReceiver
+              }`
+            )
             .then((res) => {
-              // if ((res?.data?.result[0].idSender === currentUserId === messageText?.idReceiver ? messageText?.idSender : messageText?.idReceiver)) {
-              //   setMessages((prevMessages) => {
-              //     console.log(prevMessages)
-              //     if ((Array.isArray(prevMessages)
-              //       && (prevMessages[0]?.idSender === messageText.idSender || prevMessages[0]?.idSender === messageText.idReceiver)
-              //       && (prevMessages[0]?.idReceiver === messageText.idSender || prevMessages[0]?.idReceiver === messageText.idReceiver)) || prevMessages.length === 0) {
-              //         if (((prevMessages[0]?.idSender === messageText.idSender || prevMessages[0]?.idSender === messageText.idReceiver)
-              //         && (prevMessages[0]?.idReceiver === messageText.idSender || prevMessages[0]?.idReceiver === messageText.idReceiver)) || prevMessages.length === 0){
-              //         setActiveUser({
-              //           avatar: res?.data?.result[0].avatarReceiver,
-              //           name: res?.data?.result[0].nameReceiver,
-              //           receiverId: res?.data?.result[0].idReceiver === currentUserId ? res?.data?.result[0].idSender : res?.data?.result[0].idReceiver
-              //         });
-              //       }
-              //       return [...prevMessages, messageText];                   
-              //     } else {
-              //       return [...prevMessages];
-              //     }
-              //   });
-              //   console.log("ReceiveMessage-------------------");
-              //   console.log(messageText);
-              // }
               setMessages((prevMessages) =>
                 prevMessages.map((message) => {
                   if (message.idMessage === messageText.idMessage) {
@@ -148,16 +168,6 @@ function Chat() {
         .catch((error) => {
           console.error(error);
         });
-      // setMessages((prevMessages) =>
-      //   prevMessages.map((message) => {
-      //     if (message.idMessage === messageText.idMessage) {
-      //       return { ...message, isRecall: true };
-      //     }
-      //     return message;
-      //   })
-      // );
-      // console.log("RecallMessage-------------------");
-      // console.log(messageText);
     });
 
     newConnection
@@ -179,23 +189,32 @@ function Chat() {
     if (event.key === "Enter") {
       handleSendMessage();
     }
-  }
+  };
 
   useEffect(() => {
-    chatInstance.get(`GetConversationsByUser/${currentUserId}`)
+    chatInstance
+      .get(`GetConversationsByUser/${currentUserId}`)
       .then((res) => {
         setConversations(res?.data?.result);
         if (userId === undefined) {
           console.log("TH1: userId === undefined");
-          // console.log("currentUserId: " + currentUserId);
-          // console.log("receiveId: " + currentUserId === res.data.result[0].idAccount1 ? res.data.result[0].idAccount2 : res.data.result[0].idAccount1);
-          chatInstance.get(`GetMessages/${currentUserId}/${currentUserId === res?.data?.result[0].idAccount1 ? res?.data?.result[0].idAccount2 : res?.data?.result[0].idAccount1}`)
+          chatInstance
+            .get(
+              `GetMessages/${currentUserId}/${
+                currentUserId === res?.data?.result[0].idAccount1
+                  ? res?.data?.result[0].idAccount2
+                  : res?.data?.result[0].idAccount1
+              }`
+            )
             .then((res) => {
               setMessages(res.data.result);
               setActiveUser({
                 avatar: res?.data?.result[0].avatarReceiver,
                 name: res?.data?.result[0].nameReceiver,
-                receiverId: res?.data?.result[0].idReceiver === currentUserId ? res?.data?.result[0].idSender : res?.data?.result[0].idReceiver
+                receiverId:
+                  res?.data?.result[0].idReceiver === currentUserId
+                    ? res?.data?.result[0].idSender
+                    : res?.data?.result[0].idReceiver,
               });
               console.log(activeUser);
             })
@@ -204,7 +223,8 @@ function Chat() {
             });
         }
         if (userId !== undefined) {
-          chatInstance.get(`GetMessages/${currentUserId}/${userId}`)
+          chatInstance
+            .get(`GetMessages/${currentUserId}/${userId}`)
             .then((res) => {
               setMessages(res.data.result);
             })
@@ -284,8 +304,12 @@ function Chat() {
           setMessage("");
           if (connection && message) {
             try {
-              connection.invoke('SendMessageToClient', res?.data?.result.idReceiver, res?.data?.result);
-              console.log('receiveID: ' + res?.data?.result.idReceiver);
+              connection.invoke(
+                "SendMessageToClient",
+                res?.data?.result.idReceiver,
+                res?.data?.result
+              );
+              console.log("receiveID: " + res?.data?.result.idReceiver);
               console.log(res?.data?.result);
             } catch (error) {
               console.error("Error sending message: ", error);
@@ -310,8 +334,12 @@ function Chat() {
           setMessage("");
           if (connection && message) {
             try {
-              connection.invoke('SendMessageToClient', res?.data?.result.idReceiver, res?.data?.result);
-              console.log('receiveID: ' + res?.data?.result.idReceiver);
+              connection.invoke(
+                "SendMessageToClient",
+                res?.data?.result.idReceiver,
+                res?.data?.result
+              );
+              console.log("receiveID: " + res?.data?.result.idReceiver);
               console.log(res?.data?.result);
             } catch (error) {
               console.error("Error sending message: ", error);
@@ -343,11 +371,11 @@ function Chat() {
           if (connection && file) {
             try {
               connection.invoke(
-                "SendMessageToGroup",
-                res?.data?.result.idConversation,
+                "SendMessageToClient",
+                res?.data?.result.idReceiver,
                 res?.data?.result
               );
-              console.log("Invoke userId: " + res?.data?.result.idConversation);
+              console.log("receiveID: " + res?.data?.result.idReceiver);
               console.log(res?.data?.result);
             } catch (error) {
               console.error("Error sending message: ", error);
@@ -381,11 +409,11 @@ function Chat() {
           if (connection && file) {
             try {
               connection.invoke(
-                "SendMessageToGroup",
-                res?.data?.result.idConversation,
+                "SendMessageToClient",
+                res?.data?.result.idReceiver,
                 res?.data?.result
               );
-              console.log("Invoke userId: " + res?.data?.result.idConversation);
+              console.log("receiveID: " + res?.data?.result.idReceiver);
               console.log(res?.data?.result);
             } catch (error) {
               console.error("Error sending message: ", error);
@@ -463,7 +491,11 @@ function Chat() {
         setReset(!reset);
         if (connection) {
           try {
-            connection.invoke("RecallMessage", res?.data?.result.idReceiver, res?.data?.result);
+            connection.invoke(
+              "RecallMessage",
+              res?.data?.result.idReceiver,
+              res?.data?.result
+            );
             console.log("Invoke userId: " + res?.data?.result.idReceiver);
             console.log(res?.data?.result);
           } catch (error) {
@@ -495,8 +527,9 @@ function Chat() {
               />
             </div>
             <div
-              className={`position-absolute w-100 form-control overflow-hidden ${search === "" ? "hidden-box" : ""
-                }`}
+              className={`position-absolute w-100 form-control overflow-hidden ${
+                search === "" ? "hidden-box" : ""
+              }`}
               style={{
                 textOverflow: "ellipsis",
                 top: " 41px",
@@ -608,7 +641,7 @@ function Chat() {
           <div className="chat-box-header">
             <div className="d-flex align-items-center p-3">
               {messages?.idConversation ===
-                "00000000-0000-0000-0000-000000000000" ? (
+              "00000000-0000-0000-0000-000000000000" ? (
                 <>
                   <img
                     src={messages?.avatarReceiver}
@@ -654,120 +687,238 @@ function Chat() {
           <div className="chat-box-body" ref={chatBoxBodyRef}>
             {Array.isArray(messages) && messages?.length > 0
               ? messages?.map((item) => (
-                <div
-                  key={item?.idMessage}
-                  style={{ marginTop: "22px" }}
-                  className={`chat-content ${item?.isYourself ? "d-flex justify-content-end" : ""
+                  <div
+                    key={item?.idMessage}
+                    style={{ marginTop: "22px" }}
+                    className={`chat-content ${
+                      item?.isYourself ? "d-flex justify-content-end" : ""
                     }`}
-                >
-                  <div>
-                    <div
-                      className="d-flex align-items-center p-3"
-                      style={{ width: "500px" }}
-                    >
-                      {item?.isYourself ? (
-                        ""
-                      ) : (
-                        <img
-                          src={
-                            item.idSender !== currentUserId
-                              ? item.avatarReceiver
-                              : item?.avatarSender
-                          }
-                          alt=""
-                          className="avatar"
-                        />
-                      )}
-                      <div className="ms-2 w-100">
-                        <div className="d-flex justify-content-between">
-                          <p className="mb-0 name">
-                            {item?.isYourself
-                              ? item?.nameSender
-                              : item?.nameReceiver}
-                          </p>
-                          <p className="mb-0 text">
-                            {formatDate(item?.createdDate)}
-                          </p>
-                        </div>
-                        {item?.content && (
-                          <div className="position-relative">
-                            {item?.isRecall && (
-                              <div className="w-100 h-100 position-absolute d-flex align-items-center bg-blur">
-                                <p className="ms-3 white">
-                                  Message is unsend
-                                </p>
-                              </div>
-                            )}
-
-                            <p
-                              className={`mb ${item?.isYourself ? "self-content" : "content"
-                                }`}
-                            >
-                              {item?.content}
-                            </p>
-                            <Dropdown
-                              className={`position-absolute ${item?.isYourself ? "option-other" : "option"
-                                } `}
-                            >
-                              <Dropdown.Toggle
-                                variant="white"
-                                className="border-none text-body"
-                              >
-                                <BsThreeDots size={14} />
-                              </Dropdown.Toggle>
-                              <Dropdown.Menu style={{ minWidth: "auto" }}>
-                                <Dropdown.Item
-                                  onClick={() =>
-                                    handleDeleteMess(item.idMessage)
-                                  }
-                                >
-                                  <p style={{ fontSize: "14px" }}>Delete</p>
-                                </Dropdown.Item>
-                                {item?.isYourself ? (
-                                  <Dropdown.Item
-                                    onClick={() =>
-                                      handleRecallMess(item.idMessage)
-                                    }
-                                  >
-                                    <p style={{ fontSize: "14px" }}>Unsend</p>
-                                  </Dropdown.Item>
-                                ) : (
-                                  ""
-                                )}
-                              </Dropdown.Menu>
-                            </Dropdown>
-                          </div>
-                        )}
-
-                        {item?.file && (
-                          <a
-                            className="text-white"
-                            href={` https://localhost:7001/Images/${item?.file}`} // Directly use the cvFile URL here
-                            target="_blank" // Ensure it opens in a new tab
-                            rel="noopener noreferrer" // Improve security for opening new tabs
-                            download
-                          >
-                            <div
-                              className={`mb ${item?.isYourself ? "self-content" : "content"
-                                }`}
-                            >
-                              <FaRegFileAlt /> {item?.file}
-                            </div>
-                          </a>
-                        )}
-                        {item?.image && (
+                  >
+                    <div>
+                      <div
+                        className="d-flex align-items-center p-3"
+                        style={{ width: "500px" }}
+                      >
+                        {item?.isYourself ? (
+                          ""
+                        ) : (
                           <img
-                            src={`https://localhost:7001/Images/${item?.image}`} // Directly use the cvFile URL here
-                            alt="text_image"
-                            className="text-white"
-                            style={{ borderRadius: "8px", maxWidth: "460px" }}
+                            src={
+                              item.idSender !== currentUserId
+                                ? item.avatarReceiver
+                                : item?.avatarSender
+                            }
+                            alt=""
+                            className="avatar"
                           />
                         )}
+                        <div className="ms-2 w-100">
+                          <div className="d-flex justify-content-between">
+                            <p className="mb-0 name">
+                              {item?.isYourself
+                                ? item?.nameSender
+                                : item?.nameReceiver}
+                            </p>
+                            <p className="mb-0 text">
+                              {formatDate(item?.createdDate)}
+                            </p>
+                          </div>
+                          {item?.content && (
+                            <div className="position-relative">
+                              {item?.isRecall && (
+                                <div className="w-100 h-100 position-absolute d-flex align-items-center bg-blur">
+                                  <p className="ms-3 white">
+                                    Message is unsend
+                                  </p>
+                                </div>
+                              )}
+
+                              <p
+                                className={`mb ${
+                                  item?.isYourself ? "self-content" : "content"
+                                }`}
+                              >
+                                {item?.content}
+                              </p>
+                              <Dropdown
+                                className={`position-absolute ${
+                                  item?.isYourself ? "option-other" : "option"
+                                } `}
+                              >
+                                <Dropdown.Toggle
+                                  variant="white"
+                                  className="border-none text-body"
+                                >
+                                  <BsThreeDots size={14} />
+                                </Dropdown.Toggle>
+                                <Dropdown.Menu style={{ minWidth: "auto" }}>
+                                  <Dropdown.Item
+                                    onClick={() =>
+                                      handleDeleteMess(item.idMessage)
+                                    }
+                                  >
+                                    <p style={{ fontSize: "14px" }}>Delete</p>
+                                  </Dropdown.Item>
+                                  {item?.isYourself ? (
+                                    <Dropdown.Item
+                                      onClick={() =>
+                                        handleRecallMess(item.idMessage)
+                                      }
+                                    >
+                                      <p style={{ fontSize: "14px" }}>Unsend</p>
+                                    </Dropdown.Item>
+                                  ) : (
+                                    ""
+                                  )}
+                                </Dropdown.Menu>
+                              </Dropdown>
+                            </div>
+                          )}
+                          {item?.file && (
+                            <div className="position-relative">
+                              {item?.isRecall && (
+                                <div className="w-100 h-100 position-absolute d-flex align-items-center bg-blur">
+                                  <p className="ms-3 white">
+                                    Message is unsend
+                                  </p>
+                                </div>
+                              )}
+
+                              <p
+                                className={`mb ${
+                                  item?.isYourself && !item?.isRecall? "self-content" : "content"
+                                }`}
+                              >
+                                <a
+                                  className="text-white"
+                                  href={` https://localhost:7001/Images/${item?.file}`} // Directly use the cvFile URL here
+                                  target="_blank" // Ensure it opens in a new tab
+                                  rel="noopener noreferrer" // Improve security for opening new tabs
+                                  download
+                                >
+                                  <div
+                                    className={`mb ${
+                                      item?.isYourself
+                                        ? "self-content"
+                                        : "content"
+                                    }`}
+                                  >
+                                    <FaRegFileAlt /> {item?.file}
+                                  </div>
+                                </a>
+                              </p>
+                              <Dropdown
+                                className={`position-absolute ${
+                                  item?.isYourself ? "option-other" : "option"
+                                } `}
+                              >
+                                <Dropdown.Toggle
+                                  variant="white"
+                                  className="border-none text-body"
+                                >
+                                  <BsThreeDots size={14} />
+                                </Dropdown.Toggle>
+                                <Dropdown.Menu style={{ minWidth: "auto" }}>
+                                  <Dropdown.Item
+                                    onClick={() =>
+                                      handleDeleteMess(item.idMessage)
+                                    }
+                                  >
+                                    <p style={{ fontSize: "14px" }}>Delete</p>
+                                  </Dropdown.Item>
+                                  {item?.isYourself ? (
+                                    <Dropdown.Item
+                                      onClick={() =>
+                                        handleRecallMess(item.idMessage)
+                                      }
+                                    >
+                                      <p style={{ fontSize: "14px" }}>Unsend</p>
+                                    </Dropdown.Item>
+                                  ) : (
+                                    ""
+                                  )}
+                                </Dropdown.Menu>
+                              </Dropdown>
+                            </div>
+                          )}
+
+                          {item?.image && (
+                            <div className="position-relative">
+                              {item?.isRecall && (
+                                <div className="w-100 h-100 position-absolute d-flex align-items-center bg-blur">
+                                  <p className="ms-3 white">
+                                    Message is unsend
+                                  </p>
+                                </div>
+                              )}
+
+                              <p
+                                className={`mb ${
+                                  item?.isYourself ? "self-content" : "content"
+                                }`}
+                              >
+                                <img
+                                  src={`https://localhost:7001/Images/${item?.image}`} // Directly use the cvFile URL here
+                                  alt="text_image"
+                                  className="text-white"
+                                  style={{
+                                    borderRadius: "8px",
+                                    maxWidth: "460px",
+                                    maxHeight: "200px",
+                                  }}
+                                />
+                              </p>
+                              <Dropdown
+                                className={`position-absolute ${
+                                  item?.isYourself ? "image-option-other" : "image-option"
+                                } `}
+                              >
+                                <Dropdown.Toggle
+                                  variant="white"
+                                  className="border-none text-body"
+                                >
+                                  <BsThreeDots size={14} />
+                                </Dropdown.Toggle>
+                                <Dropdown.Menu style={{ minWidth: "auto" }}>
+                                  <Dropdown.Item
+                                    onClick={() =>
+                                      handleDeleteMess(item.idMessage)
+                                    }
+                                  >
+                                    <p style={{ fontSize: "14px" }}>Delete</p>
+                                  </Dropdown.Item>
+                                  {item?.isYourself ? (
+                                    <Dropdown.Item
+                                      onClick={() =>
+                                        handleRecallMess(item.idMessage)
+                                      }
+                                    >
+                                      <p style={{ fontSize: "14px" }}>Unsend</p>
+                                    </Dropdown.Item>
+                                  ) : (
+                                    ""
+                                  )}
+                                </Dropdown.Menu>
+                              </Dropdown>
+                            </div>
+                          )}
+                          {/* {item?.image && (
+                            <img
+                              src={`https://localhost:7001/Images/${item?.image}`} // Directly use the cvFile URL here
+                              alt="text_image"
+                              className="text-white"
+                              style={{
+                                borderRadius: "8px",
+                                maxWidth: "460px",
+                                maxHeight: "200px",
+                              }}
+                            />
+                          )} */}
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              ))
+                ))
               : ""}
           </div>
           <div className="chat-box-input position-absolute bottom-0 w-100">

@@ -7,15 +7,23 @@
   display: none;
   border-color: none;
 }
-.option{
+.option {
   top: -32%;
   right: -10%;
 }
-.option-other{
+.image-option {
+  top: -7%;
+  right: -10%;
+}
+.image-option-other {
+  top: -7%;
+  left: -10%;
+}
+.option-other {
   top: -32%;
   left: -10%;
 }
-.bg-blur{
+.bg-blur {
   border-radius: 8px;
   background-color: rgba(185, 185, 185, 1);
 }
@@ -96,7 +104,7 @@
   }
   .chat-box-body {
     overflow-y: auto;
-    max-height: 65vh;
+    max-height: 62.4vh;
     .content {
       border-radius: 8px 8px 8px 8px;
       //background: var(--Gray-100, #f2f4f7);
