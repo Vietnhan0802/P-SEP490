@@ -14,16 +14,19 @@ import Notify from "../page/Notify/notify";
 import DarkMode from "./darkmode";
 import Translate from "./translate";
 import { userInstance } from "../axios/axiosConfig";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import tick from "../images/common/verifiedTick.png";
 export default function Header({
+  valuePopup,
   activeComponent,
   onItemClick,
   changeImage,
   changeThemeHeader,
+  resetPopup,
 }) {
   const { t } = useTranslation();
+  const location = useLocation(); // Get the current location
   const sessionData = JSON.parse(sessionStorage.getItem("userSession")) || {};
   const { currentUserId } = sessionData;
   const navigate = useNavigate();
@@ -35,6 +38,18 @@ export default function Header({
   const [filterListUser, setFilterlistUser] = useState([]);
   const [searchName, setSearchName] = useState("");
   const [notiCount, setNotiCount] = useState();
+
+  useEffect(() => {
+    // Check if the current URL is '/chat'
+    if (location.pathname === "/chat") {
+      // Do something if URL is '/chat'
+      handleItemClick("chat");
+    }
+  }, [location.pathname]); // Re-run the effect when the location.pathname changes
+  useEffect(() => {
+    setShowPopup(false);
+    setActivePopup(false);
+  }, [resetPopup]);
   useEffect(() => {
     userInstance
       .get(`/GetAllUsers`)
@@ -46,7 +61,7 @@ export default function Header({
         setUsers(res?.data?.result);
       })
       .catch((err) => {
-        console.log(err.response.data);
+        console.log(err?.response?.data);
       });
   }, []);
   useEffect(() => {
@@ -64,7 +79,7 @@ export default function Header({
         }
       })
       .catch((err) => {
-        console.log(err.response.data);
+        console.log(err?.response?.data);
       });
   }, [changeImage, currentUserId]);
   const handlePopup = () => {
@@ -73,16 +88,22 @@ export default function Header({
   };
 
   const handleItemClick = (itemId) => {
+    setShowPopup(false);
+    setActivePopup(false);
     setActiveItem(itemId);
     onItemClick(itemId);
   };
   const handleAvatarClick = (id) => {
+    setShowPopup(false);
+    setActivePopup(false);
     setSearchName("");
     setActiveItem(id);
     onItemClick(id);
     navigate("/profile", { state: { userId: id } });
   };
   const hanldeReturnHome = (itemId) => {
+    setShowPopup(false);
+    setActivePopup(false);
     setActiveItem(itemId);
     onItemClick(itemId);
     navigate("/post", { state: { activeItem: "post" } });

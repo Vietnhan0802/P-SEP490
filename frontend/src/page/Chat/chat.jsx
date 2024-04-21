@@ -89,8 +89,7 @@ function Chat() {
                     return [...prevMessages];
                   }
                 });
-                console.log("ReceiveMessage-------------------");
-                console.log(messageText);
+
               }
             })
             .catch((error) => {
@@ -205,9 +204,6 @@ function Chat() {
             });
         }
         if (userId !== undefined) {
-          console.log("TH2: userId !== undefined");
-          console.log("currentUserId: " + currentUserId);
-          console.log("userId: " + userId);
           chatInstance.get(`GetMessages/${currentUserId}/${userId}`)
             .then((res) => {
               setMessages(res.data.result);
@@ -224,9 +220,6 @@ function Chat() {
 
   useEffect(() => {
     if (selectedUserId !== null) {
-      // console.log("TH2: selectedUserId !== null");
-      // console.log("currentUserId: " + currentUserId);
-      // console.log("selectedUserId: " + selectedUserId);
       chatInstance
         .get(`GetMessages/${currentUserId}/${selectedUserId}`)
         .then((res) => {
@@ -279,9 +272,6 @@ function Chat() {
     const formData = new FormData();
     formData.append("content", message);
     if (userId !== undefined) {
-      // console.log("TH1: userId !== undefined");
-      // console.log("currentUserId: " + currentUserId);
-      // console.log("userId: " + userId);
       chatInstance
         .post(`SendMessage/${currentUserId}/${userId}`, formData, {
           headers: {
@@ -297,14 +287,6 @@ function Chat() {
               connection.invoke('SendMessageToClient', res?.data?.result.idReceiver, res?.data?.result);
               console.log('receiveID: ' + res?.data?.result.idReceiver);
               console.log(res?.data?.result);
-              // connection.invoke('SendMessageToGroup', res?.data?.result.idConversation, currentUserId, res?.data?.result);
-              // console.log('Invoke userId: ' + res?.data?.result.idConversation);
-              // console.log(res?.data?.result);
-
-              // connection.invoke('AddToGroup', res?.data?.result.idSender, res?.data?.result.idConversation);
-              // console.log('Invoke userId: ' + res?.data?.result.idConversation);
-              // console.log(res?.data?.result);
-              // connection.invoke('AddToGroup', res?.data?.result.idReceiver, res?.data?.result.idConversation);
             } catch (error) {
               console.error("Error sending message: ", error);
             }
@@ -312,9 +294,6 @@ function Chat() {
         })
         .catch((error) => console.error(error));
     } else {
-      console.log("TH2: ");
-      console.log("currentUserId: " + currentUserId);
-      console.log("activeUser: " + activeUser.receiverId);
       chatInstance
         .post(
           `SendMessage/${currentUserId}/${activeUser.receiverId}`,
@@ -334,12 +313,6 @@ function Chat() {
               connection.invoke('SendMessageToClient', res?.data?.result.idReceiver, res?.data?.result);
               console.log('receiveID: ' + res?.data?.result.idReceiver);
               console.log(res?.data?.result);
-              // connection.invoke('SendMessageToGroup', res?.data?.result.idConversation, currentUserId, res?.data?.result);
-              // console.log('Invoke room: ' + res?.data?.result.idConversation);
-              // console.log(res?.data?.result);
-
-              //connection.invoke('AddToGroup', res?.data?.result.idSender, res?.data?.result.idConversation);
-              //connection.invoke('AddToGroup', res?.data?.result.idReceiver, res?.data?.result.idConversation);
             } catch (error) {
               console.error("Error sending message: ", error);
             }

@@ -7,26 +7,26 @@ import { FaHeart } from "react-icons/fa";
 import { CiSearch } from "react-icons/ci";
 import { FiEye } from "react-icons/fi";
 import tick from "../../images/common/verifiedTick.png";
-import {
-  postInstance,
-  projectInstance,
-} from "../../axios/axiosConfig";
+import { postInstance, projectInstance } from "../../axios/axiosConfig";
 import { useNavigate } from "react-router-dom";
 
 import { Col, Row } from "react-bootstrap";
 import SideBar from "../../components/sidebar";
 import Follow from "../../components/follow";
-
 import Report from "../../components/report-popup/Report";
-import Notification, { notifySuccess, notifyError } from "../../components/notification";
-import { formatDistanceToNow, parseISO } from 'date-fns';
+import Notification, {
+  notifySuccess,
+  notifyError,
+} from "../../components/notification";
+import { formatDistanceToNow, parseISO } from "date-fns";
 
 function formatTimeAgo(dateString) {
   const result = formatDistanceToNow(parseISO(dateString), { addSuffix: true });
   // Loại bỏ từ "about" khỏi chuỗi
   return result.replace("about ", "");
 }
-function Post({ value }) {
+
+function Post({ value, onSidebarClick }) {
   const sessionData = JSON.parse(sessionStorage.getItem("userSession")) || {};
   const navigate = useNavigate();
   const { role, currentUserId } = sessionData;
@@ -65,7 +65,7 @@ function Post({ value }) {
       viewPostImages,
       fullName,
       isLike,
-      isVerified
+      isVerified,
     };
   };
   const handleLikeOrUnlikeBlog = (idBlog) => {
@@ -108,9 +108,9 @@ function Post({ value }) {
       .get(`GetAllPublicPosts/${currentUserId}`)
       .then((res) => {
         const postList = res?.data?.result;
-        console.log(postList)
+        console.log(postList);
         setPostList([]);
-        postList.map((element) => {
+        postList?.map((element) => {
           const time = formatTimeAgo(element.createdDate);
           setPostList((prevData) => [
             ...prevData,
@@ -136,11 +136,12 @@ function Post({ value }) {
       });
   }, [resetPage, currentUserId]);
   useEffect(() => {
-    postInstance.get(`GetAllPostsTrend/${currentUserId}`)
+    postInstance
+      .get(`GetAllPostsTrend/${currentUserId}`)
       .then((res) => {
         const postList = res?.data?.result;
         setPostListTrend([]);
-        postList.map((element) => {
+        postList?.map((element) => {
           const time = formatTimeAgo(element.createdDate);
           setPostListTrend((prevData) => [
             ...prevData,
@@ -164,7 +165,7 @@ function Post({ value }) {
       .catch((error) => {
         console.error(error);
       });
-  }, [resetPage, , currentUserId])
+  }, [resetPage, , currentUserId]);
 
   useEffect(() => {
     projectInstance
@@ -209,10 +210,13 @@ function Post({ value }) {
   const toggleTrendList = () => {
     setShowTrendList(!showTrendList);
   };
+  const itemClick = () => {
+    onSidebarClick();
+  };
   return (
     <Row className="pt-3 ms-0 me-0">
       <Col md={3}>
-        <SideBar />
+        <SideBar itemClick={itemClick} />
       </Col>
       <Col md={6}>
         <div id="post">
@@ -228,17 +232,27 @@ function Post({ value }) {
               />
             </div>
             <div className="d-flex flex-row align-items-center col-auto m-md-0-cus mt-2 p-0">
-              <button type="button" className="btn btn-primary text-white" onClick={toggleTrendList}>
-                {showTrendList ? 'ViewAll' : "Trend"}
+              <button
+                type="button"
+                className="btn btn-primary text-white"
+                onClick={toggleTrendList}
+              >
+                {showTrendList ? "ViewAll" : "Trend"}
               </button>
             </div>
           </div>
 
-          {(showTrendList ? postListTrend : (search ? filterPost : postList))?.map((item) => (
+          {(showTrendList
+            ? postListTrend
+            : search
+            ? filterPost
+            : postList
+          )?.map((item) => (
             <div
               key={item.id}
-              className={`pos-rel post-item mt-2 p-2 ${blogPopups[item.id] ? "position-relative" : ""
-                }`}
+              className={`pos-rel post-item mt-2 p-2 ${
+                blogPopups[item.id] ? "position-relative" : ""
+              }`}
             >
               <div className="d-flex justify-content-between align-items-center">
                 <div className="d-flex align-items-center">
@@ -246,7 +260,14 @@ function Post({ value }) {
                     <div className="profile">
                       <img src={item.avatar} alt="profile" />
                     </div>
-                    {item.isVerified && <img src={tick} alt="tick" className="position-absolute bottom-0 end-0" style={{ width: '18px' }} />}
+                    {item.isVerified && (
+                      <img
+                        src={tick}
+                        alt="tick"
+                        className="position-absolute bottom-0 end-0"
+                        style={{ width: "18px" }}
+                      />
+                    )}
                   </div>
 
                   <div className=" ms-2 left-30 d-flex flex-column justify-content-center">
@@ -258,12 +279,15 @@ function Post({ value }) {
                     </div>
                   </div>
                 </div>
-                {role !== 'Admin' && currentUserId !== item.idAccount &&
+                {role !== "Admin" && currentUserId !== item.idAccount && (
                   <Report id={currentUserId} idItem={item.id} type="post" />
-                }
+                )}
               </div>
               <h4 className="mt-2">{item.title}</h4>
-              <div style={{ maxHeight: '215px', overflow: 'hidden' }} className="mb-3">
+              <div
+                style={{ maxHeight: "215px", overflow: "hidden" }}
+                className="mb-3"
+              >
                 <div dangerouslySetInnerHTML={{ __html: item.content }} />
               </div>
               <div

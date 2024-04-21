@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import "./detail.scss";
 import defaultAvatar from "../../images/common/default.png";
-import Button from 'react-bootstrap/Button';
+import Button from "react-bootstrap/Button";
 import avatarDefault from "../../images/common/default.png";
 import { IoSettingsSharp } from "react-icons/io5";
 import { VscSend } from "react-icons/vsc";
@@ -17,15 +17,20 @@ import SideBar from "../../components/sidebar";
 import { FaHeart } from "react-icons/fa";
 import { BsThreeDots } from "react-icons/bs";
 import tick from "../../images/common/verifiedTick.png";
-import Notification, { notifySuccess, notifyError } from "../../components/notification";
-import { formatDistanceToNow, parseISO } from 'date-fns';
+import Notification, {
+  notifySuccess,
+  notifyError,
+} from "../../components/notification";
+import { formatDistanceToNow, parseISO } from "date-fns";
+import DeleteComment from "./Popup/DeleteComment";
+import DeleteReplyComment from "./Popup/DeleteReplyComment";
 
 function formatTimeAgo(dateString) {
   const result = formatDistanceToNow(parseISO(dateString), { addSuffix: true });
   // Loại bỏ từ "about" khỏi chuỗi
   return result.replace("about ", "");
 }
-function PostDetail({ value }) {
+function PostDetail({ value, onSidebarClick }) {
   const location = useLocation();
   const sessionData = JSON.parse(sessionStorage.getItem("userSession")) || {};
   const { currentUserId, role } = sessionData;
@@ -43,6 +48,11 @@ function PostDetail({ value }) {
   const [replyComment, setReplyComment] = useState(false);
   const [inputReply, setInputReply] = useState({});
   const [reset, setReset] = useState(false);
+
+  const [showDeleteComment, setShowDeleteComment] = useState(false);
+  const [idDeleteComment, setIdDeleteComment] = useState(false);
+  const [showDeleteReplyComment, setShowDeleteReplyComment] = useState(false);
+  const [idDeleteReplyComment, setIdDeleteReplyComment] = useState(false);
   // console.log(data)
   const memoizedPostInstance = useMemo(() => {
     return postInstance; // hoặc tạo một instance mới nếu cần
@@ -88,32 +98,15 @@ function PostDetail({ value }) {
         notifyError("Update comment failed!");
       });
   };
-  const handleDeleteComment = (id) => {
-    postInstance
-      .delete(`RemovePostComment/${id}`)
-      .then((res) => {
-        console.log(res.data.result);
-        setState(!state);
-        notifySuccess("Delete comment successfully!");
-      })
-      .catch((error) => {
-        console.error(error);
-        notifyError("Delete comment failed!");
-      });
+  const handleShowDeleteComment = (id) => {
+    setIdDeleteComment(id);
+    setShowDeleteComment(true);
   };
-  const handleDeleteReplyComment = (id) => {
-    postInstance
-      .delete(`RemovePostReply/${id}`)
-      .then((res) => {
-        console.log(res.data.result);
-        setState(!state);
-        notifySuccess("Delete reply successfully!");
-      })
-      .catch((error) => {
-        console.error(error);
-        notifyError("Delete reply failed!");
-      });
+  const handleShowDeleteReplyComment = (id) => {
+    setIdDeleteReplyComment(id);
+    setShowDeleteReplyComment(true);
   };
+
   const handleInputComment = (event) => {
     setContent(event.target.value);
   };
@@ -284,7 +277,7 @@ function PostDetail({ value }) {
           })
         );
       });
-  }
+  };
   const handleLikeOrUnlikePostReply = (idPostReply) => {
     setCommentList((prevCommentList) =>
       prevCommentList.map((comment) => {
@@ -387,12 +380,18 @@ function PostDetail({ value }) {
       });
   }, []);
   const resetPage = () => {
-    setReset(prev => !prev);
-  }
+    setReset((prev) => !prev);
+  };
+  const setResetCmt = () => {
+    setState((prev) => !prev);
+  };
+  const itemClick = () => {
+    onSidebarClick();
+  };
   return (
     <Row className="pt-3 ms-0 me-0">
       <Col md={3}>
-        <SideBar />
+        <SideBar itemClick={itemClick} />
       </Col>
       <Col md={6}>
         <div id="postDetail" className="p-3  mb-3">
@@ -405,11 +404,18 @@ function PostDetail({ value }) {
           />
           <p className="cmt fw-bold my-3">COMMENT</p>
           <div className="cmt-input d-flex align-items-center">
-            <div className="position-relative" >
-              <div className="profile" >
+            <div className="position-relative">
+              <div className="profile">
                 <img src={user?.imageSrc} alt="profile" />
               </div>
-              {user?.isVerified && <img src={tick} alt="tick" className="position-absolute bottom-0 end-0" style={{ width: '18px' }} />}
+              {user?.isVerified && (
+                <img
+                  src={tick}
+                  alt="tick"
+                  className="position-absolute bottom-0 end-0"
+                  style={{ width: "18px" }}
+                />
+              )}
             </div>
 
             <input
@@ -425,17 +431,39 @@ function PostDetail({ value }) {
             />
           </div>
           <div className="cmt-block">
+            <DeleteComment
+              id={idDeleteComment}
+              show={showDeleteComment}
+              type={"post"}
+              onClose={() => setShowDeleteComment(false)}
+              setResetCmt={setResetCmt}
+            />
+            <DeleteReplyComment
+              id={idDeleteReplyComment}
+              show={showDeleteReplyComment}
+              type={"post"}
+              onClose={() => setShowDeleteReplyComment(false)}
+              setResetCmt={setResetCmt}
+            />
             {commentList?.map((item) => (
               <div
                 key={item?.id}
-                className={`d-flex pb-3 mt-2 cmt-item ${item.type === "reply-comment" ? "ms-5" : ""
-                  }`}
+                className={`d-flex pb-3 mt-2 cmt-item ${
+                  item.type === "reply-comment" ? "ms-5" : ""
+                }`}
               >
-                <div className="position-relative" style={{ height: '50px' }} >
-                  <div className="profile" >
+                <div className="position-relative" style={{ height: "50px" }}>
+                  <div className="profile">
                     <img src={item?.avatar} alt="profile" />
                   </div>
-                  {item?.isVerified && <img src={tick} alt="tick" className="position-absolute bottom-0 end-0" style={{ width: '18px' }} />}
+                  {item?.isVerified && (
+                    <img
+                      src={tick}
+                      alt="tick"
+                      className="position-absolute bottom-0 end-0"
+                      style={{ width: "18px" }}
+                    />
+                  )}
                 </div>
 
                 <div className="ms-3  w-100 ">
@@ -450,7 +478,6 @@ function PostDetail({ value }) {
                             as={Button}
                             variant="white"
                             className="border-none text-body dropdown-custom"
-
                           >
                             <BsThreeDots />
                           </Dropdown.Toggle>
@@ -465,7 +492,7 @@ function PostDetail({ value }) {
                             </Dropdown.Item>
                             <Dropdown.Item
                               onClick={() =>
-                                handleDeleteComment(item.idPostComment)
+                                handleShowDeleteComment(item.idPostComment)
                               }
                             >
                               <MdDelete />
@@ -481,9 +508,15 @@ function PostDetail({ value }) {
                         <p className="mb-0">{item.content}</p>
                         <div
                           className="d-flex align-items-center me-3"
-                          onClick={() => handleLikeOrUnlikePostCmt(item.idPostComment)}
+                          onClick={() =>
+                            handleLikeOrUnlikePostCmt(item.idPostComment)
+                          }
                         >
-                          <FaHeart className={`me-2 ${item?.isLike === true ? "red" : ""}`} />{" "}
+                          <FaHeart
+                            className={`me-2 ${
+                              item?.isLike === true ? "red" : ""
+                            }`}
+                          />{" "}
                           {item?.like}
                         </div>
                       </>
@@ -511,7 +544,10 @@ function PostDetail({ value }) {
                         <button
                           className="ms-3 btn btn-outline-info"
                           onClick={() =>
-                            handleUpdateComment(item.idPostComment, item.content)
+                            handleUpdateComment(
+                              item.idPostComment,
+                              item.content
+                            )
                           }
                         >
                           Save
@@ -522,10 +558,11 @@ function PostDetail({ value }) {
 
                   <div className="rep d-flex w-100">
                     <div
-                      className={`d-flex justify-content-between w-100 align-items-center ${viewReply !== item.idPostComment
-                        ? "justify-content-end"
-                        : "justify-content-between"
-                        }`}
+                      className={`d-flex justify-content-between w-100 align-items-center ${
+                        viewReply !== item.idPostComment
+                          ? "justify-content-end"
+                          : "justify-content-between"
+                      }`}
                     >
                       {viewReply !== item.idPostComment ? (
                         <div className="d-flex justify-content-start align-items-center w-100 py-2">
@@ -533,7 +570,8 @@ function PostDetail({ value }) {
                             (item.viewPostReplies.length === 0 ? (
                               ""
                             ) : (
-                              <p className="btn btn-primary"
+                              <p
+                                className="btn btn-primary"
                                 onClick={() =>
                                   handleViewReply(item.idPostComment)
                                 }
@@ -544,7 +582,8 @@ function PostDetail({ value }) {
                         </div>
                       ) : (
                         <div className="d-flex justify-content-end align-items-center w-100  py-2">
-                          <p className="btn btn-danger"
+                          <p
+                            className="btn btn-danger"
                             onClick={() => handleViewReply(item.idPostComment)}
                           >
                             Close
@@ -565,11 +604,18 @@ function PostDetail({ value }) {
                         </p>
                       ) : (
                         <div className="cmt-input d-flex align-items-center mt-2">
-                          <div className="position-relative" >
-                            <div className="profile" >
+                          <div className="position-relative">
+                            <div className="profile">
                               <img src={user?.imageSrc} alt="profile" />
                             </div>
-                            {user?.isVerified && <img src={tick} alt="tick" className="position-absolute bottom-0 end-0" style={{ width: '18px' }} />}
+                            {user?.isVerified && (
+                              <img
+                                src={tick}
+                                alt="tick"
+                                className="position-absolute bottom-0 end-0"
+                                style={{ width: "18px" }}
+                              />
+                            )}
                           </div>
 
                           <input
@@ -595,104 +641,121 @@ function PostDetail({ value }) {
                     </div>
                     {viewReply === item.idPostComment
                       ? item.viewPostReplies.map((reply) => (
-                        <>
-                          <div className="d-flex cmt-input mt-2">
-                            <div className="position-relative" style={{ height: '50px' }} >
-                              <div className="profile" >
-                                <img src={reply?.avatar} alt="profile" />
-                              </div>
-                              {reply?.isVerified && <img src={tick} alt="tick" className="position-absolute bottom-0 end-0" style={{ width: '18px' }} />}
-                            </div>
-                            <div className="ms-3 w-100">
-                              <h6 className="mb-2 d-flex align-items-center h-40 ms">
-                                {reply.fullName}
-                              </h6>
-                              {updateReplyShow !== reply.idPostReply ? (
-                                <div>
-                                  <p className="mb-0">{reply.content}</p>
-                                  <div
-                                    className="d-flex align-items-center me-3"
-                                    onClick={() => handleLikeOrUnlikePostReply(reply.idPostReply)}
-                                  >
-                                    <FaHeart className={`me-2 ${reply?.isLike === true ? "red" : ""}`} />{" "}
-                                    {reply?.like}
-                                  </div>
+                          <>
+                            <div className="d-flex cmt-input mt-2">
+                              <div
+                                className="position-relative"
+                                style={{ height: "50px" }}
+                              >
+                                <div className="profile">
+                                  <img src={reply?.avatar} alt="profile" />
                                 </div>
-
-                              ) : (
-                                <div>
-                                  <input
-                                    type="text"
-                                    className="form-control mb-2 input-cmt"
-                                    value={reply.content}
-                                    onChange={(e) =>
-                                      handleUpdateInputReplyComment(
-                                        reply.idPostReply,
-                                        e.target.value
-                                      )
-                                    }
+                                {reply?.isVerified && (
+                                  <img
+                                    src={tick}
+                                    alt="tick"
+                                    className="position-absolute bottom-0 end-0"
+                                    style={{ width: "18px" }}
                                   />
-                                  <button
-                                    className="btn btn-outline-primary"
-                                    onClick={() =>
-                                      handleUpdateReplyCancel(
-                                        reply.idPostReply
-                                      )
-                                    }
+                                )}
+                              </div>
+                              <div className="ms-3 w-100">
+                                <h6 className="mb-2 d-flex align-items-center h-40 ms">
+                                  {reply.fullName}
+                                </h6>
+                                {updateReplyShow !== reply.idPostReply ? (
+                                  <div>
+                                    <p className="mb-0">{reply.content}</p>
+                                    <div
+                                      className="d-flex align-items-center me-3"
+                                      onClick={() =>
+                                        handleLikeOrUnlikePostReply(
+                                          reply.idPostReply
+                                        )
+                                      }
+                                    >
+                                      <FaHeart
+                                        className={`me-2 ${
+                                          reply?.isLike === true ? "red" : ""
+                                        }`}
+                                      />{" "}
+                                      {reply?.like}
+                                    </div>
+                                  </div>
+                                ) : (
+                                  <div>
+                                    <input
+                                      type="text"
+                                      className="form-control mb-2 input-cmt"
+                                      value={reply.content}
+                                      onChange={(e) =>
+                                        handleUpdateInputReplyComment(
+                                          reply.idPostReply,
+                                          e.target.value
+                                        )
+                                      }
+                                    />
+                                    <button
+                                      className="btn btn-outline-primary"
+                                      onClick={() =>
+                                        handleUpdateReplyCancel(
+                                          reply.idPostReply
+                                        )
+                                      }
+                                    >
+                                      Cancel
+                                    </button>
+                                    <button
+                                      className=" ms-3 btn btn-outline-info"
+                                      onClick={() =>
+                                        handleUpdateReply(
+                                          reply.idPostReply,
+                                          reply.content
+                                        )
+                                      }
+                                    >
+                                      Save
+                                    </button>
+                                  </div>
+                                )}
+                              </div>
+                              {reply.idAccount === currentUserId ? (
+                                <Dropdown style={{ width: "auto" }}>
+                                  <Dropdown.Toggle
+                                    id="dropdown-basic"
+                                    style={{ border: "none" }}
+                                    className="dropdown-custom border-none text-body"
                                   >
-                                    Cancel
-                                  </button>
-                                  <button
-                                    className=" ms-3 btn btn-outline-info"
-                                    onClick={() =>
-                                      handleUpdateReply(
-                                        reply.idPostReply,
-                                        reply.content
-                                      )
-                                    }
-                                  >
-                                    Save
-                                  </button>
-                                </div>
+                                    <BsThreeDots />
+                                  </Dropdown.Toggle>
+
+                                  <Dropdown.Menu style={{ minWidth: "auto" }}>
+                                    <Dropdown.Item
+                                      onClick={() =>
+                                        handleUpdateReplyCommentAppear(
+                                          reply.idPostReply
+                                        )
+                                      }
+                                    >
+                                      <GrUpdate />
+                                    </Dropdown.Item>
+                                    <Dropdown.Item
+                                      onClick={() =>
+                                        handleShowDeleteReplyComment(
+                                          reply.idPostReply
+                                        )
+                                      }
+                                    >
+                                      <MdDelete />
+                                    </Dropdown.Item>
+                                  </Dropdown.Menu>
+                                </Dropdown>
+                              ) : (
+                                ""
                               )}
                             </div>
-                            {reply.idAccount === currentUserId ? (
-                              <Dropdown style={{ width: "auto" }}>
-                                <Dropdown.Toggle
-                                  id="dropdown-basic"
-                                  style={{ border: "none" }}
-                                  className="dropdown-custom border-none text-body"
-                                >
-                                  <BsThreeDots />
-                                </Dropdown.Toggle>
-
-                                <Dropdown.Menu style={{ minWidth: "auto" }}>
-                                  <Dropdown.Item
-                                    onClick={() =>
-                                      handleUpdateReplyCommentAppear(
-                                        reply.idPostReply
-                                      )
-                                    }
-                                  >
-                                    <GrUpdate />
-                                  </Dropdown.Item>
-                                  <Dropdown.Item
-                                    onClick={() =>
-                                      handleDeleteReplyComment(
-                                        reply.idPostReply
-                                      )
-                                    }
-                                  >
-                                    <MdDelete />
-                                  </Dropdown.Item>
-                                </Dropdown.Menu>
-                              </Dropdown>
-                            ) : (
-                              ""
-                            )}
-                          </div>
-                        </>
-                      ))
+                          </>
+                        ))
                       : null}
                   </div>
                 </div>

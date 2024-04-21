@@ -19,7 +19,7 @@ function formatTimeAgo(dateString) {
   // Loại bỏ từ "about" khỏi chuỗi
   return result.replace("about ", "");
 }
-function OwnPost({ value }) {
+function OwnPost({ value ,onSidebarClick}) {
 
   const sessionData = JSON.parse(sessionStorage.getItem('userSession')) || {};
   const { currentUserId } = sessionData;
@@ -125,10 +125,13 @@ function OwnPost({ value }) {
     );
     setFilterPost(filtered);
   }
+  const itemClick = () => {
+    onSidebarClick();
+  };
   return (
     <Row className="pt-3 ms-0 me-0">
       <Col md={3} >
-        <SideBar />
+        <SideBar itemClick={itemClick}/>
       </Col>
       <Col md={6}>
         <div id="own_post">

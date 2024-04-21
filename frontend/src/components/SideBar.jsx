@@ -17,10 +17,11 @@ import { MdOutlineSpaceDashboard } from "react-icons/md";
 import { FaChartLine } from "react-icons/fa6";
 import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate } from "react-router-dom";
-function SideBar() {
+function SideBar({ itemClick }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
+  const [reset, setReset] = useState(false);
   const { activeItem } = location.state || {};
   const sidebarItems = [
     { id: "post", icon: <GoPencil />, text: t("post"), userRole: "all" },
@@ -48,14 +49,14 @@ function SideBar() {
       icon: <LuFileEdit />,
       text: "Project Application",
       userRole: "business",
-      otherRole:'member'
+      otherRole: "member",
     },
     {
       id: "invitation",
       icon: <FaUserPlus />,
       text: "Project Invitation",
       userRole: "business",
-      otherRole:'member'
+      otherRole: "member",
     },
     {
       id: "currentproject",
@@ -78,13 +79,12 @@ function SideBar() {
     // Add other sidebar items similarly
   ];
   const handleLogout = () => {
-    Cookies.remove("user");
-    Cookies.remove("role");
-    window.location.href = "/";
+    sessionStorage.removeItem("userSession");
+    navigate("/");
   };
   const handleItemClick = (itemId) => {
-    // onItemClick(itemId);\
-    navigate(`/${itemId}`, { state: { activeItem: itemId } })
+    itemClick();
+    navigate(`/${itemId}`, { state: { activeItem: itemId } });
   };
   const sessionData = JSON.parse(sessionStorage.getItem("userSession")) || {};
   const { role } = sessionData;
@@ -92,8 +92,9 @@ function SideBar() {
   const filteredSidebarItems = sidebarItems.filter((item) => {
     // Customize this condition based on your role logic
     return (
-      item.userRole.toLowerCase() === role.toLowerCase() ||
-      item.userRole.toLowerCase() === "all" || item?.otherRole?.toLowerCase() === role.toLowerCase()
+      item?.userRole?.toLowerCase() === role?.toLowerCase() ||
+      item?.userRole?.toLowerCase() === "all" ||
+      item?.otherRole?.toLowerCase() === role?.toLowerCase()
     );
   });
   return (
@@ -105,8 +106,9 @@ function SideBar() {
         {filteredSidebarItems.map((item) => (
           <div
             key={item.id}
-            className={`mb-3 d-flex align-items-center ${activeItem === item.id ? "active-sidebar-item" : ""
-              }`}
+            className={`mb-3 d-flex align-items-center ${
+              activeItem === item.id ? "active-sidebar-item" : ""
+            }`}
             onClick={() => handleItemClick(item.id)}
           >
             {item.icon}
@@ -120,7 +122,9 @@ function SideBar() {
           onClick={handleLogout}
         >
           <CiLogout className="logout-icon" />
-          <p className="text ms-2">{t("logout")}</p>
+          <p className="text ms-2" style={{ cursor: "pointer" }}>
+            {t("logout")}
+          </p>
         </div>
         <p className="fw-bold fs-10 mt-2">
           {/* Lorem ipsum · dolor sit amet · consectetur · Id ut nullam in nec

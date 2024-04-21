@@ -37,9 +37,26 @@ function App() {
   const [changeImage, setChangeImage] = useState(false);
   const [follow, setFollow] = useState(true);
   const [following, setFollowing] = useState([]);
-  const [color,setColor] = useState();
+  const [color, setColor] = useState();
+  const [resetPopup, setResetPopup] = useState(false);
   const sessionData = JSON.parse(sessionStorage.getItem("userSession")) || {};
-  const { currentUserId } = sessionData;
+
+  const { currentUserId, role } = sessionData;
+
+  useEffect(() => {
+    if (
+      location.pathname === "/" ||
+      location.pathname === "/signup" ||
+      location.pathname === "/forgetpassword" ||
+      location.pathname === "/confirmemail" ||
+      location.pathname === "/notfound" ||
+      location.pathname === "/resetpassword"
+    ) {
+      return;
+    } else if (currentUserId === undefined || role === undefined) {
+      navigate("/");
+    }
+  }, [location.pathname]);
   useEffect(() => {
     // Kiểm tra chiều cao của .App và nếu lớn hơn 100vh thì chuyển về 100%
     const appElement = appRef.current;
@@ -99,7 +116,10 @@ function App() {
   }, [currentUserId, follow]);
   const changeThemeHeader = (value) => {
     setColor(value);
-  }
+  };
+  const onSidebarClick = () => {
+    setResetPopup(!resetPopup);
+  };
   return (
     <div
       className="App"
@@ -107,28 +127,39 @@ function App() {
       style={{ backgroundColor: "var(--body_background)", minHeight: "100vh" }}
     >
       {isHeaderVisible && (
-        <Header onItemClick={handleHeaderItemClick} changeImage={changeImage} changeThemeHeader={changeThemeHeader} />
+        <Header
+          onItemClick={handleHeaderItemClick}
+          changeImage={changeImage}
+          changeThemeHeader={changeThemeHeader}
+          resetPopup={resetPopup}
+        />
       )}
       <Routes>
         <Route path="/" element={<SignIn />} />
         <Route path="/notfound" element={<NotFound />} />
         <Route path="/signup" element={<SignUp />} />
-        <Route path="/postdetail" element={<PostDetail value={following} />} />
-        <Route path="/blogdetail" element={<BlogDetail value={following} />} />
-        <Route path="/projectdetail" element={<ProjectDetail />} />
-        <Route path="/dashboard" element={<DashBoard />} />
-        <Route path="/post" element={<Post value={following} />} />
-        <Route path="/blog" element={<Blog value={following} />} />
-        <Route path="/project" element={<Project value={following} />} />
-        <Route path="/ownproject" element={<OwnProject value={following} />} />
-        <Route path="/ownpost" element={<OwnPost value={following} />} />
-        <Route path="/projectapplication" element={<ProjectApplication />} />
-        <Route path="/invitation" element={<ProjectInviation />} />
+        <Route path="/postdetail" element={<PostDetail value={following} onSidebarClick={onSidebarClick} />} />
+        <Route path="/blogdetail" element={<BlogDetail value={following} onSidebarClick={onSidebarClick}/>} />
+        <Route path="/projectdetail" element={<ProjectDetail onSidebarClick={onSidebarClick} />} />
+        <Route path="/dashboard" element={<DashBoard onSidebarClick={onSidebarClick} />} />
+        <Route
+          path="/post"
+          element={<Post value={following} onSidebarClick={onSidebarClick} />}
+        />
+        <Route
+          path="/blog"
+          element={<Blog value={following} onSidebarClick={onSidebarClick} />}
+        />
+        <Route path="/project" element={<Project value={following} onSidebarClick={onSidebarClick}/>} />
+        <Route path="/ownproject" element={<OwnProject value={following} onSidebarClick={onSidebarClick}/>} />
+        <Route path="/ownpost" element={<OwnPost value={following} onSidebarClick={onSidebarClick} />} />
+        <Route path="/projectapplication" element={<ProjectApplication onSidebarClick={onSidebarClick}/>} />
+        <Route path="/invitation" element={<ProjectInviation onSidebarClick={onSidebarClick}/>} />
         <Route
           path="/currentproject"
-          element={<OwnProject value={following} />}
+          element={<OwnProject value={following} onSidebarClick={onSidebarClick}/>}
         />
-        <Route path="/statistic" element={<Statistic color={color} />} />
+        <Route path="/statistic" element={<Statistic color={color} onSidebarClick={onSidebarClick}/>} />
         <Route path="/chat" element={<Chat />} />
         <Route
           path="/profile"
