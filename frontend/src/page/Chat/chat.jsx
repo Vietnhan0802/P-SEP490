@@ -24,7 +24,7 @@ function Chat() {
   const { userId } = location.state || {};
   const [conversations, setConversations] = useState([]);
   const [filterConversations, setFilterConversations] = useState([]);
-  const [messages, setMessages] = useState();
+  const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState("");
   const [activeUser, setActiveUser] = useState(null);
   const [reset, setReset] = useState(false);
@@ -70,24 +70,23 @@ function Chat() {
           console.log(currentUserId === messageText.idReceiver ? messageText.idSender : messageText.idReceiver);
           chatInstance.get(`GetMessages/${currentUserId}/${currentUserId === messageText.idReceiver ? messageText.idSender : messageText.idReceiver}`)
             .then((res) => {
-              // setMessages(res.data.result);
-              // console.log(res.data.result);
-              // setActiveUser({
-              //   avatar: res?.data?.result[0].avatarReceiver,
-              //   name: res?.data?.result[0].nameReceiver,
-              //   receiverId: res?.data?.result[0].idReceiver === currentUserId ? res?.data?.result[0].idSender : res?.data?.result[0].idReceiver
-              // });
-              if ((res.data.result[0].idSender === currentUserId === messageText.idReceiver ? messageText.idSender : messageText.idReceiver)) {
+              if ((res?.data?.result[0].idSender === currentUserId === messageText?.idReceiver ? messageText?.idSender : messageText?.idReceiver)) {
                 setMessages((prevMessages) => {
                   console.log(prevMessages)
-                  if (Array.isArray(prevMessages)
-                    && (prevMessages[0].idSender === messageText.idSender || prevMessages[0].idSender === messageText.idReceiver)
-                    && (prevMessages[0].idReceiver === messageText.idSender || prevMessages[0].idReceiver === messageText.idReceiver)) {
-                    return [...prevMessages, messageText];
-                    console.log("1");
+                  if ((Array.isArray(prevMessages)
+                    && (prevMessages[0]?.idSender === messageText.idSender || prevMessages[0]?.idSender === messageText.idReceiver)
+                    && (prevMessages[0]?.idReceiver === messageText.idSender || prevMessages[0]?.idReceiver === messageText.idReceiver)) || prevMessages.length === 0) {
+                      if (((prevMessages[0]?.idSender === messageText.idSender || prevMessages[0]?.idSender === messageText.idReceiver)
+                      && (prevMessages[0]?.idReceiver === messageText.idSender || prevMessages[0]?.idReceiver === messageText.idReceiver)) || prevMessages.length === 0){
+                      setActiveUser({
+                        avatar: res?.data?.result[0].avatarReceiver,
+                        name: res?.data?.result[0].nameReceiver,
+                        receiverId: res?.data?.result[0].idReceiver === currentUserId ? res?.data?.result[0].idSender : res?.data?.result[0].idReceiver
+                      });
+                    }
+                    return [...prevMessages, messageText];                   
                   } else {
                     return [...prevMessages];
-                    console.log("2");
                   }
                 });
                 console.log("ReceiveMessage-------------------");
@@ -97,38 +96,69 @@ function Chat() {
             .catch((error) => {
               console.error(error);
             });
-          // console.log((res.data.result[0].idAccount1 === messageText.idReceiver || res.data.result[0].idAccount1 === messageText.idSender)
-          // &&(res.data.result[0].idAccount2 === messageText.idReceiver || res.data.result[0].idAccount2 === messageText.idSender))
-          // if ((res.data.result[0].idAccount1 === messageText.idReceiver || res.data.result[0].idAccount1 === messageText.idSender)
-          //   &&(res.data.result[0].idAccount2 === messageText.idReceiver || res.data.result[0].idAccount2 === messageText.idSender)) {
-          //   if (activeUser.receiverId === messageText.idSender) {
-          //     setMessages((prevMessages) => {
-          //       if (Array.isArray(prevMessages)) {
-          //         return [...prevMessages, messageText];
-          //       } else {
-          //         return [messageText];
-          //       }
-          //     });
-          //     console.log("ReceiveMessage-------------------");
-          //     console.log(messageText);
-          // }
         })
         .catch((error) => {
           console.error(error);
         });
     });
 
-    newConnection.on("RecallMessage", (messageText) => {
-      setMessages((prevMessages) =>
-        prevMessages.map((message) => {
-          if (message.idMessage === messageText.idMessage) {
-            return { ...message, isRecall: true };
-          }
-          return message;
+    newConnection.on("RecallMessage", (connectId, messageText) => {
+      chatInstance.get(`GetConversationsByUser/${currentUserId}`)
+        .then((res) => {
+          setConversations(res?.data?.result);
+          console.log(currentUserId === messageText.idReceiver ? messageText.idSender : messageText.idReceiver);
+          chatInstance.get(`GetMessages/${currentUserId}/${currentUserId === messageText.idReceiver ? messageText.idSender : messageText.idReceiver}`)
+            .then((res) => {
+              // if ((res?.data?.result[0].idSender === currentUserId === messageText?.idReceiver ? messageText?.idSender : messageText?.idReceiver)) {
+              //   setMessages((prevMessages) => {
+              //     console.log(prevMessages)
+              //     if ((Array.isArray(prevMessages)
+              //       && (prevMessages[0]?.idSender === messageText.idSender || prevMessages[0]?.idSender === messageText.idReceiver)
+              //       && (prevMessages[0]?.idReceiver === messageText.idSender || prevMessages[0]?.idReceiver === messageText.idReceiver)) || prevMessages.length === 0) {
+              //         if (((prevMessages[0]?.idSender === messageText.idSender || prevMessages[0]?.idSender === messageText.idReceiver)
+              //         && (prevMessages[0]?.idReceiver === messageText.idSender || prevMessages[0]?.idReceiver === messageText.idReceiver)) || prevMessages.length === 0){
+              //         setActiveUser({
+              //           avatar: res?.data?.result[0].avatarReceiver,
+              //           name: res?.data?.result[0].nameReceiver,
+              //           receiverId: res?.data?.result[0].idReceiver === currentUserId ? res?.data?.result[0].idSender : res?.data?.result[0].idReceiver
+              //         });
+              //       }
+              //       return [...prevMessages, messageText];                   
+              //     } else {
+              //       return [...prevMessages];
+              //     }
+              //   });
+              //   console.log("ReceiveMessage-------------------");
+              //   console.log(messageText);
+              // }
+              setMessages((prevMessages) =>
+                prevMessages.map((message) => {
+                  if (message.idMessage === messageText.idMessage) {
+                    return { ...message, isRecall: true };
+                  }
+                  return message;
+                })
+              );
+              console.log("RecallMessage-------------------");
+              console.log(messageText);
+            })
+            .catch((error) => {
+              console.error(error);
+            });
         })
-      );
-      console.log("RecallMessage-------------------");
-      console.log(messageText);
+        .catch((error) => {
+          console.error(error);
+        });
+      // setMessages((prevMessages) =>
+      //   prevMessages.map((message) => {
+      //     if (message.idMessage === messageText.idMessage) {
+      //       return { ...message, isRecall: true };
+      //     }
+      //     return message;
+      //   })
+      // );
+      // console.log("RecallMessage-------------------");
+      // console.log(messageText);
     });
 
     newConnection
@@ -160,7 +190,7 @@ function Chat() {
           console.log("TH1: userId === undefined");
           // console.log("currentUserId: " + currentUserId);
           // console.log("receiveId: " + currentUserId === res.data.result[0].idAccount1 ? res.data.result[0].idAccount2 : res.data.result[0].idAccount1);
-          chatInstance.get(`GetMessages/${currentUserId}/${currentUserId === res.data.result[0].idAccount1 ? res.data.result[0].idAccount2 : res.data.result[0].idAccount1}`)
+          chatInstance.get(`GetMessages/${currentUserId}/${currentUserId === res?.data?.result[0].idAccount1 ? res?.data?.result[0].idAccount2 : res?.data?.result[0].idAccount1}`)
             .then((res) => {
               setMessages(res.data.result);
               setActiveUser({
@@ -175,9 +205,9 @@ function Chat() {
             });
         }
         if (userId !== undefined) {
-          // console.log("TH2: userId !== undefined");
-          // console.log("currentUserId: " + currentUserId);
-          // console.log("userId: " + userId);
+          console.log("TH2: userId !== undefined");
+          console.log("currentUserId: " + currentUserId);
+          console.log("userId: " + userId);
           chatInstance.get(`GetMessages/${currentUserId}/${userId}`)
             .then((res) => {
               setMessages(res.data.result);
@@ -460,12 +490,8 @@ function Chat() {
         setReset(!reset);
         if (connection) {
           try {
-            connection.invoke(
-              "RecallMessage",
-              res?.data?.result.idConversation,
-              res?.data?.result
-            );
-            console.log("Invoke userId: " + res?.data?.result.idConversation);
+            connection.invoke("RecallMessage", res?.data?.result.idReceiver, res?.data?.result);
+            console.log("Invoke userId: " + res?.data?.result.idReceiver);
             console.log(res?.data?.result);
           } catch (error) {
             console.error("Error sending message: ", error);
