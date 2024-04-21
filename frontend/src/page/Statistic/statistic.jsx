@@ -59,7 +59,7 @@ const createData = (
     isVerified,
   };
 };
-function Statistic({ color }) {
+function Statistic({ color, onSidebarClick }) {
   const sessionData = JSON.parse(sessionStorage.getItem("userSession")) || {};
   const { role, currentUserId } = sessionData;
   const [theme, setTheme] = useState(true);
@@ -835,10 +835,13 @@ function Statistic({ color }) {
         );
     }
   };
+  const itemClick = () => {
+    onSidebarClick();
+  };
   return (
     <Row className="pt-3 ms-0 me-0">
       <Col md={3}>
-        <SideBar />
+        <SideBar itemClick={itemClick} />
       </Col>
       <Col md={9}>
         <Row>

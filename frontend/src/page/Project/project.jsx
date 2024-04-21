@@ -8,7 +8,7 @@ import { Col, Row } from "react-bootstrap";
 import SideBar from "../../components/sidebar";
 import Follow from "../../components/follow";
 import tick from "../../images/common/verifiedTick.png";
-import { Rating } from 'react-simple-star-rating'
+import { Rating } from "react-simple-star-rating";
 const formatDate = (timestamp) => {
   const months = [
     "Jan",
@@ -31,34 +31,42 @@ const formatDate = (timestamp) => {
 
   return `${day} ${month} ${year}`;
 };
-function Project({ value }) {
+function Project({ value, onSidebarClick }) {
   const navigate = useNavigate();
   const [projects, setProjects] = useState([]);
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState("");
   const [filterProjects, setFilterProject] = useState();
   const hanldeViewDetail = (projectId) => {
-    navigate('/projectdetail', { state: { idProject: projectId } })
+    navigate("/projectdetail", { state: { idProject: projectId } });
   };
 
   useEffect(() => {
-    projectInstance.get('GetAllPublicProjects')
+    projectInstance
+      .get("GetAllPublicProjects")
       .then((res) => {
-        setProjects(res?.data?.result)
+        setProjects(res?.data?.result);
       })
-      .catch((error) => { console.error(error) })
+      .catch((error) => {
+        console.error(error);
+      });
   }, []);
   const handleSearch = (event) => {
     setSearch(event.target.value);
     const searchLower = event.target.value.toLowerCase();
-    const filtered = projects.filter(project =>
-      project.name.toLowerCase().includes(searchLower) || project.fullName.toLowerCase().includes(searchLower)
+    const filtered = projects.filter(
+      (project) =>
+        project.name.toLowerCase().includes(searchLower) ||
+        project.fullName.toLowerCase().includes(searchLower)
     );
     setFilterProject(filtered);
-  }
+  };
+  const itemClick = () => {
+    onSidebarClick();
+  };
   return (
     <Row className="pt-3 ms-0 me-0">
-      <Col md={3} >
-        <SideBar />
+      <Col md={3}>
+        <SideBar itemClick={itemClick} />
       </Col>
       <Col md={6}>
         <div id="own_project">
@@ -76,7 +84,10 @@ function Project({ value }) {
           </div>
 
           {(search ? filterProjects : projects)?.map((item) => (
-            <div className="p-2 card bg-white p-6 rounded-lg w-96 mb-3" key={item.idProject}>
+            <div
+              className="p-2 card bg-white p-6 rounded-lg w-96 mb-3"
+              key={item.idProject}
+            >
               <div className="image-container d-flex justify-content-center">
                 <img
                   className="rounded-t-lg bor-8"
@@ -84,7 +95,6 @@ function Project({ value }) {
                   alt="Laptop with developer items spread around"
                 />
               </div>
-
 
               <div className="mt-2 ">
                 <h2 className="text-xl SFU-bold">{item.name}</h2>
@@ -98,16 +108,30 @@ function Project({ value }) {
                       <div className="profile">
                         <img src={item.avatarUser} alt="profile" />
                       </div>
-                      {item.isVerified && <img src={tick} alt="tick" className="position-absolute bottom-0 end-0" style={{ width: '18px' }} />}
+                      {item.isVerified && (
+                        <img
+                          src={tick}
+                          alt="tick"
+                          className="position-absolute bottom-0 end-0"
+                          style={{ width: "18px" }}
+                        />
+                      )}
                     </div>
                     <div className="left-30 d-flex flex-column justify-content-center">
-                      <div className="size-20 SFU-heavy d-flex">{item.fullName}</div>
+                      <div className="size-20 SFU-heavy d-flex">
+                        {item.fullName}
+                      </div>
                       <div className="size-14 SFU-reg text-gray-600 d-flex">
                         Date Create: {formatDate(item.createdDate)}
                       </div>
                     </div>
                     <div className="ms-3 d-flex align-items-center">
-                      <div className="ms-2" style={{ fontSize: '20px', marginTop: '5px' }}>{Math.round(item?.ratingAvg * 100) / 100}</div>
+                      <div
+                        className="ms-2"
+                        style={{ fontSize: "20px", marginTop: "5px" }}
+                      >
+                        {Math.round(item?.ratingAvg * 100) / 100}
+                      </div>
 
                       <Rating
                         className="ms-2"
@@ -116,15 +140,20 @@ function Project({ value }) {
                         allowFraction={true}
                         readonly={true}
                       />
-                      <div className="ms-2" style={{ fontSize: '20px', marginTop: '5px' }}><span>&#10098;</span>{item?.ratingNum}<span>&#10099;</span></div>
-
+                      <div
+                        className="ms-2"
+                        style={{ fontSize: "20px", marginTop: "5px" }}
+                      >
+                        <span>&#10098;</span>
+                        {item?.ratingNum}
+                        <span>&#10099;</span>
+                      </div>
                     </div>
-
                   </div>
 
-
                   <div className="d-flex flex-row gap-2 button_custom">
-                    <button className="d-flex flex-row align-items-center btn bg-primary text-white px-4 py-2 btn-light border border-dark border_custom"
+                    <button
+                      className="d-flex flex-row align-items-center btn bg-primary text-white px-4 py-2 btn-light border border-dark border_custom"
                       onClick={() => hanldeViewDetail(item.idProject)}
                     >
                       Detail
@@ -134,7 +163,6 @@ function Project({ value }) {
               </div>
             </div>
           ))}
-
         </div>
       </Col>
       <Col md={3}>

@@ -13,7 +13,6 @@ import { useNavigate } from "react-router-dom";
 import { Col, Row } from "react-bootstrap";
 import SideBar from "../../components/sidebar";
 import Follow from "../../components/follow";
-
 import Report from "../../components/report-popup/Report";
 import Notification, {
   notifySuccess,
@@ -27,7 +26,7 @@ function formatTimeAgo(dateString) {
   return result.replace("about ", "");
 }
 
-function Post({ value }) {
+function Post({ value, onSidebarClick }) {
   const sessionData = JSON.parse(sessionStorage.getItem("userSession")) || {};
   const navigate = useNavigate();
   const { role, currentUserId } = sessionData;
@@ -68,9 +67,6 @@ function Post({ value }) {
       isLike,
       isVerified,
     };
-  };
-  const onItemClick = (value) => {
-    console.log(value);
   };
   const handleLikeOrUnlikeBlog = (idBlog) => {
     // Find the index of the blog item to update
@@ -214,10 +210,13 @@ function Post({ value }) {
   const toggleTrendList = () => {
     setShowTrendList(!showTrendList);
   };
+  const itemClick = () => {
+    onSidebarClick();
+  };
   return (
     <Row className="pt-3 ms-0 me-0">
       <Col md={3}>
-        <SideBar  />
+        <SideBar itemClick={itemClick} />
       </Col>
       <Col md={6}>
         <div id="post">
