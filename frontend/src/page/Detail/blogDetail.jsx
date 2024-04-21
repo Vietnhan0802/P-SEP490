@@ -31,7 +31,7 @@ function formatTimeAgo(dateString) {
   // Loại bỏ từ "about" khỏi chuỗi
   return result.replace("about ", "");
 }
-function BlogDetail({ value }) {
+function BlogDetail({ value, onSidebarClick }) {
   const carouselRef = useRef(null);
   useEffect(() => {
     if (carouselRef.current) {
@@ -415,11 +415,14 @@ function BlogDetail({ value }) {
   const setResetCmt = () => {
     setState((prev) => !prev);
   };
+  const itemClick = () => {
+    onSidebarClick();
+  };
   //Palce to log data to debug
   return (
     <Row className="pt-3 ms-0 me-0">
       <Col md={3}>
-        <SideBar />
+        <SideBar itemClick={itemClick} />
       </Col>
       <Col md={6}>
         <div id="BlogDetail" className="p-3 mb-4">

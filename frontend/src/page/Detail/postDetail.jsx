@@ -30,7 +30,7 @@ function formatTimeAgo(dateString) {
   // Loại bỏ từ "about" khỏi chuỗi
   return result.replace("about ", "");
 }
-function PostDetail({ value }) {
+function PostDetail({ value, onSidebarClick }) {
   const location = useLocation();
   const sessionData = JSON.parse(sessionStorage.getItem("userSession")) || {};
   const { currentUserId, role } = sessionData;
@@ -385,10 +385,13 @@ function PostDetail({ value }) {
   const setResetCmt = () => {
     setState((prev) => !prev);
   };
+  const itemClick = () => {
+    onSidebarClick();
+  };
   return (
     <Row className="pt-3 ms-0 me-0">
       <Col md={3}>
-        <SideBar />
+        <SideBar itemClick={itemClick} />
       </Col>
       <Col md={6}>
         <div id="postDetail" className="p-3  mb-3">

@@ -17,7 +17,7 @@ import { MdOutlineSpaceDashboard } from "react-icons/md";
 import { FaChartLine } from "react-icons/fa6";
 import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate } from "react-router-dom";
-function SideBar() {
+function SideBar({ itemClick }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
@@ -83,7 +83,7 @@ function SideBar() {
     navigate("/");
   };
   const handleItemClick = (itemId) => {
-    
+    itemClick();
     navigate(`/${itemId}`, { state: { activeItem: itemId } });
   };
   const sessionData = JSON.parse(sessionStorage.getItem("userSession")) || {};

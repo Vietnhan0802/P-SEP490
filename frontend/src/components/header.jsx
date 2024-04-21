@@ -23,6 +23,7 @@ export default function Header({
   onItemClick,
   changeImage,
   changeThemeHeader,
+  resetPopup,
 }) {
   const { t } = useTranslation();
   const location = useLocation(); // Get the current location
@@ -45,7 +46,10 @@ export default function Header({
       handleItemClick("chat");
     }
   }, [location.pathname]); // Re-run the effect when the location.pathname changes
-
+  useEffect(() => {
+    setShowPopup(false);
+    setActivePopup(false);
+  }, [resetPopup]);
   useEffect(() => {
     userInstance
       .get(`/GetAllUsers`)
