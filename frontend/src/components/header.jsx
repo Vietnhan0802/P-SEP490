@@ -88,16 +88,22 @@ export default function Header({
   };
 
   const handleItemClick = (itemId) => {
+    setShowPopup(false);
+    setActivePopup(false);
     setActiveItem(itemId);
     onItemClick(itemId);
   };
   const handleAvatarClick = (id) => {
+    setShowPopup(false);
+    setActivePopup(false);
     setSearchName("");
     setActiveItem(id);
     onItemClick(id);
     navigate("/profile", { state: { userId: id } });
   };
   const hanldeReturnHome = (itemId) => {
+    setShowPopup(false);
+    setActivePopup(false);
     setActiveItem(itemId);
     onItemClick(itemId);
     navigate("/post", { state: { activeItem: "post" } });
